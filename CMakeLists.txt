@@ -8,7 +8,11 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(libs/spdlog)
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE SPDLOG_DEBUG_ON SPDLOG_TRACE_ON)
 
+#glfw
+add_subdirectory(libs/glfw)
+
+set(LIBS glfw spdlog::spdlog)
 
 ################ Exec ################
 add_executable(matf_rg_engine main.cpp)
-target_link_libraries(matf_rg_engine PRIVATE spdlog::spdlog)
+target_link_libraries(matf_rg_engine PRIVATE ${LIBS})
