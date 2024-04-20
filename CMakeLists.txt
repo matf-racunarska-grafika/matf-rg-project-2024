@@ -19,6 +19,11 @@ add_subdirectory(libs/glad)
 
 set(LIBS glfw glad OpenGL::GL spdlog::spdlog)
 
+############## Sources ###############
+
+file(GLOB sources engine/*.cpp)
+file(GLOB headers engine/*.hpp)
+
 ################ Exec ################
-add_executable(matf_rg_engine main.cpp)
+add_executable(matf_rg_engine main.cpp ${sources} ${headers})
 target_link_libraries(matf_rg_engine PRIVATE ${LIBS})
