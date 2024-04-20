@@ -1,50 +1,49 @@
+#include "engine/App.hpp"
 #include <spdlog/spdlog.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 
-int main(void)
-{
-    GLFWwindow* window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
+/**
+ * Student implements rg::App for their application.
+ */
+class StudentsApp : public rg::App {
+protected:
+    bool initialize() override {
+        spdlog::info("StudentsApp::initialize");
+        m_max_loop_count = 3;
+        return true;
     }
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-        spdlog::error("Failed to load OpenGL functions!");
-        return -1;
+    bool loop() override {
+        spdlog::info("StudentsApp::loop");
+        return m_loop_count < m_max_loop_count;
     }
 
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
+    void update() override {
+        spdlog::info("StudentsApp::update");
+        ++m_loop_count;
     }
 
-    glfwTerminate();
-    return 0;
+    void draw() override {
+        spdlog::info("StudentsApp::draw");
+        spdlog::info("{:}/{:}", (m_loop_count), m_max_loop_count);
+    }
+
+    void terminate() override {
+        spdlog::info("StudentsApp::terminate");
+        m_loop_count = -1;
+    }
+
+private:
+    int m_loop_count = 0;
+    int m_max_loop_count = 0;
+};
+
+
+namespace rg {
+    std::unique_ptr<App> create_app() {
+        return std::make_unique<StudentsApp>();
+    }
+}
+
+int main() {
+    return rg::App::run();
 }
