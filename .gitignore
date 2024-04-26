@@ -1,3 +1,5 @@
+matf_rg_engine
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -12,3 +14,4 @@ _deps
 /cmake-build-debug/
 /cmake-build-release/
 /.idea/
+*.a
