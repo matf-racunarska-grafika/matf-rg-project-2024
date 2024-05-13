@@ -37,5 +37,4 @@ namespace rg {
                 "GuaranteeViolation in: {}:{}. {}. There is a logic error in the program. Please ensure that the Guarantee is never violated.",
                 location().file_name(), location().line(), message());
     }
-
 }

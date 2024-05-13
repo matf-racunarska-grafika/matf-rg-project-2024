@@ -7,5 +7,6 @@
 
 #include "App.hpp"
 #include "Utils.hpp"
+#include "Platform.hpp"
 
 #endif //MATF_RG_PROJECT_ENGINE_H
