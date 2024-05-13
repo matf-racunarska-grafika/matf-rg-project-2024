@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 ############## Sources ###############
 file(GLOB sources src/*.cpp)
-file(GLOB headers include/*.hpp)
+file(GLOB headers include/engine/*.hpp include/engine/*.h)
 
 add_library(rg-engine ${sources} ${headers})
 

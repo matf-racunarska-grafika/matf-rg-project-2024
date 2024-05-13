@@ -17,7 +17,7 @@ add_subdirectory(libs/glfw)
 # glad
 add_subdirectory(libs/glad)
 
-# rg-engine
+# rg-include
 add_subdirectory(rg-engine)
 
 set(LIBS glfw glad OpenGL::GL spdlog::spdlog rg-engine)
