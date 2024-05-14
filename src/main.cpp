@@ -1,5 +1,4 @@
-#include "engine/App.hpp"
-#include "spdlog/spdlog.h"
+#include "engine/engine.hpp"
 
 /**
  * Student implements rg::App for their application.
@@ -7,35 +6,27 @@
 class StudentsApp : public rg::App {
 protected:
     void initialize() override {
-        spdlog::info("StudentsApp::initialize");
-        m_max_loop_count = 3;
     }
 
     bool loop() override {
-        spdlog::info("StudentsApp::loop");
-        return m_loop_count < m_max_loop_count;
+        auto input = rg::utils::ServiceProvider::get<rg::platform::InputController>();
+        if (input->key(rg::platform::KEY_ESCAPE).pressed()) {
+            return false;
+        }
+        return true;
     }
 
     void update() override {
-        spdlog::info("StudentsApp::update");
-        ++m_loop_count;
     }
 
     void draw() override {
-        spdlog::info("StudentsApp::draw");
-        spdlog::info("{:}/{:}", (m_loop_count), m_max_loop_count);
     }
 
     void terminate() override {
-        spdlog::info("StudentsApp::terminate");
-        m_loop_count = -1;
     }
 
 private:
-    int m_loop_count = 0;
-    int m_max_loop_count = 0;
 };
-
 
 namespace rg {
     std::unique_ptr<App> create_app() {
