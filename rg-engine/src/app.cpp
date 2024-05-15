@@ -8,15 +8,13 @@
 #include "engine/utils.hpp"
 
 namespace rg {
-    using namespace rg::utils;
-    using namespace rg::platform;
-
     bool App::initialize_() {
 
         // register engine services
-        ServiceProvider::singleton()->register_service<rg::platform::Platform>();
-        ServiceProvider::singleton()->register_service<rg::platform::Window>();
-        ServiceProvider::singleton()->register_service<rg::platform::InputController>();
+        auto controller_manager = ControllerManager::singleton();
+        controller_manager->register_controller<rg::PlatformController>();
+        controller_manager->register_controller<rg::WindowController>();
+        controller_manager->register_controller<rg::InputController>();
 
         if (!initialize()) {
             spdlog::error("initialize failed!");
@@ -24,10 +22,10 @@ namespace rg {
         }
 
         /*
-         * Service initialization is done after user-defined App::initialize because
+         * Controller initialization is done after user-defined App::initialize because
          * user can register custom services in App::initialize.
          */
-        if (!rg::utils::ServiceProvider::singleton()->initialize()) {
+        if (!controller_manager->initialize()) {
             return false;
         }
 
@@ -38,7 +36,7 @@ namespace rg {
         /*
          * Any service can stop the rendering.
          */
-        if (!rg::utils::ServiceProvider::singleton()->loop()) {
+        if (!rg::ControllerManager::singleton()->loop()) {
             return false;
         }
 
@@ -46,11 +44,11 @@ namespace rg {
     }
 
     void App::poll_events_() {
-        ServiceProvider::get<Platform>()->poll_events();
+        ControllerManager::get<PlatformController>()->poll_events();
     }
 
     void App::update_() {
-        rg::utils::ServiceProvider::singleton()->update();
+        rg::ControllerManager::singleton()->update();
         update();
     }
 
@@ -60,7 +58,7 @@ namespace rg {
 
     void App::terminate_() {
         terminate();
-        rg::utils::ServiceProvider::singleton()->terminate();
+        rg::ControllerManager::singleton()->terminate();
     }
 
 

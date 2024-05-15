@@ -9,8 +9,8 @@ protected:
     }
 
     bool loop() override {
-        auto input = rg::utils::ServiceProvider::get<rg::platform::InputController>();
-        if (input->key(rg::platform::KEY_ESCAPE).pressed()) {
+        const auto input = rg::ControllerManager::get<rg::InputController>();
+        if (input->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::Pressed) {
             return false;
         }
         return true;

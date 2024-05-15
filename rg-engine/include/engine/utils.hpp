@@ -10,6 +10,7 @@
 #include <memory>
 #include <format>
 
+
 namespace rg::utils {
     namespace error {
         void guarantee(bool expr, std::string_view msg,
@@ -20,6 +21,7 @@ namespace rg::utils {
 
         void
         unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
+
 
         class Error : public std::exception {
         public:
@@ -73,8 +75,10 @@ namespace rg::utils {
             using Error::Error;
         };
     };
-    class Service {
+
+    class Controller {
     public:
+
         virtual bool initialize() {
             return true;
         }
@@ -94,30 +98,31 @@ namespace rg::utils {
 
         virtual std::string_view name() = 0;
 
-        virtual ~Service() = default;
+        virtual ~Controller() = default;
 
-    private:
     };
 
-    class ServiceProvider {
-    public:
-        static ServiceProvider *singleton();
+    using SourceLocation = std::source_location;
 
-        template<typename ServiceT>
-        static ServiceT *get() {
-            static std::unique_ptr<ServiceT> service = ServiceT::create();
-            return service.get();
+    class ControllerManager {
+    public:
+        static ControllerManager *singleton();
+
+        template<typename TController>
+        static TController *get() {
+            static std::unique_ptr<TController> controller = TController::create();
+            return controller.get();
         }
 
-        template<typename ServiceT>
-        void register_service(std::source_location location = std::source_location::current()) {
-            auto new_service = ServiceProvider::get<ServiceT>();
-            for (auto existing_service: m_service_registry) {
-                EngineError::guarantee(existing_service != new_service, std::format(
-                        "Trying to register service: `{}` twice in file: {}:{}. Please make sure that every service is registered exactly once.",
-                        new_service->name(), location.file_name(), location.line()));
+        template<typename TController>
+        void register_controller(SourceLocation location = std::source_location::current()) {
+            auto new_controller = ControllerManager::get<TController>();
+            for (auto existing_controller: m_controllers) {
+                EngineError::guarantee(existing_controller != new_controller, std::format(
+                        "Trying to register Controller: `{}` twice in file: {}:{}. Please make sure that every Controller is registered exactly once.",
+                        new_controller->name(), location.file_name(), location.line()));
             }
-            m_service_registry.push_back(new_service);
+            m_controllers.push_back(new_controller);
         }
 
         bool initialize();
@@ -131,9 +136,8 @@ namespace rg::utils {
         void update();
 
     private:
-        std::vector<Service *> m_service_registry;
+        std::vector<Controller *> m_controllers;
     };
-
 
 }
 

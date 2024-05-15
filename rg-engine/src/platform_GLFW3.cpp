@@ -10,10 +10,10 @@
 
 static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
-namespace rg::platform {
+namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
-    static std::array<Key, GLFW_KEY_LAST + 1> g_glfw_to_engine_key;
+    static std::array<KeyId, KEY_COUNT> g_glfw_to_engine_key;
 
     void initialize_key_maps();
 
@@ -21,32 +21,32 @@ namespace rg::platform {
         GLFWwindow *window;
     };
 
-    std::string_view to_string(KeyState key_state) {
-        switch (key_state) {
-        case KeyState::Released: return "Released";
-        case KeyState::JustPressed: return "JustPressed";
-        case KeyState::Pressed: return "Pressed";
-        case KeyState::JustReleased: return "JustReleased";
+    std::string_view Key::to_string() const {
+        switch (m_state) {
+        case Key::State::Released: return "Released";
+        case Key::State::JustPressed: return "JustPressed";
+        case Key::State::Pressed: return "Pressed";
+        case Key::State::JustReleased: return "JustReleased";
         default: return "UNIMPLEMENTED";
         }
     }
 
-    Window::~Window() {
+    WindowController::~WindowController() {
         delete m_window_impl;
         m_window_impl = nullptr;
     }
 
-    std::unique_ptr<Window> Window::create() {
-        auto result = std::make_unique<Window>();
+    std::unique_ptr<WindowController> WindowController::create() {
+        auto result = std::make_unique<WindowController>();
         result->m_window_impl = new WindowImpl;
         return result;
     }
 
-    bool Window::initialize() {
+    bool WindowController::initialize() {
         m_width = 800;
         m_height = 600;
         m_title = "title";
-        rg::utils::EngineError::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
+        rg::EngineError::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
         m_window_impl->window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
         if (!m_window_impl->window) {
             spdlog::error("Failed to create a GLFW window!");
@@ -56,12 +56,12 @@ namespace rg::platform {
         return true;
     }
 
-    void Window::terminate() {
+    void WindowController::terminate() {
         glfwDestroyWindow(m_window_impl->window);
     }
 
-    std::string_view Window::name() {
-        return "Window";
+    std::string_view WindowController::name() {
+        return "WindowController";
     }
 
     std::unique_ptr<InputController> InputController::create() {
@@ -69,54 +69,55 @@ namespace rg::platform {
     }
 
     bool InputController::initialize() {
-        glfwSetKeyCallback(utils::ServiceProvider::get<Window>()->handle()->window, glfw_key_callback);
+        glfwSetKeyCallback(ControllerManager::get<WindowController>()->handle()->window, glfw_key_callback);
         initialize_key_maps();
-        m_keys.resize(KEY_COUNT + 1);
+        m_keys.resize(KEY_COUNT);
         for (int key = 0; key < m_keys.size(); ++key) {
-            m_keys[key].key = key;
+            m_keys[key].m_key = static_cast<KeyId>(key);
         }
         return true;
     }
 
-    KeyData &InputController::key(Key key) {
-        utils::EngineError::guarantee(key >= 0 && key < m_keys.size(), "Key out of bounds!");
+    Key &InputController::key(KeyId key) {
+        EngineError::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 
-    const KeyData &InputController::key(Key key) const {
-        utils::EngineError::guarantee(key >= 0 && key < m_keys.size(), "Key out of bounds!");
+    const Key &InputController::key(KeyId key) const {
+        EngineError::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 
-    void update_key(KeyData &key_data, GLFWwindow *window) {
-        int glfw_key_code = g_engine_to_glfw_key[key_data.key];
+    void InputController::update_key(Key &key_data) {
+        int glfw_key_code = g_engine_to_glfw_key[key_data.key()];
+        auto window = ControllerManager::get<WindowController>()->handle()->window;
         int action = glfwGetKey(window, glfw_key_code);
-        switch (key_data.state) {
-        case rg::platform::KeyState::Released: {
+        switch (key_data.state()) {
+        case rg::Key::State::Released: {
             if (action == GLFW_PRESS) {
-                key_data.state = KeyState::JustPressed;
+                key_data.m_state = Key::State::JustPressed;
             }
             break;
         }
-        case rg::platform::KeyState::JustReleased: {
+        case rg::Key::State::JustReleased: {
             if (action == GLFW_PRESS) {
-                key_data.state = rg::platform::KeyState::JustPressed;
+                key_data.m_state = rg::Key::State::JustPressed;
             } else if (action == GLFW_RELEASE) {
-                key_data.state = KeyState::Released;
+                key_data.m_state = Key::State::Released;
             }
             break;
         }
-        case rg::platform::KeyState::JustPressed: {
+        case rg::Key::State::JustPressed: {
             if (action == GLFW_RELEASE) {
-                key_data.state = KeyState::JustReleased;
+                key_data.m_state = Key::State::JustReleased;
             } else if (action == GLFW_PRESS) {
-                key_data.state = KeyState::Pressed;
+                key_data.m_state = Key::State::Pressed;
             }
             break;
         }
-        case rg::platform::KeyState::Pressed: {
+        case rg::Key::State::Pressed: {
             if (action == GLFW_RELEASE) {
-                key_data.state = rg::platform::KeyState::JustReleased;
+                key_data.m_state = rg::Key::State::JustReleased;
             }
             break;
         }
@@ -124,9 +125,8 @@ namespace rg::platform {
     }
 
     void InputController::update() {
-        auto window = utils::ServiceProvider::get<Window>()->handle()->window;
         for (int i = 0; i < KEY_COUNT; ++i) {
-            update_key(key(static_cast<Key>(i)), window);
+            update_key(key(static_cast<KeyId>(i)));
         }
     }
 
@@ -134,7 +134,7 @@ namespace rg::platform {
         return "InputController";
     }
 
-    class PlatformGLFW3 : public Platform {
+    class PlatformGLFW3 : public PlatformController {
     public:
         bool initialize() override {
             if (!glfwInit()) {
@@ -159,7 +159,7 @@ namespace rg::platform {
         }
     };
 
-    std::unique_ptr<Platform> Platform::create() {
+    std::unique_ptr<PlatformController> PlatformController::create() {
         return std::make_unique<PlatformGLFW3>();
     }
 
@@ -169,20 +169,20 @@ namespace rg::platform {
 }
 
 static void glfw_key_callback(GLFWwindow *, int key, int, int action, int) {
-    auto input = rg::utils::ServiceProvider::get<rg::platform::InputController>();
-    auto &key_data = input->key(rg::platform::g_glfw_to_engine_key[key]);
-    switch (key_data.state) {
-    case rg::platform::KeyState::Released:
-    case rg::platform::KeyState::JustReleased: {
+    auto input = rg::ControllerManager::get<rg::InputController>();
+    auto &key_data = input->key(rg::g_glfw_to_engine_key[key]);
+    switch (key_data.state()) {
+    case rg::Key::State::Released:
+    case rg::Key::State::JustReleased: {
         if (action == GLFW_PRESS) {
-            key_data.state = rg::platform::KeyState::JustPressed;
+            key_data.state() = rg::Key::State::JustPressed;
         }
         break;
     }
-    case rg::platform::KeyState::JustPressed:
-    case rg::platform::KeyState::Pressed: {
+    case rg::Key::State::JustPressed:
+    case rg::Key::State::Pressed: {
         if (action == GLFW_RELEASE) {
-            key_data.state = rg::platform::KeyState::JustReleased;
+            key_data.state() = rg::Key::State::JustReleased;
         }
         break;
     }

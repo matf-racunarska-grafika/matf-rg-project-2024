@@ -10,19 +10,20 @@
 #include <array>
 #include <vector>
 #include "engine/utils.hpp"
+#include "GLFW/glfw3.h"
 
-namespace rg::platform {
+namespace rg {
 
-    class Platform : public utils::Service {
+    class PlatformController : public Controller {
     public:
-        static std::unique_ptr<Platform> create();
+        static std::unique_ptr<PlatformController> create();
     };
 
     class WindowImpl;
 
-    class Window : public utils::Service {
+    class WindowController : public Controller {
     public:
-        static std::unique_ptr<Window> create();
+        static std::unique_ptr<WindowController> create();
 
         bool initialize() override;
 
@@ -46,7 +47,7 @@ namespace rg::platform {
 
         std::string_view name() override;
 
-        ~Window() override;
+        ~WindowController() override;
 
     private:
         WindowImpl *m_window_impl = nullptr;
@@ -55,35 +56,8 @@ namespace rg::platform {
         std::string m_title;
     };
 
-    enum class KeyState {
-        Released, JustPressed, Pressed, JustReleased
-    };
 
-    std::string_view to_string(KeyState key_state);
-
-    struct KeyData {
-        int key;
-        KeyState state;
-
-        bool pressed() const {
-            return state == KeyState::Pressed;
-        }
-
-        bool just_pressed() const {
-            return state == KeyState::JustPressed;
-        }
-
-        bool released() const {
-            return state == KeyState::Released;
-        }
-
-        bool just_released() const {
-            return state == KeyState::JustReleased;
-        }
-    };
-
-
-    enum Key {
+    enum KeyId {
         MOUSE_BUTTON_1 = 0,
         MOUSE_BUTTON_2,
         MOUSE_BUTTON_3,
@@ -219,22 +193,53 @@ namespace rg::platform {
         KEY_COUNT,
     };
 
-    class InputController : public utils::Service {
+    class Key {
+        friend class InputController;
+
+    public:
+        enum class State {
+            Released, JustPressed, Pressed, JustReleased
+        };
+
+        State &state() {
+            return m_state;
+        }
+
+        KeyId key() const {
+            return m_key;
+        }
+
+        State state() const {
+            return m_state;
+        }
+
+        std::string_view to_string() const;
+
+    private:
+        KeyId m_key = KEY_COUNT;
+        State m_state = State::Released;
+    };
+
+    class InputController : public Controller {
+        friend class ControllerManager;
+
     public:
         static std::unique_ptr<InputController> create();
 
-        bool initialize() override;
+        const Key &key(KeyId key) const;
 
-        KeyData &key(Key key);
-
-        const KeyData &key(Key key) const;
-
-        void update() override;
+        Key &key(KeyId key);
 
         std::string_view name() override;
 
     private:
-        std::vector<KeyData> m_keys;
+        bool initialize() override;
+
+        void update() override;
+
+        std::vector<Key> m_keys;
+
+        void update_key(Key &key_data);
     };
 
 

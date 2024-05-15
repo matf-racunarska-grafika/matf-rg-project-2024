@@ -40,15 +40,15 @@ namespace rg::utils {
                 location().file_name(), location().line(), message());
     }
 
-    ServiceProvider *ServiceProvider::singleton() {
-        static std::unique_ptr<ServiceProvider> provider = std::make_unique<ServiceProvider>();
+    ControllerManager *ControllerManager::singleton() {
+        static std::unique_ptr<ControllerManager> provider = std::make_unique<ControllerManager>();
         return provider.get();
     }
 
-    bool ServiceProvider::initialize() {
-        for (auto service: m_service_registry) {
+    bool ControllerManager::initialize() {
+        for (auto service: m_controllers) {
             if (!service->initialize()) {
-                spdlog::error("Service {:} failed to initialize!", service->name());
+                spdlog::error("Controller {:} failed to initialize!", service->name());
                 return false;
             }
             spdlog::info("{}::initialize", service->name());
@@ -56,17 +56,17 @@ namespace rg::utils {
         return true;
     }
 
-    void ServiceProvider::terminate() {
-        int size = (int) m_service_registry.size() - 1;
+    void ControllerManager::terminate() {
+        int size = (int) m_controllers.size() - 1;
         for (int i = std::max(size, 0); i >= 0; --i) {
-            auto service = m_service_registry[i];
+            auto service = m_controllers[i];
             service->terminate();
             spdlog::info("{}::terminate", service->name());
         }
     }
 
-    bool ServiceProvider::loop() {
-        for (auto service: m_service_registry) {
+    bool ControllerManager::loop() {
+        for (auto service: m_controllers) {
             if (!service->loop()) {
                 return false;
             }
@@ -74,14 +74,14 @@ namespace rg::utils {
         return true;
     }
 
-    void ServiceProvider::update() {
-        for (auto service: m_service_registry) {
+    void ControllerManager::update() {
+        for (auto service: m_controllers) {
             service->update();
         }
     }
 
-    void ServiceProvider::poll_events() {
-        for (auto service: m_service_registry) {
+    void ControllerManager::poll_events() {
+        for (auto service: m_controllers) {
             service->poll_events();
         }
     }
