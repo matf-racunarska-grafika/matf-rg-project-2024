@@ -12,6 +12,7 @@ namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, KEY_COUNT> g_glfw_to_engine_key;
+
     void initialize_key_maps();
 
     struct WindowImpl {

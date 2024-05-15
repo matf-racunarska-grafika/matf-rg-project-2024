@@ -77,8 +77,14 @@ namespace rg::utils {
     };
 
     class Controller {
-    public:
+        friend class ControllerManager;
 
+    public:
+        virtual std::string_view name() = 0;
+
+        virtual ~Controller() = default;
+
+    private:
         virtual bool initialize() {
             return true;
         }
@@ -95,16 +101,11 @@ namespace rg::utils {
 
         virtual void poll_events() {
         }
-
-        virtual std::string_view name() = 0;
-
-        virtual ~Controller() = default;
-
     };
 
-    using SourceLocation = std::source_location;
-
     class ControllerManager {
+        friend class App;
+
     public:
         static ControllerManager *singleton();
 
@@ -115,7 +116,7 @@ namespace rg::utils {
         }
 
         template<typename TController>
-        void register_controller(SourceLocation location = std::source_location::current()) {
+        void register_controller(std::source_location location = std::source_location::current()) {
             auto new_controller = ControllerManager::get<TController>();
             for (auto existing_controller: m_controllers) {
                 EngineError::guarantee(existing_controller != new_controller, std::format(
@@ -125,6 +126,7 @@ namespace rg::utils {
             m_controllers.push_back(new_controller);
         }
 
+    private:
         bool initialize();
 
         void poll_events();
@@ -135,7 +137,6 @@ namespace rg::utils {
 
         void update();
 
-    private:
         std::vector<Controller *> m_controllers;
     };
 

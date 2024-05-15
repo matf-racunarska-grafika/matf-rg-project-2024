@@ -44,7 +44,7 @@ namespace rg {
     }
 
     void App::poll_events_() {
-        ControllerManager::get<PlatformController>()->poll_events();
+        ControllerManager::singleton()->poll_events();
     }
 
     void App::update_() {

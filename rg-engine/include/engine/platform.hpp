@@ -15,20 +15,17 @@
 namespace rg {
 
     class PlatformController : public Controller {
-    public:
+        friend class ControllerManager;
+    private:
         static std::unique_ptr<PlatformController> create();
     };
 
     class WindowImpl;
 
     class WindowController : public Controller {
+        friend class ControllerManager;
+
     public:
-        static std::unique_ptr<WindowController> create();
-
-        bool initialize() override;
-
-        void terminate() override;
-
         int width() const {
             return m_width;
         }
@@ -54,8 +51,13 @@ namespace rg {
         int m_width = 0;
         int m_height = 0;
         std::string m_title;
-    };
 
+        static std::unique_ptr<WindowController> create();
+
+        bool initialize() override;
+
+        void terminate() override;
+    };
 
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
@@ -224,8 +226,6 @@ namespace rg {
         friend class ControllerManager;
 
     public:
-        static std::unique_ptr<InputController> create();
-
         const Key &key(KeyId key) const;
 
         Key &key(KeyId key);
@@ -233,6 +233,8 @@ namespace rg {
         std::string_view name() override;
 
     private:
+        static std::unique_ptr<InputController> create();
+
         bool initialize() override;
 
         void update() override;
@@ -240,6 +242,7 @@ namespace rg {
         std::vector<Key> m_keys;
 
         void update_key(Key &key_data);
+
     };
 
 
