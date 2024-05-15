@@ -32,7 +32,7 @@ namespace rg {
     std::unique_ptr<App> create_app() {
         return std::make_unique<StudentsApp>();
     }
-}
+}// namespace rg
 
 int main() {
     return rg::App::run();

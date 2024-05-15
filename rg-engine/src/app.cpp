@@ -3,12 +3,13 @@
 //
 #include <spdlog/spdlog.h>
 
+#include "declarations.hpp"
 #include "engine/app.hpp"
 #include "engine/platform.hpp"
 #include "engine/utils.hpp"
 
 namespace rg {
-    bool App::initialize_() {
+    void App::initialize_() {
 
         // register engine services
         auto controller_manager = ControllerManager::singleton();
@@ -16,20 +17,12 @@ namespace rg {
         controller_manager->register_controller<rg::WindowController>();
         controller_manager->register_controller<rg::InputController>();
 
-        if (!initialize()) {
-            spdlog::error("initialize failed!");
-            return false;
-        }
-
+        initialize();
         /*
          * Controller initialization is done after user-defined App::initialize because
          * user can register custom services in App::initialize.
          */
-        if (!controller_manager->initialize()) {
-            return false;
-        }
-
-        return true;
+        controller_manager->initialize();
     }
 
     bool App::loop_() {
@@ -64,22 +57,32 @@ namespace rg {
 
     int App::run() {
         auto app = create_app();
-
-        if (!app->initialize_()) {
-            spdlog::error("App failed to initialize! Shutdown...");
+        try {
+            app->initialize_();
+            while (app->loop_()) {
+                app->poll_events_();
+                app->update_();
+                app->draw_();
+            }
             app->terminate_();
-            return -1;
+        } catch (const EngineError &e) {
+            app->handle_error_(e);
+            app->terminate_();
+        } catch (const UserError &e) {
+            app->handle_error(e);
+            app->terminate_();
         }
-
-        while (app->loop_()) {
-            app->poll_events_();
-            app->update_();
-            app->draw_();
-        }
-
-        app->terminate_();
         return 0;
     }
 
+    void App::handle_error(const UserError &e) {
+        spdlog::error(e.report());
+    }
 
-} // rg
+    void App::handle_error_(const EngineError &e) {
+        spdlog::error("EngineError: {}. This Error isn't recoverable, it indicates an error in the programs logic.",
+                      e.report());
+    }
+
+
+}// namespace rg

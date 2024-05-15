@@ -5,17 +5,18 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <string>
-#include <memory>
-#include <array>
-#include <vector>
-#include "engine/utils.hpp"
 #include "GLFW/glfw3.h"
+#include "engine/utils.hpp"
+#include <array>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace rg {
 
     class PlatformController : public Controller {
         friend class ControllerManager;
+
     private:
         static std::unique_ptr<PlatformController> create();
     };
@@ -38,11 +39,13 @@ namespace rg {
             return m_title;
         }
 
-        WindowImpl *handle() {
+        const WindowImpl *handle() const {
             return m_window_impl;
         }
 
-        std::string_view name() override;
+        std::string_view name() const override {
+            return "WindowController";
+        }
 
         ~WindowController() override;
 
@@ -199,9 +202,7 @@ namespace rg {
         friend class InputController;
 
     public:
-        enum class State {
-            Released, JustPressed, Pressed, JustReleased
-        };
+        enum class State { Released, JustPressed, Pressed, JustReleased };
 
         State &state() {
             return m_state;
@@ -230,7 +231,9 @@ namespace rg {
 
         Key &key(KeyId key);
 
-        std::string_view name() override;
+        std::string_view name() const override {
+            return "InputController";
+        }
 
     private:
         static std::unique_ptr<InputController> create();
@@ -242,10 +245,9 @@ namespace rg {
         std::vector<Key> m_keys;
 
         void update_key(Key &key_data);
-
     };
 
 
-}
+}// namespace rg
 
-#endif //MATF_RG_PROJECT_PLATFORM_H
+#endif//MATF_RG_PROJECT_PLATFORM_H

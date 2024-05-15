@@ -15,6 +15,9 @@ namespace rg {
     class ControllerManager;
 
     class Configuration;
-};
 
-#endif //MATF_RG_PROJECT_DECLARATIONS_HPP
+    class EngineError;
+    class UserError;
+};// namespace rg
+
+#endif//MATF_RG_PROJECT_DECLARATIONS_HPP

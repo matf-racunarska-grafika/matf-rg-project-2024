@@ -44,7 +44,7 @@ namespace rg {
         m_width = 800;
         m_height = 600;
         m_title = "title";
-        rg::EngineError::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
+        rg::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
         m_window_impl->window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
         if (!m_window_impl->window) {
             spdlog::error("Failed to create a GLFW window!");
@@ -56,10 +56,6 @@ namespace rg {
 
     void WindowController::terminate() {
         glfwDestroyWindow(m_window_impl->window);
-    }
-
-    std::string_view WindowController::name() {
-        return "WindowController";
     }
 
     std::unique_ptr<InputController> InputController::create() {
@@ -76,12 +72,12 @@ namespace rg {
     }
 
     Key &InputController::key(KeyId key) {
-        EngineError::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 
     const Key &InputController::key(KeyId key) const {
-        EngineError::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 
@@ -127,10 +123,6 @@ namespace rg {
         }
     }
 
-    std::string_view InputController::name() {
-        return "InputController";
-    }
-
     class PlatformGLFW3 : public PlatformController {
     public:
         bool initialize() override {
@@ -151,7 +143,7 @@ namespace rg {
             glfwPollEvents();
         }
 
-        std::string_view name() override {
+        std::string_view name() const override {
             return "PlatformGLFW3";
         }
     };
@@ -163,4 +155,4 @@ namespace rg {
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
     }
-}
+}// namespace rg

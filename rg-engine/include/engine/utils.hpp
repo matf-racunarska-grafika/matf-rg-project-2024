@@ -5,82 +5,80 @@
 #ifndef MATF_RG_PROJECT_UTILS_HPP
 #define MATF_RG_PROJECT_UTILS_HPP
 
-#include <vector>
-#include <source_location>
-#include <memory>
 #include <format>
+#include <memory>
+#include <source_location>
+#include <vector>
 
 
-namespace rg::utils {
-    namespace error {
-        void guarantee(bool expr, std::string_view msg,
-                       std::source_location source_location = std::source_location::current());
+namespace rg {
 
-        void should_not_reach_here(std::string_view msg,
-                                   std::source_location source_location = std::source_location::current());
+    void guarantee(bool expr, std::string_view msg,
+                   std::source_location source_location = std::source_location::current());
 
-        void
-        unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
+    void should_not_reach_here(std::string_view msg,
+                               std::source_location source_location = std::source_location::current());
+
+    void unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
 
 
-        class Error : public std::exception {
-        public:
-            explicit Error(std::string_view message, std::source_location location = std::source_location::current())
-                : m_message(message), m_location(location) {
-            }
+    class Error : public std::exception {
+    public:
+        explicit Error(std::string_view message, std::source_location location = std::source_location::current())
+            : m_message(message), m_location(location) {
+        }
 
-            std::string_view message() const {
-                return m_message;
-            }
+        std::string_view message() const {
+            return m_message;
+        }
 
-            std::source_location location() const {
-                return m_location;
-            }
+        std::source_location location() const {
+            return m_location;
+        }
 
-            virtual std::string report() const = 0;
+        virtual std::string report() const = 0;
 
-        private:
-            std::string_view m_message;
-            std::source_location m_location;
-        };
+    private:
+        std::string_view m_message;
+        std::source_location m_location;
+    };
 
-        class EngineError : public Error {
-        public:
-            using Error::Error;
-        };
+    class EngineError : public Error {
+    public:
+        using Error::Error;
+    };
 
-        class Unimplemented : public EngineError {
-        public:
-            using EngineError::EngineError;
+    class Unimplemented : public EngineError {
+    public:
+        using EngineError::EngineError;
 
-            std::string report() const override;
-        };
+        std::string report() const override;
+    };
 
-        class ShouldNotReachHere : public EngineError {
-        public:
-            using EngineError::EngineError;
+    class ShouldNotReachHere : public EngineError {
+    public:
+        using EngineError::EngineError;
 
-            std::string report() const override;
-        };
+        std::string report() const override;
+    };
 
-        class GuaranteeViolation : public EngineError {
-        public:
-            using EngineError::EngineError;
+    class GuaranteeViolation : public EngineError {
+    public:
+        using EngineError::EngineError;
 
-            std::string report() const override;
-        };
+        std::string report() const override;
+    };
 
-        class UserError : public Error {
-        public:
-            using Error::Error;
-        };
+    class UserError : public Error {
+    public:
+        using Error::Error;
     };
 
     class Controller {
         friend class ControllerManager;
 
     public:
-        virtual std::string_view name() = 0;
+        virtual std::string_view name() const = 0;
 
         virtual ~Controller() = default;
 
@@ -119,9 +117,10 @@ namespace rg::utils {
         void register_controller(std::source_location location = std::source_location::current()) {
             auto new_controller = ControllerManager::get<TController>();
             for (auto existing_controller: m_controllers) {
-                EngineError::guarantee(existing_controller != new_controller, std::format(
-                        "Trying to register Controller: `{}` twice in file: {}:{}. Please make sure that every Controller is registered exactly once.",
-                        new_controller->name(), location.file_name(), location.line()));
+                rg::guarantee(existing_controller != new_controller,
+                              std::format("Trying to register Controller: `{}` twice in file: {}:{}. Please make "
+                                          "sure that every Controller is registered exactly once.",
+                                          new_controller->name(), location.file_name(), location.line()));
             }
             m_controllers.push_back(new_controller);
         }
@@ -140,6 +139,6 @@ namespace rg::utils {
         std::vector<Controller *> m_controllers;
     };
 
-}
+}// namespace rg
 
-#endif //MATF_RG_PROJECT_UTILS_HPP
+#endif//MATF_RG_PROJECT_UTILS_HPP
