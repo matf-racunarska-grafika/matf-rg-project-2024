@@ -8,13 +8,10 @@
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
-static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
-
 namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, KEY_COUNT> g_glfw_to_engine_key;
-
     void initialize_key_maps();
 
     struct WindowImpl {
@@ -69,7 +66,6 @@ namespace rg {
     }
 
     bool InputController::initialize() {
-        glfwSetKeyCallback(ControllerManager::get<WindowController>()->handle()->window, glfw_key_callback);
         initialize_key_maps();
         m_keys.resize(KEY_COUNT);
         for (int key = 0; key < m_keys.size(); ++key) {
@@ -167,25 +163,3 @@ namespace rg {
 #include "glfw_key_mapping.h"
     }
 }
-
-static void glfw_key_callback(GLFWwindow *, int key, int, int action, int) {
-    auto input = rg::ControllerManager::get<rg::InputController>();
-    auto &key_data = input->key(rg::g_glfw_to_engine_key[key]);
-    switch (key_data.state()) {
-    case rg::Key::State::Released:
-    case rg::Key::State::JustReleased: {
-        if (action == GLFW_PRESS) {
-            key_data.state() = rg::Key::State::JustPressed;
-        }
-        break;
-    }
-    case rg::Key::State::JustPressed:
-    case rg::Key::State::Pressed: {
-        if (action == GLFW_RELEASE) {
-            key_data.state() = rg::Key::State::JustReleased;
-        }
-        break;
-    }
-    }
-}
-
