@@ -3,25 +3,19 @@
 //
 #include <spdlog/spdlog.h>
 
-#include "App.hpp"
+#include "engine/App.hpp"
+#include "engine/Utils.hpp"
 
 namespace rg {
 
-    bool App::initialize_() {
+    void App::initialize_() {
         spdlog::info("App::initialize_");
-
-        if (!initialize()) {
-            spdlog::error("initialize failed!");
-            return false;
-        }
-
-        return true;
+        initialize();
     }
 
     bool App::loop_() {
         // Engine preparation for a loop_ iteration
         spdlog::info("App::loop_");
-
         // User preparation for a loop iteration
         return loop();
     }
@@ -54,25 +48,35 @@ namespace rg {
         spdlog::info("App::terminate_");
     }
 
-
     int App::run() {
         auto app = create_app();
-
-        if (!app->initialize_()) {
-            spdlog::error("App failed to initialize! Shutdown...");
+        try {
+            app->initialize_();
+            while (app->loop_()) {
+                app->poll_events_();
+                app->update_();
+                app->draw_();
+            }
             app->terminate_();
-            return -1;
+        } catch (const rg::error::UserError &e) {
+            app->handle_error(e);
+            app->terminate_();
+        } catch (const rg::error::EngineError &e) {
+            app->handle_error_(e);
+            app->terminate_();
+        } catch (...) {
+            spdlog::error("Unknown error encountered. Shutting down...");
+            app->terminate_();
         }
-
-        while (app->loop_()) {
-            app->poll_events_();
-            app->update_();
-            app->draw_();
-        }
-
-        app->terminate_();
         return 0;
     }
 
+    void App::handle_error(const rg::error::UserError &e) {
+        spdlog::error(e.report());
+    }
+
+    void App::handle_error_(const rg::error::EngineError &e) {
+        spdlog::error(e.report());
+    }
 
 } // rg

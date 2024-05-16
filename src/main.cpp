@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include "engine/App.hpp"
 #include "spdlog/spdlog.h"
 
 /**
@@ -6,10 +6,9 @@
  */
 class StudentsApp : public rg::App {
 protected:
-    bool initialize() override {
+    void initialize() override {
         spdlog::info("StudentsApp::initialize");
         m_max_loop_count = 3;
-        return true;
     }
 
     bool loop() override {

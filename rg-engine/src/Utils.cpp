@@ -2,24 +2,40 @@
 // Created by spaske00 on 13.5.24..
 //
 
-#include "engine/Utils.h"
+#include "engine/Utils.hpp"
 #include <spdlog/spdlog.h>
 
-namespace rg::utils {
-    void EngineError::guarantee(bool expr, std::string_view msg, std::source_location source_location) {
+namespace rg {
+    void error::guarantee(bool expr, std::string_view msg, std::source_location source_location) {
         if (!expr) {
-           spdlog::error("RG_GUARANTEE failed in file:{:}:{:}. {:}", source_location.file_name(), source_location.line(), msg);
-           exit(EXIT_FAILURE);
+            throw GuaranteeViolation(msg, source_location);
         }
     }
 
-    void EngineError::should_not_reach_here(std::string_view msg, std::source_location source_location) {
-        spdlog::error("RG_SHOULD_NOT_REACH_HERE in file:{:}:{:}. {:}", source_location.file_name(), source_location.line(), msg);
-        exit(EXIT_FAILURE);
+    void error::should_not_reach_here(std::string_view msg, std::source_location source_location) {
+        throw ShouldNotReachHere(msg, source_location);
     }
 
-    void EngineError::unimplemented(std::string_view msg, std::source_location source_location) {
-        spdlog::error("RG_UNIMPLEMENTED in file:{:}:{:}. {:}", source_location.file_name(), source_location.line(), msg);
-        exit(EXIT_FAILURE);
+    void error::unimplemented(std::string_view msg, std::source_location source_location) {
+        throw Unimplemented(msg, source_location);
     }
+
+    std::string error::Unimplemented::report() const {
+        return std::format(
+                "Unimplemented: {}:{}. {}. This error should be used only as a placeholder. Ensure that the code path is implemented or use error::ShouldNotReachHere.",
+                location().file_name(), location().line(), message());
+    }
+
+    std::string error::ShouldNotReachHere::report() const {
+        return std::format(
+                "ShouldNotReach: {}:{}. {}. There is a logic error in the program. The execution should never reach this point.",
+                location().file_name(), location().line(), message());
+    }
+
+    std::string error::GuaranteeViolation::report() const {
+        return std::format(
+                "GuaranteeViolation in: {}:{}. {}. There is a logic error in the program. Please ensure that the Guarantee is never violated.",
+                location().file_name(), location().line(), message());
+    }
+
 }
