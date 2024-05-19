@@ -1,5 +1,5 @@
 //
-// Created by oracle on 13.5.24..
+// Created by spaske00 on 13.5.24..
 //
 
 #ifndef MATF_RG_PROJECT_PLATFORM_H
@@ -57,7 +57,7 @@ namespace rg {
 
         static std::unique_ptr<WindowController> create();
 
-        bool initialize() override;
+        void initialize() override;
 
         void terminate() override;
     };
@@ -249,7 +249,7 @@ namespace rg {
     private:
         static std::unique_ptr<InputController> create();
 
-        bool initialize() override;
+        void initialize() override;
 
         void update() override;
 

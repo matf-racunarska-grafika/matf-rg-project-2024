@@ -45,29 +45,25 @@ namespace rg {
         return provider.get();
     }
 
-    bool ControllerManager::initialize() {
-        for (auto service: m_controllers) {
-            if (!service->initialize()) {
-                spdlog::error("Controller {:} failed to initialize!", service->name());
-                return false;
-            }
-            spdlog::info("{}::initialize", service->name());
+    void ControllerManager::initialize() {
+        for (auto controller: m_controllers) {
+            controller->initialize();
+            spdlog::info("{}::initialize", controller->name());
         }
-        return true;
     }
 
     void ControllerManager::terminate() {
         int size = (int) m_controllers.size() - 1;
         for (int i = std::max(size, 0); i >= 0; --i) {
-            auto service = m_controllers[i];
-            service->terminate();
-            spdlog::info("{}::terminate", service->name());
+            auto controller = m_controllers[i];
+            controller->terminate();
+            spdlog::info("{}::terminate", controller->name());
         }
     }
 
     bool ControllerManager::loop() {
-        for (auto service: m_controllers) {
-            if (!service->loop()) {
+        for (auto controller: m_controllers) {
+            if (!controller->loop()) {
                 return false;
             }
         }
@@ -75,14 +71,14 @@ namespace rg {
     }
 
     void ControllerManager::update() {
-        for (auto service: m_controllers) {
-            service->update();
+        for (auto controller: m_controllers) {
+            controller->update();
         }
     }
 
     void ControllerManager::poll_events() {
-        for (auto service: m_controllers) {
-            service->poll_events();
+        for (auto controller: m_controllers) {
+            controller->poll_events();
         }
     }
 }// namespace rg

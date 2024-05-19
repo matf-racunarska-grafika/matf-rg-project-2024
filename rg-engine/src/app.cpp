@@ -17,6 +17,7 @@ namespace rg {
         controller_manager->register_controller<rg::WindowController>();
         controller_manager->register_controller<rg::InputController>();
 
+        // User initialization
         initialize();
         /*
          * Controller initialization is done after user-defined App::initialize because
@@ -68,9 +69,11 @@ namespace rg {
         } catch (const EngineError &e) {
             app->handle_error_(e);
             app->terminate_();
+            return -1;
         } catch (const UserError &e) {
             app->handle_error(e);
             app->terminate_();
+            return -1;
         }
         return 0;
     }

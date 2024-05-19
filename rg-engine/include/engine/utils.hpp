@@ -83,8 +83,7 @@ namespace rg {
         virtual ~Controller() = default;
 
     private:
-        virtual bool initialize() {
-            return true;
+        virtual void initialize() {
         }
 
         virtual void terminate() {
@@ -126,7 +125,7 @@ namespace rg {
         }
 
     private:
-        bool initialize();
+        void initialize();
 
         void poll_events();
 

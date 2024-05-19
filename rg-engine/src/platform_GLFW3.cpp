@@ -1,5 +1,5 @@
 //
-// Created by oracle on 13.5.24..
+// Created by spaske00 on 13.5.24..
 //
 
 #include "engine/platform.hpp"
@@ -43,19 +43,15 @@ namespace rg {
         return result;
     }
 
-    bool WindowController::initialize() {
+    void WindowController::initialize() {
         m_width = 800;
         m_height = 600;
         m_title = "title";
         rg::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
         m_window_impl->window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
-        if (!m_window_impl->window) {
-            spdlog::error("Failed to create a GLFW window!");
-            return false;
-        }
+        rg::guarantee(m_window_impl->window, "GLFW3 platform failed to create a Window.");
         glfwMakeContextCurrent(m_window_impl->window);
         glfwSetCursorPosCallback(m_window_impl->window, glfw_mouse_callback);
-        return true;
     }
 
     void WindowController::terminate() {
@@ -66,13 +62,12 @@ namespace rg {
         return std::make_unique<InputController>();
     }
 
-    bool InputController::initialize() {
+    void InputController::initialize() {
         initialize_key_maps();
         m_keys.resize(KEY_COUNT);
         for (int key = 0; key < m_keys.size(); ++key) {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
-        return true;
     }
 
     Key &InputController::key(KeyId key) {
@@ -133,15 +128,12 @@ namespace rg {
 
     class PlatformGLFW3 : public PlatformController {
     public:
-        bool initialize() override {
-            if (!glfwInit()) {
-                return false;
-            }
+        void initialize() override {
+            bool glfw_initialized = glfwInit();
+            rg::guarantee(glfw_initialized, "GLFW platform failed to initialize.");
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-            return true;
         }
 
         void terminate() override {
