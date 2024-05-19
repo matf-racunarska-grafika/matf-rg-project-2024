@@ -12,6 +12,9 @@ namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, KEY_COUNT> g_glfw_to_engine_key;
+    static MousePosition g_mouse_position;
+
+    static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
 
     void initialize_key_maps();
 
@@ -51,6 +54,7 @@ namespace rg {
             return false;
         }
         glfwMakeContextCurrent(m_window_impl->window);
+        glfwSetCursorPosCallback(m_window_impl->window, glfw_mouse_callback);
         return true;
     }
 
@@ -123,6 +127,10 @@ namespace rg {
         }
     }
 
+    void InputController::update_mouse() {
+        m_mouse = g_mouse_position;
+    }
+
     class PlatformGLFW3 : public PlatformController {
     public:
         bool initialize() override {
@@ -132,6 +140,7 @@ namespace rg {
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
             return true;
         }
 
@@ -155,4 +164,14 @@ namespace rg {
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
     }
+
+    static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
+        double last_x = g_mouse_position.x;
+        double last_y = g_mouse_position.y;
+        g_mouse_position.dx = x - last_x;
+        g_mouse_position.dy = last_y - y;// because in glfw the top left corner is the (0,0)
+        g_mouse_position.x = x;
+        g_mouse_position.y = y;
+    }
+
 }// namespace rg

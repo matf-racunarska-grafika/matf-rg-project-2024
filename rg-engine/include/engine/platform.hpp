@@ -223,6 +223,13 @@ namespace rg {
         State m_state = State::Released;
     };
 
+    struct MousePosition {
+        double x;
+        double y;
+        double dx;
+        double dy;
+    };
+
     class InputController : public Controller {
         friend class ControllerManager;
 
@@ -235,6 +242,10 @@ namespace rg {
             return "InputController";
         }
 
+        const MousePosition &mouse() const {
+            return m_mouse;
+        }
+
     private:
         static std::unique_ptr<InputController> create();
 
@@ -242,9 +253,13 @@ namespace rg {
 
         void update() override;
 
+        void update_key(Key &key_data);
+
+        void update_mouse();
+
         std::vector<Key> m_keys;
 
-        void update_key(Key &key_data);
+        MousePosition m_mouse;
     };
 
 
