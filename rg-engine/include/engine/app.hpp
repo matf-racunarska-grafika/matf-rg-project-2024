@@ -5,15 +5,11 @@
 #ifndef MATF_RG_ENGINE_ENGINE_H
 #define MATF_RG_ENGINE_ENGINE_H
 
+#include "declarations.hpp"
+#include "utils.hpp"
 #include <memory>
 
 namespace rg {
-    namespace error {
-        class UserError;
-
-        class EngineError;
-    }
-
     class App {
     public:
         /**
@@ -35,7 +31,7 @@ namespace rg {
 
         virtual void terminate() = 0;
 
-        virtual void handle_error(const error::UserError &);
+        virtual void handle_error(const UserError &);
 
     private:
         void initialize_();
@@ -50,7 +46,7 @@ namespace rg {
 
         void terminate_();
 
-        void handle_error_(const error::EngineError &e);
+        void handle_error_(const EngineError &e);
     };
 
     /**
@@ -59,6 +55,6 @@ namespace rg {
      * @return
      */
     std::unique_ptr<App> create_app();
-} // rg
+}// namespace rg
 
-#endif //MATF_RG_ENGINE_ENGINE_H
+#endif//MATF_RG_ENGINE_ENGINE_H
