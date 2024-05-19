@@ -8,6 +8,11 @@
 #include <memory>
 
 namespace rg {
+    namespace error {
+        class UserError;
+
+        class EngineError;
+    }
 
     class App {
     public:
@@ -20,7 +25,7 @@ namespace rg {
         virtual ~App() = default;
 
     protected:
-        virtual bool initialize() = 0;
+        virtual void initialize() = 0;
 
         virtual bool loop() = 0;
 
@@ -30,8 +35,10 @@ namespace rg {
 
         virtual void terminate() = 0;
 
+        virtual void handle_error(const error::UserError &);
+
     private:
-        bool initialize_();
+        void initialize_();
 
         bool loop_();
 
@@ -42,6 +49,8 @@ namespace rg {
         void draw_();
 
         void terminate_();
+
+        void handle_error_(const error::EngineError &e);
     };
 
     /**
