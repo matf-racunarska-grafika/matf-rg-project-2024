@@ -3,10 +3,10 @@
 //
 #include <spdlog/spdlog.h>
 
-#include "declarations.hpp"
 #include "engine/app.hpp"
 #include "engine/platform.hpp"
 #include "engine/utils.hpp"
+#include "engine/core.hpp"
 
 namespace rg {
     void App::initialize_() {

@@ -12,11 +12,14 @@ namespace rg {
 
     class InputController;
 
+    class Controller;
+
     class ControllerManager;
 
     class Configuration;
 
     class EngineError;
+
     class UserError;
 };// namespace rg
 
