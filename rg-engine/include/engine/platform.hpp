@@ -5,8 +5,9 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include "engine/utils.hpp"
+#include "engine/core.hpp"
 #include <array>
 #include <memory>
 #include <string>
@@ -202,7 +203,9 @@ namespace rg {
         friend class InputController;
 
     public:
-        enum class State { Released, JustPressed, Pressed, JustReleased };
+        enum class State {
+            Released, JustPressed, Pressed, JustReleased
+        };
 
         State &state() {
             return m_state;

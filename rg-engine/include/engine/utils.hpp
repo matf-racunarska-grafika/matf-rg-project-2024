@@ -13,11 +13,11 @@
 
 namespace rg {
 
-    void guarantee(bool expr, std::string_view msg,
-                   std::source_location source_location = std::source_location::current());
+    void
+    guarantee(bool expr, std::string_view msg, std::source_location source_location = std::source_location::current());
 
-    void should_not_reach_here(std::string_view msg,
-                               std::source_location source_location = std::source_location::current());
+    void
+    should_not_reach_here(std::string_view msg, std::source_location source_location = std::source_location::current());
 
     void unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
 
@@ -25,7 +25,7 @@ namespace rg {
     class Error : public std::exception {
     public:
         explicit Error(std::string_view message, std::source_location location = std::source_location::current())
-            : m_message(message), m_location(location) {
+                : m_message(message), m_location(location) {
         }
 
         std::string_view message() const {
@@ -74,69 +74,6 @@ namespace rg {
         using Error::Error;
     };
 
-    class Controller {
-        friend class ControllerManager;
-
-    public:
-        virtual std::string_view name() const = 0;
-
-        virtual ~Controller() = default;
-
-    private:
-        virtual void initialize() {
-        }
-
-        virtual void terminate() {
-        }
-
-        virtual bool loop() {
-            return true;
-        }
-
-        virtual void update() {
-        }
-
-        virtual void poll_events() {
-        }
-    };
-
-    class ControllerManager {
-        friend class App;
-
-    public:
-        static ControllerManager *singleton();
-
-        template<typename TController>
-        static TController *get() {
-            static std::unique_ptr<TController> controller = TController::create();
-            return controller.get();
-        }
-
-        template<typename TController>
-        void register_controller(std::source_location location = std::source_location::current()) {
-            auto new_controller = ControllerManager::get<TController>();
-            for (auto existing_controller: m_controllers) {
-                rg::guarantee(existing_controller != new_controller,
-                              std::format("Trying to register Controller: `{}` twice in file: {}:{}. Please make "
-                                          "sure that every Controller is registered exactly once.",
-                                          new_controller->name(), location.file_name(), location.line()));
-            }
-            m_controllers.push_back(new_controller);
-        }
-
-    private:
-        void initialize();
-
-        void poll_events();
-
-        void terminate();
-
-        bool loop();
-
-        void update();
-
-        std::vector<Controller *> m_controllers;
-    };
 
 }// namespace rg
 
