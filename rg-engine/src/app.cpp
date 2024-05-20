@@ -10,6 +10,7 @@
 
 namespace rg {
     void App::initialize_() {
+        Configuration::instance()->initialize();
 
         // register engine services
         auto controller_manager = ControllerManager::singleton();
@@ -74,6 +75,9 @@ namespace rg {
             app->handle_error(e);
             app->terminate_();
             return -1;
+        } catch (const std::exception& e) {
+            spdlog::error(e.what());
+            app->terminate_();
         }
         return 0;
     }

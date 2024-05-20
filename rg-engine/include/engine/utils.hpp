@@ -9,26 +9,26 @@
 #include <memory>
 #include <source_location>
 #include <vector>
-
+#include <nlohmann/json.hpp>
 
 namespace rg {
 
     void
-    guarantee(bool expr, std::string_view msg, std::source_location source_location = std::source_location::current());
+    guarantee(bool expr, std::string msg, std::source_location source_location = std::source_location::current());
 
     void
-    should_not_reach_here(std::string_view msg, std::source_location source_location = std::source_location::current());
+    should_not_reach_here(std::string msg, std::source_location source_location = std::source_location::current());
 
-    void unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
+    void unimplemented(std::string msg, std::source_location source_location = std::source_location::current());
 
 
     class Error : public std::exception {
     public:
-        explicit Error(std::string_view message, std::source_location location = std::source_location::current())
-                : m_message(message), m_location(location) {
+        explicit Error(std::string message, std::source_location location = std::source_location::current())
+                : m_message(std::move(message)), m_location(location) {
         }
 
-        std::string_view message() const {
+        const std::string& message() const {
             return m_message;
         }
 
@@ -39,7 +39,7 @@ namespace rg {
         virtual std::string report() const = 0;
 
     private:
-        std::string_view m_message;
+        std::string m_message;
         std::source_location m_location;
     };
 
@@ -69,9 +69,43 @@ namespace rg {
         std::string report() const override;
     };
 
+    class FileNotFoundError : public EngineError {
+    public:
+        explicit FileNotFoundError(std::string_view path, std::string message, std::source_location location = std::source_location::current())
+        : m_path(path), EngineError(std::move(message), location) {}
+
+        std::string report() const override;
+
+        std::string_view file_path() const;
+    private:
+        std::string_view m_path;
+    };
+
+    class ConfigurationError : public EngineError {
+    public:
+        using EngineError::EngineError;
+
+        std::string report() const override;
+    };
+
     class UserError : public Error {
     public:
         using Error::Error;
+    };
+
+    class Configuration {
+        friend class App;
+    public:
+        using json = nlohmann::json;
+
+        static Configuration* instance();
+
+        const json& config() const;
+
+    private:
+        void initialize();
+
+        json m_config;
     };
 
 

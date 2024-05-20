@@ -43,9 +43,10 @@ namespace rg {
     }
 
     void WindowController::initialize() {
-        m_width = 800;
-        m_height = 600;
-        m_title = "title";
+        const Configuration::json& config = Configuration::instance()->config();
+        m_width = config["window"]["width"];
+        m_height = config["window"]["height"];
+        m_title = config["window"]["title"];
         rg::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
         m_window_impl->window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
         rg::guarantee(m_window_impl->window, "GLFW3 platform failed to create a Window.");
