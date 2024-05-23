@@ -34,6 +34,6 @@ namespace rg {
     }
 }// namespace rg
 
-int main() {
-    return rg::App::run();
+int main(int argc, char** argv) {
+    return rg::App::run(argc, argv);
 }

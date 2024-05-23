@@ -16,7 +16,7 @@ namespace rg {
          * This is the only function that the user calls.
          * @return 0 if app terminated normally, -1 otherwise.
          */
-        static int run();
+        static int run(int argc, char **argv);
 
         virtual ~App() = default;
 
@@ -34,7 +34,7 @@ namespace rg {
         virtual void handle_error(const UserError &);
 
     private:
-        void initialize_();
+        void initialize_(int argc, char **argv);
 
         bool loop_();
 

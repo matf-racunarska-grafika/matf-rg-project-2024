@@ -10,102 +10,65 @@
 #include <source_location>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include "core.hpp"
 
 namespace rg {
 
-    void
-    guarantee(bool expr, std::string msg, std::source_location source_location = std::source_location::current());
+    class Configuration : public Controller {
+        friend class ControllerManager;
 
-    void
-    should_not_reach_here(std::string msg, std::source_location source_location = std::source_location::current());
-
-    void unimplemented(std::string msg, std::source_location source_location = std::source_location::current());
-
-
-    class Error : public std::exception {
-    public:
-        explicit Error(std::string message, std::source_location location = std::source_location::current())
-                : m_message(std::move(message)), m_location(location) {
-        }
-
-        const std::string& message() const {
-            return m_message;
-        }
-
-        std::source_location location() const {
-            return m_location;
-        }
-
-        virtual std::string report() const = 0;
-
-    private:
-        std::string m_message;
-        std::source_location m_location;
-    };
-
-    class EngineError : public Error {
-    public:
-        using Error::Error;
-    };
-
-    class Unimplemented : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class ShouldNotReachHere : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class GuaranteeViolation : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class FileNotFoundError : public EngineError {
-    public:
-        explicit FileNotFoundError(std::string_view path, std::string message, std::source_location location = std::source_location::current())
-        : m_path(path), EngineError(std::move(message), location) {}
-
-        std::string report() const override;
-
-        std::string_view file_path() const;
-    private:
-        std::string_view m_path;
-    };
-
-    class ConfigurationError : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class UserError : public Error {
-    public:
-        using Error::Error;
-    };
-
-    class Configuration {
-        friend class App;
     public:
         using json = nlohmann::json;
 
-        static Configuration* instance();
+        const json &config() const;
 
-        const json& config() const;
+        std::string_view name() const override;
 
     private:
-        void initialize();
+        void initialize() override;
+
+        static std::unique_ptr<Configuration> create();
 
         json m_config;
+    };
+
+    class ArgParser {
+        friend class App;
+
+    public:
+        static ArgParser *instance();
+
+        template<typename T>
+        std::optional<T> arg(std::string_view name) {
+            std::string arg_value = get_arg_value(name);
+            if (arg_value.empty()) {
+                return {};
+            }
+            std::size_t parsed = 0;
+            if constexpr (std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, int32_t>) {
+                return std::stoi(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, long long> || std::is_same_v<T, int64_t>) {
+                return std::stoll(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, float>) {
+                return std::stof(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, double>) {
+                return std::stod(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, std::string>) {
+                return arg_value;
+            } else {
+                static_assert(false, "This type is not supported!");
+            }
+        }
+
+    private:
+        void initialize(int argc, char **argv);
+
+        std::string get_arg_value(std::string_view arg_name);
+
+        ArgParser() = default;
+
+        int m_argc = 0;
+        char **m_argv = nullptr;
     };
 
 

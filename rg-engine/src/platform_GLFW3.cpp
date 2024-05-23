@@ -4,7 +4,7 @@
 
 #include "engine/platform.hpp"
 #include "engine/utils.hpp"
-
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
@@ -43,7 +43,7 @@ namespace rg {
     }
 
     void WindowController::initialize() {
-        const Configuration::json& config = Configuration::instance()->config();
+        const Configuration::json &config = ControllerManager::get<Configuration>()->config();
         m_width = config["window"]["width"];
         m_height = config["window"]["height"];
         m_title = config["window"]["title"];
@@ -52,6 +52,8 @@ namespace rg {
         rg::guarantee(m_window_impl->window, "GLFW3 platform failed to create a Window.");
         glfwMakeContextCurrent(m_window_impl->window);
         glfwSetCursorPosCallback(m_window_impl->window, glfw_mouse_callback);
+        rg::guarantee(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "GLAD failed to init!");
+
     }
 
     void WindowController::terminate() {
@@ -81,7 +83,8 @@ namespace rg {
     }
 
     void InputController::update_key(Key &key_data) {
-        int glfw_key_code = g_engine_to_glfw_key[key_data.key()];
+        int engine_key_code = key_data.key();
+        int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
         auto window = ControllerManager::get<WindowController>()->handle()->window;
         int action = glfwGetKey(window, glfw_key_code);
         switch (key_data.state()) {
@@ -116,6 +119,9 @@ namespace rg {
         }
     }
 
+    void InputController::poll_events() {
+    }
+
     void InputController::update() {
         for (int i = 0; i < KEY_COUNT; ++i) {
             update_key(key(static_cast<KeyId>(i)));
@@ -136,12 +142,12 @@ namespace rg {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         }
 
-        void terminate() override {
-            glfwTerminate();
-        }
-
         void poll_events() override {
             glfwPollEvents();
+        }
+
+        void terminate() override {
+            glfwTerminate();
         }
 
         std::string_view name() const override {

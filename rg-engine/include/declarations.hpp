@@ -18,9 +18,12 @@ namespace rg {
 
     class Configuration;
 
+    class ArgParser;
+
     class EngineError;
 
     class UserError;
+
 };// namespace rg
 
 #endif//MATF_RG_PROJECT_DECLARATIONS_HPP

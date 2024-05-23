@@ -9,11 +9,12 @@
 #include "engine/core.hpp"
 
 namespace rg {
-    void App::initialize_() {
-        Configuration::instance()->initialize();
+    void App::initialize_(int argc, char **argv) {
+        ArgParser::instance()->initialize(argc, argv);
 
         // register engine services
         auto controller_manager = ControllerManager::singleton();
+        controller_manager->register_controller<rg::Configuration>();
         controller_manager->register_controller<rg::PlatformController>();
         controller_manager->register_controller<rg::WindowController>();
         controller_manager->register_controller<rg::InputController>();
@@ -56,11 +57,10 @@ namespace rg {
         rg::ControllerManager::singleton()->terminate();
     }
 
-
-    int App::run() {
+    int App::run(int argc, char **argv) {
         auto app = create_app();
         try {
-            app->initialize_();
+            app->initialize_(argc, argv);
             while (app->loop_()) {
                 app->poll_events_();
                 app->update_();
@@ -75,7 +75,7 @@ namespace rg {
             app->handle_error(e);
             app->terminate_();
             return -1;
-        } catch (const std::exception& e) {
+        } catch (const std::exception &e) {
             spdlog::error(e.what());
             app->terminate_();
         }

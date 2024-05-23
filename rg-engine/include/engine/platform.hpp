@@ -5,7 +5,6 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <GLFW/glfw3.h>
 #include "engine/utils.hpp"
 #include "engine/core.hpp"
 #include <array>
@@ -256,6 +255,8 @@ namespace rg {
 
         void update() override;
 
+        void poll_events() override;
+
         void update_key(Key &key_data);
 
         void update_mouse();
@@ -263,6 +264,7 @@ namespace rg {
         std::vector<Key> m_keys;
 
         MousePosition m_mouse;
+
     };
 
 
