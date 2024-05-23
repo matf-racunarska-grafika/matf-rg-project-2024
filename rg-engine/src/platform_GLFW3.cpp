@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
 
+#include <utility>
+
 namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
@@ -18,53 +20,37 @@ namespace rg {
     void initialize_key_maps();
 
     struct WindowImpl {
-        GLFWwindow *window;
+        GLFWwindow *handle;
+        int width;
+        int height;
+        std::string title;
+
+        WindowImpl(GLFWwindow *handle, int width, int height, std::string title) : handle(handle), width(width),
+                                                                                          height(height), title(std::move(title)) {
+        }
     };
 
-    std::string_view Key::to_string() const {
-        switch (m_state) {
-        case Key::State::Released: return "Released";
-        case Key::State::JustPressed: return "JustPressed";
-        case Key::State::Pressed: return "Pressed";
-        case Key::State::JustReleased: return "JustReleased";
-        default: return "UNIMPLEMENTED";
-        }
-    }
+    void PlatformController::initialize() {
+        bool glfw_initialized = glfwInit();
+        rg::guarantee(glfw_initialized, "GLFW platform failed to initialize.");
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-    WindowController::~WindowController() {
-        delete m_window_impl;
-        m_window_impl = nullptr;
-    }
-
-    std::unique_ptr<WindowController> WindowController::create() {
-        auto result = std::make_unique<WindowController>();
-        result->m_window_impl = new WindowImpl;
-        return result;
-    }
-
-    void WindowController::initialize() {
         const Configuration::json &config = ControllerManager::get<Configuration>()->config();
-        m_width = config["window"]["width"];
-        m_height = config["window"]["height"];
-        m_title = config["window"]["title"];
-        rg::guarantee(m_window_impl != nullptr, "Must instantiate m_window_impl first");
-        m_window_impl->window = glfwCreateWindow(m_width, m_height, m_title.c_str(), nullptr, nullptr);
-        rg::guarantee(m_window_impl->window, "GLFW3 platform failed to create a Window.");
-        glfwMakeContextCurrent(m_window_impl->window);
-        glfwSetCursorPosCallback(m_window_impl->window, glfw_mouse_callback);
+        int window_width = config["window"]["width"];
+        int window_height = config["window"]["height"];
+        std::string window_title = config["window"]["title"];
+        GLFWwindow *handle = glfwCreateWindow(window_width, window_height,
+                                              window_title.c_str(), nullptr, nullptr);
+        rg::guarantee(handle, "GLFW3 platform failed to create a Window.");
+        m_window = new WindowImpl(handle, window_width, window_height, window_title);
+        rg::guarantee(m_window != nullptr, "Must instantiate m_window_impl first");
+
+        glfwMakeContextCurrent(m_window->handle);
+        glfwSetCursorPosCallback(m_window->handle, glfw_mouse_callback);
         rg::guarantee(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "GLAD failed to init!");
 
-    }
-
-    void WindowController::terminate() {
-        glfwDestroyWindow(m_window_impl->window);
-    }
-
-    std::unique_ptr<InputController> InputController::create() {
-        return std::make_unique<InputController>();
-    }
-
-    void InputController::initialize() {
         initialize_key_maps();
         m_keys.resize(KEY_COUNT);
         for (int key = 0; key < m_keys.size(); ++key) {
@@ -72,20 +58,33 @@ namespace rg {
         }
     }
 
-    Key &InputController::key(KeyId key) {
-        guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
-        return m_keys[key];
+    void PlatformController::terminate() {
+        glfwDestroyWindow(m_window->handle);
+        delete m_window;
+        m_window = nullptr;
+        glfwTerminate();
     }
 
-    const Key &InputController::key(KeyId key) const {
-        guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
-        return m_keys[key];
+
+    bool PlatformController::loop() {
+        return true;
     }
 
-    void InputController::update_key(Key &key_data) {
+    void PlatformController::poll_events() {
+        glfwPollEvents();
+    }
+
+    void PlatformController::update() {
+        m_mouse = g_mouse_position;
+        for (int i = 0; i < KEY_COUNT; ++i) {
+            update_key(key(static_cast<KeyId>(i)));
+        }
+    }
+
+    void PlatformController::update_key(Key &key_data) {
         int engine_key_code = key_data.key();
         int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
-        auto window = ControllerManager::get<WindowController>()->handle()->window;
+        auto window = m_window->handle;
         int action = glfwGetKey(window, glfw_key_code);
         switch (key_data.state()) {
         case rg::Key::State::Released: {
@@ -119,49 +118,56 @@ namespace rg {
         }
     }
 
-    void InputController::poll_events() {
-    }
 
-    void InputController::update() {
-        for (int i = 0; i < KEY_COUNT; ++i) {
-            update_key(key(static_cast<KeyId>(i)));
+    std::string_view Key::to_string() const {
+        switch (m_state) {
+        case Key::State::Released: return "Released";
+        case Key::State::JustPressed: return "JustPressed";
+        case Key::State::Pressed: return "Pressed";
+        case Key::State::JustReleased: return "JustReleased";
+        default: return "UNIMPLEMENTED";
         }
     }
 
-    void InputController::update_mouse() {
-        m_mouse = g_mouse_position;
+    Key &PlatformController::key(KeyId key) {
+        rg::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        return m_keys[key];
     }
 
-    class PlatformGLFW3 : public PlatformController {
-    public:
-        void initialize() override {
-            bool glfw_initialized = glfwInit();
-            rg::guarantee(glfw_initialized, "GLFW platform failed to initialize.");
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        }
+    const Key &PlatformController::key(KeyId key) const {
+        rg::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        return m_keys[key];
+    }
 
-        void poll_events() override {
-            glfwPollEvents();
-        }
-
-        void terminate() override {
-            glfwTerminate();
-        }
-
-        std::string_view name() const override {
-            return "PlatformGLFW3";
-        }
-    };
 
     std::unique_ptr<PlatformController> PlatformController::create() {
-        return std::make_unique<PlatformGLFW3>();
+        return std::make_unique<PlatformController>();
+    }
+
+    const MousePosition &PlatformController::mouse() const {
+        return m_mouse;
+    }
+
+    std::string_view PlatformController::name() const {
+        return "PlatformGLFW3Controller";
+    }
+
+    int PlatformController::window_width() const {
+        return m_window->width;
+    }
+
+    int PlatformController::window_height() const {
+        return m_window->height;
+    }
+
+    const std::string &PlatformController::window_title() const {
+        return m_window->title;
     }
 
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
     }
+    
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
         double last_x = g_mouse_position.x;
@@ -171,5 +177,6 @@ namespace rg {
         g_mouse_position.x = x;
         g_mouse_position.y = y;
     }
+
 
 }// namespace rg
