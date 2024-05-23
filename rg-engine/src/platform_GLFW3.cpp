@@ -11,7 +11,6 @@
 namespace rg {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
-    static std::array<KeyId, KEY_COUNT> g_glfw_to_engine_key;
     static MousePosition g_mouse_position;
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
