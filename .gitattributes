@@ -1,0 +1,5 @@
+libs/** linguist-vendored=true
+rg-engine/**/*.hpp linguist-language=c++
+rg-engine/**/*.h linguist-language=c++
+src/**/*.hpp linguist-language=c++
+src/**/*.h linguist-language=c++
