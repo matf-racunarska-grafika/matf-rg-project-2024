@@ -16,8 +16,6 @@ namespace rg {
         auto controller_manager = ControllerManager::singleton();
         controller_manager->register_controller<rg::Configuration>();
         controller_manager->register_controller<rg::PlatformController>();
-        controller_manager->register_controller<rg::WindowController>();
-        controller_manager->register_controller<rg::InputController>();
 
         // User initialization
         initialize();
