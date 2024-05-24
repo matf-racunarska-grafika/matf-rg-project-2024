@@ -199,8 +199,10 @@ namespace rg {
         std::string_view name() const override;
 
         int window_width() const;
+
         int window_height() const;
-        const std::string& window_title() const;
+
+        const std::string &window_title() const;
 
     private:
         void initialize() override;

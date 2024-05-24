@@ -10,9 +10,6 @@
 
 namespace rg {
 
-    const Configuration::json &Configuration::config() const {
-        return m_config;
-    }
 
     void Configuration::initialize() {
         auto config_path = ArgParser::instance()->arg<std::string>("--configuration");
@@ -33,13 +30,15 @@ namespace rg {
         }
     }
 
-    std::unique_ptr<Configuration> Configuration::create() {
-        return std::make_unique<Configuration>();
+    Configuration *Configuration::instance() {
+        static Configuration configuration;
+        return &configuration;
     }
 
-    std::string_view Configuration::name() const {
-        return "Configuration";
+    const Configuration::json &Configuration::config() {
+        return Configuration::instance()->m_config;
     }
+
 
     std::string ConfigurationError::report() const {
         return std::format("ConfigurationError {}:{}. {}.", location().file_name(), location().line(), message());

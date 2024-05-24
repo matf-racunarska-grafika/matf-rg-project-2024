@@ -26,7 +26,8 @@ namespace rg {
         std::string title;
 
         WindowImpl(GLFWwindow *handle, int width, int height, std::string title) : handle(handle), width(width),
-                                                                                          height(height), title(std::move(title)) {
+                                                                                   height(height),
+                                                                                   title(std::move(title)) {
         }
     };
 
@@ -37,12 +38,11 @@ namespace rg {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-        const Configuration::json &config = ControllerManager::get<Configuration>()->config();
+        const Configuration::json &config = Configuration::config();
         int window_width = config["window"]["width"];
         int window_height = config["window"]["height"];
         std::string window_title = config["window"]["title"];
-        GLFWwindow *handle = glfwCreateWindow(window_width, window_height,
-                                              window_title.c_str(), nullptr, nullptr);
+        GLFWwindow *handle = glfwCreateWindow(window_width, window_height, window_title.c_str(), nullptr, nullptr);
         rg::guarantee(handle, "GLFW3 platform failed to create a Window.");
         m_window = new WindowImpl(handle, window_width, window_height, window_title);
         rg::guarantee(m_window != nullptr, "Must instantiate m_window_impl first");
@@ -167,7 +167,7 @@ namespace rg {
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
     }
-    
+
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
         double last_x = g_mouse_position.x;

@@ -11,10 +11,9 @@
 namespace rg {
     void App::initialize_(int argc, char **argv) {
         ArgParser::instance()->initialize(argc, argv);
-
+        Configuration::instance()->initialize();
         // register engine services
         auto controller_manager = ControllerManager::singleton();
-        controller_manager->register_controller<rg::Configuration>();
         controller_manager->register_controller<rg::PlatformController>();
 
         // User initialization

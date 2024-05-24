@@ -14,20 +14,18 @@
 
 namespace rg {
 
-    class Configuration : public Controller {
-        friend class ControllerManager;
+    class Configuration {
+        friend class App;
 
     public:
         using json = nlohmann::json;
 
-        const json &config() const;
+        static const json &config();
 
-        std::string_view name() const override;
+        static Configuration *instance();
 
     private:
-        void initialize() override;
-
-        static std::unique_ptr<Configuration> create();
+        void initialize();
 
         json m_config;
     };
