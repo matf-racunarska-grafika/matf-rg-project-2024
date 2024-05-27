@@ -17,10 +17,14 @@ add_subdirectory(libs/glfw)
 # glad
 add_subdirectory(libs/glad)
 
+# json
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(libs/json)
+
 # rg-include
 add_subdirectory(rg-engine)
 
-set(LIBS glfw glad OpenGL::GL spdlog::spdlog rg-engine)
+set(LIBS glfw glad OpenGL::GL spdlog::spdlog rg-engine nlohmann_json::nlohmann_json)
 
 ############## Sources ###############
 

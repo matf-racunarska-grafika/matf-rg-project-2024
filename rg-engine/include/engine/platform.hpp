@@ -5,7 +5,6 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <GLFW/glfw3.h>
 #include "engine/utils.hpp"
 #include "engine/core.hpp"
 #include <array>
@@ -14,54 +13,6 @@
 #include <vector>
 
 namespace rg {
-
-    class PlatformController : public Controller {
-        friend class ControllerManager;
-
-    private:
-        static std::unique_ptr<PlatformController> create();
-    };
-
-    class WindowImpl;
-
-    class WindowController : public Controller {
-        friend class ControllerManager;
-
-    public:
-        int width() const {
-            return m_width;
-        }
-
-        int height() const {
-            return m_height;
-        }
-
-        const std::string &title() {
-            return m_title;
-        }
-
-        const WindowImpl *handle() const {
-            return m_window_impl;
-        }
-
-        std::string_view name() const override {
-            return "WindowController";
-        }
-
-        ~WindowController() override;
-
-    private:
-        WindowImpl *m_window_impl = nullptr;
-        int m_width = 0;
-        int m_height = 0;
-        std::string m_title;
-
-        static std::unique_ptr<WindowController> create();
-
-        void initialize() override;
-
-        void terminate() override;
-    };
 
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
@@ -200,7 +151,7 @@ namespace rg {
     };
 
     class Key {
-        friend class InputController;
+        friend class PlatformController;
 
     public:
         enum class State {
@@ -233,7 +184,9 @@ namespace rg {
         double dy;
     };
 
-    class InputController : public Controller {
+    class WindowImpl;
+
+    class PlatformController : public Controller {
         friend class ControllerManager;
 
     public:
@@ -241,31 +194,39 @@ namespace rg {
 
         Key &key(KeyId key);
 
-        std::string_view name() const override {
-            return "InputController";
-        }
+        const MousePosition &mouse() const;
 
-        const MousePosition &mouse() const {
-            return m_mouse;
-        }
+        std::string_view name() const override;
+
+        int window_width() const;
+
+        int window_height() const;
+
+        const std::string &window_title() const;
 
     private:
-        static std::unique_ptr<InputController> create();
-
         void initialize() override;
 
         void update() override;
 
-        void update_key(Key &key_data);
+        void terminate() override;
 
-        void update_mouse();
+        bool loop() override;
 
+        void poll_events() override;
+
+        static std::unique_ptr<PlatformController> create();
+
+        WindowImpl *m_window;
+        MousePosition m_mouse;
         std::vector<Key> m_keys;
 
-        MousePosition m_mouse;
+        void update_key(Key &key_data);
+
     };
 
 
 }// namespace rg
 
 #endif//MATF_RG_PROJECT_PLATFORM_H
+

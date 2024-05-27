@@ -9,69 +9,64 @@
 #include <memory>
 #include <source_location>
 #include <vector>
-
+#include <nlohmann/json.hpp>
+#include "core.hpp"
 
 namespace rg {
 
-    void
-    guarantee(bool expr, std::string_view msg, std::source_location source_location = std::source_location::current());
+    class Configuration {
+        friend class App;
 
-    void
-    should_not_reach_here(std::string_view msg, std::source_location source_location = std::source_location::current());
-
-    void unimplemented(std::string_view msg, std::source_location source_location = std::source_location::current());
-
-
-    class Error : public std::exception {
     public:
-        explicit Error(std::string_view message, std::source_location location = std::source_location::current())
-                : m_message(message), m_location(location) {
-        }
+        using json = nlohmann::json;
 
-        std::string_view message() const {
-            return m_message;
-        }
+        static const json &config();
 
-        std::source_location location() const {
-            return m_location;
-        }
-
-        virtual std::string report() const = 0;
+        static Configuration *instance();
 
     private:
-        std::string_view m_message;
-        std::source_location m_location;
+        void initialize();
+
+        json m_config;
     };
 
-    class EngineError : public Error {
+    class ArgParser {
+        friend class App;
+
     public:
-        using Error::Error;
-    };
+        static ArgParser *instance();
 
-    class Unimplemented : public EngineError {
-    public:
-        using EngineError::EngineError;
+        template<typename T>
+        std::optional<T> arg(std::string_view name) {
+            std::string arg_value = get_arg_value(name);
+            if (arg_value.empty()) {
+                return {};
+            }
+            std::size_t parsed = 0;
+            if constexpr (std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, int32_t>) {
+                return std::stoi(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, long long> || std::is_same_v<T, int64_t>) {
+                return std::stoll(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, float>) {
+                return std::stof(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, double>) {
+                return std::stod(arg_value, &parsed);
+            } else if constexpr (std::is_same_v<T, std::string>) {
+                return arg_value;
+            } else {
+                static_assert(false, "This type is not supported!");
+            }
+        }
 
-        std::string report() const override;
-    };
+    private:
+        void initialize(int argc, char **argv);
 
-    class ShouldNotReachHere : public EngineError {
-    public:
-        using EngineError::EngineError;
+        std::string get_arg_value(std::string_view arg_name);
 
-        std::string report() const override;
-    };
+        ArgParser() = default;
 
-    class GuaranteeViolation : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class UserError : public Error {
-    public:
-        using Error::Error;
+        int m_argc = 0;
+        char **m_argv = nullptr;
     };
 
 
