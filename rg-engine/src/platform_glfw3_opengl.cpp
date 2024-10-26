@@ -6,7 +6,6 @@
 #include "engine/utils.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
 
 #include <utility>
 
@@ -24,7 +23,6 @@ namespace rg {
         int width;
         int height;
         std::string title;
-
         WindowImpl(GLFWwindow *handle, int width, int height, std::string title) : handle(handle), width(width),
                                                                                    height(height),
                                                                                    title(std::move(title)) {
@@ -38,7 +36,7 @@ namespace rg {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-        const Configuration::json &config = Configuration::config();
+        Configuration::json &config = Configuration::config();
         int window_width = config["window"]["width"];
         int window_height = config["window"]["height"];
         std::string window_title = config["window"]["title"];

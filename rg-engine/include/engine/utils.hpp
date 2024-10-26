@@ -20,7 +20,7 @@ namespace rg {
     public:
         using json = nlohmann::json;
 
-        static const json &config();
+        static json &config();
 
         static Configuration *instance();
 

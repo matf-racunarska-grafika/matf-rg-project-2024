@@ -3,7 +3,6 @@
 //
 
 #include <fstream>
-#include <utility>
 #include "engine/utils.hpp"
 #include "spdlog/spdlog.h"
 #include "engine/errors.hpp"
@@ -35,7 +34,7 @@ namespace rg {
         return &configuration;
     }
 
-    const Configuration::json &Configuration::config() {
+    Configuration::json &Configuration::config() {
         return Configuration::instance()->m_config;
     }
 

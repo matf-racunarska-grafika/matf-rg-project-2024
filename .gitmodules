@@ -6,7 +6,3 @@
 	path = libs/spdlog
 	url = https://github.com/gabime/spdlog
 	shallow = true
-[submodule "libs/json"]
-	path = libs/json
-	url = git@github.com:nlohmann/json.git
-	shallow = true
