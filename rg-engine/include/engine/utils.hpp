@@ -9,14 +9,16 @@
 #include <memory>
 #include <source_location>
 #include <vector>
-#include <nlohmann/json.hpp>
+
+#include <json.hpp>
+
 #include "core.hpp"
+
 
 namespace rg {
 
     class Configuration {
         friend class App;
-
     public:
         using json = nlohmann::json;
 
