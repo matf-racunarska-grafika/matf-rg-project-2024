@@ -12,9 +12,10 @@ namespace rg {
     void App::initialize_(int argc, char **argv) {
         ArgParser::instance()->initialize(argc, argv);
         Configuration::instance()->initialize();
-        // register engine services
+
+        // register engine controllers
         auto controller_manager = ControllerManager::singleton();
-        controller_manager->register_controller<rg::PlatformController>();
+        controller_manager->register_controller<PlatformController>();
 
         // User initialization
         initialize();
@@ -41,7 +42,7 @@ namespace rg {
     }
 
     void App::update_() {
-        rg::ControllerManager::singleton()->update();
+        ControllerManager::singleton()->update();
         update();
     }
 
@@ -51,7 +52,7 @@ namespace rg {
 
     void App::terminate_() {
         terminate();
-        rg::ControllerManager::singleton()->terminate();
+        ControllerManager::singleton()->terminate();
     }
 
     int App::run(int argc, char **argv) {
