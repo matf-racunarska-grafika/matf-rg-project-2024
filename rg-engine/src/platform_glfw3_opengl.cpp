@@ -31,7 +31,7 @@ namespace rg {
 
     void PlatformController::initialize() {
         bool glfw_initialized = glfwInit();
-        rg::guarantee(glfw_initialized, "GLFW platform failed to initialize.");
+        RG_GUARANTEE(glfw_initialized, "GLFW platform failed to initialize.");
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -41,13 +41,13 @@ namespace rg {
         int window_height = config["window"]["height"];
         std::string window_title = config["window"]["title"];
         GLFWwindow *handle = glfwCreateWindow(window_width, window_height, window_title.c_str(), nullptr, nullptr);
-        rg::guarantee(handle, "GLFW3 platform failed to create a Window.");
+        RG_GUARANTEE(handle, "GLFW3 platform failed to create a Window.");
         m_window = new WindowImpl(handle, window_width, window_height, window_title);
-        rg::guarantee(m_window != nullptr, "Must instantiate m_window_impl first");
+        RG_GUARANTEE(m_window != nullptr, "Must instantiate m_window_impl first");
 
         glfwMakeContextCurrent(m_window->handle);
         glfwSetCursorPosCallback(m_window->handle, glfw_mouse_callback);
-        rg::guarantee(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "GLAD failed to init!");
+        RG_GUARANTEE(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress), "GLAD failed to init!");
 
         initialize_key_maps();
         m_keys.resize(KEY_COUNT);
@@ -63,9 +63,8 @@ namespace rg {
         glfwTerminate();
     }
 
-
     bool PlatformController::loop() {
-        return true;
+        return !glfwWindowShouldClose(m_window->handle);
     }
 
     void PlatformController::poll_events() {
@@ -77,6 +76,8 @@ namespace rg {
         for (int i = 0; i < KEY_COUNT; ++i) {
             update_key(key(static_cast<KeyId>(i)));
         }
+
+        glfwSwapBuffers(m_window->handle);
     }
 
     void PlatformController::update_key(Key &key_data) {
@@ -128,12 +129,12 @@ namespace rg {
     }
 
     Key &PlatformController::key(KeyId key) {
-        rg::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 
     const Key &PlatformController::key(KeyId key) const {
-        rg::guarantee(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
+        RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
 

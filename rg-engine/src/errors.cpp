@@ -20,25 +20,26 @@ namespace rg {
 
     std::string Unimplemented::report() const {
         return std::format("Unimplemented: {}:{}. {}. This error should be used only as a placeholder. Ensure that the "
-                           "code path is implemented or use ShouldNotReachHere.", location().file_name(),
-                           location().line(), message());
+                           "code path is implemented or use ShouldNotReachHere.",
+                           location().file_name(), location().line(), message());
     }
 
     std::string ShouldNotReachHere::report() const {
         return std::format("ShouldNotReach: {}:{}. {}. There is a logic error in the program. The execution should "
-                           "never reach this point.", location().file_name(), location().line(), message());
+                           "never reach this point.",
+                           location().file_name(), location().line(), message());
     }
 
     std::string GuaranteeViolation::report() const {
         return std::format("GuaranteeViolation in: {}:{}. {}. There is a logic error in the program. Please ensure "
-                           "that the Guarantee is never violated.", location().file_name(), location().line(),
-                           message());
+                           "that the Guarantee is never violated.",
+                           location().file_name(), location().line(), message());
     }
 
     std::string FileNotFoundError::report() const {
-        return std::format(
-                "FileNotFound {}:{}. {}. The file: \"{}\" is necessary for program's execution, please ensure that the file is available.",
-                location().file_name(), location().line(), message(), file_path());
+        return std::format("FileNotFound {}:{}. {}. The file: \"{}\" is necessary for program's execution, please "
+                           "ensure that the file is available.",
+                           location().file_name(), location().line(), message(), file_path());
     }
 
     std::string_view FileNotFoundError::file_path() const {
@@ -46,4 +47,4 @@ namespace rg {
     }
 
 
-} // rg
+}// namespace rg

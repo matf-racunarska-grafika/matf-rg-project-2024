@@ -6,13 +6,22 @@
 #include <string>
 #include <source_location>
 
+#define RG_GUARANTEE(expr, msg, ...)                                                                                   \
+    do {                                                                                                               \
+        if (!(expr)) {                                                                                                 \
+            throw rg::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
+        }                                                                                                              \
+    } while (0)
+#define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
+    do {                                                                                                               \
+        throw rg::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
+    } while (0)
+#define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
+    do {                                                                                                               \
+        throw rg::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
+    } while (0)
+
 namespace rg {
-    void guarantee(bool expr, std::string msg, std::source_location source_location = std::source_location::current());
-
-    void should_not_reach_here(std::string msg, std::source_location source_location = std::source_location::current());
-
-    void unimplemented(std::string msg, std::source_location source_location = std::source_location::current());
-
 
     class Error : public std::exception {
     public:
@@ -85,6 +94,7 @@ namespace rg {
 
         std::string report() const override;
     };
+
 
     class UserError : public Error {
     public:
