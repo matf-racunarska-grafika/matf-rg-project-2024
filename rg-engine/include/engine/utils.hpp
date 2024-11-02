@@ -71,6 +71,14 @@ namespace rg {
         char **m_argv = nullptr;
     };
 
+    namespace alg {
+        template<typename Container, typename T>
+        bool contains(const Container &container, const T &value) {
+            return std::find(std::cbegin(container), std::cend(container), value) != std::cend(container);
+        }
+    }// namespace alg
+
+    namespace ds {}
 
 }// namespace rg
 

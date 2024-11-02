@@ -5,10 +5,10 @@
 #ifndef MATF_RG_PROJECT_CORE_HPP
 #define MATF_RG_PROJECT_CORE_HPP
 
-#include <string_view>
+#include <format>
 #include <memory>
 #include <source_location>
-#include <format>
+#include <string_view>
 #include <vector>
 
 #include "errors.hpp"
@@ -23,6 +23,23 @@ namespace rg {
         virtual std::string_view name() const = 0;
 
         virtual ~Controller() = default;
+
+        /*
+         * Make controller `next` execute next `this`.
+         * c1->before(c2); means that all the controller functions
+         * of c1 will execute next controller functions of c2;
+         */
+        void before(Controller *next) {
+            m_next.push_back(next);
+        }
+
+        void after(Controller *prev) {
+            prev->before(this);
+        }
+
+        const std::vector<Controller *> &next() const {
+            return m_next;
+        }
 
     private:
         virtual void initialize() {
@@ -40,6 +57,9 @@ namespace rg {
 
         virtual void poll_events() {
         }
+
+        /* List of controllers that are dependent on this controller */
+        std::vector<Controller *> m_next;
     };
 
     class ControllerManager {
@@ -97,6 +117,6 @@ namespace rg {
     };
 
 
-}
+}// namespace rg
 
-#endif //MATF_RG_PROJECT_CORE_HPP
+#endif//MATF_RG_PROJECT_CORE_HPP

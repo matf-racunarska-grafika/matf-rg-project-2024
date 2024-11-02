@@ -5,7 +5,7 @@
 
 #include <string>
 #include <source_location>
-
+// TODO(mspasic): add expr printing in format?
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
         if (!(expr)) {                                                                                                 \
