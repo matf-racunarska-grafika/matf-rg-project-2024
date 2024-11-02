@@ -203,6 +203,8 @@ namespace rg {
 
         const std::string &window_title() const;
 
+        const std::string_view shader_language() const;
+
     private:
         void initialize() override;
 

@@ -39,12 +39,15 @@ namespace rg {
     std::string FileNotFoundError::report() const {
         return std::format("FileNotFound {}:{}. {}. The file: \"{}\" is necessary for program's execution, please "
                            "ensure that the file is available.",
-                           location().file_name(), location().line(), message(), file_path());
+                           location().file_name(), location().line(), message(), file_path().string());
     }
 
-    std::string_view FileNotFoundError::file_path() const {
+    const std::filesystem::path &FileNotFoundError::file_path() const {
         return m_path;
     }
 
 
+    std::string ShaderCompilationError::report() const {
+        return std::format("ShaderCompilationError: {}:{}.\n{}", location().file_name(), location().line(), message());
+    }
 }// namespace rg

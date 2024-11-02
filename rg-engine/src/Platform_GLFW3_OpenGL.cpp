@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 #include <engine/platform/Platform.hpp>
+#include <engine/renderer/ShaderController.hpp>
 #include <engine/util/Utils.hpp>
 #include <glad/glad.h>
 
@@ -160,6 +161,10 @@ namespace rg {
 
     const std::string &PlatformController::window_title() const {
         return m_window->title;
+    }
+
+    const std::string_view PlatformController::shader_language() const {
+        return "glsl";
     }
 
     void initialize_key_maps() {
