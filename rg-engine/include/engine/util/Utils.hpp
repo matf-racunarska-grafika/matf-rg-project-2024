@@ -12,13 +12,11 @@
 
 #include <json.hpp>
 
-#include "core.hpp"
-
-
 namespace rg {
 
     class Configuration {
         friend class App;
+
     public:
         using json = nlohmann::json;
 

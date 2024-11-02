@@ -3,17 +3,18 @@
 //
 #include <spdlog/spdlog.h>
 
-#include "engine/app.hpp"
-#include "engine/platform.hpp"
-#include "engine/utils.hpp"
-#include "engine/core.hpp"
+#include <engine/App.hpp>
+#include <engine/Core.hpp>
+#include <engine/controller/ControllerManager.hpp>
+#include <engine/platform/Platform.hpp>
+#include <engine/util/Utils.hpp>
 
 namespace rg {
     void App::initialize_(int argc, char **argv) {
         ArgParser::instance()->initialize(argc, argv);
         Configuration::instance()->initialize();
 
-        // register engine controllers
+        // register engine controller
         auto controller_manager = ControllerManager::singleton();
         controller_manager->register_controller<PlatformController>();
 
@@ -28,7 +29,7 @@ namespace rg {
 
     bool App::loop_() {
         /*
-         * Any service can stop the rendering.
+         * Any service can stop the renderer.
          */
         if (!rg::ControllerManager::singleton()->loop()) {
             return false;

@@ -3,8 +3,8 @@
 #ifndef MATF_RG_PROJECT_ERRORS_HPP
 #define MATF_RG_PROJECT_ERRORS_HPP
 
-#include <string>
 #include <source_location>
+#include <string>
 // TODO(mspasic): add expr printing in format?
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
@@ -26,7 +26,7 @@ namespace rg {
     class Error : public std::exception {
     public:
         explicit Error(std::string message, std::source_location location = std::source_location::current())
-                : m_message(std::move(message)), m_location(location) {
+            : m_message(std::move(message)), m_location(location) {
         }
 
         const std::string &message() const {
@@ -73,11 +73,8 @@ namespace rg {
     class FileNotFoundError : public EngineError {
     public:
         explicit FileNotFoundError(std::string_view path, std::string message,
-                                   std::source_location location = std::source_location::current()) : m_path(path),
-                                                                                                      EngineError(
-                                                                                                              std::move(
-                                                                                                                      message),
-                                                                                                              location) {
+                                   std::source_location location = std::source_location::current())
+            : m_path(path), EngineError(std::move(message), location) {
         }
 
         std::string report() const override;
@@ -101,6 +98,6 @@ namespace rg {
         using Error::Error;
     };
 
-} // rg
+}// namespace rg
 
-#endif //MATF_RG_PROJECT_ERRORS_HPP
+#endif//MATF_RG_PROJECT_ERRORS_HPP

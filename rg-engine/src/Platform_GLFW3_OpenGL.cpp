@@ -2,10 +2,10 @@
 // Created by spaske00 on 13.5.24..
 //
 
-#include "engine/platform.hpp"
-#include "engine/utils.hpp"
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <engine/platform/Platform.hpp>
+#include <engine/util/Utils.hpp>
+#include <glad/glad.h>
 
 #include <utility>
 
@@ -23,9 +23,8 @@ namespace rg {
         int width;
         int height;
         std::string title;
-        WindowImpl(GLFWwindow *handle, int width, int height, std::string title) : handle(handle), width(width),
-                                                                                   height(height),
-                                                                                   title(std::move(title)) {
+        WindowImpl(GLFWwindow *handle, int width, int height, std::string title)
+            : handle(handle), width(width), height(height), title(std::move(title)) {
         }
     };
 

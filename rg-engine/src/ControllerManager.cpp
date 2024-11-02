@@ -1,18 +1,13 @@
-//
-// Created by spaske00 on 20.5.24..
-//
-
+#include <algorithm>
+#include <engine/controller/Controller.hpp>
+#include <engine/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
-
-#include "engine/core.hpp"
-#include <stack>
 #include <unordered_set>
-
-
+#include <vector>
+//
 namespace rg {
 
     void top_sort(std::vector<Controller *> &controllers);
-
     ControllerManager *ControllerManager::singleton() {
         static std::unique_ptr<ControllerManager> provider = std::make_unique<ControllerManager>();
         return provider.get();
@@ -70,7 +65,7 @@ namespace rg {
                 top_sort_util(controller, stack, visited);
             }
         }
-        RG_GUARANTEE(visited.size() == controllers.size(), "Not all controllers were visited.");
+        RG_GUARANTEE(visited.size() == controllers.size(), "Not all controller were visited.");
         RG_GUARANTEE(stack.size() == controllers.size(), "Not the same size.");
 
         std::reverse(std::begin(stack), std::end(stack));
@@ -122,4 +117,4 @@ namespace rg {
         path.erase(current);
         return false;
     }
-}
+}// namespace rg

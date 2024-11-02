@@ -5,8 +5,8 @@
 #ifndef MATF_RG_ENGINE_ENGINE_H
 #define MATF_RG_ENGINE_ENGINE_H
 
-#include "declarations.hpp"
-#include "utils.hpp"
+#include <declarations.hpp>
+#include <engine/util/Utils.hpp>
 #include <memory>
 
 namespace rg {

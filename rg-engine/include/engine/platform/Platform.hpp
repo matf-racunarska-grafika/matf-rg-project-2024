@@ -5,9 +5,10 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include "engine/utils.hpp"
-#include "engine/core.hpp"
 #include <array>
+#include <engine/controller/Controller.hpp>
+#include <engine/util/Errors.hpp>
+#include <engine/util/Utils.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -154,9 +155,7 @@ namespace rg {
         friend class PlatformController;
 
     public:
-        enum class State {
-            Released, JustPressed, Pressed, JustReleased
-        };
+        enum class State { Released, JustPressed, Pressed, JustReleased };
 
         State &state() {
             return m_state;
@@ -222,11 +221,9 @@ namespace rg {
         std::vector<Key> m_keys;
 
         void update_key(Key &key_data);
-
     };
 
 
 }// namespace rg
 
 #endif//MATF_RG_PROJECT_PLATFORM_H
-
