@@ -64,4 +64,12 @@ namespace rg {
         }
         return "";
     }
+
+    std::string read_file(const std::filesystem::path &path) {
+        RG_GUARANTEE(std::filesystem::exists(path), "File {} doesn't exist.", path.string());
+        std::ifstream file(path);
+        std::stringstream ss;
+        ss << file.rdbuf();
+        return ss.str();
+    }
 }// namespace rg

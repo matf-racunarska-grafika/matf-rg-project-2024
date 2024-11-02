@@ -9,7 +9,6 @@
 #include <memory>
 #include <source_location>
 #include <vector>
-
 #include <json.hpp>
 
 template<class... Ts>
@@ -97,6 +96,8 @@ namespace rg {
         int m_argc = 0;
         char **m_argv = nullptr;
     };
+
+    std::string read_file(const std::filesystem::path &path);
 
     namespace alg {
         template<typename Container, typename T>
