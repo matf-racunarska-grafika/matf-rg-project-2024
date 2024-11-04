@@ -31,6 +31,13 @@ namespace rg {
         controller_manager->initialize();
     }
 
+    void App::after_initialize_() {
+        spdlog::info("App::after_initialize::begin");
+        after_initialize();
+        spdlog::info("App::after_initialize::end");
+    }
+
+
     bool App::loop_() {
         /*
          * Any service can stop the renderer.

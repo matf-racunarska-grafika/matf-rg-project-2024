@@ -63,6 +63,9 @@ protected:
         c2->before(c1);
     }
 
+    void after_initialize() override {
+    }
+
     bool loop() override {
         const auto input = rg::ControllerManager::singleton()->get<rg::PlatformController>();
         if (input->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {

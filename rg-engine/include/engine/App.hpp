@@ -23,6 +23,8 @@ namespace rg {
     protected:
         virtual void initialize() = 0;
 
+        virtual void after_initialize() = 0;
+
         virtual bool loop() = 0;
 
         virtual void update() = 0;
@@ -35,6 +37,8 @@ namespace rg {
 
     private:
         void initialize_(int argc, char **argv);
+
+        void after_initialize_();
 
         bool loop_();
 
