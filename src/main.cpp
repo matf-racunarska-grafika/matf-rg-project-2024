@@ -65,6 +65,9 @@ protected:
     }
 
     void after_initialize() override {
+        auto entity_controller = rg::ControllerManager::singleton()->get<rg::EntityController>();
+        m_backpack = entity_controller->create_entity();
+        auto *model = m_backpack->add_component<rg::Model>();
     }
 
     bool loop() override {
@@ -82,9 +85,11 @@ protected:
     }
 
     void terminate() override {
+        m_backpack->destroy();
     }
 
 private:
+    rg::Entity *m_backpack;
 };
 
 namespace rg {
