@@ -8,7 +8,7 @@ add_library(rg-engine ${sources} ${headers})
 
 
 target_include_directories(rg-engine PUBLIC include/)
-set(LIBS glfw glad OpenGL::GL spdlog::spdlog)
+set(LIBS glfw glad OpenGL::GL spdlog::spdlog glm)
 target_link_libraries(rg-engine ${LIBS})
 add_dependencies(rg-engine ${LIBS})
 add_custom_target(rg-engine-format COMMAND clang-format -i ${sources} ${headers})
