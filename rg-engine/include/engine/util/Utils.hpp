@@ -9,6 +9,8 @@
 #include <memory>
 #include <source_location>
 #include <vector>
+#include <queue>
+#include <mutex>
 #include <json.hpp>
 
 template<class... Ts>
@@ -98,6 +100,12 @@ namespace rg {
     };
 
     std::string read_file(const std::filesystem::path &path);
+
+    template<typename Action>
+    void once(Action action) {
+        static std::once_flag once;
+        std::call_once(once, action);
+    };
 
     namespace alg {
         template<typename Container, typename T>
