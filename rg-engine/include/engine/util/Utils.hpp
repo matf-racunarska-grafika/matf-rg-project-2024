@@ -41,6 +41,9 @@ DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
 #define defer auto CONCAT(defer_stmt_, __LINE__) = MakeDeferImpl() << [&]
 
+#define range(container) std::begin(container), std::end(container)
+#define crange(container) std::cbegin(container), std::cend(container)
+
 
 namespace rg {
 
