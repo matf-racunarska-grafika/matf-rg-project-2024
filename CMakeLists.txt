@@ -20,10 +20,14 @@ add_subdirectory(libs/glad)
 # json
 include_directories(libs/json)
 add_subdirectory(libs/glm)
+
+#assimp
+add_subdirectory(libs/assimp)
+
 # rg-include
 add_subdirectory(rg-engine)
 
-set(LIBS glfw glad OpenGL::GL spdlog::spdlog glm rg-engine)
+set(LIBS glfw glad OpenGL::GL spdlog::spdlog glm rg-engine ${ASSIMP_LIBRARIES})
 
 ############## Sources ###############
 
