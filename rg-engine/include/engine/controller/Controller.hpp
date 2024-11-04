@@ -32,7 +32,7 @@ namespace rg {
         }
 
         void after(Controller *prev) {
-            prev->before(this);
+            prev->m_next.push_back(this);
         }
 
         const std::vector<Controller *> &next() const {

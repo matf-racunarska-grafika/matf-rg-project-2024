@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <source_location>
 #include <string>
+#include <format>
 // TODO(mspasic): add expr printing in format?
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \

@@ -1,5 +1,5 @@
 #include "engine/controller/Controller.hpp"
-#include <engine/Core.hpp>
+#include "engine/ecs/EntityController.hpp"
 #include <engine/Engine.hpp>
 #include <memory>
 #include <spdlog/spdlog.h>
@@ -58,6 +58,7 @@ protected:
         auto c2 = manager->register_controller<Controller2>();
         auto c3 = manager->register_controller<Controller3>();
         auto c1 = manager->register_controller<Controller1>();
+        auto entity = manager->get<rg::EntityController>();
         c1->before(c3);
         c2->before(c3);
         c2->before(c1);

@@ -14,20 +14,26 @@ namespace rg {
     }
 
     void ControllerManager::initialize() {
+        register_controller<EngineControllersSentinel>();
+    }
+
+    void ControllerManager::initialize_controllers() {
         top_sort(m_controllers);
         for (auto controller: m_controllers) {
-            controller->initialize();
             spdlog::info("{}::initialize", controller->name());
+            controller->initialize();
         }
     }
 
     void ControllerManager::terminate() {
+        spdlog::info("ControllerManager::terminate::begin");
         int size = (int) m_controllers.size() - 1;
         for (int i = std::max(size, 0); i >= 0; --i) {
             auto controller = m_controllers[i];
             controller->terminate();
             spdlog::info("{}::terminate", controller->name());
         }
+        spdlog::info("ControllerManager::terminate::end");
     }
 
     bool ControllerManager::loop() {
@@ -50,6 +56,7 @@ namespace rg {
             controller->poll_events();
         }
     }
+
 
     // part of the controller manager, controller manager contains the controller graph
     void top_sort_util(Controller *controller, std::vector<Controller *> &stack,

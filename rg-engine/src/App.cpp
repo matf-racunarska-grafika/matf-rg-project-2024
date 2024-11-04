@@ -7,28 +7,42 @@
 #include <engine/Core.hpp>
 #include <engine/controller/ControllerManager.hpp>
 #include <engine/platform/Platform.hpp>
-#include <engine/renderer/ShaderController.hpp>
+#include <engine/render/ShaderController.hpp>
+#include <engine/ecs/EntityController.hpp>
 #include <engine/util/Utils.hpp>
+#include <engine/render/AssetsController.hpp>
 
 namespace rg {
     void App::initialize_(int argc, char **argv) {
+        spdlog::info("App::initialize_controllers::begin");
         ArgParser::instance()->initialize(argc, argv);
         Configuration::instance()->initialize();
 
         // register engine controller
         auto controller_manager = ControllerManager::singleton();
-        auto platform_controller = controller_manager->register_controller<PlatformController>();
-        auto shader_controller = controller_manager->register_controller<ShaderController>();
+        controller_manager->initialize();
+
+        auto platform_controller = controller_manager->register_engine_controller<PlatformController>();
+        auto shader_controller = controller_manager->register_engine_controller<ShaderController>();
+        auto entity_controller = controller_manager->register_engine_controller<EntityController>();
+        auto assets_controller = controller_manager->register_engine_controller<AssetsController>();
 
         platform_controller->before(shader_controller);
+
+        entity_controller->after(shader_controller);
+        entity_controller->after(platform_controller);
+
+        assets_controller->after(shader_controller);
+        assets_controller->after(platform_controller);
 
         // User initialization
         initialize();
         /*
          * Controller initialization is done after user-defined App::initialize because
-         * user can register custom services in App::initialize.
+         * user can register custom services in App::initialize_controllers.
          */
-        controller_manager->initialize();
+        controller_manager->initialize_controllers();
+        spdlog::info("App::initialize_controllers::end");
     }
 
     void App::after_initialize_() {
@@ -40,7 +54,7 @@ namespace rg {
 
     bool App::loop_() {
         /*
-         * Any service can stop the renderer.
+         * Any controller can stop the rendering loop.
          */
         if (!rg::ControllerManager::singleton()->loop()) {
             return false;
@@ -71,6 +85,7 @@ namespace rg {
         auto app = create_app();
         try {
             app->initialize_(argc, argv);
+            app->after_initialize_();
             while (app->loop_()) {
                 app->poll_events_();
                 app->update_();
