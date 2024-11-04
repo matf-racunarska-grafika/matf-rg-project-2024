@@ -46,8 +46,11 @@ namespace rg {
         bool type_of() const {
             return get_component_type_id<TComponent>() == type_id();
         }
-
     private:
+        template<typename TComponent>
+        void initialize_type_id() {
+            m_type_id = Component::get_component_type_id<TComponent>();
+        }
         static inline ComponentTypeId m_next_component_type_id{1};
         Entity *m_owner{};
         ComponentTypeId m_type_id{0};

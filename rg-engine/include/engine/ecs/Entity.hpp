@@ -34,25 +34,26 @@ namespace rg {
             RG_GUARANTEE(!has_component<TComponent>(), "Entity {} already has component {}.", m_id,
                          TComponent::type_name());
             auto component = std::make_unique<TComponent>(std::forward<TArgs>(args)...);
-            component.m_type_id = Component::get_component_type_id<TComponent>();
-            component.m_owner = this;
+            component->template initialize_type_id<TComponent>();
+            component->m_owner = this;
+            auto result = component.get();
             m_components.emplace_back(std::move(component));
-            return m_components.back().get();
+            return result;
         }
 
-        template<typename TComponent>
+
+        template<typename TComponent, typename... TComponents>
         bool has_component() {
             for (const auto &component: m_components) {
                 if (component->type_of<TComponent>()) {
-                    return true;
+                    if constexpr (sizeof...(TComponents) == 0) {
+                        return true;
+                    } else {
+                        return (has_component<TComponents>() && ...);
+                    }
                 }
             }
             return false;
-        }
-
-        template<typename... TComponents>
-        bool has_component() {
-            return (has_component<TComponents>() && ...);
         }
 
         template<typename TComponent>

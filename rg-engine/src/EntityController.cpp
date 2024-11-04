@@ -19,6 +19,8 @@ namespace rg {
     }
 
     Entity *EntityController::create_entity() {
-        return m_entities.emplace_back().get();
+        m_entities.emplace_back(std::make_unique<Entity>());
+        auto result = m_entities.back().get();
+        return result;
     }
 }// namespace rg
