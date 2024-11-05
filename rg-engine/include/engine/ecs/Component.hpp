@@ -8,6 +8,7 @@
 #include <string_view>
 #include <vector>
 #include <memory>
+#include "engine/render/Shader.hpp"
 namespace rg {
     using ComponentTypeId = uint32_t;
     class Entity;
@@ -78,12 +79,18 @@ namespace rg {
 
     enum class RenderingLevel { Normal, AlwaysOnTop };
 
+    class DrawableElement;
     struct DrawableComponent : public Component {
         RenderingLevel rendering_level{RenderingLevel::Normal};
-        Shader *shader{nullptr};
+        DrawableElement *drawable_element = nullptr;
+        ShaderProgram *shader{nullptr};
 
-        virtual void draw() {
+        DrawableComponent(DrawableElement *drawable_element, ShaderProgram *shader,
+                          RenderingLevel rendering_level = RenderingLevel::Normal)
+            : rendering_level(rendering_level), drawable_element(drawable_element), shader(shader) {
         }
+
+        void draw();
 
         static std::string_view type_name() {
             return "DrawableComponent";
