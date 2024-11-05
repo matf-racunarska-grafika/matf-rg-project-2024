@@ -24,6 +24,8 @@ add_subdirectory(libs/glm)
 #assimp
 add_subdirectory(libs/assimp)
 
+add_subdirectory(libs/stb)
+
 # rg-include
 add_subdirectory(rg-engine)
 
