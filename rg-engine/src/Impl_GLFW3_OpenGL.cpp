@@ -4,6 +4,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <stb_image.h>
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/render/ShaderController.hpp>
@@ -11,7 +12,11 @@
 #include <engine/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include "engine/render/Model.hpp"
+#include <engine/render/Model.hpp>
+#include <engine/render/Texture.hpp>
+#include <engine/render/Mesh.hpp>
+
+
 #include <assimp/Importer.hpp>
 namespace rg {
 
@@ -319,19 +324,119 @@ namespace rg {
         case ShaderType::Vertex: return GL_VERTEX_SHADER;
         case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
         case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled ShaderType");
         }
     }
 
 
-    void Model::draw() {
+    void Model::draw(ShaderProgram *shader) {
         rg::once([] { spdlog::info("Model::draw"); });
+        for (auto &mesh: m_meshes) {
+            mesh.draw(shader);
+        }
     }
 
     void Model::destroy() {
         rg::once([] { spdlog::info("Model::destroy"); });
+        for (auto &mesh: m_meshes) {
+            mesh.destroy();
+        }
     }
+
+    void Model::initialize() {
+    }
+
+
+    Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
+                      const std::unordered_set<Texture *> &textures) {
+        static_assert(std::is_trivial_v<Vertex>);
+        uint32_t VAO, VBO, EBO;
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), &vertices[0], GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, tex_cords));
+
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, tangent));
+
+        glEnableVertexAttribArray(4);
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, bitangent));
+
+        glBindVertexArray(0);
+
+        return Mesh(VAO, std::vector<Texture *>(range(textures)));
+    }
+
+    void Mesh::draw(ShaderProgram *shader) {
+        // TODO(mspasic): draw meshes
+    }
+
+    Texture Texture::create_from_file(std::filesystem::path path) {
+        uint32_t texture_id;
+        glGenTextures(1, &texture_id);
+
+        int32_t width, height, nr_components;
+        uint8_t *data = stbi_load(path.c_str(), &width, &height, &nr_components, 0);
+        defer {
+            stbi_image_free(data);
+        };
+        if (data) {
+            GLenum format;
+            if (nr_components == 1)
+                format = GL_RED;
+            else if (nr_components == 3)
+                format = GL_RGB;
+            else if (nr_components == 4)
+                format = GL_RGBA;
+            else
+                throw AssetLoadingError("Unknown number of channels");
+
+            glBindTexture(GL_TEXTURE_2D, texture_id);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        } else {
+            throw AssetLoadingError(std::format("Failed to load texture {}", path.string()));
+        }
+        return Texture(texture_id);
+    }
+
+    void Texture::initialize() {
+        RG_UNIMPLEMENTED("texture initialize");
+    }
+
+    void Texture::draw(ShaderProgram *shader) {
+        // TODO(mspasic): do we need this?
+        RG_UNIMPLEMENTED("texture draw");
+    }
+
+    void Texture::destroy() {
+        glDeleteTextures(1, &m_id);
+    }
+
 
     struct MeshImpl {
         uint32_t vao_id;
     };
+
+    Mesh platform_initialize_mesh();
 }// namespace rg
