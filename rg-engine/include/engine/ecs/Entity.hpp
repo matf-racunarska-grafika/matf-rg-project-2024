@@ -27,6 +27,16 @@ namespace rg {
             return std::make_unique<Entity>();
         }
 
+        template<typename TComponent>
+        TComponent *get_component() {
+            for (auto &component: m_components) {
+                if (component->type_of<TComponent>()) {
+                    return static_cast<TComponent *>(component.get());
+                }
+            }
+            return nullptr;
+        }
+
         template<typename TComponent, typename... TArgs>
         TComponent *add_component(TArgs &&...args) {
             static_assert(std::is_base_of_v<Component, TComponent>);
