@@ -7,6 +7,7 @@
 #include <engine/controller/Controller.hpp>
 #include <engine/render/Model.hpp>
 #include <engine/render/Texture.hpp>
+#include <assimp/scene.h>
 
 namespace rg {
 
@@ -20,22 +21,19 @@ namespace rg {
             return "AssetsController";
         }
 
+        Result<Model *, AssetLoadingError> model(const std::string &model_name);
+        Texture *texture(const std::string &texture_name);
+
+        Texture *load_texture_from_file(const std::filesystem::path &file_name, TextureType type);
+
     private:
         void initialize() override;
         void terminate() override;
 
-    private:
         struct ModelData {
             std::filesystem::path path;
             std::string name;
             Model model;
-        };
-
-        enum class TextureType {
-            Diffuse,
-            Specular,
-            Normal,
-            Height,
         };
 
         struct TextureData {
@@ -43,10 +41,16 @@ namespace rg {
             std::string name;
             Texture texture;
             TextureType texture_type;
+
+            TextureData(std::filesystem::path path, std::string name, Texture texture, TextureType texture_type);
         };
 
-        std::unordered_map<std::filesystem::path, std::unique_ptr<ModelData>> m_models;
-        std::unordered_map<std::filesystem::path, std::unique_ptr<Texture>> m_textures;
+
+        std::unique_ptr<ModelData> load_model(const std::string &model_name);
+
+        std::unordered_map<std::string, std::unique_ptr<ModelData>> m_models;
+        std::unordered_map<std::string, std::unique_ptr<TextureData>> m_textures;
+        std::filesystem::path m_models_filesystem_path;
     };
 }// namespace rg
 

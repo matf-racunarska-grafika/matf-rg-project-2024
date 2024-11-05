@@ -7,6 +7,7 @@
 #include <source_location>
 #include <string>
 #include <format>
+#include <utility>
 // TODO(mspasic): add expr printing in format?
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
@@ -104,6 +105,22 @@ namespace rg {
     public:
         using UserError::UserError;
         std::string report() const override;
+    };
+
+
+    class AssetLoadingError : public UserError {
+    public:
+        using UserError::UserError;
+        AssetLoadingError(std::string message, std::filesystem::path path, std::string model_name,
+                          std::source_location location = std::source_location::current())
+            : UserError(std::move(message), location), m_path(std::move(path)), m_model_name(std::move(model_name)) {
+        }
+
+        std::string report() const override;
+
+    private:
+        std::filesystem::path m_path;
+        std::string m_model_name;
     };
 
 }// namespace rg

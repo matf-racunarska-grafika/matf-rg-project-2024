@@ -50,4 +50,8 @@ namespace rg {
     std::string ShaderCompilationError::report() const {
         return std::format("ShaderCompilationError: {}:{}.\n{}", location().file_name(), location().line(), message());
     }
+    std::string AssetLoadingError::report() const {
+        return std::format("AssetLoadingError: {}:{}.\n{}\n Failed to load model {} from path: {}\n",
+                           location().file_name(), location().line(), message(), m_model_name, m_path.string());
+    }
 }// namespace rg
