@@ -56,6 +56,10 @@ namespace rg {
         virtual void poll_events() {
         }
 
+        virtual void draw() {
+
+        }
+
         /* List of controller that are dependent on this controller */
         std::vector<Controller *> m_next{};
     };

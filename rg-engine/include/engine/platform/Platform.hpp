@@ -181,13 +181,20 @@ namespace rg {
         double y;
         double dx;
         double dy;
+        double scroll;
     };
 
     class WindowImpl;
 
+    class PlatformEventObserver {
+    public:
+        virtual void on_mouse(MousePosition position);
+        virtual void on_keyboard(Key key);
+        virtual ~PlatformEventObserver() = default;
+    };
+
     class PlatformController : public Controller {
         friend class ControllerManager;
-
     public:
         const Key &key(KeyId key) const;
 
@@ -205,10 +212,16 @@ namespace rg {
 
         const std::string_view shader_language() const;
 
+        void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
+
+        void _platform_on_mouse(double x, double y) const;
+        void _platform_on_keyboard(int key, int action);
+        void _platform_on_scroll(double x, double y) const;
     private:
         void initialize() override;
 
         void update() override;
+        void draw();
 
         void terminate() override;
 
@@ -221,8 +234,9 @@ namespace rg {
         WindowImpl *m_window;
         MousePosition m_mouse;
         std::vector<Key> m_keys;
+        std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
 
-        void update_key(Key &key_data);
+        void update_key(Key &key_data) const;
     };
 
 
