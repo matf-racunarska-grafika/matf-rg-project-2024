@@ -74,6 +74,7 @@ namespace rg {
 
     void App::draw_() {
         draw();
+        ControllerManager::singleton()->draw();
     }
 
     void App::terminate_() {

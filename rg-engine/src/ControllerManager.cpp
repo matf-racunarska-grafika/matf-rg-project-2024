@@ -51,12 +51,17 @@ namespace rg {
         }
     }
 
+    void ControllerManager::draw() {
+        for (auto controller: m_controllers) {
+            controller->draw();
+        }
+    }
+
     void ControllerManager::poll_events() {
         for (auto controller: m_controllers) {
             controller->poll_events();
         }
     }
-
 
     // part of the controller manager, controller manager contains the controller graph
     void top_sort_util(Controller *controller, std::vector<Controller *> &stack,

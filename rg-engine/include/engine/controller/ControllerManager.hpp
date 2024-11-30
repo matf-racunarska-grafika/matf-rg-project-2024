@@ -73,6 +73,8 @@ namespace rg {
 
         void update();
 
+        void draw();
+
         std::vector<Controller *> m_controllers;
     };
 }// namespace rg
