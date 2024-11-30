@@ -29,6 +29,7 @@ namespace rg {
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
     static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
     static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static int glfw_platform_action(GLFWwindow* window, int glfw_key_code);
 
     void initialize_key_maps();
 
@@ -101,11 +102,18 @@ namespace rg {
         glfwSwapBuffers(m_window->handle);
     }
 
+    int glfw_platform_action(GLFWwindow* window, int glfw_key_code) {
+        if (glfw_key_code >= GLFW_MOUSE_BUTTON_1 && glfw_key_code <= GLFW_MOUSE_BUTTON_LAST) {
+            return glfwGetMouseButton(window, glfw_key_code);
+        }
+        return glfwGetKey(window, glfw_key_code);
+    }
+
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.key();
         int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
         auto window = m_window->handle;
-        int action = glfwGetKey(window, glfw_key_code);
+        int action = glfw_platform_action(window, glfw_key_code);
         switch (key_data.state()) {
         case rg::Key::State::Released: {
             if (action == GLFW_PRESS) {
@@ -155,11 +163,10 @@ namespace rg {
     }
 
     void PlatformEventObserver::on_mouse(MousePosition position) {
-        spdlog::info("MouseMoved");
     }
     void PlatformEventObserver::on_keyboard(Key key) {
-        spdlog::info("KeyboardMoved");
     }
+
     const Key &PlatformController::key(KeyId key) const {
         RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
