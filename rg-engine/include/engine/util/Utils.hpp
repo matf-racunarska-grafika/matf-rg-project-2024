@@ -13,7 +13,7 @@
 #include <mutex>
 #include <json.hpp>
 #include <variant>
-
+#include <engine/util/Errors.hpp>
 template<class... Ts>
 struct overloaded : Ts... {
     using Ts::operator()...;
@@ -115,6 +115,9 @@ namespace rg {
 
     private:
         void initialize();
+        static std::filesystem::path get_config_path();
+        static std::filesystem::path create_default();
+        constexpr static std::string_view CONFIG_FILE_NAME = "config.json";
 
         json m_config;
     };

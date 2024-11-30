@@ -14,16 +14,12 @@ namespace rg {
 
         // set engine shaders path
         {
-            std::filesystem::path engine_shaders_path(config["shaders"]["path"]);
-            m_engine_shaders_path = engine_shaders_path / shader_language();
+            const std::filesystem::path engine_shaders_path(config["shaders"]["path"]);
+            m_shaders_path = engine_shaders_path / shader_language();
         }
 
-        for (const auto &shader_impl: config["shaders"]["engine"]) {
-            RG_GUARANTEE(shader_impl["name"].is_string(), "Not a string");
-            RG_GUARANTEE(shader_impl["file"].is_string(), "Not a string");
-            const auto name = shader_impl["name"].get<std::string>();
-            std::filesystem::path shader_path =
-                    m_engine_shaders_path / std::filesystem::path(shader_impl["file"].get<std::string>());
+        for (const auto &shader_path : std::filesystem::directory_iterator(m_shaders_path)) {
+            const auto name = shader_path.path().stem().string();
             ShaderCompilationResult compilation_result = ShaderCompiler::compile_from_file(name, shader_path);
             std::visit(overloaded{[&](ShaderProgram shader_program) {
                                       m_shaders[name] = std::make_unique<ShaderProgram>(shader_program);

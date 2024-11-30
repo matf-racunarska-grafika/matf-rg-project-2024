@@ -66,8 +66,14 @@ protected:
 
     void after_initialize() override {
         auto entity_controller = rg::ControllerManager::singleton()->get<rg::EntityController>();
-        m_backpack = entity_controller->create_entity();
-        auto *model = m_backpack->add_component<rg::Model>();
+        auto shader_controller = rg::ControllerManager::singleton()->get<rg::ShaderController>();
+        auto assets_controller = rg::ControllerManager::singleton()->get<rg::AssetsController>();
+
+        m_shader = shader_controller->get("uniform_color");
+        m_shader->use();
+        m_entity = entity_controller->create_entity();
+        m_model = assets_controller->model("backpack").value();
+        m_entity->add_component<rg::DrawableComponent>(m_model, m_shader);
     }
 
     bool loop() override {
@@ -85,11 +91,13 @@ protected:
     }
 
     void terminate() override {
-        m_backpack->destroy();
     }
 
 private:
-    rg::Entity *m_backpack;
+    rg::ShaderProgram * m_shader;
+    rg::Entity *m_entity;
+    rg::Model * m_model;
+
 };
 
 namespace rg {

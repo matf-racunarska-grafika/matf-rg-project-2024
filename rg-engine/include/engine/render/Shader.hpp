@@ -1,7 +1,6 @@
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
 #include <engine/controller/Controller.hpp>
-#include <memory>
 #include <string>
 #include <utility>
 

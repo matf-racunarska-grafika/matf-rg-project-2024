@@ -41,25 +41,14 @@ add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
 add_dependencies(${PROJECT_NAME} ${LIBS})
 
-add_custom_target(matf-rg-project-format COMMAND clang-format -i ${sources} ${headers})
+# Define the source and destination directories
+set(SHADERS_DIR "${CMAKE_SOURCE_DIR}/src/shaders")
+set(SHADERS_DEST_DIR "${CMAKE_BINARY_DIR}/resources/shaders")
 
-################ Copy rg-engine-resources #################
-# Define source and destination directories
-set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/rg-engine/resources")
-set(DEST_DIR "${CMAKE_BINARY_DIR}/cmake-build-debug")
-
-# Collect all resource files
-file(GLOB_RECURSE RESOURCE_FILES "${RESOURCE_DIR}/*")
-
-# Create a custom target to copy files
-add_custom_target(copy_resources ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCE_DIR} ${DEST_DIR}
-        COMMENT "Copying resources to build directory..."
+# Add a custom target to copy resources
+add_custom_target(copy-shaders ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${SHADERS_DIR} ${SHADERS_DEST_DIR}
+        COMMENT "Copying resources from ${SHADERS_DIR} to ${SHADERS_DEST_DIR}"
 )
 
-# Set up a dependency on the resource files so that files are copied when they change
-foreach (RESOURCE_FILE ${RESOURCE_FILES})
-    add_custom_command(TARGET copy_resources
-            DEPENDS ${RESOURCE_FILE}
-    )
-endforeach ()
+add_dependencies(matf-rg-project copy-shaders)

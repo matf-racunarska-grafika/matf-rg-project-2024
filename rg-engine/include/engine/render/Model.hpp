@@ -21,6 +21,10 @@ namespace rg {
             return "Model";
         }
 
+        static std::string_view type_name() {
+            return "Model";
+        }
+
         void destroy() override;
 
     private:

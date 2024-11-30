@@ -10,7 +10,6 @@ namespace rg {
     void AssetsController::initialize() {
         const auto &config = Configuration::config();
         m_models_filesystem_path = config["assets"]["models_path"].get<std::string>();
-        spdlog::info(to_string(config["assets"]["models"]));
     }
 
     void AssetsController::terminate() {
@@ -55,7 +54,6 @@ namespace rg {
         std::filesystem::path m_model_path;
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
     };
-
 
     std::unique_ptr<rg::AssetsController::ModelData> AssetsController::load_model(const std::string &model_name) {
         auto &config = Configuration::config();
@@ -147,7 +145,7 @@ namespace rg {
     }
 
     void AssimpSceneProcessor::process_materials(aiMaterial *material) {
-        std::array<decltype(aiTextureType_DIFFUSE), 4> ai_texture_types{
+        auto ai_texture_types = {
                 aiTextureType_DIFFUSE,
                 aiTextureType_SPECULAR,
                 aiTextureType_NORMALS,

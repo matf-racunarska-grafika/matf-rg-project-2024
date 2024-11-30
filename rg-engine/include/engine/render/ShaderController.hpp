@@ -30,7 +30,7 @@ namespace rg {
     private:
         void initialize() override;
         std::unordered_map<ShaderName, std::unique_ptr<ShaderProgram>> m_shaders;
-        std::filesystem::path m_engine_shaders_path;
+        std::filesystem::path m_shaders_path;
     };
 }// namespace rg
 #endif//MATF_RG_PROJECT_SHADERCONTROLLER_HPP
