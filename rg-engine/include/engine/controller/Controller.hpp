@@ -4,11 +4,6 @@
 #ifndef MATF_RG_PROJECT_CONTROLLER_HPP
 #define MATF_RG_PROJECT_CONTROLLER_HPP
 
-#include <engine/util/Errors.hpp>
-#include <engine/util/Utils.hpp>
-#include <format>
-#include <memory>
-#include <source_location>
 #include <string_view>
 #include <vector>
 
@@ -57,7 +52,6 @@ namespace rg {
         }
 
         virtual void draw() {
-
         }
 
         /* List of controller that are dependent on this controller */
