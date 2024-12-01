@@ -88,6 +88,13 @@ namespace rg {
     }
 
     void PlatformController::initialize() {
+        if (glfwPlatformSupported(GLFW_PLATFORM_X11)) {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+        } else if (glfwPlatformSupported(GLFW_PLATFORM_WAYLAND)) {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WAYLAND);
+        } else if (glfwPlatformSupported(GLFW_PLATFORM_WIN32)) {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_WIN32);
+        }
         bool glfw_initialized = glfwInit();
         RG_GUARANTEE(glfw_initialized, "GLFW platform failed to initialize_controllers.");
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -111,6 +118,11 @@ namespace rg {
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "GLAD failed to init!");
 
+
+
+        int major, minor, revision;
+        glfwGetVersion(&major, &minor, &revision);
+        spdlog::info("Platform[GLFW {}.{}.{}]", major, minor, revision);
         initialize_key_maps();
         m_keys.resize(KEY_COUNT);
         for (int key = 0; key < m_keys.size(); ++key) {
@@ -123,6 +135,8 @@ namespace rg {
 
     void PlatformController::terminate() {
         m_renderer->terminate();
+        m_renderer.reset(nullptr);
+        m_platform_event_observer.reset(nullptr);
         glfwDestroyWindow(m_window->handle);
         delete m_window;
         m_window = nullptr;
@@ -304,12 +318,12 @@ namespace rg {
 
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_keyboard(key, action);
+        rg::ControllerManager::get<PlatformController>()->_platform_on_keyboard(key, action);
     }
 
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
-        rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
+        rg::ControllerManager::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
     /*
