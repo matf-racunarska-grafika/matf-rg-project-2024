@@ -18,7 +18,7 @@ namespace rg {
         Entity *create_entity();
         void destroy_entity(Entity *entity);
 
-        void draw();
+        void draw() override;
 
     private:
         void poll_events() override;
