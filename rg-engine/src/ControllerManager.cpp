@@ -45,6 +45,12 @@ namespace rg {
         return true;
     }
 
+    void ControllerManager::poll_events() {
+        for (auto controller: m_controllers) {
+            controller->poll_events();
+        }
+    }
+
     void ControllerManager::update() {
         for (auto controller: m_controllers) {
             controller->update();
@@ -54,12 +60,6 @@ namespace rg {
     void ControllerManager::draw() {
         for (auto controller: m_controllers) {
             controller->draw();
-        }
-    }
-
-    void ControllerManager::poll_events() {
-        for (auto controller: m_controllers) {
-            controller->poll_events();
         }
     }
 
