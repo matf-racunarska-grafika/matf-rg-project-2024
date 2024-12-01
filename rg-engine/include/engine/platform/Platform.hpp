@@ -171,6 +171,9 @@ namespace rg {
 
         std::string_view to_string() const;
 
+        bool is_down(KeyId id) const { return m_key == id && (m_state == State::Pressed || m_state == State::JustPressed); }
+        bool is_up(KeyId id) const { return m_key == id && (m_state == State::Released || m_state == State::JustReleased); }
+
     private:
         KeyId m_key = KEY_COUNT;
         State m_state = State::Released;
@@ -217,6 +220,11 @@ namespace rg {
         void _platform_on_mouse(double x, double y) const;
         void _platform_on_keyboard(int key, int action);
         void _platform_on_scroll(double x, double y) const;
+        void _platform_on_framebuffer_resize(int width, int height) const;
+
+        void set_enable_cursor(bool enabled);
+
+        WindowImpl* _window_impl() const { return m_window; }
     private:
         void initialize() override;
 

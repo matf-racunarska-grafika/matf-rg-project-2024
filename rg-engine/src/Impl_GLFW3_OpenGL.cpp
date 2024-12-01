@@ -27,9 +27,10 @@ namespace rg {
     static MousePosition g_mouse_position;
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
-    static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-    static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-    static int glfw_platform_action(GLFWwindow* window, int glfw_key_code);
+    static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+    static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+    static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height);
+    static int glfw_platform_action(GLFWwindow *window, int glfw_key_code);
 
     void initialize_key_maps();
 
@@ -64,6 +65,7 @@ namespace rg {
         glfwSetCursorPosCallback(m_window->handle, glfw_mouse_callback);
         glfwSetScrollCallback(m_window->handle, glfw_scroll_callback);
         glfwSetKeyCallback(m_window->handle, glfw_key_callback);
+        glfwSetFramebufferSizeCallback(m_window->handle, glfw_framebuffer_size_callback);
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "GLAD failed to init!");
 
@@ -72,7 +74,9 @@ namespace rg {
         for (int key = 0; key < m_keys.size(); ++key) {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
-        m_platform_event_observer = std::make_unique<PlatformEventObserver>();
+        register_platform_event_observer(std::make_unique<PlatformEventObserver>());
+        m_renderer = OpenGLRenderer::create(m_window);
+        m_renderer->initialize();
     }
 
     void PlatformController::terminate() {
@@ -102,7 +106,7 @@ namespace rg {
         glfwSwapBuffers(m_window->handle);
     }
 
-    int glfw_platform_action(GLFWwindow* window, int glfw_key_code) {
+    int glfw_platform_action(GLFWwindow *window, int glfw_key_code) {
         if (glfw_key_code >= GLFW_MOUSE_BUTTON_1 && glfw_key_code <= GLFW_MOUSE_BUTTON_LAST) {
             return glfwGetMouseButton(window, glfw_key_code);
         }
@@ -220,10 +224,24 @@ namespace rg {
         m_platform_event_observer->on_keyboard(result);
     }
 
-    void PlatformController::_platform_on_scroll(double x, double y) const {
+    void PlatformController::_platform_on_scroll(double x, double y) const {)
         g_mouse_position.scroll = y;
         m_platform_event_observer->on_mouse(g_mouse_position);
     }
+
+    void PlatformController::_platform_on_framebuffer_resize(int width, int height) const {
+        m_window->width = width;
+        m_window->height = height;
+    }
+
+    void PlatformController::set_enable_cursor(bool enabled) {
+        if (enabled) {
+            glfwSetInputMode(m_window->handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            glfwSetInputMode(m_window->handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+    }
+
 
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
@@ -234,14 +252,19 @@ namespace rg {
         rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_mouse(x, y);
     }
 
-    static void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
         g_mouse_position.scroll = yoffset;
         rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
     }
 
 
-    static void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
         rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_keyboard(key, action);
+    }
+
+    static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
+        glViewport(0, 0, width, height);
+        rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
     /*
