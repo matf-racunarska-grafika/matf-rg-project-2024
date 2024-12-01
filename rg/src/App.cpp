@@ -8,7 +8,6 @@
 #include <engine/controller/ControllerManager.hpp>
 #include <engine/platform/Platform.hpp>
 #include <engine/render/ShaderController.hpp>
-#include <engine/ecs/EntityController.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/render/AssetsController.hpp>
 
@@ -24,13 +23,9 @@ namespace rg {
 
         auto platform_controller = controller_manager->register_engine_controller<PlatformController>();
         auto shader_controller = controller_manager->register_engine_controller<ShaderController>();
-        auto entity_controller = controller_manager->register_engine_controller<EntityController>();
         auto assets_controller = controller_manager->register_engine_controller<AssetsController>();
 
         platform_controller->before(shader_controller);
-
-        entity_controller->after(shader_controller);
-        entity_controller->after(platform_controller);
 
         assets_controller->after(shader_controller);
         assets_controller->after(platform_controller);

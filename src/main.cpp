@@ -1,5 +1,4 @@
 #include "engine/controller/Controller.hpp"
-#include "engine/ecs/EntityController.hpp"
 #include "glad/glad.h"
 
 #include <engine/Engine.hpp>
@@ -52,7 +51,6 @@ protected:
     }
 
     void after_initialize() override {
-        auto entity_controller = rg::ControllerManager::get<rg::EntityController>();
         auto shader_controller = rg::ControllerManager::get<rg::ShaderController>();
         auto assets_controller = rg::ControllerManager::get<rg::AssetsController>();
         auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
@@ -60,9 +58,7 @@ protected:
         platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(&m_camera, platform_controller));
 
         m_shader = shader_controller->get("basic");
-        m_entity = entity_controller->create_entity();
         m_model = assets_controller->model("backpack").value();
-        m_entity->add_component<rg::DrawableComponent>(m_model, m_shader);
     }
 
     bool loop() override {
@@ -91,6 +87,7 @@ protected:
     }
 
     void draw() override {
+        m_model->draw(m_shader);
     }
 
     void terminate() override {
@@ -118,7 +115,6 @@ private:
 
     rg::Camera m_camera{glm::vec3(0.0f, 0.0f, 3.0f)};
     rg::ShaderProgram *m_shader;
-    rg::Entity *m_entity;
     rg::Model *m_model;
 };
 

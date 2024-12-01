@@ -3,21 +3,20 @@
 
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
-#include <engine/ecs/Component.hpp>
+#include <engine/util/Utils.hpp>
 #include <engine/render/Mesh.hpp>
-#include <engine/render/DrawableElement.hpp>
 #include <algorithm>
 namespace rg {
 
-    class Model : public DrawableElement {
+    class Model {
         friend class AssetsController;
 
     public:
-        void initialize() override;
+        void initialize();
 
-        void draw(ShaderProgram *shader) override;
+        void draw(ShaderProgram *shader);
 
-        std::string_view name() const override {
+        std::string_view name() const {
             return "Model";
         }
 
@@ -25,7 +24,7 @@ namespace rg {
             return "Model";
         }
 
-        void destroy() override;
+        void destroy();
 
     private:
         void attach_meshes(std::vector<Mesh> meshes) {

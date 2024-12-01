@@ -4,9 +4,8 @@
 #ifndef MATF_RG_PROJECT_TEXTURE_HPP
 #define MATF_RG_PROJECT_TEXTURE_HPP
 
-#include <engine/ecs/Component.hpp>
-#include <engine/render/DrawableElement.hpp>
 #include <string_view>
+#include <filesystem>
 namespace rg {
     class ShaderProgram;
 
@@ -19,24 +18,24 @@ namespace rg {
 
     std::string_view texture_type_to_string(TextureType type);
 
-    class Texture : public DrawableElement {
+    class Texture {
         Texture(uint32_t id, TextureType type) : m_id(id), m_type(type) {
         }
         friend class AssetsController;
     public:
         static Texture create_from_file(std::filesystem::path path, TextureType type);
 
-        void initialize() override;
+        void initialize();
 
-        void draw(ShaderProgram *shader) override;
+        void draw(ShaderProgram *shader);
 
-        void destroy() override;
+        void destroy();
 
         static std::string_view type_name() {
             return "Texture";
         }
 
-        std::string_view name() const override {
+        std::string_view name() const {
             return type_name();
         }
 

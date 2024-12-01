@@ -11,34 +11,24 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(libs/spdlog)
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE SPDLOG_DEBUG_ON SPDLOG_TRACE_ON RG_ENGINE_TRACE)
 
-#glfw
 add_subdirectory(libs/glfw)
-
-# glad
 add_subdirectory(libs/glad)
-
-# json
 include_directories(libs/json)
 add_subdirectory(libs/glm)
-
-#assimp
 add_subdirectory(libs/assimp)
-
 add_subdirectory(libs/stb)
 
-# rg-include
-add_subdirectory(rg-engine)
-
-set(LIBS glfw glad OpenGL::GL spdlog::spdlog glm rg-engine ${ASSIMP_LIBRARIES})
+set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES})
 
 ############## Sources ###############
 
-file(GLOB sources src/*.cpp)
-file(GLOB headers include/*.hpp)
+file(GLOB sources src/*.cpp rg/src/*.cpp)
+file(GLOB headers include/*.hpp rg/include/engine/*.hpp rg/include/engine/*.h)
 
 ################ Exec ################
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+target_include_directories(${PROJECT_NAME} PRIVATE rg/include)
 add_dependencies(${PROJECT_NAME} ${LIBS})
 
 # Define the source and destination directories

@@ -35,18 +35,18 @@ namespace rg {
     std::vector<Vertex> SOA_vertex_to_AOS(const VertexSOA &soa);
 
     // TODO(mspasic): add value operations so that meshes cleanup automatically after they are no longer needed
-    class Mesh : public DrawableElement {
+    class Mesh {
     public:
         static Mesh create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
                            const std::unordered_set<Texture *> &textures);
 
-        void initialize() override;
+        void initialize();
 
-        void draw(ShaderProgram *shader) override;
+        void draw(ShaderProgram *shader);
 
-        void destroy() override;
+        void destroy();
 
-        std::string_view name() const override {
+        std::string_view name() const {
             return "Mesh";
         }
 
