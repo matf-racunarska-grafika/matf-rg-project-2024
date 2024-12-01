@@ -436,7 +436,31 @@ namespace rg {
         // TODO(mspasic): draw meshes
     }
 
-    Texture Texture::create_from_file(std::filesystem::path path) {
+    void Mesh::destroy() {
+        glDeleteVertexArrays(1, &m_vao);
+    }
+
+    std::string_view Mesh::texture_type_to_uniform_name_convention(TextureType type) {
+        switch (type) {
+        case TextureType::Diffuse: return "texture_diffuse";
+        case TextureType::Specular: return "texture_specular";
+        case TextureType::Normal: return "texture_normal";
+        case TextureType::Height: return "texture_height";
+        default: RG_UNIMPLEMENTED("Unknown TextureType");
+        }
+    }
+
+    std::string_view texture_type_to_string(TextureType type) {
+        switch (type) {
+        case TextureType::Diffuse: return "Diffuse";
+        case TextureType::Specular: return "Specular";
+        case TextureType::Normal: return "Normal";
+        case TextureType::Height: return "Height";;
+        default: RG_SHOULD_NOT_REACH_HERE("Unknown TextureType");
+        }
+    }
+
+    Texture Texture::create_from_file(std::filesystem::path path, TextureType type) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);
 
@@ -467,7 +491,7 @@ namespace rg {
         } else {
             throw AssetLoadingError(std::format("Failed to load texture {}", path.string()));
         }
-        return Texture(texture_id);
+        return Texture(texture_id, type);
     }
 
     void Texture::initialize() {

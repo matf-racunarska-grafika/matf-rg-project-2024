@@ -184,7 +184,7 @@ namespace rg {
         auto &texture_data = m_textures[path];
         if (!texture_data) {
             spdlog::info("Loading texture: {}", path.string());
-            texture_data = std::make_unique<TextureData>(path, path.string(), Texture::create_from_file(path), type);
+            texture_data = std::make_unique<TextureData>(path, path.string(), Texture::create_from_file(path, type), type);
         }
         return &texture_data->texture;
     }
