@@ -52,10 +52,10 @@ protected:
     }
 
     void after_initialize() override {
-        auto entity_controller = rg::ControllerManager::singleton()->get<rg::EntityController>();
-        auto shader_controller = rg::ControllerManager::singleton()->get<rg::ShaderController>();
-        auto assets_controller = rg::ControllerManager::singleton()->get<rg::AssetsController>();
-        auto platform_controller = rg::ControllerManager::singleton()->get<rg::PlatformController>();
+        auto entity_controller = rg::ControllerManager::get<rg::EntityController>();
+        auto shader_controller = rg::ControllerManager::get<rg::ShaderController>();
+        auto assets_controller = rg::ControllerManager::get<rg::AssetsController>();
+        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
 
         platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(&m_camera, platform_controller));
 
@@ -66,7 +66,7 @@ protected:
     }
 
     bool loop() override {
-        const auto input = rg::ControllerManager::singleton()->get<rg::PlatformController>();
+        const auto input = rg::ControllerManager::get<rg::PlatformController>();
         if (input->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
         }
@@ -78,7 +78,7 @@ protected:
     }
 
     void update() override {
-        auto platform_controller = rg::ControllerManager::singleton()->get<rg::PlatformController>();
+        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
         update_camera();
         m_shader->use();
         glm::mat4 projection = glm::perspective(glm::radians(m_camera.Zoom),
@@ -99,7 +99,7 @@ protected:
 private:
 
     void update_camera() {
-        auto platform_controller = rg::ControllerManager::singleton()->get<rg::PlatformController>();
+        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
         float dt = platform_controller->dt();
         if (platform_controller->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
             m_camera.process_keyboard(rg::FORWARD, dt);

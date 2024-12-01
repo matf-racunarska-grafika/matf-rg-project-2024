@@ -269,7 +269,7 @@ namespace rg {
         m_platform_event_observer->on_keyboard(result);
     }
 
-    void PlatformController::_platform_on_scroll(double x, double y) const {)
+    void PlatformController::_platform_on_scroll(double x, double y) const {
         g_mouse_position.scroll = y;
         m_platform_event_observer->on_mouse(g_mouse_position);
     }
@@ -294,12 +294,12 @@ namespace rg {
 
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
-        rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_mouse(x, y);
+        rg::ControllerManager::get<PlatformController>()->_platform_on_mouse(x, y);
     }
 
     static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
         g_mouse_position.scroll = yoffset;
-        rg::ControllerManager::singleton()->get<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
+        rg::ControllerManager::get<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
     }
 
 

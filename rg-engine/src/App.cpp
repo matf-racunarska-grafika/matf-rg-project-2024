@@ -64,7 +64,7 @@ namespace rg {
     }
 
     void App::poll_events_() {
-        ControllerManager::singleton()->get<PlatformController>()->renderer()->begin_frame();
+        ControllerManager::get<PlatformController>()->renderer()->begin_frame();
         ControllerManager::singleton()->poll_events();
         poll_events();
     }
@@ -77,8 +77,8 @@ namespace rg {
     void App::draw_() {
         ControllerManager::singleton()->draw();
         draw();
-        ControllerManager::singleton()->get<PlatformController>()->renderer()->draw();
-        ControllerManager::singleton()->get<PlatformController>()->renderer()->end_frame();
+        ControllerManager::get<PlatformController>()->renderer()->draw();
+        ControllerManager::get<PlatformController>()->renderer()->end_frame();
     }
 
     void App::terminate_() {

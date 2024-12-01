@@ -15,10 +15,11 @@ namespace rg {
         static ControllerManager *singleton();
 
         template<typename TController>
-        TController *get(std::source_location location = std::source_location::current()) {
+        static TController *get(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
-            static TController *controller = create_if_absent<TController>();
-            RG_GUARANTEE(is_registered_controller(controller),
+            auto instance = singleton();
+            static TController *controller = singleton()->create_if_absent<TController>();
+            RG_GUARANTEE(instance->is_registered_controller(controller),
                          "Trying to get Controller: {} in file:{}:{}, before registering it. Call register_controller "
                          "first.",
                          controller->name(), location.file_name(), location.line());
