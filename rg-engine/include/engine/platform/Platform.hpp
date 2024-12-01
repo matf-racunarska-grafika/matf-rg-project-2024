@@ -206,9 +206,9 @@ namespace rg {
         friend class PlatformController;
     public:
         virtual ~Renderer() = default;
-        virtual void draw() = 0;
-        virtual void begin_frame() = 0;
         virtual void end_frame() = 0;
+        virtual void begin_frame() = 0;
+
     protected:
         virtual void initialize() = 0;
         virtual void terminate() = 0;

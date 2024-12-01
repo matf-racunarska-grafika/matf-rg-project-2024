@@ -51,7 +51,6 @@ namespace rg {
     public:
         void begin_frame() override;
         void end_frame() override;
-        void draw() override;
     protected:
         explicit OpenGLRenderer(WindowImpl *m_window) : m_window(m_window) {
         }
@@ -72,9 +71,6 @@ namespace rg {
     }
 
     void OpenGLRenderer::end_frame() {
-    }
-
-    void OpenGLRenderer::draw() {
         glfwSwapBuffers(m_window->handle);
     }
 

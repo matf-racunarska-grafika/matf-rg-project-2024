@@ -77,7 +77,6 @@ namespace rg {
     void App::draw_() {
         ControllerManager::singleton()->draw();
         draw();
-        ControllerManager::get<PlatformController>()->renderer()->draw();
         ControllerManager::get<PlatformController>()->renderer()->end_frame();
     }
 
