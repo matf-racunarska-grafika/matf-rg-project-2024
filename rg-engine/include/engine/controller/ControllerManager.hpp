@@ -3,9 +3,10 @@
 
 #ifndef MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
 #define MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
-#include "Controller.hpp"
+#include <engine/controller/Controller.hpp>
 #include <source_location>
 #include <type_traits>
+#include <algorithm>
 #include <engine/controller/EngineControllersSentinel.hpp>
 namespace rg {
     class ControllerManager {
