@@ -475,11 +475,29 @@ namespace rg {
 
         glBindVertexArray(0);
 
-        return Mesh(VAO, std::vector<Texture *>(range(textures)));
+        return {VAO, indices.size(), std::vector(range(textures))};
+    }
+
+    void Mesh::initialize() {
     }
 
     void Mesh::draw(ShaderProgram *shader) {
-        // TODO(mspasic): draw meshes
+        std::unordered_map<std::string_view, uint32_t> counts;
+        std::string uniform_name;
+        uniform_name.reserve(32);
+        for (int i = 0; i < m_textures.size(); i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            const auto& texture_type = texture_type_to_uniform_name_convention(m_textures[i]->type());
+            uniform_name.append(texture_type);
+            const auto count = (counts[texture_type] += 1);
+            uniform_name.append(std::to_string(count));
+            shader->set_int(uniform_name, i);
+            glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
+            uniform_name.clear();
+        }
+        glBindVertexArray(m_vao);
+        glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 
     void Mesh::destroy() {
