@@ -1,4 +1,6 @@
 #include <engine/render/AssetsController.hpp>
+#include <engine/util/Errors.hpp>
+#include <engine/util/Utils.hpp>
 #include <spdlog/spdlog.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
