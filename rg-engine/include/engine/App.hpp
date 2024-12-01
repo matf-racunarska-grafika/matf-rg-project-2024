@@ -25,6 +25,8 @@ namespace rg {
 
         virtual void after_initialize() = 0;
 
+        virtual void poll_events() = 0;
+
         virtual bool loop() = 0;
 
         virtual void update() = 0;
