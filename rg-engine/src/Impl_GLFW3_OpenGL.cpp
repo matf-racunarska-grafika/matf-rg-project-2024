@@ -5,18 +5,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
+
+#include <assimp/Importer.hpp>
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/render/Shader.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <spdlog/spdlog.h>
-#include <utility>
 #include <engine/render/Model.hpp>
 #include <engine/render/Texture.hpp>
 #include <engine/render/Mesh.hpp>
 
 
-#include <assimp/Importer.hpp>
+#include <spdlog/spdlog.h>
+#include <utility>
+
 namespace rg {
 
     /*
@@ -48,9 +50,9 @@ namespace rg {
     void PlatformController::initialize() {
         bool glfw_initialized = glfwInit();
         RG_GUARANTEE(glfw_initialized, "GLFW platform failed to initialize_controllers.");
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         Configuration::json &config = Configuration::config();
         int window_width = config["window"]["width"];
@@ -99,11 +101,9 @@ namespace rg {
     }
 
     void PlatformController::update() {
-
     }
 
     void PlatformController::draw() {
-        glfwSwapBuffers(m_window->handle);
     }
 
     int glfw_platform_action(GLFWwindow *window, int glfw_key_code) {
@@ -385,7 +385,7 @@ namespace rg {
         glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
         glCompileShader(shader_id);
         if (opengl_compilation_failed(shader_id)) {
-            throw ShaderCompilationError(std::format("Shader compilation {} failed:\n{}", m_shader_name,
+            throw ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type), m_shader_name,
                                                      opengl_get_compilation_error_message(shader_id)));
         }
         return shader_id;
@@ -476,13 +476,13 @@ namespace rg {
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), &indices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
@@ -595,9 +595,5 @@ namespace rg {
     }
 
 
-    struct MeshImpl {
-        uint32_t vao_id;
-    };
 
-    Mesh platform_initialize_mesh();
 }// namespace rg
