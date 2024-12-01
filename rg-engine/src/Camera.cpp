@@ -31,8 +31,7 @@ namespace rg {
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void Camera::process_keyboard(Camera_Movement direction, float deltaTime)
-    {
+    void Camera::process_keyboard(CameraMovement direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
             Position += Front * velocity;
