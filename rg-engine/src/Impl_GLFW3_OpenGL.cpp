@@ -46,6 +46,46 @@ namespace rg {
         }
     };
 
+    class OpenGLRenderer : public Renderer {
+        friend class PlatformController;
+    public:
+        void begin_frame() override;
+        void end_frame() override;
+        void draw() override;
+    protected:
+        explicit OpenGLRenderer(WindowImpl *m_window) : m_window(m_window) {
+        }
+        void initialize() override;
+        void terminate() override;
+        static std::unique_ptr<OpenGLRenderer> create(WindowImpl* window);
+        WindowImpl* m_window;
+    };
+
+    std::unique_ptr<OpenGLRenderer> OpenGLRenderer::create(WindowImpl *window) {
+        std::unique_ptr<OpenGLRenderer> renderer(new OpenGLRenderer(window));
+        return renderer;
+    }
+
+    void OpenGLRenderer::begin_frame() {
+        glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void OpenGLRenderer::end_frame() {
+    }
+
+    void OpenGLRenderer::draw() {
+        glfwSwapBuffers(m_window->handle);
+    }
+
+    void OpenGLRenderer::initialize() {
+        glViewport(0, 0, m_window->width, m_window->height);
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void OpenGLRenderer::terminate() {
+
+    }
 
     void PlatformController::initialize() {
         bool glfw_initialized = glfwInit();
@@ -82,6 +122,7 @@ namespace rg {
     }
 
     void PlatformController::terminate() {
+        m_renderer->terminate();
         glfwDestroyWindow(m_window->handle);
         delete m_window;
         m_window = nullptr;
@@ -89,6 +130,10 @@ namespace rg {
     }
 
     bool PlatformController::loop() {
+        m_frame_time.previous = m_frame_time.current;
+        m_frame_time.current = glfwGetTime();
+        m_frame_time.dt = m_frame_time.current - m_frame_time.previous;
+
         return !glfwWindowShouldClose(m_window->handle);
     }
 

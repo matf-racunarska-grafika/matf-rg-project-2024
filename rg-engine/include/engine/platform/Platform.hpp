@@ -187,6 +187,12 @@ namespace rg {
         double scroll;
     };
 
+    struct FrameTime {
+        float dt;
+        float previous;
+        float current;
+    };
+
     class WindowImpl;
 
     class PlatformEventObserver {
@@ -196,8 +202,21 @@ namespace rg {
         virtual ~PlatformEventObserver() = default;
     };
 
+    class Renderer {
+        friend class PlatformController;
+    public:
+        virtual ~Renderer() = default;
+        virtual void draw() = 0;
+        virtual void begin_frame() = 0;
+        virtual void end_frame() = 0;
+    protected:
+        virtual void initialize() = 0;
+        virtual void terminate() = 0;
+    };
+
     class PlatformController : public Controller {
         friend class ControllerManager;
+        friend class Renderer;
     public:
         const Key &key(KeyId key) const;
 
@@ -216,6 +235,11 @@ namespace rg {
         const std::string_view shader_language() const;
 
         void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
+
+        FrameTime frame_time() const { return m_frame_time; }
+        float dt() const { return m_frame_time.dt; }
+
+        Renderer* renderer() { return m_renderer.get(); }
 
         void _platform_on_mouse(double x, double y) const;
         void _platform_on_keyboard(int key, int action);
@@ -239,12 +263,14 @@ namespace rg {
 
         static std::unique_ptr<PlatformController> create();
 
+        FrameTime m_frame_time;
+
         WindowImpl *m_window;
         MousePosition m_mouse;
         std::vector<Key> m_keys;
         std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
-
         void update_key(Key &key_data) const;
+        std::unique_ptr<Renderer> m_renderer;
     };
 
 
