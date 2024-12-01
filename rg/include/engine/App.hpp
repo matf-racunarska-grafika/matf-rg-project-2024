@@ -4,12 +4,10 @@
 
 #ifndef MATF_RG_ENGINE_ENGINE_H
 #define MATF_RG_ENGINE_ENGINE_H
-
-#include <declarations.hpp>
-#include <engine/util/Utils.hpp>
 #include <memory>
-
 namespace rg {
+    class EngineError;
+    class UserError;
     class App {
     public:
         /**
@@ -21,9 +19,7 @@ namespace rg {
         virtual ~App() = default;
 
     protected:
-        virtual void initialize() = 0;
-
-        virtual void after_initialize() = 0;
+        virtual void initialize(int argc, char **argv) = 0;
 
         virtual void poll_events() = 0;
 
@@ -36,21 +32,6 @@ namespace rg {
         virtual void terminate() = 0;
 
         virtual void handle_error(const UserError &);
-
-    private:
-        void initialize_(int argc, char **argv);
-
-        void after_initialize_();
-
-        bool loop_();
-
-        void poll_events_();
-
-        void update_();
-
-        void draw_();
-
-        void terminate_();
 
         void handle_error_(const EngineError &e);
     };

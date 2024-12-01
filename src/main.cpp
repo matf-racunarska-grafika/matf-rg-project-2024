@@ -46,22 +46,45 @@ private:
 
 class StudentsApp : public rg::App {
 protected:
-    void initialize() override {
+    void initialize(int argc, char** argv) override {
+        spdlog::info("App::initialize_controllers::begin");
+        rg::ArgParser::instance()->initialize(argc, argv);
+        rg::Configuration::instance()->initialize();
 
-    }
+        // register engine controller
+        auto controller_manager = rg::ControllerManager::singleton();
+        controller_manager->initialize();
 
-    void after_initialize() override {
-        auto shader_controller = rg::ControllerManager::get<rg::ShaderController>();
-        auto assets_controller = rg::ControllerManager::get<rg::AssetsController>();
-        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
+        auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
+        auto shader_controller = controller_manager->register_controller<rg::ShaderController>();
+        auto assets_controller = controller_manager->register_controller<rg::AssetsController>();
+
+        platform_controller->before(shader_controller);
+        assets_controller->after(shader_controller);
+        assets_controller->after(platform_controller);
+
+        // User initialization
+
+        /*
+         * Controller initialization is done after user-defined App::initialize because
+         * user can register custom services in App::initialize_controllers.
+         */
+        controller_manager->initialize_controllers();
+        spdlog::info("App::initialize_controllers::end");
 
         platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(&m_camera, platform_controller));
-
         m_shader = shader_controller->get("basic");
         m_model = assets_controller->model("backpack").value();
     }
 
     bool loop() override {
+        /*
+         * Any controller can stop the rendering loop.
+         */
+        if (!rg::ControllerManager::singleton()->loop()) {
+            return false;
+        }
+
         const auto input = rg::ControllerManager::get<rg::PlatformController>();
         if (input->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
@@ -70,10 +93,13 @@ protected:
     }
 
     void poll_events() override {
-
+        rg::ControllerManager::get<rg::PlatformController>()->renderer()->begin_frame();
+        rg::ControllerManager::singleton()->poll_events();
     }
 
     void update() override {
+        rg::ControllerManager::singleton()->update();
+
         auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
         update_camera();
         m_shader->use();
@@ -87,10 +113,15 @@ protected:
     }
 
     void draw() override {
+        rg::ControllerManager::singleton()->draw();
+
         m_model->draw(m_shader);
+
+        rg::ControllerManager::get<rg::PlatformController>()->renderer()->end_frame();
     }
 
     void terminate() override {
+        rg::ControllerManager::singleton()->terminate();
     }
 
 private:

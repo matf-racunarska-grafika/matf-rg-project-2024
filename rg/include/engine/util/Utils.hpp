@@ -113,8 +113,8 @@ namespace rg {
 
         static Configuration *instance();
 
-    private:
         void initialize();
+    private:
         static std::filesystem::path get_config_path();
         static std::filesystem::path create_default();
         constexpr static std::string_view CONFIG_FILE_NAME = "config.json";
@@ -150,8 +150,8 @@ namespace rg {
             }
         }
 
-    private:
         void initialize(int argc, char **argv);
+    private:
 
         std::string get_arg_value(std::string_view arg_name);
 
