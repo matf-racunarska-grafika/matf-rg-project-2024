@@ -1,10 +1,10 @@
 #include "engine/controller/Controller.hpp"
-#include "glad/glad.h"
 
 #include <engine/Engine.hpp>
 #include <engine/render/Camera.hpp>
 #include <memory>
 #include <spdlog/spdlog.h>
+#include <OpenGLRenderer.hpp>
 /**
  * Student implements rg::App for their application.
  */
@@ -63,7 +63,6 @@ protected:
         assets_controller->after(shader_controller);
         assets_controller->after(platform_controller);
 
-        // User initialization
 
         /*
          * Controller initialization is done after user-defined App::initialize because
@@ -73,8 +72,19 @@ protected:
         spdlog::info("App::initialize_controllers::end");
 
         platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(&m_camera, platform_controller));
+
+        // User initialization
+        m_renderer = OpenGLRenderer::instance();
+        m_renderer->initialize();
+
         m_shader = shader_controller->get("basic");
-        m_model = assets_controller->model("backpack").value();
+        auto model_result = assets_controller->model("backpack");
+        if (model_result.has_value()) {
+            m_model = model_result.value();
+        } else {
+            throw model_result.error();
+        }
+
     }
 
     bool loop() override {
@@ -93,8 +103,8 @@ protected:
     }
 
     void poll_events() override {
-        rg::ControllerManager::get<rg::PlatformController>()->renderer()->begin_frame();
         rg::ControllerManager::singleton()->poll_events();
+        m_renderer->begin_frame();
     }
 
     void update() override {
@@ -117,10 +127,11 @@ protected:
 
         m_model->draw(m_shader);
 
-        rg::ControllerManager::get<rg::PlatformController>()->renderer()->end_frame();
+        m_renderer->end_frame();
     }
 
     void terminate() override {
+        m_renderer->terminate();
         rg::ControllerManager::singleton()->terminate();
     }
 
@@ -143,7 +154,7 @@ private:
         }
 
     }
-
+    OpenGLRenderer* m_renderer;
     rg::Camera m_camera{glm::vec3(0.0f, 0.0f, 3.0f)};
     rg::ShaderProgram *m_shader;
     rg::Model *m_model;

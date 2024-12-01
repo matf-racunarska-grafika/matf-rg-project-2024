@@ -5,9 +5,7 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <array>
 #include <engine/controller/Controller.hpp>
-#include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 #include <memory>
 #include <string>
@@ -202,18 +200,6 @@ namespace rg {
         virtual ~PlatformEventObserver() = default;
     };
 
-    class Renderer {
-        friend class PlatformController;
-    public:
-        virtual ~Renderer() = default;
-        virtual void end_frame() = 0;
-        virtual void begin_frame() = 0;
-
-    protected:
-        virtual void initialize() = 0;
-        virtual void terminate() = 0;
-    };
-
     class PlatformController : public Controller {
         friend class ControllerManager;
         friend class Renderer;
@@ -239,13 +225,12 @@ namespace rg {
         FrameTime frame_time() const { return m_frame_time; }
         float dt() const { return m_frame_time.dt; }
 
-        Renderer* renderer() { return m_renderer.get(); }
-
         void _platform_on_mouse(double x, double y) const;
         void _platform_on_keyboard(int key, int action);
         void _platform_on_scroll(double x, double y) const;
         void _platform_on_framebuffer_resize(int width, int height) const;
-
+        void _platform_begin_frame();
+        void _platform_end_frame();
         void set_enable_cursor(bool enabled);
 
         WindowImpl* _window_impl() const { return m_window; }
@@ -253,7 +238,7 @@ namespace rg {
         void initialize() override;
 
         void update() override;
-        void draw();
+        void draw() override;
 
         void terminate() override;
 
@@ -270,7 +255,6 @@ namespace rg {
         std::vector<Key> m_keys;
         std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
         void update_key(Key &key_data) const;
-        std::unique_ptr<Renderer> m_renderer;
     };
 
 

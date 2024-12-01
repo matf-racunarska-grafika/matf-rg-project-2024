@@ -46,43 +46,6 @@ namespace rg {
         }
     };
 
-    class OpenGLRenderer : public Renderer {
-        friend class PlatformController;
-    public:
-        void begin_frame() override;
-        void end_frame() override;
-    protected:
-        explicit OpenGLRenderer(WindowImpl *m_window) : m_window(m_window) {
-        }
-        void initialize() override;
-        void terminate() override;
-        static std::unique_ptr<OpenGLRenderer> create(WindowImpl* window);
-        WindowImpl* m_window;
-    };
-
-    std::unique_ptr<OpenGLRenderer> OpenGLRenderer::create(WindowImpl *window) {
-        std::unique_ptr<OpenGLRenderer> renderer(new OpenGLRenderer(window));
-        return renderer;
-    }
-
-    void OpenGLRenderer::begin_frame() {
-        glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
-
-    void OpenGLRenderer::end_frame() {
-        glfwSwapBuffers(m_window->handle);
-    }
-
-    void OpenGLRenderer::initialize() {
-        glViewport(0, 0, m_window->width, m_window->height);
-        glEnable(GL_DEPTH_TEST);
-    }
-
-    void OpenGLRenderer::terminate() {
-
-    }
-
     void PlatformController::initialize() {
         if (glfwPlatformSupported(GLFW_PLATFORM_X11)) {
             glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
@@ -114,8 +77,6 @@ namespace rg {
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "GLAD failed to init!");
 
-
-
         int major, minor, revision;
         glfwGetVersion(&major, &minor, &revision);
         spdlog::info("Platform[GLFW {}.{}.{}]", major, minor, revision);
@@ -125,13 +86,9 @@ namespace rg {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
         register_platform_event_observer(std::make_unique<PlatformEventObserver>());
-        m_renderer = OpenGLRenderer::create(m_window);
-        m_renderer->initialize();
     }
 
     void PlatformController::terminate() {
-        m_renderer->terminate();
-        m_renderer.reset(nullptr);
         m_platform_event_observer.reset(nullptr);
         glfwDestroyWindow(m_window->handle);
         delete m_window;
@@ -287,6 +244,15 @@ namespace rg {
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) const {
         m_window->width = width;
         m_window->height = height;
+    }
+
+
+    void PlatformController::_platform_begin_frame() {
+
+    }
+
+    void PlatformController::_platform_end_frame() {
+        glfwSwapBuffers(m_window->handle);
     }
 
     void PlatformController::set_enable_cursor(bool enabled) {

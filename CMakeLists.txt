@@ -23,12 +23,12 @@ set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES})
 ############## Sources ###############
 
 file(GLOB sources src/*.cpp rg/src/*.cpp)
-file(GLOB headers include/*.hpp rg/include/engine/*.hpp rg/include/engine/*.h)
+file(GLOB headers src/*.hpp include/*.hpp rg/include/engine/*.hpp rg/include/engine/*.h)
 
 ################ Exec ################
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
-target_include_directories(${PROJECT_NAME} PRIVATE rg/include)
+target_include_directories(${PROJECT_NAME} PRIVATE rg/include include/)
 add_dependencies(${PROJECT_NAME} ${LIBS})
 
 # Define the source and destination directories
