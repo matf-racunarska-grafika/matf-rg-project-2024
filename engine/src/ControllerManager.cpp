@@ -15,15 +15,13 @@ namespace rg {
     }
 
     void ControllerManager::initialize() {
-        register_controller<EngineControllersSentinel>();
-    }
-
-    void ControllerManager::initialize_controllers() {
         top_sort();
         for (auto controller: m_controllers) {
             spdlog::info("{}::initialize", controller->name());
             controller->initialize();
+            controller->mark_initialized();
         }
+        m_controllers_initialized = true;
     }
 
     void ControllerManager::terminate() {
@@ -32,6 +30,12 @@ namespace rg {
             auto controller = m_controllers[i];
             controller->terminate();
             spdlog::info("{}::terminate", controller->name());
+        }
+    }
+
+    void ControllerManager::before_loop() {
+        for (auto controller: m_controllers) {
+            controller->before_loop();
         }
     }
 

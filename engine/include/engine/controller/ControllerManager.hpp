@@ -22,6 +22,10 @@ namespace rg {
             static_assert(std::is_base_of_v<Controller, TController>);
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
+            RG_GUARANTEE(controller->is_initialized(),
+                         "Trying to get Controller: {} in file:{}:{}, before it's been initialized. Call ControllerManager::initialize_controllers first"
+                         "first.",
+                         controller->name(), location.file_name(), location.line());
             RG_GUARANTEE(manager->is_registered_controller(controller),
                          "Trying to get Controller: {} in file:{}:{}, before registering it. Call register_controller "
                          "first.",
@@ -33,6 +37,9 @@ namespace rg {
         TController *register_controller(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
             TController *controller = create_if_absent<TController>();
+            RG_GUARANTEE(!m_controllers_initialized,
+                         "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register a controller before calling initialize_controllers()",
+                         controller->name(), location.file_name(), location.line());
             RG_GUARANTEE(!is_registered_controller(controller),
                          "Trying to register Controller: `{}` twice in file: {}:{}. Please make "
                          "sure that every Controller is registered exactly once.",
@@ -43,11 +50,11 @@ namespace rg {
 
         void initialize();
 
-        void initialize_controllers();
-
         void poll_events();
 
         void terminate();
+
+        void before_loop();
 
         bool loop();
 
@@ -77,6 +84,7 @@ namespace rg {
         }
 
         std::vector<Controller *> m_controllers;
+        bool m_controllers_initialized{false};
     };
 } // namespace rg
 #endif//MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
