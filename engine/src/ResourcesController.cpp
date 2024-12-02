@@ -12,16 +12,42 @@ namespace rg {
 
     void ResourcesController::initialize() {
         load_models();
+        load_textures();
+        load_skyboxes();
     }
 
     void ResourcesController::load_models() {
         spdlog::info("load_models::begin");
         const auto &config = Configuration::config();
-        m_models_path      = config["resources"]["models_path"].get<std::string>();
-        for (const auto &model_entry: config["resources"]["models"].items()) {
-            load_model(model_entry.key());
+        m_models_path      = "resources/models/";
+        if (exists(m_models_path)) {
+            for (const auto &model_entry: config["resources"]["models"].items()) {
+                load_model(model_entry.key());
+            }
         }
         spdlog::info("load_models::end");
+    }
+
+    void ResourcesController::load_textures() {
+        spdlog::info("load_textures::begin");
+        m_textures_path = "resources/textures/";
+        if (exists(m_textures_path)) {
+            for (const auto &texture_entry: std::filesystem::directory_iterator(m_textures_path)) {
+                // load_texture(texture_entry.path());
+            }
+        }
+        spdlog::info("load_textures::end");
+    }
+
+    void ResourcesController::load_skyboxes() {
+        spdlog::info("load_skyboxes::begin");
+        m_skyboxes_path = "resources/skyboxes/";
+        if (exists(m_skyboxes_path)) {
+            for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
+                // load_texture(sky_boxes_entry.path(), TextureType::SkyBox);
+            }
+        }
+        spdlog::info("load_skyboxes::end");
     }
 
     void ResourcesController::terminate() {
@@ -32,19 +58,18 @@ namespace rg {
         if (!model_data) {
             model_data = load_model(model_name);
         }
-        return &model_data->model;
+        return model_data.get();
     }
 
     Texture *ResourcesController::texture(const std::string &texture_name) {
         auto &config = Configuration::config();
-        std::filesystem::path texture_path(config["resources"]["textures_path"].get<std::string>());
-        return load_from_file_if_absent(texture_path / texture_name, TextureType::Standalone);
+        std::filesystem::path texture_path(m_textures_path);
+        return load_from_file_if_absent(texture_path / texture_name, TextureType::Regular);
     }
 
     Texture *ResourcesController::skybox(const std::string &texture_name) {
         auto &config = Configuration::config();
-        std::filesystem::path texture_path(config["resources"]["textures_path"].get<std::string>());
-        return load_from_file_if_absent(texture_path / texture_name, TextureType::CubeMap);
+        return load_from_file_if_absent(m_skyboxes_path / texture_name, TextureType::SkyBox);
     }
 
     struct SceneProcessingResult {
@@ -83,7 +108,8 @@ namespace rg {
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
     };
 
-    std::unique_ptr<ResourcesController::ModelData> ResourcesController::load_model(const std::string &model_name) {
+    std::unique_ptr<rg::Model> ResourcesController::load_model(
+            const std::string &model_name) {
         auto &config = Configuration::config();
         if (!config["resources"]["models"].contains(model_name)) {
             throw ConfigurationError(std::format(
@@ -111,7 +137,15 @@ namespace rg {
         }
 
         SceneProcessingResult result = AssimpSceneProcessor::process_scene(this, scene, model_path);
-        return std::make_unique<ModelData>(model_path, model_name, Model(std::move(result.meshes)));
+        return std::make_unique<Model>(Model(std::move(result.meshes), model_path, model_name));
+    }
+
+    std::unique_ptr<Texture> ResourcesController::load_texture(
+            const std::filesystem::path &path,
+            TextureType type, bool flip_uvs) {
+        spdlog::info("Loading texture: {}", path.string());
+        return std::make_unique<Texture>(Texture::create_from_file(path, type, flip_uvs));
+
     }
 
     SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller,
@@ -216,18 +250,13 @@ namespace rg {
         }
     }
 
-    Texture *ResourcesController::load_from_file_if_absent(const std::filesystem::path &path, TextureType type) {
-        auto &texture_data = m_textures[path];
-        if (!texture_data) {
-            spdlog::info("Loading texture: {}", path.string());
-            texture_data = std::make_unique<TextureData>(path, path.string(), Texture::create_from_file(path, type),
-                                                         type);
+    Texture *ResourcesController::load_from_file_if_absent(
+            const std::filesystem::path &path, TextureType type,
+            bool flip_uvs) {
+        auto &result = m_textures[path];
+        if (!result) {
+            result = load_texture(path, type, flip_uvs);
         }
-        return &texture_data->texture;
-    }
-
-    ResourcesController::TextureData::TextureData(std::filesystem::path path, std::string name, Texture texture,
-                                                  TextureType texture_type) :
-    path(std::move(path)), name(std::move(name)), texture(std::move(texture)), texture_type(texture_type) {
+        return result.get();
     }
 } // namespace rg

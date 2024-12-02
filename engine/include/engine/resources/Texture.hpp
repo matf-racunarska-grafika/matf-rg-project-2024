@@ -6,17 +6,18 @@
 
 #include <string_view>
 #include <filesystem>
+#include <utility>
 
 namespace rg {
     class ShaderProgram;
 
     enum class TextureType {
-        Standalone,
+        Regular,
         Diffuse,
         Specular,
         Normal,
         Height,
-        CubeMap,
+        SkyBox,
     };
 
     class Texture {
@@ -25,7 +26,7 @@ namespace rg {
     public:
         static std::string_view uniform_name_convention(TextureType type);
 
-        static Texture create_from_file(std::filesystem::path path, TextureType type);
+        static Texture create_from_file(std::filesystem::path path, TextureType type, bool flip_uvs);
 
         void destroy();
 
@@ -37,17 +38,30 @@ namespace rg {
             return m_id;
         }
 
-    private:
-        Texture(uint32_t id, TextureType type) : m_id(id)
-                                             , m_type(type) {
+        const std::filesystem::path &path() const {
+            return m_path;
         }
 
-        static uint32_t load_regular_texture(std::filesystem::path path);
+        const std::string &name() const {
+            return m_name;
+        }
 
-        static uint32_t load_cubemap_texture(std::filesystem::path path);
+    private:
+        Texture(uint32_t id, TextureType type, std::filesystem::path path, std::string name)
+        : m_id(id)
+      , m_type(type)
+      , m_path(std::move(path))
+      , m_name(std::move(name)) {
+        }
+
+        static uint32_t load_regular_texture(std::filesystem::path path, bool flip_uvs);
+
+        static uint32_t load_cubemap_texture(std::filesystem::path path, bool flip_uvs);
 
         uint32_t m_id;
         TextureType m_type;
+        std::filesystem::path m_path;
+        std::string m_name;
     };
 } // namespace rg
 #endif//MATF_RG_PROJECT_TEXTURE_HPP

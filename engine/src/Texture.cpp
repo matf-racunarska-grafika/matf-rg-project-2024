@@ -17,23 +17,24 @@ namespace rg {
         case TextureType::Specular: return "Specular";
         case TextureType::Normal: return "Normal";
         case TextureType::Height: return "Height";
-        case TextureType::CubeMap: return "CubeMap";
+        case TextureType::SkyBox: return "CubeMap";
         default: RG_SHOULD_NOT_REACH_HERE("Unknown TextureType");
         }
     }
 
-    Texture Texture::create_from_file(std::filesystem::path path, TextureType type) {
-        if (type == TextureType::CubeMap) {
-            return {load_cubemap_texture(path), type};
+    Texture Texture::create_from_file(std::filesystem::path path, TextureType type, bool flip_uvs) {
+        if (type == TextureType::SkyBox) {
+            return {load_cubemap_texture(path, flip_uvs), type, path, path.stem()};
         }
-        return {load_regular_texture(path), type};
+        return {load_regular_texture(path, flip_uvs), type, path, path.stem()};
     }
 
-    uint32_t Texture::load_regular_texture(std::filesystem::path path) {
+    uint32_t Texture::load_regular_texture(std::filesystem::path path, bool flip_uvs) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);
 
         int32_t width, height, nr_components;
+        stbi_set_flip_vertically_on_load(flip_uvs);
         uint8_t *data = stbi_load(path.c_str(), &width, &height, &nr_components, 0);
         defer {
             stbi_image_free(data);
@@ -83,7 +84,7 @@ namespace rg {
         }
     }
 
-    uint32_t Texture::load_cubemap_texture(std::filesystem::path path) {
+    uint32_t Texture::load_cubemap_texture(std::filesystem::path path, bool flip_uvs) {
         RG_GUARANTEE(std::filesystem::is_directory(path),
                      "Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap")
         ;
@@ -93,6 +94,7 @@ namespace rg {
 
         int width, height, nrChannels;
         for (const auto &file: std::filesystem::directory_iterator(path)) {
+            stbi_set_flip_vertically_on_load(flip_uvs);
             unsigned char *data = stbi_load(absolute(file).c_str(), &width, &height, &nrChannels, 0);
             if (data) {
                 uint32_t i = face_index(file.path().stem().c_str());
@@ -123,7 +125,7 @@ namespace rg {
         case TextureType::Specular: return "texture_specular";
         case TextureType::Normal: return "texture_normal";
         case TextureType::Height: return "texture_height";
-        case TextureType::CubeMap: return "texture_cubemap";
+        case TextureType::SkyBox: return "texture_cubemap";
         default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
         }
     }

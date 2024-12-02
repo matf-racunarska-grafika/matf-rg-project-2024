@@ -42,13 +42,11 @@ namespace rg {
 
     nlohmann::json Configuration::create_default() {
         json default_config;
-        default_config["window"]["width"]            = 800;
-        default_config["window"]["height"]           = 600;
-        default_config["window"]["title"]            = "Hello, window!";
-        default_config["resources"]["models_path"]   = "resources/models";
-        default_config["resources"]["textures_path"] = "resources/textures";
-        default_config["resources"]["shaders_path"]  = "resources/shaders";
-        default_config["resources"]["flip_uvs"]      = {};
+        default_config["window"]["width"]           = 800;
+        default_config["window"]["height"]          = 600;
+        default_config["window"]["title"]           = "Hello, window!";
+        default_config["resources"]["shaders_path"] = "resources/shaders";
+        default_config["resources"]["flip_uvs"]     = {};
         return default_config;
     }
 
