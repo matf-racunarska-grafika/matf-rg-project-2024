@@ -7,14 +7,25 @@
 #include <assimp/postprocess.h>
 #include <unordered_set>
 #include <utility>
-#include <engine/Engine.hpp>
 
 namespace rg {
 
     void ResourcesController::initialize() {
-        const auto &config       = Configuration::config();
-        m_models_filesystem_path = config["assets"]["models_path"].get<std::string>();
+        load_models();
+        load_textures();
+        load_shaders();
     }
+
+    void ResourcesController::load_models() {
+        spdlog::info("load_models::begin");
+        const auto &config = Configuration::config();
+        m_models_path      = config["resources"]["models_path"].get<std::string>();
+        for (const auto &model_entry: config["resources"]["models"].items()) {
+            load_model(model_entry.key());
+        }
+        spdlog::info("load_models::end");
+    }
+
 
     void ResourcesController::terminate() {
     }
@@ -29,13 +40,13 @@ namespace rg {
 
     Texture *ResourcesController::texture(const std::string &texture_name) {
         auto &config = Configuration::config();
-        std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
+        std::filesystem::path texture_path(config["resources"]["textures_path"].get<std::string>());
         return load_from_file_if_absent(texture_path / texture_name, TextureType::Standalone);
     }
 
     Texture *ResourcesController::skybox(const std::string &texture_name) {
         auto &config = Configuration::config();
-        std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
+        std::filesystem::path texture_path(config["resources"]["textures_path"].get<std::string>());
         return load_from_file_if_absent(texture_path / texture_name, TextureType::CubeMap);
     }
 
@@ -75,26 +86,35 @@ namespace rg {
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
     };
 
-    std::unique_ptr<rg::ResourcesController::ModelData> ResourcesController::load_model(const std::string &model_name) {
-        auto &config     = Configuration::config();
-        auto model_data  = std::make_unique<ModelData>();
-        model_data->name = model_name;
-        model_data->path = m_models_filesystem_path /
-                           std::filesystem::path(config["assets"]["models"][model_name]["path"].get<std::string>());
-        spdlog::info("load_model({}, {})", model_data->name, model_data->path.string());
+    std::unique_ptr<ResourcesController::ModelData> ResourcesController::load_model(const std::string &model_name) {
+        auto &config = Configuration::config();
+        if (!config["resources"]["models"].contains(model_name)) {
+            throw ConfigurationError(std::format(
+                    "No model ({}) specify in config.json. Please add the model to the config.json.",
+                    model_name));
+        }
+        std::filesystem::path model_path = m_models_path /
+                                           std::filesystem::path(
+                                                   config["resources"]["models"][model_name]["path"].get<
+                                                       std::string>());
 
         Assimp::Importer importer;
-        const aiScene *scene =
-                importer.ReadFile(model_data->path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
-                                                    aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            throw AssetLoadingError("Assimp error while reading model. ", model_data->path, model_data->name);
+        int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
+                    aiProcess_CalcTangentSpace;
+        if (config["resources"]["models"][model_name].value<bool>("flip_uvs", false)) {
+            flags |= aiProcess_FlipUVs;
         }
 
-        SceneProcessingResult result = AssimpSceneProcessor::process_scene(this, scene, model_data->path);
-        model_data->model.attach_meshes(std::move(result.meshes));
-        return model_data;
+        spdlog::info("load_model({}, {})", model_name, model_path.string());
+        const aiScene *scene =
+                importer.ReadFile(model_path, flags);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+            throw AssetLoadingError("Assimp error while reading model. ", model_path, model_name);
+        }
+
+        SceneProcessingResult result = AssimpSceneProcessor::process_scene(this, scene, model_path);
+        return std::make_unique<ModelData>(model_path, model_name, Model(std::move(result.meshes)));
     }
 
     SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller,

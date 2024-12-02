@@ -32,10 +32,6 @@ namespace rg {
     private:
         void load_models();
 
-        void load_textures();
-
-        void load_shaders();
-
         void initialize() override;
 
         void terminate() override;
