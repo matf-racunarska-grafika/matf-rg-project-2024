@@ -20,10 +20,10 @@ namespace rg {
                                       m_shaders[name] = std::make_unique<ShaderProgram>(shader_program);
                                   },
                                   [](const ShaderCompilationError &error) {
-                                      spdlog::error(error.report());
+                                        throw ShaderCompilationError(error);
                                   },
                                   [](const FileNotFoundError &error) {
-                                      spdlog::error(error.report());
+                                        throw FileNotFoundError(error);
                                   }},
                        compilation_result);
         }
