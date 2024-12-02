@@ -8,6 +8,7 @@
 #include <source_location>
 #include <type_traits>
 #include <algorithm>
+#include <unordered_set>
 
 namespace rg {
     class ControllerManager {
@@ -53,6 +54,16 @@ namespace rg {
         void update();
 
         void draw();
+
+        void top_sort();
+
+        void top_sort_util(Controller *controller, std::vector<Controller *> &stack,
+                           std::unordered_set<Controller *> &visited);
+
+        bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
+                                           std::unordered_set<Controller *> &path);
+
+        bool has_cycle(const std::vector<Controller *> &controllers);
 
     private:
         template<typename TController>

@@ -9,8 +9,6 @@
 //
 namespace rg {
 
-    void top_sort(std::vector<Controller *> &controllers);
-
     ControllerManager *ControllerManager::instance() {
         static std::unique_ptr<ControllerManager> provider = std::make_unique<ControllerManager>();
         return provider.get();
@@ -21,7 +19,7 @@ namespace rg {
     }
 
     void ControllerManager::initialize_controllers() {
-        top_sort(m_controllers);
+        top_sort();
         for (auto controller: m_controllers) {
             spdlog::info("{}::initialize", controller->name());
             controller->initialize();
@@ -29,14 +27,12 @@ namespace rg {
     }
 
     void ControllerManager::terminate() {
-        spdlog::info("ControllerManager::terminate::begin");
         int size = static_cast<int>(m_controllers.size()) - 1;
         for (int i = std::max(size, 0); i >= 0; --i) {
             auto controller = m_controllers[i];
             controller->terminate();
             spdlog::info("{}::terminate", controller->name());
         }
-        spdlog::info("ControllerManager::terminate::end");
     }
 
     bool ControllerManager::loop() {
@@ -66,29 +62,23 @@ namespace rg {
         }
     }
 
-    // part of the controller manager, controller manager contains the controller graph
-    void top_sort_util(Controller *controller, std::vector<Controller *> &stack,
-                       std::unordered_set<Controller *> &visited);
-
-    bool has_cycle(const std::vector<Controller *> &controllers);
-
-    void top_sort(std::vector<Controller *> &controllers) {
-        RG_GUARANTEE(!has_cycle(controllers), "Controller graph has a cycle!");
+    void ControllerManager::top_sort() {
+        RG_GUARANTEE(!has_cycle(m_controllers), "Controller graph has a cycle!");
         std::unordered_set<Controller *> visited;
         std::vector<Controller *> stack;
-        for (auto controller: controllers) {
+        for (auto controller : m_controllers) {
             if (!visited.contains(controller)) {
                 top_sort_util(controller, stack, visited);
             }
         }
-        RG_GUARANTEE(visited.size() == controllers.size(), "Not all controller were visited.");
-        RG_GUARANTEE(stack.size() == controllers.size(), "Not the same size.");
+        RG_GUARANTEE(visited.size() == m_controllers.size(), "Not all controller were visited.");
+        RG_GUARANTEE(stack.size() == m_controllers.size(), "Not the same size.");
 
         std::reverse(std::begin(stack), std::end(stack));
-        controllers = std::move(stack);
+        m_controllers = std::move(stack);
     }
 
-    void top_sort_util(Controller *controller, std::vector<Controller *> &stack,
+    void ControllerManager::top_sort_util(Controller *controller, std::vector<Controller *> &stack,
                        std::unordered_set<Controller *> &visited) {
         visited.emplace(controller);
 
@@ -101,10 +91,7 @@ namespace rg {
         stack.push_back(controller);
     }
 
-    bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
-                                       std::unordered_set<Controller *> &path);
-
-    bool has_cycle(const std::vector<Controller *> &controllers) {
+    bool ControllerManager::has_cycle(const std::vector<Controller *> &controllers) {
         std::unordered_set<Controller *> visited;
         std::unordered_set<Controller *> path;
         for (Controller *root: controllers) {
@@ -117,7 +104,7 @@ namespace rg {
         return false;
     }
 
-    bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
+    bool ControllerManager::dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
                                        std::unordered_set<Controller *> &path) {
         visited.emplace(current);
         path.emplace(current);
