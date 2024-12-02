@@ -1,4 +1,4 @@
-#include <engine/render/AssetsController.hpp>
+#include <engine/render/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 #include <spdlog/spdlog.h>
@@ -7,6 +7,7 @@
 #include <assimp/postprocess.h>
 #include <unordered_set>
 #include <utility>
+#include <engine/Engine.hpp>
 
 namespace rg {
 
@@ -193,7 +194,8 @@ namespace rg {
         case aiTextureType_SPECULAR: return TextureType::Specular;
         case aiTextureType_HEIGHT: return TextureType::Height;
         case aiTextureType_NORMALS: return TextureType::Normal;
-        default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}", static_cast<int>(type));
+        default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}",
+                                          static_cast<int>(type));
         }
     }
 

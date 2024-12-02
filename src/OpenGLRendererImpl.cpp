@@ -7,7 +7,7 @@
 #include <OpenGLRenderer.hpp>
 #include <engine/controller/ControllerManager.hpp>
 #include <engine/platform/Platform.hpp>
-#include <engine/render/AssetsController.hpp>
+#include <engine/render/ResourcesController.hpp>
 #include <engine/render/Shader.hpp>
 #include <engine/render/ShaderController.hpp>
 #include <engine/render/Texture.hpp>

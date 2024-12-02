@@ -11,7 +11,7 @@
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
 
-#include <engine/render/AssetsController.hpp>
+#include <engine/render/ResourcesController.hpp>
 #include <engine/render/ShaderController.hpp>
 #include <engine/render/Camera.hpp>
 #include <engine/render/Model.hpp>
