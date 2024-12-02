@@ -35,7 +35,6 @@ namespace rg {
                          "sure that every Controller is registered exactly once.",
                          controller->name(), location.file_name(), location.line());
             m_controllers.push_back(controller);
-            controller->after(get<EngineControllersSentinel>());
             return controller;
         }
 

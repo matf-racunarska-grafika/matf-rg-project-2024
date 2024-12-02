@@ -18,17 +18,12 @@ namespace rg {
 
         virtual ~Controller() = default;
 
-        /*
-     * Make controller `next` execute next `this`.
-     * c1->before(c2); means that all the controller functions
-     * of c1 will execute next controller functions of c2;
-     */
         void before(Controller *next) {
-            m_next.push_back(next);
+            this->m_next.push_back(next);
         }
 
         void after(Controller *prev) {
-            prev->m_next.push_back(this);
+            prev->before(this);
         }
 
         const std::vector<Controller *> &next() const {
