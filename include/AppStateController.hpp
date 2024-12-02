@@ -6,7 +6,7 @@
 #define APPSTATECONTROLLER_HPP
 #include <engine/controller/Controller.hpp>
 #include <engine/platform/Platform.hpp>
-#include <engine/render/Camera.hpp>
+#include <engine/resources/Camera.hpp>
 
 class AppStateController final : public rg::Controller {
 public:

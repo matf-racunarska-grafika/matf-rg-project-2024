@@ -5,8 +5,9 @@
 #define MATF_RG_PROJECT_ASSETSCONTROLLER_HPP
 
 #include <engine/controller/Controller.hpp>
-#include <engine/render/Model.hpp>
-#include <engine/render/Texture.hpp>
+#include <engine/resources/Model.hpp>
+#include <engine/resources/Texture.hpp>
+#include <utility>
 #include <assimp/scene.h>
 
 namespace rg {
@@ -29,6 +30,12 @@ namespace rg {
         Texture *load_from_file_if_absent(const std::filesystem::path &file_name, TextureType type);
 
     private:
+        void load_models();
+
+        void load_textures();
+
+        void load_shaders();
+
         void initialize() override;
 
         void terminate() override;
@@ -37,6 +44,11 @@ namespace rg {
             std::filesystem::path path;
             std::string name;
             Model model;
+
+            ModelData(std::filesystem::path path, std::string name, Model model) : path(std::move(path))
+              , name(std::move(name))
+              , model(std::move(model)) {
+            }
         };
 
         struct TextureData {
@@ -54,7 +66,9 @@ namespace rg {
 
         std::unordered_map<std::string, std::unique_ptr<ModelData> > m_models;
         std::unordered_map<std::string, std::unique_ptr<TextureData> > m_textures;
-        std::filesystem::path m_models_filesystem_path;
+        std::filesystem::path m_models_path;
+        std::filesystem::path m_textures_path;
+        std::filesystem::path m_shaders_path;
     };
 } // namespace rg
 

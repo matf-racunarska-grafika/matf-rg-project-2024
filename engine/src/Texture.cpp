@@ -2,7 +2,7 @@
 // Created by spaske on 12/2/24.
 //
 #include <glad/glad.h>
-#include <engine/render/Texture.hpp>
+#include <engine/resources/Texture.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/util/Errors.hpp>
 #include <stb_image.h>

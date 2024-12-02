@@ -3,7 +3,7 @@
 #include "engine/controller/Controller.hpp"
 
 #include <engine/Engine.hpp>
-#include <engine/render/Camera.hpp>
+#include <engine/resources/Camera.hpp>
 #include <memory>
 #include <OpenGLRenderer.hpp>
 /**

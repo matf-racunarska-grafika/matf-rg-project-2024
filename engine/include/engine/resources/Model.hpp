@@ -4,7 +4,7 @@
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
 #include <engine/util/Utils.hpp>
-#include <engine/render/Mesh.hpp>
+#include <engine/resources/Mesh.hpp>
 #include <algorithm>
 
 namespace rg {
@@ -27,11 +27,12 @@ namespace rg {
         void destroy();
 
     private:
-        void attach_meshes(std::vector<Mesh> meshes) {
-            std::move(range(meshes), std::back_inserter(m_meshes));
-        }
-
         std::vector<Mesh> m_meshes;
+
+        Model() = default;
+
+        explicit Model(std::vector<Mesh> m_meshes) : m_meshes(std::move(m_meshes)) {
+        }
     };
 } // namespace rg
 

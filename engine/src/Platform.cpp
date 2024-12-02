@@ -9,7 +9,7 @@
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <engine/render/Mesh.hpp>
+#include <engine/resources/Mesh.hpp>
 
 #include <spdlog/spdlog.h>
 #include <utility>

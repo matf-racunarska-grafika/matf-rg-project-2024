@@ -7,7 +7,7 @@
 #include <memory>
 #include <unordered_map>
 #include <engine/controller/Controller.hpp>
-#include <engine/render/Shader.hpp>
+#include <engine/resources/Shader.hpp>
 
 namespace rg {
     class ShaderController : public Controller {

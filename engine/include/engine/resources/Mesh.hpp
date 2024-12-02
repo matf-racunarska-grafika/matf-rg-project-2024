@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include <engine/render/Texture.hpp>
+#include <engine/resources/Texture.hpp>
 #include <unordered_set>
 
 namespace rg {

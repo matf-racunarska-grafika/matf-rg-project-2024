@@ -1,6 +1,6 @@
 
 #include <glad/glad.h>
-#include <engine/render/ShaderController.hpp>
+#include <engine/resources/ShaderController.hpp>
 #include <engine/util/Utils.hpp>
 #include <spdlog/spdlog.h>
 #include <filesystem>

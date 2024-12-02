@@ -3,8 +3,8 @@
 //
 #include<glad/glad.h>
 #include <engine/util/Utils.hpp>
-#include <engine/render/Mesh.hpp>
-#include <engine/render/Shader.hpp>
+#include <engine/resources/Mesh.hpp>
+#include <engine/resources/Shader.hpp>
 
 namespace rg {
 

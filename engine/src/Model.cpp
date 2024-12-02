@@ -2,8 +2,8 @@
 // Created by spaske on 12/2/24.
 //
 
-#include <engine/render/Model.hpp>
-#include <engine/render/Shader.hpp>
+#include <engine/resources/Model.hpp>
+#include <engine/resources/Shader.hpp>
 
 namespace rg {
 
