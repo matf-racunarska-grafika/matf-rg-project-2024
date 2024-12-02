@@ -30,7 +30,7 @@ namespace rg {
 
     void ControllerManager::terminate() {
         spdlog::info("ControllerManager::terminate::begin");
-        int size = (int) m_controllers.size() - 1;
+        int size = static_cast<int>(m_controllers.size()) - 1;
         for (int i = std::max(size, 0); i >= 0; --i) {
             auto controller = m_controllers[i];
             controller->terminate();

@@ -10,32 +10,15 @@
 #include <unordered_set>
 
 namespace rg {
-    struct Vertex;
-    struct VertexSOA;
-
     struct Vertex {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 tex_cords;
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
 
-        glm::vec3 tangent;
-        glm::vec3 bitangent;
+        glm::vec3 Tangent;
+        glm::vec3 Bitangent;
     };
 
-    struct VertexSOA {
-        std::vector<glm::vec3> position;
-        std::vector<glm::vec3> normal;
-        std::vector<glm::vec2> tex_cords;
-
-        std::vector<glm::vec3> tangent;
-        std::vector<glm::vec3> bitangent;
-    };
-
-    VertexSOA AOS_vertex_to_SOA(const std::vector<Vertex> &aos);
-
-    std::vector<Vertex> SOA_vertex_to_AOS(const VertexSOA &soa);
-
-    // TODO(mspasic): add value operations so that meshes cleanup automatically after they are no longer needed
     class Mesh {
     public:
         static Mesh create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,

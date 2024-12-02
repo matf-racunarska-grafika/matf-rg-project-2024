@@ -19,7 +19,7 @@ namespace rg {
     }
 
     void ShaderProgram::set_bool(const std::string &name, bool value) const {
-        glUniform1i(glGetUniformLocation(m_shaderId, name.c_str()), (int) value);
+        glUniform1i(glGetUniformLocation(m_shaderId, name.c_str()), static_cast<int>(value));
     }
 
     void ShaderProgram::set_int(const std::string &name, int value) const {

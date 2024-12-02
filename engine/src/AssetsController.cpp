@@ -122,27 +122,27 @@ namespace rg {
         vertices.reserve(mesh->mNumVertices);
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
             rg::Vertex vertex{};
-            vertex.position.x = mesh->mVertices[i].x;
-            vertex.position.y = mesh->mVertices[i].y;
-            vertex.position.z = mesh->mVertices[i].z;
+            vertex.Position.x = mesh->mVertices[i].x;
+            vertex.Position.y = mesh->mVertices[i].y;
+            vertex.Position.z = mesh->mVertices[i].z;
 
             if (mesh->HasNormals()) {
-                vertex.normal.x = mesh->mNormals[i].x;
-                vertex.normal.y = mesh->mNormals[i].y;
-                vertex.normal.z = mesh->mNormals[i].z;
+                vertex.Normal.x = mesh->mNormals[i].x;
+                vertex.Normal.y = mesh->mNormals[i].y;
+                vertex.Normal.z = mesh->mNormals[i].z;
             }
 
             if (mesh->mTextureCoords[0]) {
-                vertex.tex_cords.x = mesh->mTextureCoords[0][i].x;
-                vertex.tex_cords.y = mesh->mTextureCoords[0][i].y;
+                vertex.TexCoords.x = mesh->mTextureCoords[0][i].x;
+                vertex.TexCoords.y = mesh->mTextureCoords[0][i].y;
 
-                vertex.tangent.x = mesh->mTangents[i].x;
-                vertex.tangent.y = mesh->mTangents[i].y;
-                vertex.tangent.z = mesh->mTangents[i].z;
+                vertex.Tangent.x = mesh->mTangents[i].x;
+                vertex.Tangent.y = mesh->mTangents[i].y;
+                vertex.Tangent.z = mesh->mTangents[i].z;
 
-                vertex.bitangent.x = mesh->mBitangents[i].x;
-                vertex.bitangent.y = mesh->mBitangents[i].y;
-                vertex.bitangent.z = mesh->mBitangents[i].z;
+                vertex.Bitangent.x = mesh->mBitangents[i].x;
+                vertex.Bitangent.y = mesh->mBitangents[i].y;
+                vertex.Bitangent.z = mesh->mBitangents[i].z;
             }
             vertices.push_back(vertex);
         }
@@ -193,7 +193,7 @@ namespace rg {
         case aiTextureType_SPECULAR: return TextureType::Specular;
         case aiTextureType_HEIGHT: return TextureType::Height;
         case aiTextureType_NORMALS: return TextureType::Normal;
-        default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}", (int) type);
+        default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}", static_cast<int>(type));
         }
     }
 

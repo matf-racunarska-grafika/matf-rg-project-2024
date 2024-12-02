@@ -4,7 +4,6 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 
 #include <assimp/Importer.hpp>
 #include <engine/platform/Platform.hpp>
@@ -232,7 +231,7 @@ namespace rg {
     }
 
     void initialize_key_maps() {
-#include "glfw_key_mapping.h"
+#include "glfw_key_mapping.include"
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {

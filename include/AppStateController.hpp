@@ -8,7 +8,7 @@
 #include <engine/platform/Platform.hpp>
 #include <engine/render/Camera.hpp>
 
-class AppStateController : public rg::Controller {
+class AppStateController final : public rg::Controller {
 public:
 
     static std::unique_ptr<AppStateController> create();
