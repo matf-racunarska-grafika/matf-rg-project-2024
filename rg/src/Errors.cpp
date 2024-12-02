@@ -4,6 +4,15 @@
 #include <format>
 
 namespace rg {
+    static bool g_tracing = true;
+    void tracing_on() { g_tracing = true; }
+    void tracing_off() { g_tracing = false; }
+    void trace(std::source_location location) {
+        if (g_tracing) {
+            spdlog::info("{}:{}, in {}", location.file_name(), location.line(), location.function_name());
+        }
+    }
+
     void guarantee(bool expr, std::string msg, std::source_location source_location) {
         if (!expr) {
             throw GuaranteeViolation(std::move(msg), source_location);

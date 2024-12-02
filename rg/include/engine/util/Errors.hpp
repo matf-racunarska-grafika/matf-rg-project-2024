@@ -8,7 +8,8 @@
 #include <string>
 #include <format>
 #include <utility>
-// TODO(mspasic): add expr printing in format?
+#include <spdlog/spdlog.h>
+
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
         if (!(expr)) {                                                                                                 \
@@ -25,6 +26,9 @@
     } while (0)
 
 namespace rg {
+    void tracing_on();
+    void tracing_off();
+    void trace(std::source_location location = std::source_location::current());
 
     class Error : public std::exception {
     public:
