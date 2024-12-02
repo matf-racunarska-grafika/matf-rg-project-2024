@@ -1,3 +1,5 @@
+#include <AppStateController.hpp>
+
 #include "engine/controller/Controller.hpp"
 
 #include <engine/Engine.hpp>
@@ -47,7 +49,7 @@ private:
 class StudentsApp : public rg::App {
 protected:
     void initialize(int argc, char** argv) override {
-        spdlog::info("App::initialize_controllers::begin");
+        rg::trace();
         rg::ArgParser::instance()->initialize(argc, argv);
         rg::Configuration::instance()->initialize();
 
@@ -63,6 +65,13 @@ protected:
         assets_controller->after(shader_controller);
         assets_controller->after(platform_controller);
 
+        auto sentinel = controller_manager->get<rg::EngineControllersSentinel>();
+        sentinel->after(platform_controller);
+        sentinel->after(assets_controller);
+        sentinel->after(shader_controller);
+
+        auto app_state_controller = controller_manager->register_controller<AppStateController>();
+        app_state_controller->after(sentinel);
 
         /*
          * Controller initialization is done after user-defined App::initialize because
@@ -71,20 +80,15 @@ protected:
         controller_manager->initialize_controllers();
         spdlog::info("App::initialize_controllers::end");
 
-        platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(&m_camera, platform_controller));
+        platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(app_state_controller->camera(), platform_controller));
 
         // User initialization
         m_renderer = OpenGLRenderer::instance();
         m_renderer->initialize();
 
         m_shader = shader_controller->get("basic");
-        auto model_result = assets_controller->model("backpack");
-        if (model_result.has_value()) {
-            m_model = model_result.value();
-        } else {
-            throw model_result.error();
-        }
-
+        m_model = assets_controller->model("backpack");
+        rg::trace();
     }
 
     bool loop() override {
@@ -110,15 +114,10 @@ protected:
     void update() override {
         rg::ControllerManager::singleton()->update();
 
-        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
-        update_camera();
+        auto app_state_controller = rg::ControllerManager::get<AppStateController>();
         m_shader->use();
-        glm::mat4 projection = glm::perspective(glm::radians(m_camera.Zoom),
-                                                static_cast<float>(platform_controller->window_width()) /
-                                                        platform_controller->window_height(),
-                                                0.1f, 100.0f);
-        m_shader->set_mat4("projection", projection);
-        m_shader->set_mat4("view", m_camera.get_view_matrix());
+        m_shader->set_mat4("projection", app_state_controller->projection());
+        m_shader->set_mat4("view", app_state_controller->camera()->get_view_matrix());
         m_shader->set_mat4("model", glm::mat4(1.0f));
     }
 
@@ -136,26 +135,7 @@ protected:
     }
 
 private:
-
-    void update_camera() {
-        auto platform_controller = rg::ControllerManager::get<rg::PlatformController>();
-        float dt = platform_controller->dt();
-        if (platform_controller->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
-            m_camera.process_keyboard(rg::FORWARD, dt);
-        }
-        if (platform_controller->key(rg::KEY_S).state() == rg::Key::State::Pressed) {
-            m_camera.process_keyboard(rg::BACKWARD, dt);
-        }
-        if (platform_controller->key(rg::KEY_A).state() == rg::Key::State::Pressed) {
-            m_camera.process_keyboard(rg::LEFT, dt);
-        }
-        if (platform_controller->key(rg::KEY_D).state() == rg::Key::State::Pressed) {
-            m_camera.process_keyboard(rg::RIGHT, dt);
-        }
-
-    }
     OpenGLRenderer* m_renderer;
-    rg::Camera m_camera{glm::vec3(0.0f, 0.0f, 3.0f)};
     rg::ShaderProgram *m_shader;
     rg::Model *m_model;
 };
