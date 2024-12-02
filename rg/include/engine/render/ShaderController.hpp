@@ -6,10 +6,11 @@
 
 #include <memory>
 #include <unordered_map>
+#include <engine/controller/Controller.hpp>
 #include <engine/render/Shader.hpp>
 
 namespace rg {
-    class ShaderController : public rg::Controller {
+    class ShaderController : public Controller {
     public:
         std::string_view name() const override {
             return "ShaderController";

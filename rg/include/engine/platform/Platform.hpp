@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+struct GLFWwindow;
 namespace rg {
 
     enum KeyId {
@@ -191,7 +192,23 @@ namespace rg {
         float current;
     };
 
-    class WindowImpl;
+    class Window final {
+        friend class PlatformController;
+    public:
+        int height() const { return m_height; }
+        int width() const { return m_width; }
+        const std::string& title() const { return m_title; }
+    private:
+        GLFWwindow* handle() const { return m_handle; }
+        GLFWwindow *m_handle;
+        int m_width;
+        int m_height;
+        std::string m_title;
+        Window() = default;
+        Window(GLFWwindow *handle, int width, int height, std::string title) :
+        m_handle(handle), m_width(width), m_height(height), m_title(std::move(title)) {
+        }
+    };
 
     class PlatformEventObserver {
     public:
@@ -212,11 +229,7 @@ namespace rg {
 
         std::string_view name() const override;
 
-        int window_width() const;
-
-        int window_height() const;
-
-        const std::string &window_title() const;
+        const Window* window() const { return &m_window; }
 
         const std::string_view shader_language() const;
 
@@ -225,15 +238,14 @@ namespace rg {
         FrameTime frame_time() const { return m_frame_time; }
         float dt() const { return m_frame_time.dt; }
 
-        void _platform_on_mouse(double x, double y) const;
+        void _platform_on_mouse(double x, double y);
         void _platform_on_keyboard(int key, int action);
-        void _platform_on_scroll(double x, double y) const;
-        void _platform_on_framebuffer_resize(int width, int height) const;
+        void _platform_on_scroll(double x, double y);
+        void _platform_on_framebuffer_resize(int width, int height);
         void _platform_begin_frame();
         void _platform_end_frame();
         void set_enable_cursor(bool enabled);
 
-        WindowImpl* _window_impl() const { return m_window; }
     private:
         void initialize() override;
 
@@ -250,7 +262,7 @@ namespace rg {
 
         FrameTime m_frame_time;
 
-        WindowImpl *m_window;
+        Window m_window;
         MousePosition m_mouse;
         std::vector<Key> m_keys;
         std::unique_ptr<PlatformEventObserver> m_platform_event_observer;

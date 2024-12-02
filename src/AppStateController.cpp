@@ -12,8 +12,8 @@ std::unique_ptr<AppStateController> AppStateController::create() {
 void AppStateController::initialize() {
     m_platform_controller = rg::ControllerManager::get<rg::PlatformController>();
     m_projection          = glm::perspective(glm::radians(m_camera.Zoom),
-                                    static_cast<float>(m_platform_controller->window_width()) /
-                                    m_platform_controller->window_height(),
+                                    static_cast<float>(m_platform_controller->window()->width()) /
+                                    m_platform_controller->window()->height(),
                                     0.1f, 100.0f);
 }
 
@@ -27,8 +27,8 @@ bool AppStateController::loop() {
 
 void AppStateController::update() {
     m_projection = glm::perspective(glm::radians(m_camera.Zoom),
-                                    static_cast<float>(m_platform_controller->window_width()) /
-                                    m_platform_controller->window_height(),
+                                    static_cast<float>(m_platform_controller->window()->width()) /
+                                    m_platform_controller->window()->height(),
                                     0.1f, 100.0f);
     update_camera();
 }

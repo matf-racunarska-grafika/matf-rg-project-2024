@@ -39,16 +39,6 @@ namespace rg {
 
     void initialize_key_maps();
 
-    struct WindowImpl {
-        GLFWwindow *handle;
-        int width;
-        int height;
-        std::string title;
-
-        WindowImpl(GLFWwindow *handle, int width, int height, std::string title) :
-        handle(handle), width(width), height(height), title(std::move(title)) {
-        }
-    };
 
     void PlatformController::initialize() {
         if (glfwPlatformSupported(GLFW_PLATFORM_X11)) {
@@ -70,14 +60,13 @@ namespace rg {
         std::string window_title = config["window"]["title"];
         GLFWwindow *handle = glfwCreateWindow(window_width, window_height, window_title.c_str(), nullptr, nullptr);
         RG_GUARANTEE(handle, "GLFW3 platform failed to create a Window.");
-        m_window = new WindowImpl(handle, window_width, window_height, window_title);
-        RG_GUARANTEE(m_window != nullptr, "Must instantiate m_window_impl first");
+        m_window = Window(handle, window_width, window_height, window_title);
 
-        glfwMakeContextCurrent(m_window->handle);
-        glfwSetCursorPosCallback(m_window->handle, glfw_mouse_callback);
-        glfwSetScrollCallback(m_window->handle, glfw_scroll_callback);
-        glfwSetKeyCallback(m_window->handle, glfw_key_callback);
-        glfwSetFramebufferSizeCallback(m_window->handle, glfw_framebuffer_size_callback);
+        glfwMakeContextCurrent(m_window.handle());
+        glfwSetCursorPosCallback(m_window.handle(), glfw_mouse_callback);
+        glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
+        glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
+        glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "GLAD failed to init!");
 
@@ -94,9 +83,7 @@ namespace rg {
 
     void PlatformController::terminate() {
         m_platform_event_observer.reset(nullptr);
-        glfwDestroyWindow(m_window->handle);
-        delete m_window;
-        m_window = nullptr;
+        glfwDestroyWindow(m_window.handle());
         glfwTerminate();
     }
 
@@ -105,7 +92,7 @@ namespace rg {
         m_frame_time.current  = glfwGetTime();
         m_frame_time.dt       = m_frame_time.current - m_frame_time.previous;
 
-        return !glfwWindowShouldClose(m_window->handle);
+        return !glfwWindowShouldClose(m_window.handle());
     }
 
     void PlatformController::poll_events() {
@@ -132,8 +119,7 @@ namespace rg {
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.key();
         int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
-        auto window         = m_window->handle;
-        int action          = glfw_platform_action(window, glfw_key_code);
+        int action          = glfw_platform_action(m_window.handle(), glfw_key_code);
         switch (key_data.state()) {
         case rg::Key::State::Released: {
             if (action == GLFW_PRESS) {
@@ -204,17 +190,6 @@ namespace rg {
         return "PlatformGLFW3Controller";
     }
 
-    int PlatformController::window_width() const {
-        return m_window->width;
-    }
-
-    int PlatformController::window_height() const {
-        return m_window->height;
-    }
-
-    const std::string &PlatformController::window_title() const {
-        return m_window->title;
-    }
 
     const std::string_view PlatformController::shader_language() const {
         return "glsl";
@@ -224,7 +199,7 @@ namespace rg {
         m_platform_event_observer = std::move(observer);
     }
 
-    void PlatformController::_platform_on_mouse(double x, double y) const {
+    void PlatformController::_platform_on_mouse(double x, double y) {
         double last_x       = g_mouse_position.x;
         double last_y       = g_mouse_position.y;
         g_mouse_position.dx = x - last_x;
@@ -239,14 +214,14 @@ namespace rg {
         m_platform_event_observer->on_keyboard(result);
     }
 
-    void PlatformController::_platform_on_scroll(double x, double y) const {
+    void PlatformController::_platform_on_scroll(double x, double y) {
         g_mouse_position.scroll = y;
         m_platform_event_observer->on_mouse(g_mouse_position);
     }
 
-    void PlatformController::_platform_on_framebuffer_resize(int width, int height) const {
-        m_window->width  = width;
-        m_window->height = height;
+    void PlatformController::_platform_on_framebuffer_resize(int width, int height){
+        m_window.m_width  = width;
+        m_window.m_height = height;
     }
 
     void PlatformController::_platform_begin_frame() {
@@ -254,14 +229,14 @@ namespace rg {
     }
 
     void PlatformController::_platform_end_frame() {
-        glfwSwapBuffers(m_window->handle);
+        glfwSwapBuffers(m_window.handle());
     }
 
     void PlatformController::set_enable_cursor(bool enabled) {
         if (enabled) {
-            glfwSetInputMode(m_window->handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else {
-            glfwSetInputMode(m_window->handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
     }
 

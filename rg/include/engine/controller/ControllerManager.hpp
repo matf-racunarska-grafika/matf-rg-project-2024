@@ -19,9 +19,9 @@ namespace rg {
         template<typename TController>
         static TController *get(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
-            auto instance                  = instance();
-            static TController *controller = instance()->create_if_absent<TController>();
-            RG_GUARANTEE(instance->is_registered_controller(controller),
+            auto manager                  = instance();
+            static TController *controller = manager->create_if_absent<TController>();
+            RG_GUARANTEE(manager->is_registered_controller(controller),
                          "Trying to get Controller: {} in file:{}:{}, before registering it. Call register_controller "
                          "first.",
                          controller->name(), location.file_name(), location.line());
