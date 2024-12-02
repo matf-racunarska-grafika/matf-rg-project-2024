@@ -4,13 +4,15 @@
 
 #ifndef RENDEREROPENGL_H
 #define RENDEREROPENGL_H
+
 namespace rg {
-    class PlatformController;
+class ShaderProgram;
+class Texture;
 }
 
 class OpenGLRenderer {
 public:
-    static OpenGLRenderer* instance();
+    static OpenGLRenderer *instance();
 
     void end_frame();
     void begin_frame();
