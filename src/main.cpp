@@ -5,7 +5,6 @@
 #include <engine/Engine.hpp>
 #include <engine/render/Camera.hpp>
 #include <memory>
-#include <spdlog/spdlog.h>
 #include <OpenGLRenderer.hpp>
 /**
  * Student implements rg::App for their application.
@@ -78,7 +77,6 @@ protected:
          * user can register custom services in App::initialize_controllers.
          */
         controller_manager->initialize_controllers();
-        spdlog::info("App::initialize_controllers::end");
 
         platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(app_state_controller->camera(), platform_controller));
 
@@ -126,6 +124,8 @@ protected:
 
         m_model->draw(m_shader);
 
+
+        m_renderer->draw_skybox();
         m_renderer->end_frame();
     }
 
