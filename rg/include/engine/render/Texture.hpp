@@ -19,12 +19,11 @@ namespace rg {
         CubeMap,
     };
 
-    std::string_view texture_type_to_string(TextureType type);
-
     class Texture {
         friend class AssetsController;
 
     public:
+        static std::string_view uniform_name_convention(TextureType type);
         static Texture create_from_file(std::filesystem::path path, TextureType type);
 
         void destroy();

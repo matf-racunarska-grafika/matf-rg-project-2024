@@ -32,5 +32,28 @@ namespace rg {
         std::unordered_map<ShaderName, std::unique_ptr<ShaderProgram> > m_shaders;
         std::filesystem::path m_shaders_path;
     };
+    using ShaderCompilationResult = std::variant<ShaderProgram, ShaderCompilationError, FileNotFoundError>;
+
+    class ShaderCompiler {
+    public:
+        static ShaderCompilationResult compile_from_source(std::string shader_name, std::string shader_source);
+
+        static ShaderCompilationResult compile_from_file(std::string shader_name, const std::filesystem::path &path);
+
+    private:
+        explicit ShaderCompiler(std::string shader_name, std::string shader_source)
+        : m_shader_name(std::move(shader_name))
+      , m_sources(std::move(shader_source)) {
+        }
+
+        ShaderProgram compile(const ShaderParsingResult &shader_sources);
+
+        int compile(const std::string &shader_source, ShaderType type);
+
+        ShaderParsingResult parse_source();
+
+        std::string m_shader_name;
+        std::string m_sources;
+    };
 } // namespace rg
 #endif//MATF_RG_PROJECT_SHADERCONTROLLER_HPP

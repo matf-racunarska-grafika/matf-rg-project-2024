@@ -200,10 +200,10 @@ namespace rg {
         const std::string& title() const { return m_title; }
     private:
         GLFWwindow* handle() const { return m_handle; }
-        GLFWwindow *m_handle;
-        int m_width;
-        int m_height;
-        std::string m_title;
+        GLFWwindow *m_handle{};
+        int m_width{};
+        int m_height{};
+        std::string m_title{};
         Window() = default;
         Window(GLFWwindow *handle, int width, int height, std::string title) :
         m_handle(handle), m_width(width), m_height(height), m_title(std::move(title)) {
@@ -261,7 +261,6 @@ namespace rg {
         static std::unique_ptr<PlatformController> create();
 
         FrameTime m_frame_time;
-
         Window m_window;
         MousePosition m_mouse;
         std::vector<Key> m_keys;
