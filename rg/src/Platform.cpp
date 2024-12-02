@@ -9,10 +9,7 @@
 #include <assimp/Importer.hpp>
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
-#include <engine/render/Shader.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <engine/render/Model.hpp>
-#include <engine/render/Texture.hpp>
 #include <engine/render/Mesh.hpp>
 
 #include <spdlog/spdlog.h>
@@ -187,10 +184,6 @@ namespace rg {
 
     std::string_view PlatformController::name() const {
         return "PlatformGLFW3Controller";
-    }
-
-    const std::string_view PlatformController::shader_language() const {
-        return "glsl";
     }
 
     void PlatformController::register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer) {

@@ -258,8 +258,6 @@ namespace rg {
             return &m_window;
         }
 
-        const std::string_view shader_language() const;
-
         void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
 
         FrameTime frame_time() const {

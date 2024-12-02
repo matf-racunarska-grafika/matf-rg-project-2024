@@ -85,7 +85,7 @@ namespace rg {
         return "";
     }
 
-    std::string read_file(const std::filesystem::path &path) {
+    std::string read_text_file(const std::filesystem::path &path) {
         RG_GUARANTEE(std::filesystem::exists(path), "File {} doesn't exist.", path.string());
         std::ifstream file(path);
         std::stringstream ss;

@@ -11,11 +11,7 @@ namespace rg {
     void ShaderController::initialize() {
         const auto &config = Configuration::config();
 
-        // set engine shaders path
-        {
-            const std::filesystem::path engine_shaders_path(config["shaders"]["path"]);
-            m_shaders_path = engine_shaders_path / shader_language();
-        }
+        m_shaders_path = config["shaders"]["path"].get<std::string>();
 
         for (const auto &shader_path: std::filesystem::directory_iterator(m_shaders_path)) {
             const auto name                            = shader_path.path().stem().string();
@@ -31,10 +27,6 @@ namespace rg {
                                   }},
                        compilation_result);
         }
-    }
-
-    std::string_view ShaderController::shader_language() const {
-        return "glsl";
     }
 
     int to_opengl_type(ShaderType type);
@@ -65,7 +57,7 @@ namespace rg {
 
     std::string opengl_get_compilation_error_message(int shader_id) {
         char infoLog[512];
-        glGetShaderInfoLog(shader_id, 512, NULL, infoLog);
+        glGetShaderInfoLog(shader_id, 512, nullptr, infoLog);
         return infoLog;
     }
 
@@ -135,7 +127,7 @@ namespace rg {
             return FileNotFoundError(
                     path, std::format("Shader source file {} for shader {} not found.", path.string(), shader_name));
         }
-        return compile_from_source(std::move(shader_name), rg::read_file(path));
+        return compile_from_source(std::move(shader_name), rg::read_text_file(path));
     }
 
     std::string *get_current_shader(ShaderParsingResult &result, const std::string &line) {

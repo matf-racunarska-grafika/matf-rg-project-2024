@@ -170,7 +170,7 @@ namespace rg {
         char **m_argv = nullptr;
     };
 
-    std::string read_file(const std::filesystem::path &path);
+    std::string read_text_file(const std::filesystem::path &path);
 
     template<typename Action>
     void once(Action action) {

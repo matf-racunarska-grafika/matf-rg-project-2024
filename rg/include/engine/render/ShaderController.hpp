@@ -24,8 +24,6 @@ namespace rg {
             return m_shaders.find(shader_name)->second.get();
         }
 
-        std::string_view shader_language() const;
-
     private:
         void initialize() override;
 
