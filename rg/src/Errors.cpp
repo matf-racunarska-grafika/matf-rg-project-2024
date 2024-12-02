@@ -5,8 +5,15 @@
 
 namespace rg {
     static bool g_tracing = true;
-    void tracing_on() { g_tracing = true; }
-    void tracing_off() { g_tracing = false; }
+
+    void tracing_on() {
+        g_tracing = true;
+    }
+
+    void tracing_off() {
+        g_tracing = false;
+    }
+
     void trace(std::source_location location) {
         if (g_tracing) {
             spdlog::info("{}:{}, in {}", location.file_name(), location.line(), location.function_name());
@@ -55,12 +62,12 @@ namespace rg {
         return m_path;
     }
 
-
     std::string ShaderCompilationError::report() const {
         return std::format("ShaderCompilationError: {}:{}.\n{}", location().file_name(), location().line(), message());
     }
+
     std::string AssetLoadingError::report() const {
         return std::format("AssetLoadingError: {}:{}.\n{}\n Failed to load model {} from path: {}\n",
                            location().file_name(), location().line(), message(), m_model_name, m_path.string());
     }
-}// namespace rg
+} // namespace rg

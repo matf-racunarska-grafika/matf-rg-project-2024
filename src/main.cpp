@@ -53,7 +53,7 @@ protected:
         rg::Configuration::instance()->initialize();
 
         // register engine controller
-        auto controller_manager = rg::ControllerManager::singleton();
+        auto controller_manager = rg::ControllerManager::instance();
         controller_manager->initialize();
 
         auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
@@ -93,7 +93,7 @@ protected:
         /*
          * Any controller can stop the rendering loop.
          */
-        if (!rg::ControllerManager::singleton()->loop()) {
+        if (!rg::ControllerManager::instance()->loop()) {
             return false;
         }
 
@@ -105,12 +105,12 @@ protected:
     }
 
     void poll_events() override {
-        rg::ControllerManager::singleton()->poll_events();
+        rg::ControllerManager::instance()->poll_events();
         m_renderer->begin_frame();
     }
 
     void update() override {
-        rg::ControllerManager::singleton()->update();
+        rg::ControllerManager::instance()->update();
 
         auto app_state_controller = rg::ControllerManager::get<AppStateController>();
         m_shader->use();
@@ -120,7 +120,7 @@ protected:
     }
 
     void draw() override {
-        rg::ControllerManager::singleton()->draw();
+        rg::ControllerManager::instance()->draw();
 
         m_model->draw(m_shader);
 
@@ -131,7 +131,7 @@ protected:
 
     void terminate() override {
         m_renderer->terminate();
-        rg::ControllerManager::singleton()->terminate();
+        rg::ControllerManager::instance()->terminate();
     }
 
 private:

@@ -40,5 +40,4 @@ namespace rg {
                       e.report());
     }
 
-
-}// namespace rg
+} // namespace rg

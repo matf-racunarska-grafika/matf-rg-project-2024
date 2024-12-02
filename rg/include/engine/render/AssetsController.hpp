@@ -10,7 +10,6 @@
 #include <assimp/scene.h>
 
 namespace rg {
-
     class AssetsController : public rg::Controller {
     public:
         static std::unique_ptr<AssetsController> create() {
@@ -31,6 +30,7 @@ namespace rg {
 
     private:
         void initialize() override;
+
         void terminate() override;
 
         struct ModelData {
@@ -49,12 +49,13 @@ namespace rg {
         };
 
         std::unique_ptr<ModelData> load_model(const std::string &model_name);
-        std::unique_ptr<TextureData> load_texture(const std::string & texture_name, TextureType texture_type);
 
-        std::unordered_map<std::string, std::unique_ptr<ModelData>> m_models;
-        std::unordered_map<std::string, std::unique_ptr<TextureData>> m_textures;
+        std::unique_ptr<TextureData> load_texture(const std::string &texture_name, TextureType texture_type);
+
+        std::unordered_map<std::string, std::unique_ptr<ModelData> > m_models;
+        std::unordered_map<std::string, std::unique_ptr<TextureData> > m_textures;
         std::filesystem::path m_models_filesystem_path;
     };
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_ASSETSCONTROLLER_HPP

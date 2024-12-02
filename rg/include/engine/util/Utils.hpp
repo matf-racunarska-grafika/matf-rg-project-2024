@@ -14,10 +14,12 @@
 #include <json.hpp>
 #include <variant>
 #include <engine/util/Errors.hpp>
+
 template<class... Ts>
 struct overloaded : Ts... {
     using Ts::operator()...;
 };
+
 template<class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 
@@ -25,13 +27,16 @@ template<typename Func>
 struct DeferImpl {
     DeferImpl(Func f) : f(f) {
     }
+
     ~DeferImpl() {
         f();
     }
+
     Func f;
 };
 
-struct MakeDeferImpl {};
+struct MakeDeferImpl {
+};
 
 template<typename Func>
 DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
@@ -45,20 +50,20 @@ DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
 #define range(container) std::begin(container), std::end(container)
 #define crange(container) std::cbegin(container), std::cend(container)
 
-
 namespace rg {
-
     template<typename Value, typename Error>
     class Result {
     public:
         Result(const Value &value) : m_variant(value) {
         }
+
         Result(const Error &error) : m_variant(error) {
         }
 
         bool has_value() const {
             return std::holds_alternative<Value>(m_variant);
         };
+
         bool has_error() const {
             return !has_value();
         }
@@ -73,6 +78,7 @@ namespace rg {
             RG_GUARANTEE(!has_value(), "Trying to extract error from Result while it holds a value. ");
             return std::get<Error>(m_variant);
         }
+
         const Value &value() const {
             RG_GUARANTEE(has_value(), "Trying to extract value from Result while it holds an error.");
             return std::get<Value>(m_variant);
@@ -114,9 +120,12 @@ namespace rg {
         static Configuration *instance();
 
         void initialize();
+
     private:
         static std::filesystem::path get_config_path();
+
         static std::filesystem::path create_default();
+
         constexpr static std::string_view CONFIG_FILE_NAME = "config.json";
 
         json m_config;
@@ -151,13 +160,13 @@ namespace rg {
         }
 
         void initialize(int argc, char **argv);
-    private:
 
+    private:
         std::string get_arg_value(std::string_view arg_name);
 
         ArgParser() = default;
 
-        int m_argc = 0;
+        int m_argc    = 0;
         char **m_argv = nullptr;
     };
 
@@ -174,10 +183,9 @@ namespace rg {
         bool contains(const Container &container, const T &value) {
             return std::find(std::cbegin(container), std::cend(container), value) != std::cend(container);
         }
-    }// namespace alg
+    } // namespace alg
 
-    namespace ds {}
-
-}// namespace rg
+    namespace ds {
+    }} // namespace rg
 
 #endif//MATF_RG_PROJECT_UTILS_HPP

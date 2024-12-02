@@ -27,13 +27,16 @@
 
 namespace rg {
     void tracing_on();
+
     void tracing_off();
+
     void trace(std::source_location location = std::source_location::current());
 
     class Error : public std::exception {
     public:
         explicit Error(std::string message, std::source_location location = std::source_location::current())
-            : m_message(std::move(message)), m_location(location) {
+        : m_message(std::move(message))
+      , m_location(location) {
         }
 
         const std::string &message() const {
@@ -81,7 +84,8 @@ namespace rg {
     public:
         explicit FileNotFoundError(std::filesystem::path path, std::string message,
                                    std::source_location location = std::source_location::current())
-            : m_path(std::move(path)), EngineError(std::move(message), location) {
+        : m_path(std::move(path))
+      , EngineError(std::move(message), location) {
         }
 
         std::string report() const override;
@@ -99,7 +103,6 @@ namespace rg {
         std::string report() const override;
     };
 
-
     class UserError : public Error {
     public:
         using Error::Error;
@@ -108,16 +111,19 @@ namespace rg {
     class ShaderCompilationError : public UserError {
     public:
         using UserError::UserError;
+
         std::string report() const override;
     };
-
 
     class AssetLoadingError : public UserError {
     public:
         using UserError::UserError;
+
         AssetLoadingError(std::string message, std::filesystem::path path, std::string model_name,
                           std::source_location location = std::source_location::current())
-            : UserError(std::move(message), location), m_path(std::move(path)), m_model_name(std::move(model_name)) {
+        : UserError(std::move(message), location)
+      , m_path(std::move(path))
+      , m_model_name(std::move(model_name)) {
         }
 
         std::string report() const override;
@@ -126,7 +132,6 @@ namespace rg {
         std::filesystem::path m_path;
         std::string m_model_name;
     };
-
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_ERRORS_HPP

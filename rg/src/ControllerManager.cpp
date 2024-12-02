@@ -5,11 +5,13 @@
 #include <spdlog/spdlog.h>
 #include <unordered_set>
 #include <vector>
+
 //
 namespace rg {
 
     void top_sort(std::vector<Controller *> &controllers);
-    ControllerManager *ControllerManager::singleton() {
+
+    ControllerManager *ControllerManager::instance() {
         static std::unique_ptr<ControllerManager> provider = std::make_unique<ControllerManager>();
         return provider.get();
     }
@@ -67,6 +69,7 @@ namespace rg {
     // part of the controller manager, controller manager contains the controller graph
     void top_sort_util(Controller *controller, std::vector<Controller *> &stack,
                        std::unordered_set<Controller *> &visited);
+
     bool has_cycle(const std::vector<Controller *> &controllers);
 
     void top_sort(std::vector<Controller *> &controllers) {
@@ -98,7 +101,6 @@ namespace rg {
         stack.push_back(controller);
     }
 
-
     bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
                                        std::unordered_set<Controller *> &path);
 
@@ -115,7 +117,6 @@ namespace rg {
         return false;
     }
 
-
     bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
                                        std::unordered_set<Controller *> &path) {
         visited.emplace(current);
@@ -130,4 +131,4 @@ namespace rg {
         path.erase(current);
         return false;
     }
-}// namespace rg
+} // namespace rg

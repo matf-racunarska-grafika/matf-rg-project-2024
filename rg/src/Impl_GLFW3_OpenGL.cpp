@@ -15,7 +15,6 @@
 #include <engine/render/Texture.hpp>
 #include <engine/render/Mesh.hpp>
 
-
 #include <spdlog/spdlog.h>
 #include <utility>
 
@@ -29,9 +28,13 @@ namespace rg {
     static MousePosition g_mouse_position;
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
+
     static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height);
+
     static int glfw_platform_action(GLFWwindow *window, int glfw_key_code);
 
     void initialize_key_maps();
@@ -41,8 +44,9 @@ namespace rg {
         int width;
         int height;
         std::string title;
-        WindowImpl(GLFWwindow *handle, int width, int height, std::string title)
-            : handle(handle), width(width), height(height), title(std::move(title)) {
+
+        WindowImpl(GLFWwindow *handle, int width, int height, std::string title) :
+        handle(handle), width(width), height(height), title(std::move(title)) {
         }
     };
 
@@ -98,8 +102,8 @@ namespace rg {
 
     bool PlatformController::loop() {
         m_frame_time.previous = m_frame_time.current;
-        m_frame_time.current = glfwGetTime();
-        m_frame_time.dt = m_frame_time.current - m_frame_time.previous;
+        m_frame_time.current  = glfwGetTime();
+        m_frame_time.dt       = m_frame_time.current - m_frame_time.previous;
 
         return !glfwWindowShouldClose(m_window->handle);
     }
@@ -127,9 +131,9 @@ namespace rg {
 
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.key();
-        int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
-        auto window = m_window->handle;
-        int action = glfw_platform_action(window, glfw_key_code);
+        int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
+        auto window         = m_window->handle;
+        int action          = glfw_platform_action(window, glfw_key_code);
         switch (key_data.state()) {
         case rg::Key::State::Released: {
             if (action == GLFW_PRESS) {
@@ -162,7 +166,6 @@ namespace rg {
         }
     }
 
-
     std::string_view Key::to_string() const {
         switch (m_state) {
         case Key::State::Released: return "Released";
@@ -180,6 +183,7 @@ namespace rg {
 
     void PlatformEventObserver::on_mouse(MousePosition position) {
     }
+
     void PlatformEventObserver::on_keyboard(Key key) {
     }
 
@@ -187,7 +191,6 @@ namespace rg {
         RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }
-
 
     std::unique_ptr<PlatformController> PlatformController::create() {
         return std::make_unique<PlatformController>();
@@ -222,12 +225,12 @@ namespace rg {
     }
 
     void PlatformController::_platform_on_mouse(double x, double y) const {
-        double last_x = g_mouse_position.x;
-        double last_y = g_mouse_position.y;
+        double last_x       = g_mouse_position.x;
+        double last_y       = g_mouse_position.y;
         g_mouse_position.dx = x - last_x;
-        g_mouse_position.dy = last_y - y;// because in glfw the top left corner is the (0,0)
-        g_mouse_position.x = x;
-        g_mouse_position.y = y;
+        g_mouse_position.dy = last_y - y; // because in glfw the top left corner is the (0,0)
+        g_mouse_position.x  = x;
+        g_mouse_position.y  = y;
         m_platform_event_observer->on_mouse(g_mouse_position);
     }
 
@@ -242,10 +245,9 @@ namespace rg {
     }
 
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) const {
-        m_window->width = width;
+        m_window->width  = width;
         m_window->height = height;
     }
-
 
     void PlatformController::_platform_begin_frame() {
 
@@ -263,11 +265,9 @@ namespace rg {
         }
     }
 
-
     void initialize_key_maps() {
 #include "glfw_key_mapping.h"
     }
-
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
         rg::ControllerManager::get<PlatformController>()->_platform_on_mouse(x, y);
@@ -277,7 +277,6 @@ namespace rg {
         g_mouse_position.scroll = yoffset;
         rg::ControllerManager::get<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
     }
-
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
         rg::ControllerManager::get<PlatformController>()->_platform_on_keyboard(key, action);
@@ -306,6 +305,7 @@ namespace rg {
     void ShaderProgram::destroy() const {
         glDeleteProgram(m_shaderId);
     }
+
     unsigned ShaderProgram::id() const {
         return m_shaderId;
     }
@@ -321,46 +321,57 @@ namespace rg {
     void ShaderProgram::set_float(const std::string &name, float value) const {
         glUniform1f(glGetUniformLocation(m_shaderId, name.c_str()), value);
     }
+
     void ShaderProgram::set_vec2(const std::string &name, const glm::vec2 &value) const {
         glUniform2fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, &value[0]);
     }
+
     void ShaderProgram::set_vec2(const std::string &name, float x, float y) const {
         glUniform2f(glGetUniformLocation(m_shaderId, name.c_str()), x, y);
     }
+
     void ShaderProgram::set_vec3(const std::string &name, const glm::vec3 &value) const {
         glUniform3fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, &value[0]);
     }
+
     void ShaderProgram::set_vec3(const std::string &name, float x, float y, float z) const {
         glUniform3f(glGetUniformLocation(m_shaderId, name.c_str()), x, y, z);
     }
+
     void ShaderProgram::set_vec4(const std::string &name, const glm::vec4 &value) const {
         glUniform4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, &value[0]);
     }
+
     void ShaderProgram::set_vec4(const std::string &name, float x, float y, float z, float w) {
         glUniform4f(glGetUniformLocation(m_shaderId, name.c_str()), x, y, z, w);
     }
+
     void ShaderProgram::set_mat2(const std::string &name, const glm::mat2 &mat) const {
         glUniformMatrix2fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
+
     void ShaderProgram::set_mat3(const std::string &name, const glm::mat3 &mat) const {
         glUniformMatrix3fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
+
     void ShaderProgram::set_mat4(const std::string &name, const glm::mat4 &mat) const {
         glUniformMatrix4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
 
-    ShaderProgram::ShaderProgram(unsigned shaderId) : m_shaderId(shaderId) {
+    ShaderProgram::ShaderProgram(unsigned shaderId) :
+    m_shaderId(shaderId) {
     }
-
 
     ShaderCompilationResult ShaderCompiler::compile_from_source(std::string shader_name, std::string shader_source) {
         try {
             spdlog::info("ShaderCompiler::Compiling: {}", shader_name);
             ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
             ShaderParsingResult parsing_result = compiler.parse_source();
-            ShaderProgram shader_program = compiler.compile(parsing_result);
+            ShaderProgram shader_program       = compiler.compile(parsing_result);
             return shader_program;
-        } catch (const ShaderCompilationError &e) { return e; }
+        } catch (const ShaderCompilationError &e) {
+            return e;
+        }
     }
 
     bool opengl_compilation_failed(int shader_id) {
@@ -376,8 +387,8 @@ namespace rg {
     }
 
     ShaderProgram ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
-        int shader_program_id = glCreateProgram();
-        int vertex_shader_id = 0;
+        int shader_program_id  = glCreateProgram();
+        int vertex_shader_id   = 0;
         int fragment_shader_id = 0;
         int geometry_shader_id = 0;
         defer {
@@ -401,12 +412,13 @@ namespace rg {
     }
 
     int ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
-        int shader_id = glCreateShader(to_opengl_type(type));
+        int shader_id                  = glCreateShader(to_opengl_type(type));
         const char *shader_source_cstr = shader_source.c_str();
         glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
         glCompileShader(shader_id);
         if (opengl_compilation_failed(shader_id)) {
-            throw ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type), m_shader_name,
+            throw ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type),
+                                                     m_shader_name,
                                                      opengl_get_compilation_error_message(shader_id)));
         }
         return shader_id;
@@ -443,7 +455,6 @@ namespace rg {
         return compile_from_source(std::move(shader_name), rg::read_file(path));
     }
 
-
     std::string *get_current_shader(ShaderParsingResult &result, const std::string &line) {
         if (line.ends_with(to_string(ShaderType::Vertex))) {
             return &result.vertex_shader;
@@ -468,16 +479,19 @@ namespace rg {
         }
     }
 
-
     void Model::draw(ShaderProgram *shader) {
-        rg::once([] { spdlog::info("Model::draw"); });
+        rg::once([] {
+            spdlog::info("Model::draw");
+        });
         for (auto &mesh: m_meshes) {
             mesh.draw(shader);
         }
     }
 
     void Model::destroy() {
-        rg::once([] { spdlog::info("Model::destroy"); });
+        rg::once([] {
+            spdlog::info("Model::destroy");
+        });
         for (auto &mesh: m_meshes) {
             mesh.destroy();
         }
@@ -485,7 +499,6 @@ namespace rg {
 
     void Model::initialize() {
     }
-
 
     Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
                       const std::unordered_set<Texture *> &textures) {
@@ -503,7 +516,7 @@ namespace rg {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, position));
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, normal));
@@ -531,7 +544,7 @@ namespace rg {
         uniform_name.reserve(32);
         for (int i = 0; i < m_textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
-            const auto& texture_type = texture_type_to_uniform_name_convention(m_textures[i]->type());
+            const auto &texture_type = texture_type_to_uniform_name_convention(m_textures[i]->type());
             uniform_name.append(texture_type);
             const auto count = (counts[texture_type] += 1);
             uniform_name.append(std::to_string(count));
@@ -625,27 +638,29 @@ namespace rg {
         } else if (name == "back") {
             return 5;
         } else {
-            RG_SHOULD_NOT_REACH_HERE("Unknown face name: {}. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap. The extension of the image file is ignored.", name);
+            RG_SHOULD_NOT_REACH_HERE(
+                    "Unknown face name: {}. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap. The extension of the image file is ignored.",
+                    name);
         }
     }
 
     uint32_t Texture::load_cubemap_texture(std::filesystem::path path) {
-        RG_GUARANTEE(std::filesystem::is_directory(path), "Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap");
+        RG_GUARANTEE(std::filesystem::is_directory(path),
+                     "Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap")
+        ;
         unsigned int textureID;
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
         int width, height, nrChannels;
-        for (const auto &file : std::filesystem::directory_iterator(path)) {
+        for (const auto &file: std::filesystem::directory_iterator(path)) {
             unsigned char *data = stbi_load(absolute(file).c_str(), &width, &height, &nrChannels, 0);
-            if (data)
-            {
+            if (data) {
                 uint32_t i = face_index(file.path().stem().c_str());
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                             data);
                 stbi_image_free(data);
-            }
-            else
-            {
+            } else {
                 spdlog::error("Failed to load cubemap texture {}", file.path().string());
                 stbi_image_free(data);
             }
@@ -663,6 +678,4 @@ namespace rg {
         glDeleteTextures(1, &m_id);
     }
 
-
-
-}// namespace rg
+} // namespace rg

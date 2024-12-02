@@ -8,17 +8,19 @@
 #include <source_location>
 #include <type_traits>
 #include <algorithm>
+
 namespace rg {
     class ControllerManager {
         friend class App;
+
     public:
-        static ControllerManager *singleton();
+        static ControllerManager *instance();
 
         template<typename TController>
         static TController *get(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
-            auto instance = singleton();
-            static TController *controller = singleton()->create_if_absent<TController>();
+            auto instance                  = instance();
+            static TController *controller = instance()->create_if_absent<TController>();
             RG_GUARANTEE(instance->is_registered_controller(controller),
                          "Trying to get Controller: {} in file:{}:{}, before registering it. Call register_controller "
                          "first.",
@@ -63,8 +65,7 @@ namespace rg {
             return std::find(m_controllers.cbegin(), m_controllers.cend(), controller) != m_controllers.cend();
         }
 
-
         std::vector<Controller *> m_controllers;
     };
-}// namespace rg
+} // namespace rg
 #endif//MATF_RG_PROJECT_CONTROLLERMANAGER_HPP

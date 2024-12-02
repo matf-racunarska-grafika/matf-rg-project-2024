@@ -9,7 +9,6 @@
 #include <engine/render/Shader.hpp>
 
 namespace rg {
-
     class ShaderController : public rg::Controller {
     public:
         std::string_view name() const override {
@@ -26,11 +25,11 @@ namespace rg {
 
         std::string_view shader_language() const;
 
-
     private:
         void initialize() override;
-        std::unordered_map<ShaderName, std::unique_ptr<ShaderProgram>> m_shaders;
+
+        std::unordered_map<ShaderName, std::unique_ptr<ShaderProgram> > m_shaders;
         std::filesystem::path m_shaders_path;
     };
-}// namespace rg
+} // namespace rg
 #endif//MATF_RG_PROJECT_SHADERCONTROLLER_HPP

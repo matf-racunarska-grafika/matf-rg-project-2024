@@ -7,10 +7,11 @@
 #include <assimp/postprocess.h>
 #include <unordered_set>
 #include <utility>
+
 namespace rg {
 
     void AssetsController::initialize() {
-        const auto &config = Configuration::config();
+        const auto &config       = Configuration::config();
         m_models_filesystem_path = config["assets"]["models_path"].get<std::string>();
     }
 
@@ -45,31 +46,37 @@ namespace rg {
     class AssimpSceneProcessor {
     public:
         using TextureLoadingCallback = std::function<Texture *(std::filesystem::path)>;
+
         static SceneProcessingResult process_scene(AssetsController *assets_controller, const aiScene *scene,
                                                    std::filesystem::path model_path);
 
     private:
         explicit AssimpSceneProcessor(AssetsController *assets_controller, const aiScene *scene,
-                                      std::filesystem::path model_path)
-            : m_model_path(std::move(model_path)), m_scene(scene), m_assets_controller(assets_controller) {
+                                      std::filesystem::path model_path) :
+        m_model_path(std::move(model_path)), m_scene(scene), m_assets_controller(assets_controller) {
         }
 
         void process_node(aiNode *node);
+
         void process_mesh(aiMesh *mesh);
+
         void process_materials(aiMaterial *material);
 
         const aiScene *m_scene;
         std::vector<Mesh> m_meshes;
         std::unordered_set<Texture *> m_textures;
+
         void process_material_type(aiMaterial *material, aiTextureType type);
+
         AssetsController *m_assets_controller;
         std::filesystem::path m_model_path;
+
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
     };
 
     std::unique_ptr<rg::AssetsController::ModelData> AssetsController::load_model(const std::string &model_name) {
-        auto &config = Configuration::config();
-        auto model_data = std::make_unique<ModelData>();
+        auto &config     = Configuration::config();
+        auto model_data  = std::make_unique<ModelData>();
         model_data->name = model_name;
         model_data->path = m_models_filesystem_path /
                            std::filesystem::path(config["assets"]["models"][model_name]["path"].get<std::string>());
@@ -78,7 +85,7 @@ namespace rg {
         Assimp::Importer importer;
         const aiScene *scene =
                 importer.ReadFile(model_data->path, aiProcess_Triangulate | aiProcess_GenSmoothNormals |
-                                                            aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+                                                    aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             throw AssetLoadingError("Assimp error while reading model. ", model_data->path, model_data->name);
@@ -94,7 +101,7 @@ namespace rg {
         AssimpSceneProcessor scene_processor(assets_controller, scene, std::move(model_path));
         scene_processor.process_node(scene->mRootNode);
         SceneProcessingResult scene_processing_result;
-        scene_processing_result.meshes = std::move(scene_processor.m_meshes);
+        scene_processing_result.meshes   = std::move(scene_processor.m_meshes);
         scene_processing_result.textures = std::move(scene_processor.m_textures);
         return scene_processing_result;
     }
@@ -108,7 +115,6 @@ namespace rg {
             process_node(node->mChildren[i]);
         }
     }
-
 
     void AssimpSceneProcessor::process_mesh(aiMesh *mesh) {
         std::vector<Vertex> vertices;
@@ -174,7 +180,7 @@ namespace rg {
             material->GetTexture(type, i, &ai_texture_path_string);
             std::filesystem::path texture_path(ai_texture_path_string.C_Str());
             Texture *texture = m_assets_controller->load_from_file_if_absent(m_model_path.parent_path() / texture_path,
-                                                                           assimp_texture_type_to_engine(type));
+                                                                             assimp_texture_type_to_engine(type));
             m_textures.emplace(texture);
         }
     }
@@ -194,13 +200,14 @@ namespace rg {
         auto &texture_data = m_textures[path];
         if (!texture_data) {
             spdlog::info("Loading texture: {}", path.string());
-            texture_data = std::make_unique<TextureData>(path, path.string(), Texture::create_from_file(path, type), type);
+            texture_data = std::make_unique<TextureData>(path, path.string(), Texture::create_from_file(path, type),
+                                                         type);
         }
         return &texture_data->texture;
     }
 
     AssetsController::TextureData::TextureData(std::filesystem::path path, std::string name, Texture texture,
-                                               TextureType texture_type)
-        : path(std::move(path)), name(std::move(name)), texture(std::move(texture)), texture_type(texture_type) {
+                                               TextureType texture_type) :
+    path(std::move(path)), name(std::move(name)), texture(std::move(texture)), texture_type(texture_type) {
     }
-}// namespace rg
+} // namespace rg

@@ -4,9 +4,11 @@
 #include <string>
 #include <utility>
 #include <glm/glm.hpp>
+
 namespace rg {
     using ShaderName = std::string;
     struct ShaderParsingResult;
+
     enum class ShaderType { Vertex, Fragment, Geometry };
 
     inline std::string_view to_string(ShaderType type) {
@@ -24,25 +26,38 @@ namespace rg {
 
     public:
         void use() const;
+
         void destroy() const;
+
         unsigned id() const;
 
         void set_bool(const std::string &name, bool value) const;
-        void set_int(const std::string &name, int value) const;
-        void set_float(const std::string &name, float value) const;
-        void set_vec2(const std::string &name, const glm::vec2 &value) const;
-        void set_vec2(const std::string &name, float x, float y) const;
-        void set_vec3(const std::string &name, const glm::vec3 &value) const;
-        void set_vec3(const std::string &name, float x, float y, float z) const;
-        void set_vec4(const std::string &name, const glm::vec4 &value) const;
-        void set_vec4(const std::string &name, float x, float y, float z, float w);
-        void set_mat2(const std::string &name, const glm::mat2 &mat) const;
-        void set_mat3(const std::string &name, const glm::mat3 &mat) const;
-        void set_mat4(const std::string &name, const glm::mat4 &mat) const;
 
+        void set_int(const std::string &name, int value) const;
+
+        void set_float(const std::string &name, float value) const;
+
+        void set_vec2(const std::string &name, const glm::vec2 &value) const;
+
+        void set_vec2(const std::string &name, float x, float y) const;
+
+        void set_vec3(const std::string &name, const glm::vec3 &value) const;
+
+        void set_vec3(const std::string &name, float x, float y, float z) const;
+
+        void set_vec4(const std::string &name, const glm::vec4 &value) const;
+
+        void set_vec4(const std::string &name, float x, float y, float z, float w);
+
+        void set_mat2(const std::string &name, const glm::mat2 &mat) const;
+
+        void set_mat3(const std::string &name, const glm::mat3 &mat) const;
+
+        void set_mat4(const std::string &name, const glm::mat4 &mat) const;
 
     private:
         explicit ShaderProgram(unsigned shaderId);
+
         unsigned m_shaderId;
     };
 
@@ -51,19 +66,24 @@ namespace rg {
     class ShaderCompiler {
     public:
         static ShaderCompilationResult compile_from_source(std::string shader_name, std::string shader_source);
+
         static ShaderCompilationResult compile_from_file(std::string shader_name, const std::filesystem::path &path);
 
     private:
         explicit ShaderCompiler(std::string shader_name, std::string shader_source)
-            : m_shader_name(std::move(shader_name)), m_sources(std::move(shader_source)) {
+        : m_shader_name(std::move(shader_name))
+      , m_sources(std::move(shader_source)) {
         }
+
         ShaderProgram compile(const ShaderParsingResult &shader_sources);
+
         int compile(const std::string &shader_source, ShaderType type);
+
         ShaderParsingResult parse_source();
 
         std::string m_shader_name;
         std::string m_sources;
     };
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_SHADER_HPP

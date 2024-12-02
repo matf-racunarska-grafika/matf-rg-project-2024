@@ -9,7 +9,6 @@
 #include <memory>
 
 namespace rg {
-
     class Controller {
         friend class ControllerManager;
 
@@ -53,6 +52,7 @@ namespace rg {
         /* List of controller that are dependent on this controller */
         std::vector<Controller *> m_next{};
     };
+
     /**
      * This controller does nothing. It servers as a sentinel
      * controller between user controllers and engine controllers
@@ -75,6 +75,6 @@ namespace rg {
             return "EngineControllersSentinel";
         }
     };
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_CONTROLLER_HPP
