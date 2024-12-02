@@ -6,12 +6,13 @@
 #define RENDEREROPENGL_H
 
 namespace rg {
-class ShaderProgram;
-class Texture;
+    class ShaderProgram;
+    class Texture;
 }
 
 class SkyboxCube {
     friend class OpenGLRenderer;
+
 public:
     static SkyboxCube create();
 
@@ -23,8 +24,12 @@ public:
 
 private:
     SkyboxCube() = default;
+
     uint32_t m_vao;
-    explicit SkyboxCube(uint32_t skybox_vao) : m_vao(skybox_vao) {}
+
+    explicit SkyboxCube(uint32_t skybox_vao) :
+    m_vao(skybox_vao) {
+    }
 };
 
 class OpenGLRenderer {

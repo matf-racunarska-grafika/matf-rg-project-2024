@@ -32,6 +32,7 @@ namespace rg {
     };
 
     VertexSOA AOS_vertex_to_SOA(const std::vector<Vertex> &aos);
+
     std::vector<Vertex> SOA_vertex_to_AOS(const VertexSOA &soa);
 
     // TODO(mspasic): add value operations so that meshes cleanup automatically after they are no longer needed
@@ -51,15 +52,17 @@ namespace rg {
         }
 
     private:
-        Mesh(uint32_t id, uint64_t num_indices, std::vector<Texture *> textures) : m_vao(id), m_num_indices(num_indices), m_textures(std::move(textures)) {
+        Mesh(uint32_t id, uint64_t num_indices, std::vector<Texture *> textures) : m_vao(id)
+          , m_num_indices(num_indices)
+          , m_textures(std::move(textures)) {
         }
-        uint32_t m_vao = 0;
+
+        uint32_t m_vao         = 0;
         uint64_t m_num_indices = 0;
         std::vector<Texture *> m_textures;
 
         static std::string_view texture_type_to_uniform_name_convention(TextureType type);
     };
-
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_MESH_HPP

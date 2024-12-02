@@ -24,6 +24,7 @@ namespace rg {
 
     public:
         static std::string_view uniform_name_convention(TextureType type);
+
         static Texture create_from_file(std::filesystem::path path, TextureType type);
 
         void destroy();

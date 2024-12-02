@@ -12,8 +12,8 @@
 #include <vector>
 
 struct GLFWwindow;
-namespace rg {
 
+namespace rg {
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
         MOUSE_BUTTON_2,
@@ -170,11 +170,16 @@ namespace rg {
 
         std::string_view to_string() const;
 
-        bool is_down(KeyId id) const { return m_key == id && (m_state == State::Pressed || m_state == State::JustPressed); }
-        bool is_up(KeyId id) const { return m_key == id && (m_state == State::Released || m_state == State::JustReleased); }
+        bool is_down(KeyId id) const {
+            return m_key == id && (m_state == State::Pressed || m_state == State::JustPressed);
+        }
+
+        bool is_up(KeyId id) const {
+            return m_key == id && (m_state == State::Released || m_state == State::JustReleased);
+        }
 
     private:
-        KeyId m_key = KEY_COUNT;
+        KeyId m_key   = KEY_COUNT;
         State m_state = State::Released;
     };
 
@@ -194,32 +199,52 @@ namespace rg {
 
     class Window final {
         friend class PlatformController;
+
     public:
-        int height() const { return m_height; }
-        int width() const { return m_width; }
-        const std::string& title() const { return m_title; }
+        int height() const {
+            return m_height;
+        }
+
+        int width() const {
+            return m_width;
+        }
+
+        const std::string &title() const {
+            return m_title;
+        }
+
     private:
-        GLFWwindow* handle() const { return m_handle; }
+        GLFWwindow *handle() const {
+            return m_handle;
+        }
+
         GLFWwindow *m_handle{};
         int m_width{};
         int m_height{};
         std::string m_title{};
+
         Window() = default;
-        Window(GLFWwindow *handle, int width, int height, std::string title) :
-        m_handle(handle), m_width(width), m_height(height), m_title(std::move(title)) {
+
+        Window(GLFWwindow *handle, int width, int height, std::string title) : m_handle(handle)
+                                                                           , m_width(width)
+                                                                           , m_height(height)
+                                                                           , m_title(std::move(title)) {
         }
     };
 
     class PlatformEventObserver {
     public:
         virtual void on_mouse(MousePosition position);
+
         virtual void on_keyboard(Key key);
+
         virtual ~PlatformEventObserver() = default;
     };
 
     class PlatformController : public Controller {
         friend class ControllerManager;
         friend class Renderer;
+
     public:
         const Key &key(KeyId key) const;
 
@@ -229,27 +254,41 @@ namespace rg {
 
         std::string_view name() const override;
 
-        const Window* window() const { return &m_window; }
+        const Window *window() const {
+            return &m_window;
+        }
 
         const std::string_view shader_language() const;
 
         void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
 
-        FrameTime frame_time() const { return m_frame_time; }
-        float dt() const { return m_frame_time.dt; }
+        FrameTime frame_time() const {
+            return m_frame_time;
+        }
+
+        float dt() const {
+            return m_frame_time.dt;
+        }
 
         void _platform_on_mouse(double x, double y);
+
         void _platform_on_keyboard(int key, int action);
+
         void _platform_on_scroll(double x, double y);
+
         void _platform_on_framebuffer_resize(int width, int height);
+
         void _platform_begin_frame();
+
         void _platform_end_frame();
+
         void set_enable_cursor(bool enabled);
 
     private:
         void initialize() override;
 
         void update() override;
+
         void draw() override;
 
         void terminate() override;
@@ -265,10 +304,9 @@ namespace rg {
         MousePosition m_mouse;
         std::vector<Key> m_keys;
         std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
+
         void update_key(Key &key_data) const;
     };
-
-
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_PLATFORM_H

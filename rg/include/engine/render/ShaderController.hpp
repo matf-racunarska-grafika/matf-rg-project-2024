@@ -32,6 +32,7 @@ namespace rg {
         std::unordered_map<ShaderName, std::unique_ptr<ShaderProgram> > m_shaders;
         std::filesystem::path m_shaders_path;
     };
+
     using ShaderCompilationResult = std::variant<ShaderProgram, ShaderCompilationError, FileNotFoundError>;
 
     class ShaderCompiler {

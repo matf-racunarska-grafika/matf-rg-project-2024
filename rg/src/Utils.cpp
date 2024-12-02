@@ -9,7 +9,6 @@
 
 namespace rg {
 
-
     void Configuration::initialize() {
         auto config_path = get_config_path();
         std::ifstream f(config_path);
@@ -41,11 +40,11 @@ namespace rg {
             throw rg::ConfigurationError(std::format("Failed to open configuration file."));
         }
         json default_config;
-        default_config["shaders"]["path"] = "resources/shaders";
-        default_config["window"]["width"] = 800;
-        default_config["window"]["height"] = 600;
-        default_config["window"]["title"] = "Hello, window!";
-        default_config["assets"]["models_path"]= "resources/models";
+        default_config["shaders"]["path"]         = "resources/shaders";
+        default_config["window"]["width"]         = 800;
+        default_config["window"]["height"]        = 600;
+        default_config["window"]["title"]         = "Hello, window!";
+        default_config["assets"]["models_path"]   = "resources/models";
         default_config["assets"]["textures_path"] = "resources/textures";
         f << default_config.dump(4);
         return CONFIG_FILE_NAME;
@@ -59,7 +58,6 @@ namespace rg {
     Configuration::json &Configuration::config() {
         return Configuration::instance()->m_config;
     }
-
 
     std::string ConfigurationError::report() const {
         return std::format("ConfigurationError {}:{}. {}.", location().file_name(), location().line(), message());
@@ -94,4 +92,4 @@ namespace rg {
         ss << file.rdbuf();
         return ss.str();
     }
-}// namespace rg
+} // namespace rg

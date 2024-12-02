@@ -8,6 +8,7 @@
 #include <stb_image.h>
 #include <spdlog/spdlog.h>
 #include <format>
+
 namespace rg {
 
     std::string_view texture_type_to_string(TextureType type) {
@@ -127,4 +128,4 @@ namespace rg {
         }
     }
 
-    }
+}

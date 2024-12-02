@@ -12,7 +12,8 @@
 
 class PlatformEventObserver final : public rg::PlatformEventObserver {
 public:
-    explicit PlatformEventObserver(rg::Camera *m_camera, rg::PlatformController* platform_controller) : m_camera(m_camera), m_platform_controller(platform_controller) {
+    explicit PlatformEventObserver(rg::Camera *m_camera, rg::PlatformController *platform_controller) :
+    m_camera(m_camera), m_platform_controller(platform_controller) {
     }
 
     void on_mouse(rg::MousePosition mouse) override {
@@ -21,10 +22,10 @@ public:
     }
 
     void on_keyboard(rg::Key key) override {
-       if (key.is_down(rg::KEY_F1)) {
-           m_cursor_enabled = !m_cursor_enabled;
-           m_platform_controller->set_enable_cursor(m_cursor_enabled);
-       }
+        if (key.is_down(rg::KEY_F1)) {
+            m_cursor_enabled = !m_cursor_enabled;
+            m_platform_controller->set_enable_cursor(m_cursor_enabled);
+        }
     }
 
 private:
@@ -40,14 +41,15 @@ private:
         }
         return rg::CameraMovement::None;
     }
-    rg::Camera* m_camera;
-    rg::PlatformController* m_platform_controller;
+
+    rg::Camera *m_camera;
+    rg::PlatformController *m_platform_controller;
     bool m_cursor_enabled = false;
 };
 
 class StudentsApp : public rg::App {
 protected:
-    void initialize(int argc, char** argv) override {
+    void initialize(int argc, char **argv) override {
         rg::trace();
         rg::ArgParser::instance()->initialize(argc, argv);
         rg::Configuration::instance()->initialize();
@@ -57,8 +59,8 @@ protected:
         controller_manager->initialize();
 
         auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
-        auto shader_controller = controller_manager->register_controller<rg::ShaderController>();
-        auto assets_controller = controller_manager->register_controller<rg::ResourcesController>();
+        auto shader_controller   = controller_manager->register_controller<rg::ShaderController>();
+        auto assets_controller   = controller_manager->register_controller<rg::ResourcesController>();
 
         platform_controller->before(shader_controller);
         assets_controller->after(shader_controller);
@@ -78,14 +80,15 @@ protected:
          */
         controller_manager->initialize_controllers();
 
-        platform_controller->register_platform_event_observer(std::make_unique<PlatformEventObserver>(app_state_controller->camera(), platform_controller));
+        platform_controller->register_platform_event_observer(
+                std::make_unique<PlatformEventObserver>(app_state_controller->camera(), platform_controller));
 
         // User initialization
         m_renderer = OpenGLRenderer::instance();
         m_renderer->initialize();
 
         m_shader = shader_controller->get("basic");
-        m_model = assets_controller->model("backpack");
+        m_model  = assets_controller->model("backpack");
         rg::trace();
     }
 
@@ -124,7 +127,6 @@ protected:
 
         m_model->draw(m_shader);
 
-
         m_renderer->draw_skybox();
         m_renderer->end_frame();
     }
@@ -135,7 +137,7 @@ protected:
     }
 
 private:
-    OpenGLRenderer* m_renderer;
+    OpenGLRenderer *m_renderer;
     rg::ShaderProgram *m_shader;
     rg::Model *m_model;
 };
@@ -144,7 +146,7 @@ namespace rg {
     std::unique_ptr<App> create_app() {
         return std::make_unique<StudentsApp>();
     }
-}// namespace rg
+} // namespace rg
 
 int main(int argc, char **argv) {
     return rg::App::run(argc, argv);

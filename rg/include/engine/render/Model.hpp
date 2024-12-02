@@ -6,8 +6,8 @@
 #include <engine/util/Utils.hpp>
 #include <engine/render/Mesh.hpp>
 #include <algorithm>
-namespace rg {
 
+namespace rg {
     class Model {
         friend class ResourcesController;
 
@@ -30,9 +30,9 @@ namespace rg {
         void attach_meshes(std::vector<Mesh> meshes) {
             std::move(range(meshes), std::back_inserter(m_meshes));
         }
+
         std::vector<Mesh> m_meshes;
     };
-
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_PROJECT_MODEL_HPP

@@ -10,7 +10,7 @@
 #include <assimp/scene.h>
 
 namespace rg {
-    class ResourcesController : public rg::Controller {
+    class ResourcesController : public Controller {
     public:
         static std::unique_ptr<ResourcesController> create() {
             return std::make_unique<ResourcesController>();

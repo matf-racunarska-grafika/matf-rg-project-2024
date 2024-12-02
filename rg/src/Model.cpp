@@ -22,5 +22,4 @@ namespace rg {
     void Model::initialize() {
     }
 
-
 }

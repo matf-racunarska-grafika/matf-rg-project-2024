@@ -60,7 +60,6 @@ namespace rg {
 
         unsigned m_shaderId;
     };
-
 } // namespace rg
 
 #endif//MATF_RG_PROJECT_SHADER_HPP

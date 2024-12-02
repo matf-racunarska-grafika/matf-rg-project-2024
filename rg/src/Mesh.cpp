@@ -5,9 +5,10 @@
 #include <engine/util/Utils.hpp>
 #include <engine/render/Mesh.hpp>
 #include <engine/render/Shader.hpp>
+
 namespace rg {
 
- Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
+    Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
                       const std::unordered_set<Texture *> &textures) {
         static_assert(std::is_trivial_v<Vertex>);
         uint32_t VAO, VBO, EBO;
@@ -67,7 +68,5 @@ namespace rg {
     void Mesh::destroy() {
         glDeleteVertexArrays(1, &m_vao);
     }
-
-
 
 }

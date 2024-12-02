@@ -96,7 +96,8 @@ namespace rg {
         return model_data;
     }
 
-    SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller, const aiScene *scene,
+    SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller,
+                                                              const aiScene *scene,
                                                               std::filesystem::path model_path) {
         AssimpSceneProcessor scene_processor(assets_controller, scene, std::move(model_path));
         scene_processor.process_node(scene->mRootNode);
@@ -207,7 +208,7 @@ namespace rg {
     }
 
     ResourcesController::TextureData::TextureData(std::filesystem::path path, std::string name, Texture texture,
-                                               TextureType texture_type) :
+                                                  TextureType texture_type) :
     path(std::move(path)), name(std::move(name)), texture(std::move(texture)), texture_type(texture_type) {
     }
 } // namespace rg

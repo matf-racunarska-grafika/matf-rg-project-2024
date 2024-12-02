@@ -68,6 +68,6 @@ namespace rg {
 
     ShaderProgram::ShaderProgram(unsigned shaderId) :
     m_shaderId(shaderId) {
-}
-
     }
+
+}

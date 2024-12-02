@@ -39,7 +39,6 @@ namespace rg {
 
     void initialize_key_maps();
 
-
     void PlatformController::initialize() {
         if (glfwPlatformSupported(GLFW_PLATFORM_X11)) {
             glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
@@ -190,7 +189,6 @@ namespace rg {
         return "PlatformGLFW3Controller";
     }
 
-
     const std::string_view PlatformController::shader_language() const {
         return "glsl";
     }
@@ -219,7 +217,7 @@ namespace rg {
         m_platform_event_observer->on_mouse(g_mouse_position);
     }
 
-    void PlatformController::_platform_on_framebuffer_resize(int width, int height){
+    void PlatformController::_platform_on_framebuffer_resize(int width, int height) {
         m_window.m_width  = width;
         m_window.m_height = height;
     }
