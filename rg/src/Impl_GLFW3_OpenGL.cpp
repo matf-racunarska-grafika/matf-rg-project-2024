@@ -355,7 +355,7 @@ namespace rg {
 
     ShaderCompilationResult ShaderCompiler::compile_from_source(std::string shader_name, std::string shader_source) {
         try {
-            spdlog::info("Compiling: {}", shader_name);
+            spdlog::info("ShaderCompiler::Compiling: {}", shader_name);
             ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
             ShaderParsingResult parsing_result = compiler.parse_source();
             ShaderProgram shader_program = compiler.compile(parsing_result);
@@ -554,7 +554,8 @@ namespace rg {
         case TextureType::Specular: return "texture_specular";
         case TextureType::Normal: return "texture_normal";
         case TextureType::Height: return "texture_height";
-        default: RG_UNIMPLEMENTED("Unknown TextureType");
+        case TextureType::CubeMap: return "texture_cubemap";
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
         }
     }
 
@@ -563,12 +564,20 @@ namespace rg {
         case TextureType::Diffuse: return "Diffuse";
         case TextureType::Specular: return "Specular";
         case TextureType::Normal: return "Normal";
-        case TextureType::Height: return "Height";;
+        case TextureType::Height: return "Height";
+        case TextureType::CubeMap: return "CubeMap";
         default: RG_SHOULD_NOT_REACH_HERE("Unknown TextureType");
         }
     }
 
     Texture Texture::create_from_file(std::filesystem::path path, TextureType type) {
+        if (type == TextureType::CubeMap) {
+            return {load_cubemap_texture(path), type};
+        }
+        return {load_regular_texture(path), type};
+    }
+
+    uint32_t Texture::load_regular_texture(std::filesystem::path path) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);
 
@@ -599,16 +608,55 @@ namespace rg {
         } else {
             throw AssetLoadingError(std::format("Failed to load texture {}", path.string()));
         }
-        return Texture(texture_id, type);
+        return texture_id;
     }
 
-    void Texture::initialize() {
-        RG_UNIMPLEMENTED("texture initialize");
+    uint32_t face_index(std::string_view name) {
+        if (name == "right") {
+            return 0;
+        } else if (name == "left") {
+            return 1;
+        } else if (name == "top") {
+            return 2;
+        } else if (name == "bottom") {
+            return 3;
+        } else if (name == "front") {
+            return 4;
+        } else if (name == "back") {
+            return 5;
+        } else {
+            RG_SHOULD_NOT_REACH_HERE("Unknown face name: {}. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap. The extension of the image file is ignored.", name);
+        }
     }
 
-    void Texture::draw(ShaderProgram *shader) {
-        // TODO(mspasic): do we need this?
-        RG_UNIMPLEMENTED("texture draw");
+    uint32_t Texture::load_cubemap_texture(std::filesystem::path path) {
+        RG_GUARANTEE(std::filesystem::is_directory(path), "Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap");
+        unsigned int textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+        int width, height, nrChannels;
+        for (const auto &file : std::filesystem::directory_iterator(path)) {
+            unsigned char *data = stbi_load(absolute(file).c_str(), &width, &height, &nrChannels, 0);
+            if (data)
+            {
+                uint32_t i = face_index(file.path().stem().c_str());
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+            }
+            else
+            {
+                spdlog::error("Failed to load cubemap texture {}", file.path().string());
+                stbi_image_free(data);
+            }
+        }
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+        return textureID;
     }
 
     void Texture::destroy() {

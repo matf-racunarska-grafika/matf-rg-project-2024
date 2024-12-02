@@ -17,14 +17,24 @@ namespace rg {
     void AssetsController::terminate() {
     }
 
-    Result<Model *, AssetLoadingError> AssetsController::model(const std::string &model_name) {
+    Model *AssetsController::model(const std::string &model_name) {
         auto &model_data = m_models[model_name];
         if (!model_data) {
-            try {
-                model_data = load_model(model_name);
-            } catch (const AssetLoadingError &e) { return e; }
+            model_data = load_model(model_name);
         }
         return &model_data->model;
+    }
+
+    Texture *AssetsController::texture(const std::string &texture_name) {
+        auto &config = Configuration::config();
+        std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
+        return load_from_file_if_absent(texture_path / texture_name, TextureType::Standalone);
+    }
+
+    Texture *AssetsController::skybox(const std::string &texture_name) {
+        auto &config = Configuration::config();
+        std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
+        return load_from_file_if_absent(texture_path / texture_name, TextureType::CubeMap);
     }
 
     struct SceneProcessingResult {
@@ -74,12 +84,10 @@ namespace rg {
             throw AssetLoadingError("Assimp error while reading model. ", model_data->path, model_data->name);
         }
 
-
         SceneProcessingResult result = AssimpSceneProcessor::process_scene(this, scene, model_data->path);
         model_data->model.attach_meshes(std::move(result.meshes));
         return model_data;
     }
-
 
     SceneProcessingResult AssimpSceneProcessor::process_scene(AssetsController *assets_controller, const aiScene *scene,
                                                               std::filesystem::path model_path) {
@@ -165,7 +173,7 @@ namespace rg {
             aiString ai_texture_path_string;
             material->GetTexture(type, i, &ai_texture_path_string);
             std::filesystem::path texture_path(ai_texture_path_string.C_Str());
-            Texture *texture = m_assets_controller->load_texture_from_file(m_model_path.parent_path() / texture_path,
+            Texture *texture = m_assets_controller->load_from_file_if_absent(m_model_path.parent_path() / texture_path,
                                                                            assimp_texture_type_to_engine(type));
             m_textures.emplace(texture);
         }
@@ -182,7 +190,7 @@ namespace rg {
         }
     }
 
-    Texture *AssetsController::load_texture_from_file(const std::filesystem::path &path, TextureType type) {
+    Texture *AssetsController::load_from_file_if_absent(const std::filesystem::path &path, TextureType type) {
         auto &texture_data = m_textures[path];
         if (!texture_data) {
             spdlog::info("Loading texture: {}", path.string());

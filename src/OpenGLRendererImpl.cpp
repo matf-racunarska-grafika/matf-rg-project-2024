@@ -29,3 +29,8 @@ void OpenGLRenderer::end_frame() {
 
 void OpenGLRenderer::terminate() {
 }
+
+OpenGLRenderer *OpenGLRenderer::instance() {
+    static std::unique_ptr<OpenGLRenderer> instance(new OpenGLRenderer);
+    return instance.get();
+}
