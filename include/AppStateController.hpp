@@ -10,16 +10,17 @@
 
 class AppStateController final : public rg::Controller {
 public:
-
     static std::unique_ptr<AppStateController> create();
 
-    std::string_view name() const override { return "AppStateController";}
+    std::string_view name() const override {
+        return "AppStateController";
+    }
 
     rg::Camera *camera() {
         return &m_camera;
     }
 
-    const glm::mat4& projection() const {
+    const glm::mat4 &projection() const {
         return m_projection;
     }
 
@@ -40,7 +41,7 @@ private:
 
     glm::mat4 m_projection{};
     rg::Camera m_camera;
-    rg::PlatformController * m_platform_controller{};
+    rg::PlatformController *m_platform_controller{};
 };
 
 #endif //APPSTATECONTROLLER_HPP
