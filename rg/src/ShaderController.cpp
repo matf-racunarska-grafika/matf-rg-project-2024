@@ -105,18 +105,18 @@ namespace rg {
         ShaderParsingResult parsing_result;
         std::istringstream ss(m_sources);
         std::string line;
-        std::string *current_shader;
+        std::string* current_shader = nullptr;
         while (std::getline(ss, line)) {
-            if (line.starts_with("#shader")) {
+            if (line.starts_with("//#shader") || line.starts_with("// #shader")) {
                 current_shader = get_current_shader(parsing_result, line);
-                continue;
+            } else if (current_shader) {
+                current_shader->append(line);
+                current_shader->push_back('\n');
             }
-            current_shader->append(line);
-            current_shader->push_back('\n');
         }
         if (parsing_result.vertex_shader.empty() || parsing_result.fragment_shader.empty()) {
             throw ShaderCompilationError(std::format(
-                    "Error compiling: {}. Source for vertex and fragment shader must be defined.", m_shader_name));
+                    "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'", m_shader_name));
         }
         return parsing_result;
     }
