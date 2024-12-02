@@ -78,7 +78,7 @@ void SkyboxCube::destroy() {
 
 void OpenGLRenderer::draw_skybox() {
     auto shader = rg::ControllerManager::get<rg::ShaderController>()->get("skybox");
-    auto texture = rg::ControllerManager::get<rg::AssetsController>()->skybox("skybox");
+    auto texture = rg::ControllerManager::get<rg::ResourcesController>()->skybox("skybox");
     glDepthFunc(GL_LEQUAL);
     // change depth function so depth test passes when values are equal to depth buffer's content
     shader->use();

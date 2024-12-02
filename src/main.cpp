@@ -58,7 +58,7 @@ protected:
 
         auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
         auto shader_controller = controller_manager->register_controller<rg::ShaderController>();
-        auto assets_controller = controller_manager->register_controller<rg::AssetsController>();
+        auto assets_controller = controller_manager->register_controller<rg::ResourcesController>();
 
         platform_controller->before(shader_controller);
         assets_controller->after(shader_controller);

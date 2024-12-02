@@ -10,10 +10,10 @@
 #include <assimp/scene.h>
 
 namespace rg {
-    class AssetsController : public rg::Controller {
+    class ResourcesController : public rg::Controller {
     public:
-        static std::unique_ptr<AssetsController> create() {
-            return std::make_unique<AssetsController>();
+        static std::unique_ptr<ResourcesController> create() {
+            return std::make_unique<ResourcesController>();
         }
 
         std::string_view name() const override {

@@ -10,15 +10,15 @@
 
 namespace rg {
 
-    void AssetsController::initialize() {
+    void ResourcesController::initialize() {
         const auto &config       = Configuration::config();
         m_models_filesystem_path = config["assets"]["models_path"].get<std::string>();
     }
 
-    void AssetsController::terminate() {
+    void ResourcesController::terminate() {
     }
 
-    Model *AssetsController::model(const std::string &model_name) {
+    Model *ResourcesController::model(const std::string &model_name) {
         auto &model_data = m_models[model_name];
         if (!model_data) {
             model_data = load_model(model_name);
@@ -26,13 +26,13 @@ namespace rg {
         return &model_data->model;
     }
 
-    Texture *AssetsController::texture(const std::string &texture_name) {
+    Texture *ResourcesController::texture(const std::string &texture_name) {
         auto &config = Configuration::config();
         std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
         return load_from_file_if_absent(texture_path / texture_name, TextureType::Standalone);
     }
 
-    Texture *AssetsController::skybox(const std::string &texture_name) {
+    Texture *ResourcesController::skybox(const std::string &texture_name) {
         auto &config = Configuration::config();
         std::filesystem::path texture_path(config["assets"]["textures_path"].get<std::string>());
         return load_from_file_if_absent(texture_path / texture_name, TextureType::CubeMap);
@@ -47,11 +47,11 @@ namespace rg {
     public:
         using TextureLoadingCallback = std::function<Texture *(std::filesystem::path)>;
 
-        static SceneProcessingResult process_scene(AssetsController *assets_controller, const aiScene *scene,
+        static SceneProcessingResult process_scene(ResourcesController *assets_controller, const aiScene *scene,
                                                    std::filesystem::path model_path);
 
     private:
-        explicit AssimpSceneProcessor(AssetsController *assets_controller, const aiScene *scene,
+        explicit AssimpSceneProcessor(ResourcesController *assets_controller, const aiScene *scene,
                                       std::filesystem::path model_path) :
         m_model_path(std::move(model_path)), m_scene(scene), m_assets_controller(assets_controller) {
         }
@@ -68,13 +68,13 @@ namespace rg {
 
         void process_material_type(aiMaterial *material, aiTextureType type);
 
-        AssetsController *m_assets_controller;
+        ResourcesController *m_assets_controller;
         std::filesystem::path m_model_path;
 
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
     };
 
-    std::unique_ptr<rg::AssetsController::ModelData> AssetsController::load_model(const std::string &model_name) {
+    std::unique_ptr<rg::ResourcesController::ModelData> ResourcesController::load_model(const std::string &model_name) {
         auto &config     = Configuration::config();
         auto model_data  = std::make_unique<ModelData>();
         model_data->name = model_name;
@@ -96,7 +96,7 @@ namespace rg {
         return model_data;
     }
 
-    SceneProcessingResult AssimpSceneProcessor::process_scene(AssetsController *assets_controller, const aiScene *scene,
+    SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller, const aiScene *scene,
                                                               std::filesystem::path model_path) {
         AssimpSceneProcessor scene_processor(assets_controller, scene, std::move(model_path));
         scene_processor.process_node(scene->mRootNode);
@@ -196,7 +196,7 @@ namespace rg {
         }
     }
 
-    Texture *AssetsController::load_from_file_if_absent(const std::filesystem::path &path, TextureType type) {
+    Texture *ResourcesController::load_from_file_if_absent(const std::filesystem::path &path, TextureType type) {
         auto &texture_data = m_textures[path];
         if (!texture_data) {
             spdlog::info("Loading texture: {}", path.string());
@@ -206,7 +206,7 @@ namespace rg {
         return &texture_data->texture;
     }
 
-    AssetsController::TextureData::TextureData(std::filesystem::path path, std::string name, Texture texture,
+    ResourcesController::TextureData::TextureData(std::filesystem::path path, std::string name, Texture texture,
                                                TextureType texture_type) :
     path(std::move(path)), name(std::move(name)), texture(std::move(texture)), texture_type(texture_type) {
     }

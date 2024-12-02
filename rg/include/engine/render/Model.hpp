@@ -9,7 +9,7 @@
 namespace rg {
 
     class Model {
-        friend class AssetsController;
+        friend class ResourcesController;
 
     public:
         void initialize();

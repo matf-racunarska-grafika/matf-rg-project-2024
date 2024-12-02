@@ -20,7 +20,7 @@ namespace rg {
     };
 
     class Texture {
-        friend class AssetsController;
+        friend class ResourcesController;
 
     public:
         static std::string_view uniform_name_convention(TextureType type);
