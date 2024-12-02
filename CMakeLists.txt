@@ -32,7 +32,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE rg/include include/)
 add_dependencies(${PROJECT_NAME} ${LIBS})
 
 # Define the source and destination directories
-set(SHADERS_DIR "${CMAKE_SOURCE_DIR}/src/shaders")
+set(SHADERS_DIR "${CMAKE_SOURCE_DIR}/resources/shaders")
 set(SHADERS_DEST_DIR "${CMAKE_BINARY_DIR}/resources/shaders")
 
 # Add a custom target to copy resources
