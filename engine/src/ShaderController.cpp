@@ -11,7 +11,7 @@ namespace rg {
     void ShaderController::initialize() {
         const auto &config = Configuration::config();
 
-        m_shaders_path = config["shaders"]["path"].get<std::string>();
+        m_shaders_path = config["resources"]["shaders_path"].get<std::string>();
 
         for (const auto &shader_path: std::filesystem::directory_iterator(m_shaders_path)) {
             const auto name                            = shader_path.path().stem().string();
@@ -20,10 +20,10 @@ namespace rg {
                                       m_shaders[name] = std::make_unique<ShaderProgram>(shader_program);
                                   },
                                   [](const ShaderCompilationError &error) {
-                                        throw ShaderCompilationError(error);
+                                      throw ShaderCompilationError(error);
                                   },
                                   [](const FileNotFoundError &error) {
-                                        throw FileNotFoundError(error);
+                                      throw FileNotFoundError(error);
                                   }},
                        compilation_result);
         }
@@ -105,7 +105,7 @@ namespace rg {
         ShaderParsingResult parsing_result;
         std::istringstream ss(m_sources);
         std::string line;
-        std::string* current_shader = nullptr;
+        std::string *current_shader = nullptr;
         while (std::getline(ss, line)) {
             if (line.starts_with("//#shader") || line.starts_with("// #shader")) {
                 current_shader = get_current_shader(parsing_result, line);
@@ -116,7 +116,8 @@ namespace rg {
         }
         if (parsing_result.vertex_shader.empty() || parsing_result.fragment_shader.empty()) {
             throw ShaderCompilationError(std::format(
-                    "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'", m_shader_name));
+                    "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
+                    m_shader_name));
         }
         return parsing_result;
     }
