@@ -13,41 +13,43 @@ namespace rg {
         auto config_path = get_config_path();
         std::ifstream f(config_path);
         if (!f.is_open()) {
-            throw rg::FileNotFoundError(config_path, "Failed to load configuration file.");
+            throw FileNotFoundError(config_path, "Failed to load configuration file.");
         }
 
         try {
             m_config = json::parse(f);
         } catch (const std::exception &e) {
             std::string message(e.what());
-            throw rg::ConfigurationError(std::format("Error \"{}\" occurred while parsing the configuration file. "
-                                                     "Please make sure that the file is in the correct json format.",
-                                                     message));
+            throw ConfigurationError(std::format("Error \"{}\" occurred while parsing the configuration file. "
+                                                 "Please make sure that the file is in the correct json format.",
+                                                 message));
         }
     }
 
     std::filesystem::path Configuration::get_config_path() {
         auto config_arg = ArgParser::instance()->arg<std::string>("--configuration");
         if (!config_arg.has_value() || !exists(std::filesystem::path(config_arg.value()))) {
-            return create_default();
+            std::ofstream f(CONFIG_FILE_NAME.data());
+            if (!f.is_open()) {
+                throw ConfigurationError(std::format("Failed to open configuration file."));
+            }
+            auto config = create_default();
+            f << config.dump(4);
+            return CONFIG_FILE_NAME;
         }
         return config_arg.value();
     }
 
-    std::filesystem::path Configuration::create_default() {
-        std::ofstream f(CONFIG_FILE_NAME.data());
-        if (!f.is_open()) {
-            throw rg::ConfigurationError(std::format("Failed to open configuration file."));
-        }
+    nlohmann::json Configuration::create_default() {
         json default_config;
-        default_config["shaders"]["path"]         = "resources/shaders";
-        default_config["window"]["width"]         = 800;
-        default_config["window"]["height"]        = 600;
-        default_config["window"]["title"]         = "Hello, window!";
-        default_config["assets"]["models_path"]   = "resources/models";
-        default_config["assets"]["textures_path"] = "resources/textures";
-        f << default_config.dump(4);
-        return CONFIG_FILE_NAME;
+        default_config["window"]["width"]            = 800;
+        default_config["window"]["height"]           = 600;
+        default_config["window"]["title"]            = "Hello, window!";
+        default_config["resources"]["models_path"]   = "resources/models";
+        default_config["resources"]["textures_path"] = "resources/textures";
+        default_config["resources"]["shaders_path"]  = "resources/shaders";
+        default_config["resources"]["flip_uvs"]      = {};
+        return default_config;
     }
 
     Configuration *Configuration::instance() {

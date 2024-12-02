@@ -124,7 +124,7 @@ namespace rg {
     private:
         static std::filesystem::path get_config_path();
 
-        static std::filesystem::path create_default();
+        static json create_default();
 
         constexpr static std::string_view CONFIG_FILE_NAME = "config.json";
 
