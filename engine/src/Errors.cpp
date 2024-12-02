@@ -16,7 +16,7 @@ namespace rg {
 
     void trace(std::source_location location) {
         if (g_tracing) {
-            spdlog::info("{}:{}, in {}", location.file_name(), location.line(), location.function_name());
+            spdlog::info("{}, in {}:{}", location.function_name(), location.file_name(), location.line());
         }
     }
 
