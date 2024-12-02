@@ -55,8 +55,8 @@ protected:
         rg::Configuration::instance()->initialize();
 
         // register engine controller
-        auto controller_manager = rg::ControllerManager::instance();
-        auto sentinel = controller_manager->register_controller<rg::EngineControllersSentinel>();
+        auto controller_manager  = rg::ControllerManager::instance();
+        auto sentinel            = controller_manager->register_controller<rg::EngineControllersSentinel>();
         auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
         auto shader_controller   = controller_manager->register_controller<rg::ShaderController>();
         auto assets_controller   = controller_manager->register_controller<rg::ResourcesController>();

@@ -12,8 +12,6 @@ namespace rg {
 
     void ResourcesController::initialize() {
         load_models();
-        load_textures();
-        load_shaders();
     }
 
     void ResourcesController::load_models() {
@@ -25,7 +23,6 @@ namespace rg {
         }
         spdlog::info("load_models::end");
     }
-
 
     void ResourcesController::terminate() {
     }
