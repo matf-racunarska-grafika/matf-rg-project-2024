@@ -8,7 +8,6 @@
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Texture.hpp>
 #include <engine/resources/Skybox.hpp>
-#include <assimp/scene.h>
 
 namespace rg {
     class ResourcesController : public Controller {
@@ -32,12 +31,16 @@ namespace rg {
                        std::filesystem::path path = ""
                      , bool flip_uvs              = false);
 
+        Shader *shader(const std::string &name, std::filesystem::path path = "");
+
     private:
         void load_models();
 
         void load_textures();
 
         void load_skyboxes();
+
+        void load_shaders();
 
         void initialize() override;
 
@@ -46,6 +49,7 @@ namespace rg {
         std::unordered_map<std::string, std::unique_ptr<Model> > m_models;
         std::unordered_map<std::string, std::unique_ptr<Texture> > m_textures;
         std::unordered_map<std::string, std::unique_ptr<Skybox> > m_sky_boxes;
+        std::unordered_map<std::string, std::unique_ptr<Shader> > m_shaders;
 
         const std::filesystem::path m_models_path   = "resources/models";
         const std::filesystem::path m_textures_path = "resources/textures";

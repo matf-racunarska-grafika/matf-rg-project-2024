@@ -1,51 +1,6 @@
-#include <AppStateController.hpp>
-
-#include "engine/controller/Controller.hpp"
-
-#include <engine/Engine.hpp>
-#include <engine/resources/Camera.hpp>
 #include <memory>
-#include <OpenGLRenderer.hpp>
-/**
- * Student implements rg::App for their application.
- */
-
-class PlatformEventObserver final : public rg::PlatformEventObserver {
-public:
-    explicit PlatformEventObserver(rg::Camera *m_camera, rg::PlatformController *platform_controller) :
-    m_camera(m_camera), m_platform_controller(platform_controller) {
-    }
-
-    void on_mouse(rg::MousePosition mouse) override {
-        m_camera->process_mouse_movement(mouse.dx, mouse.dy);
-        m_camera->process_mouse_scroll(mouse.scroll);
-    }
-
-    void on_keyboard(rg::Key key) override {
-        if (key.is_down(rg::KEY_F1)) {
-            m_cursor_enabled = !m_cursor_enabled;
-            m_platform_controller->set_enable_cursor(m_cursor_enabled);
-        }
-    }
-
-private:
-    static rg::CameraMovement key_to_camera_movement(const rg::Key key) {
-        if (key.state() == rg::Key::State::JustPressed) {
-            switch (key.key()) {
-            case rg::KeyId::KEY_W: return rg::CameraMovement::FORWARD;
-            case rg::KeyId::KEY_S: return rg::CameraMovement::BACKWARD;
-            case rg::KeyId::KEY_A: return rg::CameraMovement::LEFT;
-            case rg::KeyId::KEY_D: return rg::CameraMovement::RIGHT;
-            default: return rg::CameraMovement::None;
-            }
-        }
-        return rg::CameraMovement::None;
-    }
-
-    rg::Camera *m_camera;
-    rg::PlatformController *m_platform_controller;
-    bool m_cursor_enabled = false;
-};
+#include <engine/Engine.hpp>
+#include <PlatformEventObserverImpl.hpp>
 
 class StudentsApp : public rg::App {
 protected:
@@ -54,34 +9,23 @@ protected:
         rg::Configuration::instance()->initialize();
 
         // register engine controller
-        auto controller_manager  = rg::ControllerManager::instance();
-        auto sentinel            = controller_manager->register_controller<rg::EngineControllersSentinel>();
-        auto platform_controller = controller_manager->register_controller<rg::PlatformController>();
-        auto shader_controller   = controller_manager->register_controller<rg::ShaderController>();
-        auto assets_controller   = controller_manager->register_controller<rg::ResourcesController>();
+        auto controller_manager = rg::ControllerManager::instance();
+        auto platform           = controller_manager->register_controller<rg::PlatformController>();
+        auto resources          = controller_manager->register_controller<rg::ResourcesController>();
+        auto sentinel           = controller_manager->register_controller<rg::EngineControllersSentinel>();
 
-        platform_controller->before(shader_controller);
-        assets_controller->after(shader_controller);
-        assets_controller->after(platform_controller);
+        resources->after(platform);
 
-        sentinel->after(platform_controller);
-        sentinel->after(assets_controller);
-        sentinel->after(shader_controller);
-
-        auto app_state_controller = controller_manager->register_controller<AppStateController>();
-        app_state_controller->after(sentinel);
+        sentinel->after(platform);
+        sentinel->after(resources);
 
         controller_manager->initialize();
 
-        platform_controller->register_platform_event_observer(
-                std::make_unique<PlatformEventObserver>(app_state_controller->camera(), platform_controller));
+        platform->register_platform_event_observer(
+                std::make_unique<PlatformEventObserverImpl>(&m_camera, platform));
 
         // User initialization
-        m_renderer = OpenGLRenderer::instance();
-        m_renderer->initialize();
-
-        m_shader = shader_controller->get("basic");
-        m_model  = assets_controller->model("backpack");
+        rg::OpenGL::enable_depth_testing();
     }
 
     bool loop() override {
@@ -101,38 +45,86 @@ protected:
 
     void poll_events() override {
         rg::ControllerManager::instance()->poll_events();
-        m_renderer->begin_frame();
+    }
+
+    void begin_frame() override {
+        rg::ControllerManager::instance()->begin_frame();
+        auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        m_projection  = glm::perspective(glm::radians(45.0f),
+                                        static_cast<float>(platform->window()->width()) / platform
+                                        ->window()->
+                                        height(),
+                                        0.1f, 100.f);
+        rg::OpenGL::clear_buffers();
     }
 
     void update() override {
         rg::ControllerManager::instance()->update();
-
-        auto app_state_controller = rg::ControllerManager::get<AppStateController>();
-        m_shader->use();
-        m_shader->set_mat4("projection", app_state_controller->projection());
-        m_shader->set_mat4("view", app_state_controller->camera()->get_view_matrix());
-        m_shader->set_mat4("model", glm::mat4(1.0f));
+        update_camera();
     }
 
     void draw() override {
         rg::ControllerManager::instance()->draw();
-
-        m_model->draw(m_shader);
-
-        m_renderer->draw_skybox();
-        m_renderer->end_frame();
+        draw_backpack();
+        draw_skybox();
     }
 
     void terminate() override {
-        m_renderer->terminate();
         rg::ControllerManager::instance()->terminate();
     }
 
+    void end_frame() override {
+        rg::ControllerManager::instance()->end_frame();
+    }
+
 private:
-    OpenGLRenderer *m_renderer;
-    rg::ShaderProgram *m_shader;
-    rg::Model *m_model;
+    void draw_skybox();
+
+    void draw_backpack();
+
+    void update_camera();
+
+    glm::mat4 m_projection{};
+    rg::Camera m_camera{glm::vec3(0.0f, 0.0f, 3.0f)};
 };
+
+void StudentsApp::draw_backpack() {
+    auto shader   = rg::ControllerManager::get<rg::ResourcesController>()->shader("basic");
+    auto backpack = rg::ControllerManager::get<rg::ResourcesController>()->model("backpack");
+    shader->use();
+    shader->set_mat4("projection", m_projection);
+    shader->set_mat4("view", m_camera.get_view_matrix());
+    shader->set_mat4("model", glm::mat4(1.0f));
+    backpack->draw(shader);
+}
+
+void StudentsApp::draw_skybox() {
+    auto shader      = rg::ControllerManager::get<rg::ResourcesController>()->shader("skybox");
+    auto skybox_cube = rg::ControllerManager::get<rg::ResourcesController>()->skybox("skybox");
+    glm::mat4 view   = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
+    shader->use();
+    shader->set_mat4("view", view);
+    shader->set_mat4("projection", m_projection);
+    // skybox cube
+    rg::OpenGL::draw_skybox(skybox_cube);
+}
+
+void StudentsApp::update_camera() {
+    auto platform = rg::ControllerManager::get<rg::PlatformController>();
+    float dt      = platform->dt();
+    if (platform->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
+        m_camera.process_keyboard(rg::FORWARD, dt);
+    }
+    if (platform->key(rg::KEY_S).state() == rg::Key::State::Pressed) {
+        m_camera.process_keyboard(rg::BACKWARD, dt);
+    }
+    if (platform->key(rg::KEY_A).state() == rg::Key::State::Pressed) {
+        m_camera.process_keyboard(rg::LEFT, dt);
+    }
+    if (platform->key(rg::KEY_D).state() == rg::Key::State::Pressed) {
+        m_camera.process_keyboard(rg::RIGHT, dt);
+    }
+}
 
 namespace rg {
     std::unique_ptr<App> create_app() {

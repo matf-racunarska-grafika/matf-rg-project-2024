@@ -54,13 +54,15 @@ namespace rg {
 
         void terminate();
 
-        void before_loop();
+        void begin_frame();
 
         bool loop();
 
         void update();
 
         void draw();
+
+        void end_frame();
 
         void top_sort();
 

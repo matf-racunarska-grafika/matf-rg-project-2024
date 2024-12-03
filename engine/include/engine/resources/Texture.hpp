@@ -9,7 +9,7 @@
 #include <utility>
 
 namespace rg {
-    class ShaderProgram;
+    class Shader;
 
     enum class TextureType {
         Regular,

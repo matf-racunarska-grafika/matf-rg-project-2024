@@ -276,9 +276,7 @@ namespace rg {
 
         void _platform_on_framebuffer_resize(int width, int height);
 
-        void _platform_begin_frame();
-
-        void _platform_end_frame();
+        void end_frame() override;
 
         void set_enable_cursor(bool enabled);
 

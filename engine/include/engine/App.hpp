@@ -5,9 +5,11 @@
 #ifndef MATF_RG_ENGINE_ENGINE_H
 #define MATF_RG_ENGINE_ENGINE_H
 #include <memory>
+
 namespace rg {
     class EngineError;
     class UserError;
+
     class App {
     public:
         /**
@@ -25,9 +27,13 @@ namespace rg {
 
         virtual bool loop() = 0;
 
+        virtual void begin_frame() = 0;
+
         virtual void update() = 0;
 
         virtual void draw() = 0;
+
+        virtual void end_frame() = 0;
 
         virtual void terminate() = 0;
 
@@ -42,6 +48,6 @@ namespace rg {
      * @return
      */
     std::unique_ptr<App> create_app();
-}// namespace rg
+} // namespace rg
 
 #endif//MATF_RG_ENGINE_ENGINE_H

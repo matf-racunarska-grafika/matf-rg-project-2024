@@ -8,9 +8,11 @@
 #include <filesystem>
 
 namespace rg {
+    class Skybox;
+
     class OpenGL {
     public:
-        static bool initialize(GLADloadproc loader);
+        static bool initialize(void *(*loader)(const char *name));
 
         static uint32_t initialize_texture(std::filesystem::path path, bool flip_uvs = false);
 
@@ -19,6 +21,12 @@ namespace rg {
         static uint32_t init_skybox_vao();
 
         static uint32_t load_skybox_textures(std::filesystem::path path, bool flip_uvs = false);
+
+        static void enable_depth_testing();
+
+        static void clear_buffers();
+
+        static void draw_skybox(const Skybox *skybox);
 
         static void terminate();
     };

@@ -212,11 +212,7 @@ namespace rg {
         m_window.m_height = height;
     }
 
-    void PlatformController::_platform_begin_frame() {
-
-    }
-
-    void PlatformController::_platform_end_frame() {
+    void PlatformController::end_frame() {
         glfwSwapBuffers(m_window.handle());
     }
 

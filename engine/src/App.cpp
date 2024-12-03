@@ -11,9 +11,11 @@ namespace rg {
         try {
             app->initialize(argc, argv);
             while (app->loop()) {
+                app->begin_frame();
                 app->poll_events();
                 app->update();
                 app->draw();
+                app->end_frame();
             }
             app->terminate();
         } catch (const EngineError &e) {

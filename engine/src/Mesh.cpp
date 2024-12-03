@@ -46,7 +46,7 @@ namespace rg {
     void Mesh::initialize() {
     }
 
-    void Mesh::draw(ShaderProgram *shader) {
+    void Mesh::draw(Shader *shader) {
         std::unordered_map<std::string_view, uint32_t> counts;
         std::string uniform_name;
         uniform_name.reserve(32);

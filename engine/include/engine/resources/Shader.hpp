@@ -20,7 +20,7 @@ namespace rg {
         }
     }
 
-    class ShaderProgram {
+    class Shader {
         friend class ShaderController;
         friend class ShaderCompiler;
 
@@ -56,7 +56,7 @@ namespace rg {
         void set_mat4(const std::string &name, const glm::mat4 &mat) const;
 
     private:
-        explicit ShaderProgram(unsigned shaderId);
+        explicit Shader(unsigned shaderId);
 
         unsigned m_shaderId;
     };

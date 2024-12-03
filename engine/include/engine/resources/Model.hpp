@@ -15,7 +15,7 @@ namespace rg {
     public:
         void initialize();
 
-        void draw(ShaderProgram *shader);
+        void draw(Shader *shader);
 
         std::string_view class_name() const {
             return "Model";

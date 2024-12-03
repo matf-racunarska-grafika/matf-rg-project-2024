@@ -9,10 +9,11 @@
 #include <engine/controller/Controller.hpp>
 #include <engine/controller/ControllerManager.hpp>
 #include <engine/platform/Platform.hpp>
+#include <engine/platform/OpenGL.hpp>
 #include <engine/util/Utils.hpp>
+#include <engine/util/Errors.hpp>
 
 #include <engine/resources/ResourcesController.hpp>
-#include <engine/resources/ShaderController.hpp>
 #include <engine/resources/Camera.hpp>
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Shader.hpp>

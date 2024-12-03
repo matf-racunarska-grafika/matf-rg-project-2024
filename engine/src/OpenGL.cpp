@@ -6,6 +6,7 @@
 #include <array>
 #include <stb_image.h>
 #include <engine/platform/OpenGL.hpp>
+#include <engine/resources/Skybox.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 
@@ -13,8 +14,8 @@ namespace rg {
 
     uint32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels);
 
-    bool OpenGL::initialize(GLADloadproc loader) {
-        return gladLoadGLLoader(loader);
+    bool OpenGL::initialize(void *(*loader)(const char *name)) {
+        return gladLoadGLLoader((GLADloadproc) loader);
     }
 
     uint32_t OpenGL::load_texture(std::filesystem::path path, bool flip_uvs) {
@@ -95,6 +96,26 @@ namespace rg {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
         return texture_id;
+    }
+
+    void OpenGL::enable_depth_testing() {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    void OpenGL::clear_buffers() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+
+    void OpenGL::draw_skybox(const Skybox *skybox) {
+        glDepthFunc(GL_LEQUAL);
+        glBindVertexArray(skybox->vao());
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->texture());
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS); // set depth function back to default
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
 
     uint32_t face_index(std::string_view name) {

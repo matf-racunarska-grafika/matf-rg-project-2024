@@ -33,6 +33,12 @@ namespace rg {
         }
     }
 
+    void ControllerManager::begin_frame() {
+        for (auto controller: m_controllers) {
+            controller->begin_frame();
+        }
+    }
+
     bool ControllerManager::loop() {
         for (auto controller: m_controllers) {
             if (!controller->loop()) {
@@ -60,11 +66,17 @@ namespace rg {
         }
     }
 
+    void ControllerManager::end_frame() {
+        for (auto controller: m_controllers) {
+            controller->end_frame();
+        }
+    }
+
     void ControllerManager::top_sort() {
         RG_GUARANTEE(!has_cycle(m_controllers), "Controller graph has a cycle!");
         std::unordered_set<Controller *> visited;
         std::vector<Controller *> stack;
-        for (auto controller : m_controllers) {
+        for (auto controller: m_controllers) {
             if (!visited.contains(controller)) {
                 top_sort_util(controller, stack, visited);
             }

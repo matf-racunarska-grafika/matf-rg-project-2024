@@ -26,7 +26,7 @@ namespace rg {
 
         void initialize();
 
-        void draw(ShaderProgram *shader);
+        void draw(Shader *shader);
 
         void destroy();
 
