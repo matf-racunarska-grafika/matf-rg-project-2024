@@ -16,12 +16,17 @@ namespace rg {
 
     void ControllerManager::initialize() {
         top_sort();
+        std::string order_string;
+        order_string.reserve(m_controllers.size() * 32);
         for (auto controller: m_controllers) {
             spdlog::info("{}::initialize", controller->name());
             controller->initialize();
             controller->mark_initialized();
+            order_string.push_back('\n');
+            order_string.append(controller->name());
         }
         m_controllers_initialized = true;
+        spdlog::info("Controllers are now initialized and they will execute in the following order: {}", order_string);
     }
 
     void ControllerManager::terminate() {
