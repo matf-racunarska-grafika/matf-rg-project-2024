@@ -33,12 +33,6 @@ namespace rg {
         }
     }
 
-    void ControllerManager::before_loop() {
-        for (auto controller: m_controllers) {
-            controller->before_loop();
-        }
-    }
-
     bool ControllerManager::loop() {
         for (auto controller: m_controllers) {
             if (!controller->loop()) {
@@ -83,7 +77,7 @@ namespace rg {
     }
 
     void ControllerManager::top_sort_util(Controller *controller, std::vector<Controller *> &stack,
-                       std::unordered_set<Controller *> &visited) {
+                                          std::unordered_set<Controller *> &visited) {
         visited.emplace(controller);
 
         for (Controller *executes_after: controller->next()) {
@@ -108,8 +102,9 @@ namespace rg {
         return false;
     }
 
-    bool ControllerManager::dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
-                                       std::unordered_set<Controller *> &path) {
+    bool ControllerManager::dfs_visits_controller_on_path(Controller *current,
+                                                          std::unordered_set<Controller *> &visited,
+                                                          std::unordered_set<Controller *> &path) {
         visited.emplace(current);
         path.emplace(current);
         for (Controller *next: current->next()) {

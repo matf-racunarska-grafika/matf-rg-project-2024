@@ -29,17 +29,16 @@ namespace rg {
             return m_next;
         }
 
-        bool is_initialized() const {return m_initialized;}
+        bool is_initialized() const {
+            return m_initialized;
+        }
 
     private:
         void mark_initialized() {
             m_initialized = true;
         }
+
         virtual void initialize() {
-        }
-
-        virtual void before_loop() {
-
         }
 
         virtual bool loop() {
@@ -55,7 +54,7 @@ namespace rg {
         virtual void draw() {
         }
 
-                virtual void terminate() {
+        virtual void terminate() {
         }
 
         /* List of controller that are dependent on this controller */
