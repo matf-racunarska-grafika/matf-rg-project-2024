@@ -10,7 +10,6 @@ std::unique_ptr<AppStateController> AppStateController::create() {
 }
 
 void AppStateController::initialize() {
-    rg::trace();
      m_platform_controller = rg::ControllerManager::get<rg::PlatformController>();
     m_projection          = glm::perspective(glm::radians(m_camera.Zoom),
                                     static_cast<float>(m_platform_controller->window()->width()) /
@@ -19,7 +18,6 @@ void AppStateController::initialize() {
 }
 
 void AppStateController::terminate() {
-    rg::trace();
 }
 
 

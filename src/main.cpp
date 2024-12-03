@@ -50,7 +50,6 @@ private:
 class StudentsApp : public rg::App {
 protected:
     void initialize(int argc, char **argv) override {
-        rg::trace();
         rg::ArgParser::instance()->initialize(argc, argv);
         rg::Configuration::instance()->initialize();
 
@@ -83,7 +82,6 @@ protected:
 
         m_shader = shader_controller->get("basic");
         m_model  = assets_controller->model("backpack");
-        rg::trace();
     }
 
     bool loop() override {
