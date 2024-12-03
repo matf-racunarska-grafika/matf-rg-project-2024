@@ -24,6 +24,7 @@ namespace rg {
                                                  "Please make sure that the file is in the correct json format.",
                                                  message));
         }
+        spdlog::info("Configuration initialized.");
     }
 
     std::filesystem::path Configuration::get_config_path() {
@@ -45,8 +46,6 @@ namespace rg {
         default_config["window"]["width"]           = 800;
         default_config["window"]["height"]          = 600;
         default_config["window"]["title"]           = "Hello, window!";
-        default_config["resources"]["shaders_path"] = "resources/shaders";
-        default_config["resources"]["flip_uvs"]     = {};
         return default_config;
     }
 
@@ -56,7 +55,7 @@ namespace rg {
     }
 
     Configuration::json &Configuration::config() {
-        return Configuration::instance()->m_config;
+        return instance()->m_config;
     }
 
     std::string ConfigurationError::report() const {
@@ -71,6 +70,7 @@ namespace rg {
     void ArgParser::initialize(int argc, char **argv) {
         m_argc = argc;
         m_argv = argv;
+        spdlog::info("ArgParser initialized.");
     }
 
     std::string ArgParser::get_arg_value(std::string_view arg_name) {
