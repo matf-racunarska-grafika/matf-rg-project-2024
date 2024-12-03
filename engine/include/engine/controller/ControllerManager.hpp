@@ -23,8 +23,9 @@ namespace rg {
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
             RG_GUARANTEE(controller->is_initialized(),
-                         "Trying to call {}::get in file:{}:{}, before it's been initialized. Call {}::get after setup().",
-                         controller->name(), location.file_name(), location.line(), controller->name());
+                         "Trying to call {}::get or rg::controller<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
+                         controller->name(), controller->name(), location.file_name(), location.line(),
+                         controller->name());
             return controller;
         }
 
