@@ -43,9 +43,9 @@ namespace rg {
 
     nlohmann::json Configuration::create_default() {
         json default_config;
-        default_config["window"]["width"]           = 800;
-        default_config["window"]["height"]          = 600;
-        default_config["window"]["title"]           = "Hello, window!";
+        default_config["window"]["width"]  = 800;
+        default_config["window"]["height"] = 600;
+        default_config["window"]["title"]  = "Hello, window!";
         return default_config;
     }
 
