@@ -2,7 +2,6 @@
 #define MATF_RG_PROJECT_SHADER_HPP
 #include <engine/util/Utils.hpp>
 #include <string>
-#include <utility>
 #include <glm/glm.hpp>
 
 namespace rg {

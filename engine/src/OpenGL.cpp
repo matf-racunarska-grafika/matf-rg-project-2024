@@ -6,6 +6,7 @@
 #include <array>
 #include <stb_image.h>
 #include <engine/platform/OpenGL.hpp>
+#include <engine/resources/Shader.hpp>
 #include <engine/resources/Skybox.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
@@ -62,6 +63,21 @@ namespace rg {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
         return skybox_vao;
+    }
+
+    bool OpenGL::compile_shader(uint32_t shader_id, const std::string &shader_source) {
+        const char *shader_source_cstr = shader_source.c_str();
+        glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
+        glCompileShader(shader_id);
+        int success;
+        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+        return success;
+    }
+
+    std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
+        char infoLog[512];
+        glGetShaderInfoLog(shader_id, 512, nullptr, infoLog);
+        return infoLog;
     }
 
     uint32_t face_index(std::string_view name);

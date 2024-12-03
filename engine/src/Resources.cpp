@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 #include <engine/resources/Shader.hpp>
-#include <engine/resources/ResourcesController.hpp>
+#include <engine/resources/Resources.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 #include <spdlog/spdlog.h>
@@ -82,7 +82,7 @@ namespace rg {
     }
 
     void ResourcesController::terminate() {
-        // TODO Free resouces
+
     }
 
     class AssimpSceneProcessor {
@@ -294,18 +294,6 @@ namespace rg {
         return shader_program;
     }
 
-    bool opengl_compilation_failed(int shader_id) {
-        int success;
-        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
-        return !success;
-    };
-
-    std::string opengl_get_compilation_error_message(int shader_id) {
-        char infoLog[512];
-        glGetShaderInfoLog(shader_id, 512, nullptr, infoLog);
-        return infoLog;
-    }
-
     Shader ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
         int shader_program_id  = glCreateProgram();
         int vertex_shader_id   = 0;
@@ -332,14 +320,10 @@ namespace rg {
     }
 
     int ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
-        int shader_id                  = glCreateShader(to_opengl_type(type));
-        const char *shader_source_cstr = shader_source.c_str();
-        glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
-        glCompileShader(shader_id);
-        if (opengl_compilation_failed(shader_id)) {
+        int shader_id = glCreateShader(to_opengl_type(type));
+        if (!OpenGL::compile_shader(shader_id, shader_source)) {
             throw ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type),
-                                                     m_shader_name,
-                                                     opengl_get_compilation_error_message(shader_id)));
+                                                     m_shader_name, OpenGL::get_compilation_error_message(shader_id)));
         }
         return shader_id;
     }

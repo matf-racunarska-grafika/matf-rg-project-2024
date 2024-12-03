@@ -6,6 +6,7 @@
 #define OPENGL_HPP
 #include <cstdint>
 #include <filesystem>
+#include <engine/resources/Shader.hpp>
 
 namespace rg {
     class Skybox;
@@ -20,6 +21,10 @@ namespace rg {
 
         static uint32_t init_skybox_vao();
 
+        static bool shader_compiled_successfully(uint32_t shader_id);
+
+        static bool compile_shader(uint32_t shader_id, const std::string &shader_source);
+
         static uint32_t load_skybox_textures(std::filesystem::path path, bool flip_uvs = false);
 
         static void enable_depth_testing();
@@ -29,6 +34,8 @@ namespace rg {
         static void draw_skybox(const Skybox *skybox);
 
         static void terminate();
+
+        static std::string get_compilation_error_message(uint32_t shader_id);
     };
 }
 #endif //OPENGL_HPP
