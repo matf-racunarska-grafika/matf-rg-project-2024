@@ -1,6 +1,5 @@
 #include <memory>
 #include <engine/Engine.hpp>
-#include <PlatformEventObserverImpl.hpp>
 
 class StudentsApp : public rg::App {
 protected:
@@ -21,9 +20,6 @@ protected:
 
         controller_manager->initialize();
 
-        platform->register_platform_event_observer(
-                std::make_unique<PlatformEventObserverImpl>(&m_camera, platform));
-
         // User initialization
         rg::OpenGL::enable_depth_testing();
     }
@@ -36,8 +32,8 @@ protected:
             return false;
         }
 
-        const auto input = rg::ControllerManager::get<rg::PlatformController>();
-        if (input->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
+        const auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        if (platform->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
         }
         return true;
@@ -45,6 +41,14 @@ protected:
 
     void poll_events() override {
         rg::ControllerManager::instance()->poll_events();
+        const auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        if (platform->key(rg::KeyId::KEY_F2).state() == rg::Key::State::JustPressed) {
+            m_draw_gui = !m_draw_gui;
+        }
+        if (platform->key(rg::KEY_F1).state() == rg::Key::State::JustPressed) {
+            m_cursor_enabled = !m_cursor_enabled;
+            platform->set_enable_cursor(m_cursor_enabled);
+        }
     }
 
     void begin_frame() override {
@@ -67,6 +71,7 @@ protected:
         rg::ControllerManager::instance()->draw();
         draw_backpack();
         draw_skybox();
+        draw_gui();
     }
 
     void terminate() override {
@@ -84,8 +89,13 @@ private:
 
     void update_camera();
 
+    void draw_gui();
+
     glm::mat4 m_projection{};
     rg::Camera m_camera{glm::vec3(0.0f, 0.0f, 3.0f)};
+    float m_backpack_scale{1.0f};
+    bool m_draw_gui{false};
+    bool m_cursor_enabled{true};
 };
 
 void StudentsApp::draw_backpack() {
@@ -94,7 +104,7 @@ void StudentsApp::draw_backpack() {
     shader->use();
     shader->set_mat4("projection", m_projection);
     shader->set_mat4("view", m_camera.get_view_matrix());
-    shader->set_mat4("model", glm::mat4(1.0f));
+    shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
     backpack->draw(shader);
 }
 
@@ -110,6 +120,9 @@ void StudentsApp::draw_skybox() {
 }
 
 void StudentsApp::update_camera() {
+    if (m_draw_gui) {
+        return;
+    }
     auto platform = rg::ControllerManager::get<rg::PlatformController>();
     float dt      = platform->dt();
     if (platform->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
@@ -123,6 +136,33 @@ void StudentsApp::update_camera() {
     }
     if (platform->key(rg::KEY_D).state() == rg::Key::State::Pressed) {
         m_camera.process_keyboard(rg::RIGHT, dt);
+    }
+    auto mouse = platform->mouse();
+    m_camera.process_mouse_movement(mouse.dx, mouse.dy);
+    m_camera.process_mouse_scroll(mouse.scroll);
+}
+
+void StudentsApp::draw_gui() {
+    if (!m_draw_gui) {
+        return;
+    }
+
+    // draw info
+    {
+        auto backpack = rg::ControllerManager::get<rg::ResourcesController>()->model("backpack"); {
+            static float f = 0.0f;
+            ImGui::Begin(backpack->name().c_str());
+            ImGui::Text("Loaded from: %s", backpack->path().c_str());
+            ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
+            ImGui::End();
+        } {
+            ImGui::Begin("Camera info");
+            const auto &c = m_camera;
+            ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
+            ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
+            ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
+            ImGui::End();
+        }
     }
 }
 
