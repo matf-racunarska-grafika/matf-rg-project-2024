@@ -7,6 +7,7 @@
 #include <engine/controller/Controller.hpp>
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Texture.hpp>
+#include <engine/resources/Shader.hpp>
 #include <engine/resources/Skybox.hpp>
 
 namespace rg {

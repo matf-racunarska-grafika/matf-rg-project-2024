@@ -48,6 +48,7 @@ namespace rg {
             return controller;
         }
 
+    private:
         void initialize();
 
         void poll_events();
@@ -74,7 +75,6 @@ namespace rg {
 
         bool has_cycle(const std::vector<Controller *> &controllers);
 
-    private:
         template<typename TController>
         TController *create_if_absent() {
             static std::unique_ptr<TController> controller = std::make_unique<TController>();

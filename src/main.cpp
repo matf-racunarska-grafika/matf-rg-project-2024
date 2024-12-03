@@ -3,35 +3,12 @@
 
 class StudentsApp : public rg::App {
 protected:
-    void initialize(int argc, char **argv) override {
-        rg::ArgParser::instance()->initialize(argc, argv);
-        rg::Configuration::instance()->initialize();
-
-        // register engine controller
-        auto controller_manager = rg::ControllerManager::instance();
-        auto platform           = controller_manager->register_controller<rg::PlatformController>();
-        auto resources          = controller_manager->register_controller<rg::ResourcesController>();
-        auto sentinel           = controller_manager->register_controller<rg::EngineControllersSentinel>();
-
-        resources->after(platform);
-
-        sentinel->after(platform);
-        sentinel->after(resources);
-
-        controller_manager->initialize();
-
+    void initialize() override {
         // User initialization
         rg::OpenGL::enable_depth_testing();
     }
 
     bool loop() override {
-        /*
-         * Any controller can stop the rendering loop.
-         */
-        if (!rg::ControllerManager::instance()->loop()) {
-            return false;
-        }
-
         const auto platform = rg::ControllerManager::get<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
@@ -40,7 +17,6 @@ protected:
     }
 
     void poll_events() override {
-        rg::ControllerManager::instance()->poll_events();
         const auto platform = rg::ControllerManager::get<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_F2).state() == rg::Key::State::JustPressed) {
             m_draw_gui = !m_draw_gui;
@@ -52,7 +28,6 @@ protected:
     }
 
     void begin_frame() override {
-        rg::ControllerManager::instance()->begin_frame();
         auto platform = rg::ControllerManager::get<rg::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
@@ -63,23 +38,13 @@ protected:
     }
 
     void update() override {
-        rg::ControllerManager::instance()->update();
         update_camera();
     }
 
     void draw() override {
-        rg::ControllerManager::instance()->draw();
         draw_backpack();
         draw_skybox();
         draw_gui();
-    }
-
-    void terminate() override {
-        rg::ControllerManager::instance()->terminate();
-    }
-
-    void end_frame() override {
-        rg::ControllerManager::instance()->end_frame();
     }
 
 private:
@@ -166,12 +131,6 @@ void StudentsApp::draw_gui() {
     }
 }
 
-namespace rg {
-    std::unique_ptr<App> create_app() {
-        return std::make_unique<StudentsApp>();
-    }
-} // namespace rg
-
 int main(int argc, char **argv) {
-    return rg::App::run(argc, argv);
+    return std::make_unique<StudentsApp>()->run(argc, argv);
 }

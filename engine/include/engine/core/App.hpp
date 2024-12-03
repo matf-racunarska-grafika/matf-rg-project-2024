@@ -4,7 +4,6 @@
 
 #ifndef MATF_RG_ENGINE_ENGINE_H
 #define MATF_RG_ENGINE_ENGINE_H
-#include <memory>
 
 namespace rg {
     class EngineError;
@@ -16,38 +15,80 @@ namespace rg {
          * This is the only function that the user calls.
          * @return 0 if app terminated normally, -1 otherwise.
          */
-        static int run(int argc, char **argv);
+        int run(int argc, char **argv);
 
         virtual ~App() = default;
 
-    protected:
-        virtual void initialize(int argc, char **argv) = 0;
+    private:
+        void setup_(int argc, char **argv);
 
-        virtual void poll_events() = 0;
+        void initialize_();
 
-        virtual bool loop() = 0;
+        void poll_events_();
 
-        virtual void begin_frame() = 0;
+        bool loop_();
 
-        virtual void update() = 0;
+        void begin_frame_();
 
-        virtual void draw() = 0;
+        void update_();
 
-        virtual void end_frame() = 0;
+        void draw_();
 
-        virtual void terminate() = 0;
+        void end_frame_();
 
-        virtual void handle_error(const UserError &);
+        void terminate_();
+
+        int on_exit_();
+
+        void handle_error_(const std::exception &exception);
 
         void handle_error_(const EngineError &e);
-    };
 
-    /**
-     * The user implements this function that instantiates users own implementation of the App.
-     * This function is called in the App::run method.
-     * @return
-     */
-    std::unique_ptr<App> create_app();
+    protected:
+        virtual void setup() {
+            // Intentionally blank because it doesn't have to be overridden.
+        }
+
+        virtual void initialize() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual void poll_events() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual bool loop() {
+            // Intentionally blank because it doesn't have to be overridden.
+            return true;
+        };
+
+        virtual void begin_frame() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual void update() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual void draw() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual void end_frame() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual void terminate() {
+            // Intentionally blank because it doesn't have to be overridden.
+        };
+
+        virtual int on_exit() {
+            // Intentionally blank because it doesn't have to be overridden.
+            return 0;
+        }
+
+        virtual void handle_error(const UserError &);
+    };
 } // namespace rg
 
 #endif//MATF_RG_ENGINE_ENGINE_H
