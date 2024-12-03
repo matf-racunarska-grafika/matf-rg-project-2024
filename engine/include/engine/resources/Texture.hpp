@@ -17,7 +17,6 @@ namespace rg {
         Specular,
         Normal,
         Height,
-        SkyBox,
     };
 
     class Texture {
@@ -25,8 +24,6 @@ namespace rg {
 
     public:
         static std::string_view uniform_name_convention(TextureType type);
-
-        static Texture create_from_file(std::filesystem::path path, TextureType type, bool flip_uvs);
 
         void destroy();
 
@@ -53,10 +50,6 @@ namespace rg {
       , m_path(std::move(path))
       , m_name(std::move(name)) {
         }
-
-        static uint32_t load_regular_texture(std::filesystem::path path, bool flip_uvs);
-
-        static uint32_t load_cubemap_texture(std::filesystem::path path, bool flip_uvs);
 
         uint32_t m_id;
         TextureType m_type;

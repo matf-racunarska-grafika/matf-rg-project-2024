@@ -1,3 +1,5 @@
+#include <glad/glad.h>
+#include <stb_image.h>
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
@@ -7,6 +9,7 @@
 #include <assimp/postprocess.h>
 #include <unordered_set>
 #include <utility>
+#include <engine/platform/OpenGL.hpp>
 
 namespace rg {
 
@@ -44,7 +47,7 @@ namespace rg {
         m_skyboxes_path = "resources/skyboxes/";
         if (exists(m_skyboxes_path)) {
             for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
-                // load_texture(sky_boxes_entry.path(), TextureType::SkyBox);
+                load_skybox(sky_boxes_entry.path(), sky_boxes_entry.path().stem().string());
             }
         }
         spdlog::info("load_skyboxes::end");
@@ -53,10 +56,10 @@ namespace rg {
     void ResourcesController::terminate() {
     }
 
-    Model *ResourcesController::model(const std::string &model_name) {
-        auto &model_data = m_models[model_name];
+    Model *ResourcesController::model(const std::string &name) {
+        auto &model_data = m_models[name];
         if (!model_data) {
-            model_data = load_model(model_name);
+            model_data = load_model(name);
         }
         return model_data.get();
     }
@@ -67,9 +70,12 @@ namespace rg {
         return load_from_file_if_absent(texture_path / texture_name, TextureType::Regular);
     }
 
-    Texture *ResourcesController::skybox(const std::string &texture_name) {
-        auto &config = Configuration::config();
-        return load_from_file_if_absent(m_skyboxes_path / texture_name, TextureType::SkyBox);
+    Skybox *ResourcesController::skybox(const std::string &name) {
+        auto &result = m_sky_boxes[name];
+        if (!result) {
+            result = load_skybox(m_skyboxes_path / name, name);
+        }
+        return result.get();
     }
 
     struct SceneProcessingResult {
@@ -87,7 +93,7 @@ namespace rg {
     private:
         explicit AssimpSceneProcessor(ResourcesController *assets_controller, const aiScene *scene,
                                       std::filesystem::path model_path) :
-        m_model_path(std::move(model_path)), m_scene(scene), m_assets_controller(assets_controller) {
+        m_model_path(std::move(model_path)), m_scene(scene), m_resources_controller(assets_controller) {
         }
 
         void process_node(aiNode *node);
@@ -102,7 +108,7 @@ namespace rg {
 
         void process_material_type(aiMaterial *material, aiTextureType type);
 
-        ResourcesController *m_assets_controller;
+        ResourcesController *m_resources_controller;
         std::filesystem::path m_model_path;
 
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
@@ -144,8 +150,15 @@ namespace rg {
             const std::filesystem::path &path,
             TextureType type, bool flip_uvs) {
         spdlog::info("Loading texture: {}", path.string());
-        return std::make_unique<Texture>(Texture::create_from_file(path, type, flip_uvs));
+        return std::make_unique<Texture>(Texture(OpenGL::load_texture(path, flip_uvs), type, path, path.stem()));
+    }
 
+    std::unique_ptr<Skybox> ResourcesController::load_skybox(const std::filesystem::path &path,
+                                                             const std::string &name,
+                                                             bool flip_uvs) {
+        spdlog::info("Loading skybox: {}", path.string());
+        return std::make_unique<Skybox>(Skybox(OpenGL::init_skybox_vao(), OpenGL::load_skybox_textures(path, flip_uvs),
+                                               path, name));
     }
 
     SceneProcessingResult AssimpSceneProcessor::process_scene(ResourcesController *assets_controller,
@@ -232,15 +245,15 @@ namespace rg {
             aiString ai_texture_path_string;
             material->GetTexture(type, i, &ai_texture_path_string);
             std::filesystem::path texture_path(ai_texture_path_string.C_Str());
-            Texture *texture = m_assets_controller->load_from_file_if_absent(m_model_path.parent_path() / texture_path,
-                                                                             assimp_texture_type_to_engine(type));
+            Texture *texture = m_resources_controller->load_from_file_if_absent(
+                    m_model_path.parent_path() / texture_path,
+                    assimp_texture_type_to_engine(type));
             m_textures.emplace(texture);
         }
     }
 
     TextureType AssimpSceneProcessor::assimp_texture_type_to_engine(aiTextureType type) {
         switch (type) {
-
         case aiTextureType_DIFFUSE: return TextureType::Diffuse;
         case aiTextureType_SPECULAR: return TextureType::Specular;
         case aiTextureType_HEIGHT: return TextureType::Height;
@@ -259,4 +272,5 @@ namespace rg {
         }
         return result.get();
     }
+
 } // namespace rg
