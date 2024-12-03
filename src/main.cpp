@@ -9,7 +9,7 @@ protected:
     }
 
     bool loop() override {
-        const auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        const auto platform = rg::controller<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
         }
@@ -17,7 +17,7 @@ protected:
     }
 
     void poll_events() override {
-        const auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        const auto platform = rg::controller<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_F2).state() == rg::Key::State::JustPressed) {
             m_draw_gui = !m_draw_gui;
         }
@@ -28,7 +28,7 @@ protected:
     }
 
     void begin_frame() override {
-        auto platform = rg::ControllerManager::get<rg::PlatformController>();
+        auto platform = rg::controller<rg::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
                                         ->window()->
@@ -64,8 +64,8 @@ private:
 };
 
 void StudentsApp::draw_backpack() {
-    auto shader   = rg::ControllerManager::get<rg::ResourcesController>()->shader("basic");
-    auto backpack = rg::ControllerManager::get<rg::ResourcesController>()->model("backpack");
+    auto shader   = rg::controller<rg::ResourcesController>()->shader("basic");
+    auto backpack = rg::controller<rg::ResourcesController>()->model("backpack");
     shader->use();
     shader->set_mat4("projection", m_projection);
     shader->set_mat4("view", m_camera.get_view_matrix());
@@ -74,8 +74,8 @@ void StudentsApp::draw_backpack() {
 }
 
 void StudentsApp::draw_skybox() {
-    auto shader      = rg::ControllerManager::get<rg::ResourcesController>()->shader("skybox");
-    auto skybox_cube = rg::ControllerManager::get<rg::ResourcesController>()->skybox("skybox");
+    auto shader      = rg::controller<rg::ResourcesController>()->shader("skybox");
+    auto skybox_cube = rg::controller<rg::ResourcesController>()->skybox("skybox");
     glm::mat4 view   = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
     shader->use();
     shader->set_mat4("view", view);
@@ -88,7 +88,7 @@ void StudentsApp::update_camera() {
     if (m_draw_gui) {
         return;
     }
-    auto platform = rg::ControllerManager::get<rg::PlatformController>();
+    auto platform = rg::controller<rg::PlatformController>();
     float dt      = platform->dt();
     if (platform->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
         m_camera.process_keyboard(rg::FORWARD, dt);
@@ -114,7 +114,7 @@ void StudentsApp::draw_gui() {
 
     // draw info
     {
-        auto backpack = rg::ControllerManager::get<rg::ResourcesController>()->model("backpack"); {
+        auto backpack = rg::controller<rg::ResourcesController>()->model("backpack"); {
             static float f = 0.0f;
             ImGui::Begin(backpack->name().c_str());
             ImGui::Text("Loaded from: %s", backpack->path().c_str());

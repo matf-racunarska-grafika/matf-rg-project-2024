@@ -14,6 +14,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <engine/controller/ControllerManager.hpp>
 
 struct GLFWwindow;
 

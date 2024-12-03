@@ -23,13 +23,8 @@ namespace rg {
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
             RG_GUARANTEE(controller->is_initialized(),
-                         "Trying to get Controller: {} in file:{}:{}, before it's been initialized. Call ControllerManager::initialize_controllers first"
-                         "first.",
-                         controller->name(), location.file_name(), location.line());
-            RG_GUARANTEE(manager->is_registered_controller(controller),
-                         "Trying to get Controller: {} in file:{}:{}, before registering it. Call register_controller "
-                         "first.",
-                         controller->name(), location.file_name(), location.line());
+                         "Trying to call {}::get in file:{}:{}, before it's been initialized. Call {}::get after setup().",
+                         controller->name(), location.file_name(), location.line(), controller->name());
             return controller;
         }
 
@@ -38,7 +33,7 @@ namespace rg {
             static_assert(std::is_base_of_v<Controller, TController>);
             TController *controller = create_if_absent<TController>();
             RG_GUARANTEE(!m_controllers_initialized,
-                         "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register a controller before calling initialize_controllers()",
+                         "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register controllers in the setup() phase.",
                          controller->name(), location.file_name(), location.line());
             RG_GUARANTEE(!is_registered_controller(controller),
                          "Trying to register Controller: `{}` twice in file: {}:{}. Please make "
@@ -88,5 +83,10 @@ namespace rg {
         std::vector<Controller *> m_controllers;
         bool m_controllers_initialized{false};
     };
+
+    template<typename TController>
+    TController *controller(std::source_location location = std::source_location::current()) {
+        return ControllerManager::get<TController>(location);
+    }
 } // namespace rg
 #endif//MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
