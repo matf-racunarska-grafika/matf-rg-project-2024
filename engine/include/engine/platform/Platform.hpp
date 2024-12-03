@@ -247,7 +247,6 @@ namespace rg {
 
     class PlatformController : public Controller {
         friend class ControllerManager;
-        friend class Renderer;
 
     public:
         const Key &key(KeyId key) const;
@@ -300,8 +299,6 @@ namespace rg {
         void poll_events() override;
 
         void begin_frame() override;
-
-        static std::unique_ptr<PlatformController> create();
 
         FrameTime m_frame_time;
         Window m_window;

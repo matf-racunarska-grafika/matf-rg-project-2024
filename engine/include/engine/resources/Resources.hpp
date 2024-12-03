@@ -12,12 +12,8 @@
 namespace rg {
     class ResourcesController : public Controller {
     public:
-        static std::unique_ptr<ResourcesController> create() {
-            return std::make_unique<ResourcesController>();
-        }
-
         std::string_view name() const override {
-            return "AssetsController";
+            return "ResourcesController";
         }
 
         Model *model(const std::string &model_name);

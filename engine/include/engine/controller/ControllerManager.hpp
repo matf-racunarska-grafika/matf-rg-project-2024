@@ -77,7 +77,7 @@ namespace rg {
     private:
         template<typename TController>
         TController *create_if_absent() {
-            static std::unique_ptr<TController> controller = TController::create();
+            static std::unique_ptr<TController> controller = std::make_unique<TController>();
             return controller.get();
         }
 

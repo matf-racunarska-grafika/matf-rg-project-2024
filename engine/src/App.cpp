@@ -11,8 +11,8 @@ namespace rg {
         try {
             app->initialize(argc, argv);
             while (app->loop()) {
-                app->begin_frame();
                 app->poll_events();
+                app->begin_frame();
                 app->update();
                 app->draw();
                 app->end_frame();

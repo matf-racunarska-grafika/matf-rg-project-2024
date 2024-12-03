@@ -193,10 +193,6 @@ namespace rg {
         return m_keys[key];
     }
 
-    std::unique_ptr<PlatformController> PlatformController::create() {
-        return std::make_unique<PlatformController>();
-    }
-
     const MousePosition &PlatformController::mouse() const {
         return g_mouse_position;
     }
