@@ -2,7 +2,7 @@
 // Created by spaske00 on 20.4.24..
 //
 #include <spdlog/spdlog.h>
-#include <engine/App.hpp>
+#include <engine/core/App.hpp>
 #include <engine/util/Errors.hpp>
 
 namespace rg {
