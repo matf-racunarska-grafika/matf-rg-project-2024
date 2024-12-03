@@ -13,6 +13,10 @@ namespace rg {
 
     uint32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels);
 
+    bool OpenGL::initialize(GLADloadproc loader) {
+        return gladLoadGLLoader(loader);
+    }
+
     uint32_t OpenGL::load_texture(std::filesystem::path path, bool flip_uvs) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);

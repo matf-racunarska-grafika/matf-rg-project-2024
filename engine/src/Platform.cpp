@@ -13,12 +13,10 @@
 
 #include <spdlog/spdlog.h>
 #include <utility>
+#include <engine/platform/OpenGL.hpp>
 
 namespace rg {
 
-    /*
-     * Platform IMPL
-     */
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, GLFW_KEY_LAST + 1> g_glfw_key_to_engine;
     static MousePosition g_mouse_position;
@@ -62,8 +60,8 @@ namespace rg {
         glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
         glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
         glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
-        const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-        RG_GUARANTEE(opengl_initialized, "GLAD failed to init!");
+        const int opengl_initialized = OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
         int major, minor, revision;
         glfwGetVersion(&major, &minor, &revision);
