@@ -15,8 +15,9 @@ include_directories(libs/json)
 add_subdirectory(libs/glm)
 add_subdirectory(libs/assimp)
 add_subdirectory(libs/stb)
+add_subdirectory(libs/imgui)
 
-set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES})
+set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES} imgui)
 
 ############## Sources ###############
 file(GLOB sources src/*.cpp engine/src/*.cpp)
