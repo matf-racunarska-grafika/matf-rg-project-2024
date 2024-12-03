@@ -5,6 +5,10 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include <engine/controller/Controller.hpp>
 #include <engine/util/Utils.hpp>
 #include <memory>
@@ -170,12 +174,12 @@ namespace rg {
 
         std::string_view to_string() const;
 
-        bool is_down(KeyId id) const {
-            return m_key == id && (m_state == State::Pressed || m_state == State::JustPressed);
+        bool is_down() const {
+            return (m_state == State::Pressed || m_state == State::JustPressed);
         }
 
-        bool is_up(KeyId id) const {
-            return m_key == id && (m_state == State::Released || m_state == State::JustReleased);
+        bool is_up() const {
+            return (m_state == State::Released || m_state == State::JustReleased);
         }
 
     private:
@@ -184,11 +188,11 @@ namespace rg {
     };
 
     struct MousePosition {
-        double x;
-        double y;
-        double dx;
-        double dy;
-        double scroll;
+        float x;
+        float y;
+        float dx;
+        float dy;
+        float scroll;
     };
 
     struct FrameTime {
@@ -291,13 +295,16 @@ namespace rg {
 
         bool loop() override;
 
+        void update_mouse();
+
         void poll_events() override;
+
+        void begin_frame() override;
 
         static std::unique_ptr<PlatformController> create();
 
         FrameTime m_frame_time;
         Window m_window;
-        MousePosition m_mouse;
         std::vector<Key> m_keys;
         std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
 

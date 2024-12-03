@@ -71,10 +71,20 @@ namespace rg {
         for (int key = 0; key < m_keys.size(); ++key) {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+        (void) io;
+        ImGui_ImplGlfw_InitForOpenGL(handle, true);
+        ImGui_ImplOpenGL3_Init("#version 330 core");
         register_platform_event_observer(std::make_unique<PlatformEventObserver>());
     }
 
     void PlatformController::terminate() {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
         m_platform_event_observer.reset(nullptr);
         glfwDestroyWindow(m_window.handle());
         glfwTerminate();
@@ -89,11 +99,23 @@ namespace rg {
     }
 
     void PlatformController::poll_events() {
-        m_mouse = g_mouse_position;
+        g_mouse_position.dx = g_mouse_position.dy = 0.0f;
+        glfwPollEvents();
         for (int i = 0; i < KEY_COUNT; ++i) {
             update_key(key(static_cast<KeyId>(i)));
         }
-        glfwPollEvents();
+    }
+
+    void PlatformController::begin_frame() {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+    }
+
+    void PlatformController::end_frame() {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(m_window.handle());
     }
 
     void PlatformController::update() {
@@ -176,7 +198,7 @@ namespace rg {
     }
 
     const MousePosition &PlatformController::mouse() const {
-        return m_mouse;
+        return g_mouse_position;
     }
 
     std::string_view PlatformController::name() const {
@@ -210,10 +232,6 @@ namespace rg {
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) {
         m_window.m_width  = width;
         m_window.m_height = height;
-    }
-
-    void PlatformController::end_frame() {
-        glfwSwapBuffers(m_window.handle());
     }
 
     void PlatformController::set_enable_cursor(bool enabled) {
