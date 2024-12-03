@@ -26,6 +26,6 @@ file(GLOB headers src/*.hpp include/*.hpp engine/include/engine/*.hpp)
 ################ Exec ################
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
-target_include_directories(${PROJECT_NAME} PRIVATE engine/include include/)
+target_include_directories(${PROJECT_NAME} PRIVATE engine/include include/ libs/json)
 add_dependencies(${PROJECT_NAME} ${LIBS})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")
