@@ -15,4 +15,5 @@ _deps
 /cmake-build-release/
 /.idea/
 *.a
+/docs/
 matf-rg-project
