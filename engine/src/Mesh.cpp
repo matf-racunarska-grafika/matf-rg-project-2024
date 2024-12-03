@@ -9,7 +9,7 @@
 namespace rg {
 
     Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-                      const std::unordered_set<Texture *> &textures) {
+                      std::vector<Texture *> textures) {
         static_assert(std::is_trivial_v<Vertex>);
         uint32_t VAO, VBO, EBO;
         glGenVertexArrays(1, &VAO);
@@ -40,7 +40,7 @@ namespace rg {
 
         glBindVertexArray(0);
 
-        return {VAO, indices.size(), std::vector(range(textures))};
+        return Mesh(VAO, indices.size(), std::move(textures));
     }
 
     void Mesh::initialize() {

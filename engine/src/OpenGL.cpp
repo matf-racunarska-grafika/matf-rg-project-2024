@@ -67,7 +67,8 @@ namespace rg {
 
     uint32_t OpenGL::load_skybox_textures(std::filesystem::path path, bool flip_uvs) {
         RG_GUARANTEE(std::filesystem::is_directory(path),
-                     "Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap")
+                     "Directory '{}' doesn't exist. Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap.",
+                     path.string())
         ;
         uint32_t texture_id;
         glGenTextures(1, &texture_id);

@@ -43,6 +43,8 @@ namespace rg {
             return m_name;
         }
 
+        Texture() = default;
+
     private:
         Texture(uint32_t id, TextureType type, std::filesystem::path path, std::string name)
         : m_id(id)
