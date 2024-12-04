@@ -96,16 +96,10 @@ namespace rg {
         virtual void poll_events() {
         }
 
-        virtual void begin_frame() {
-        }
-
         virtual void update() {
         }
 
         virtual void draw() {
-        }
-
-        virtual void end_frame() {
         }
 
         virtual void terminate() {

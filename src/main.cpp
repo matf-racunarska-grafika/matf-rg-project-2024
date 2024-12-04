@@ -27,7 +27,11 @@ protected:
         }
     }
 
-    void begin_frame() override {
+    void update() override {
+        update_camera();
+    }
+
+    void draw() override {
         auto platform = rg::controller<rg::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
@@ -35,16 +39,11 @@ protected:
                                         height(),
                                         0.1f, 100.f);
         rg::OpenGL::clear_buffers();
-    }
 
-    void update() override {
-        update_camera();
-    }
-
-    void draw() override {
         draw_backpack();
         draw_skybox();
         draw_gui();
+        rg::controller<rg::PlatformController>()->swap_buffers();
     }
 
 private:
@@ -111,7 +110,9 @@ void StudentsApp::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
     // draw info
     {
         auto backpack = rg::controller<rg::ResourcesController>()->model("backpack"); {
@@ -129,6 +130,8 @@ void StudentsApp::draw_gui() {
             ImGui::End();
         }
     }
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 int main(int argc, char **argv) {

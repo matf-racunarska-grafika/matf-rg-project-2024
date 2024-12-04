@@ -280,16 +280,12 @@ namespace rg {
 
         void _platform_on_framebuffer_resize(int width, int height);
 
-        void end_frame() override;
-
         void set_enable_cursor(bool enabled);
+
+        void swap_buffers();
 
     private:
         void initialize() override;
-
-        void update() override;
-
-        void draw() override;
 
         void terminate() override;
 
@@ -298,8 +294,6 @@ namespace rg {
         void update_mouse();
 
         void poll_events() override;
-
-        void begin_frame() override;
 
         FrameTime m_frame_time;
         Window m_window;

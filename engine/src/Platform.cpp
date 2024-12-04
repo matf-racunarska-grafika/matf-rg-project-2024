@@ -106,22 +106,8 @@ namespace rg {
         }
     }
 
-    void PlatformController::begin_frame() {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-    }
-
-    void PlatformController::end_frame() {
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    void PlatformController::swap_buffers() {
         glfwSwapBuffers(m_window.handle());
-    }
-
-    void PlatformController::update() {
-    }
-
-    void PlatformController::draw() {
     }
 
     int glfw_platform_action(GLFWwindow *window, int glfw_key_code) {

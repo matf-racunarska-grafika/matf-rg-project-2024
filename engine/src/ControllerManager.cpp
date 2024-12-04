@@ -29,21 +29,6 @@ namespace rg {
         spdlog::info("Controllers are now initialized and they will execute in the following order: {}", order_string);
     }
 
-    void ControllerManager::terminate() {
-        int size = static_cast<int>(m_controllers.size()) - 1;
-        for (int i = std::max(size, 0); i >= 0; --i) {
-            auto controller = m_controllers[i];
-            controller->terminate();
-            spdlog::info("{}::terminate", controller->name());
-        }
-    }
-
-    void ControllerManager::begin_frame() {
-        for (auto controller: m_controllers) {
-            controller->begin_frame();
-        }
-    }
-
     bool ControllerManager::loop() {
         for (auto controller: m_controllers) {
             if (!controller->loop()) {
@@ -71,9 +56,12 @@ namespace rg {
         }
     }
 
-    void ControllerManager::end_frame() {
-        for (auto controller: m_controllers) {
-            controller->end_frame();
+    void ControllerManager::terminate() {
+        int size = static_cast<int>(m_controllers.size()) - 1;
+        for (int i = std::max(size, 0); i >= 0; --i) {
+            auto controller = m_controllers[i];
+            controller->terminate();
+            spdlog::info("{}::terminate", controller->name());
         }
     }
 

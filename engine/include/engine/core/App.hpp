@@ -2,8 +2,9 @@
 // Created by spaske on 20.4.24..
 //
 
-#ifndef MATF_RG_ENGINE_ENGINE_H
-#define MATF_RG_ENGINE_ENGINE_H
+#ifndef MATF_RG_internal_internal_H
+#define MATF_RG_internal_internal_H
+#include <engine/controller/ControllerManager.hpp>
 
 namespace rg {
     class EngineError;
@@ -20,29 +21,25 @@ namespace rg {
         virtual ~App() = default;
 
     private:
-        void setup_(int argc, char **argv);
+        void internal_setup(int argc, char **argv);
 
-        void initialize_();
+        void internal_initialize();
 
-        void poll_events_();
+        void internal_poll_events();
 
-        bool loop_();
+        bool internal_loop();
 
-        void begin_frame_();
+        void internal_update();
 
-        void update_();
+        void internal_draw();
 
-        void draw_();
+        void internal_terminate();
 
-        void end_frame_();
+        int internal_on_exit();
 
-        void terminate_();
+        void internal_handle_error(const std::exception &exception);
 
-        int on_exit_();
-
-        void handle_error_(const std::exception &exception);
-
-        void handle_error_(const EngineError &e);
+        void internal_handle_error(const EngineError &e);
 
     protected:
         virtual void setup() {
@@ -62,19 +59,11 @@ namespace rg {
             return true;
         };
 
-        virtual void begin_frame() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
         virtual void update() {
             // Intentionally blank because it doesn't have to be overridden.
         };
 
         virtual void draw() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
-        virtual void end_frame() {
             // Intentionally blank because it doesn't have to be overridden.
         };
 
@@ -91,4 +80,4 @@ namespace rg {
     };
 } // namespace rg
 
-#endif//MATF_RG_ENGINE_ENGINE_H
+#endif//MATF_RG_internal_internal_H
