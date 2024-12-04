@@ -1,7 +1,12 @@
 #include <memory>
 #include <engine/core/Engine.hpp>
 
-class StudentsApp : public rg::App {
+class MainController : public rg::Controller {
+public:
+    std::string_view name() const override {
+        return "MainController";
+    }
+
 protected:
     void initialize() override {
         // User initialization
@@ -39,7 +44,6 @@ protected:
                                         height(),
                                         0.1f, 100.f);
         rg::OpenGL::clear_buffers();
-
         draw_backpack();
         draw_skybox();
         draw_gui();
@@ -62,7 +66,7 @@ private:
     bool m_cursor_enabled{true};
 };
 
-void StudentsApp::draw_backpack() {
+void MainController::draw_backpack() {
     auto shader   = rg::controller<rg::ResourcesController>()->shader("basic");
     auto backpack = rg::controller<rg::ResourcesController>()->model("backpack");
     shader->use();
@@ -72,7 +76,7 @@ void StudentsApp::draw_backpack() {
     backpack->draw(shader);
 }
 
-void StudentsApp::draw_skybox() {
+void MainController::draw_skybox() {
     auto shader      = rg::controller<rg::ResourcesController>()->shader("skybox");
     auto skybox_cube = rg::controller<rg::ResourcesController>()->skybox("skybox");
     glm::mat4 view   = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
@@ -83,7 +87,7 @@ void StudentsApp::draw_skybox() {
     rg::OpenGL::draw_skybox(skybox_cube);
 }
 
-void StudentsApp::update_camera() {
+void MainController::update_camera() {
     if (m_draw_gui) {
         return;
     }
@@ -106,7 +110,7 @@ void StudentsApp::update_camera() {
     m_camera.process_mouse_scroll(mouse.scroll);
 }
 
-void StudentsApp::draw_gui() {
+void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
@@ -134,6 +138,14 @@ void StudentsApp::draw_gui() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+class MainApp : public rg::App {
+protected:
+    void setup() override {
+        auto main_controller = rg::ControllerManager::register_controller<MainController>();
+        main_controller->after(rg::ControllerManager::get<rg::EngineControllersSentinel>());
+    }
+};
+
 int main(int argc, char **argv) {
-    return std::make_unique<StudentsApp>()->run(argc, argv);
+    return std::make_unique<MainApp>()->run(argc, argv);
 }

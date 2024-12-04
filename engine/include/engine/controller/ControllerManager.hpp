@@ -15,36 +15,37 @@ namespace rg {
         friend class App;
 
     public:
-        static ControllerManager *instance();
-
         template<typename TController>
         static TController *get(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
-            RG_GUARANTEE(controller->is_initialized(),
-                         "Trying to call {}::get or rg::controller<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
-                         controller->name(), controller->name(), location.file_name(), location.line(),
-                         controller->name());
+            // RG_GUARANTEE(controller->is_initialized(),
+            //              "Trying to call {}::get or rg::controller<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
+            //              controller->name(), controller->name(), location.file_name(), location.line(),
+            //              controller->name());
             return controller;
         }
 
         template<typename TController>
-        TController *register_controller(std::source_location location = std::source_location::current()) {
+        static TController *register_controller(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
-            TController *controller = create_if_absent<TController>();
-            RG_GUARANTEE(!m_controllers_initialized,
+            auto manager            = instance();
+            TController *controller = manager->create_if_absent<TController>();
+            RG_GUARANTEE(!manager->m_controllers_initialized,
                          "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register controllers in the setup() phase.",
                          controller->name(), location.file_name(), location.line());
-            RG_GUARANTEE(!is_registered_controller(controller),
+            RG_GUARANTEE(!manager->is_registered_controller(controller),
                          "Trying to register Controller: `{}` twice in file: {}:{}. Please make "
                          "sure that every Controller is registered exactly once.",
                          controller->name(), location.file_name(), location.line());
-            m_controllers.push_back(controller);
+            manager->m_controllers.push_back(controller);
             return controller;
         }
 
     private:
+        static ControllerManager *instance();
+
         void initialize();
 
         void poll_events();

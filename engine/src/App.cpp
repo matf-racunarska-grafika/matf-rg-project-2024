@@ -12,30 +12,30 @@
 namespace rg {
     int App::run(int argc, char **argv) {
         try {
-            internal_setup(argc, argv);
-            internal_initialize();
-            while (internal_loop()) {
-                internal_poll_events();
-                internal_update();
-                internal_draw();
+            setup_(argc, argv);
+            initialize();
+            while (loop()) {
+                poll_events();
+                update();
+                draw();
             }
-            internal_terminate();
+            terminate();
         } catch (const EngineError &e) {
-            internal_handle_error(e);
-            internal_terminate();
+            handle_error(e);
+            terminate();
             return -1;
         } catch (const UserError &e) {
             handle_error(e);
-            internal_terminate();
+            terminate();
             return -1;
         } catch (const std::exception &e) {
-            internal_handle_error(e);
-            internal_terminate();
+            handle_error(e);
+            terminate();
         }
-        return internal_on_exit();
+        return on_exit();
     }
 
-    void App::internal_setup(int argc, char **argv) {
+    void App::setup_(int argc, char **argv) {
         ArgParser::instance()->initialize(argc, argv);
         Configuration::instance()->initialize();
 
@@ -51,45 +51,37 @@ namespace rg {
         setup();
     }
 
-    void App::internal_initialize() {
+    void App::initialize() {
         ControllerManager::instance()->initialize();
-        initialize();
     }
 
-    bool App::internal_loop() {
+    bool App::loop() {
         /*
             * Any controller can stop the rendering loop.
             */
         if (!ControllerManager::instance()->loop()) {
             return false;
         }
-        return loop();
+        return true;
     }
 
-    void App::internal_poll_events() {
+    void App::poll_events() {
         ControllerManager::instance()->poll_events();
-        poll_events();
     }
 
-    void App::internal_update() {
+    void App::update() {
         ControllerManager::instance()->update();
-        update();
     }
 
-    void App::internal_draw() {
+    void App::draw() {
         ControllerManager::instance()->draw();
-        draw();
     }
 
-    void App::internal_terminate() {
-        terminate();
+    void App::terminate() {
+        ControllerManager::instance()->terminate();
     }
 
-    int App::internal_on_exit() {
-        return on_exit();
-    }
-
-    void App::internal_handle_error(const std::exception &exception) {
+    void App::handle_error(const std::exception &exception) {
         spdlog::error("std::exception occurred: {}", exception.what());
     }
 
@@ -97,7 +89,7 @@ namespace rg {
         spdlog::error(e.report());
     }
 
-    void App::internal_handle_error(const EngineError &e) {
+    void App::handle_error(const EngineError &e) {
         spdlog::error("EngineError: {}. This Error isn't recoverable, it indicates an error in the programs logic.",
                       e.report());
     }

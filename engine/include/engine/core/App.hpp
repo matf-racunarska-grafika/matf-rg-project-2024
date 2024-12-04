@@ -2,8 +2,8 @@
 // Created by spaske on 20.4.24..
 //
 
-#ifndef MATF_RG_internal_internal_H
-#define MATF_RG_internal_internal_H
+#ifndef MATF_RG_H
+#define MATF_RG_H
 #include <engine/controller/ControllerManager.hpp>
 
 namespace rg {
@@ -21,58 +21,30 @@ namespace rg {
         virtual ~App() = default;
 
     private:
-        void internal_setup(int argc, char **argv);
+        void setup_(int argc, char **argv);
 
-        void internal_initialize();
+        void initialize();
 
-        void internal_poll_events();
+        void poll_events();
 
-        bool internal_loop();
+        bool loop();
 
-        void internal_update();
+        void update();
 
-        void internal_draw();
+        void draw();
 
-        void internal_terminate();
+        void terminate();
 
-        int internal_on_exit();
+        void handle_error(const std::exception &exception);
 
-        void internal_handle_error(const std::exception &exception);
-
-        void internal_handle_error(const EngineError &e);
+        void handle_error(const EngineError &e);
 
     protected:
         virtual void setup() {
             // Intentionally blank because it doesn't have to be overridden.
         }
 
-        virtual void initialize() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
-        virtual void poll_events() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
-        virtual bool loop() {
-            // Intentionally blank because it doesn't have to be overridden.
-            return true;
-        };
-
-        virtual void update() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
-        virtual void draw() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
-        virtual void terminate() {
-            // Intentionally blank because it doesn't have to be overridden.
-        };
-
         virtual int on_exit() {
-            // Intentionally blank because it doesn't have to be overridden.
             return 0;
         }
 
@@ -80,4 +52,4 @@ namespace rg {
     };
 } // namespace rg
 
-#endif//MATF_RG_internal_internal_H
+#endif//MATF_RG_H
