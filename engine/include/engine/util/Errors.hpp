@@ -4,6 +4,7 @@
 #define MATF_RG_PROJECT_ERRORS_HPP
 
 #include <filesystem>
+#include <format> //NOLINT
 #include <source_location>
 #include <string>
 #include <utility>
@@ -84,8 +85,8 @@ namespace rg {
     public:
         explicit FileNotFoundError(std::filesystem::path path, std::string message,
                                    std::source_location location = std::source_location::current())
-        : m_path(std::move(path))
-      , EngineError(std::move(message), location) {
+        : EngineError(std::move(message), location)
+      , m_path(std::move(path)) {
         }
 
         std::string report() const override;

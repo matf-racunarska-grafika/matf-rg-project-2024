@@ -53,10 +53,10 @@ namespace rg {
       , m_name(std::move(name)) {
         }
 
-        uint32_t m_id;
-        TextureType m_type;
-        std::filesystem::path m_path;
-        std::string m_name;
+        uint32_t m_id{};
+        TextureType m_type{};
+        std::filesystem::path m_path{};
+        std::string m_name{};
     };
 } // namespace rg
 #endif//MATF_RG_PROJECT_TEXTURE_HPP

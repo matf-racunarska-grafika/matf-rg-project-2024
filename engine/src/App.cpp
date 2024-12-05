@@ -1,5 +1,5 @@
 //
-// Created by spaske00 on 20.4.24..
+// Created by spaske00 on 20.4.24
 //
 #include <spdlog/spdlog.h>
 #include <engine/core/App.hpp>
@@ -32,10 +32,9 @@ namespace rg {
         Configuration::instance()->initialize();
 
         // register engine controller
-        auto controller_manager = ControllerManager::instance();
-        auto platform           = controller_manager->register_controller<PlatformController>();
-        auto resources          = controller_manager->register_controller<ResourcesController>();
-        auto sentinel           = controller_manager->register_controller<EngineControllersSentinel>();
+        auto platform  = ControllerManager::register_controller<PlatformController>();
+        auto resources = ControllerManager::register_controller<ResourcesController>();
+        auto sentinel  = ControllerManager::register_controller<EngineControllersSentinel>();
         resources->after(platform);
         sentinel->after(platform);
         sentinel->after(resources);

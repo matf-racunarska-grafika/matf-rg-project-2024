@@ -1,13 +1,9 @@
 //
-// Created by spaske00 on 13.5.24..
+// Created by spaske00 on 13.5.24.
 //
 
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
-
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 #include <engine/controller/Controller.hpp>
 #include <engine/util/Utils.hpp>
@@ -283,6 +279,10 @@ namespace rg {
         void _platform_on_framebuffer_resize(int width, int height);
 
         void set_enable_cursor(bool enabled);
+
+        void begin_gui();
+
+        void end_gui();
 
         void swap_buffers();
 

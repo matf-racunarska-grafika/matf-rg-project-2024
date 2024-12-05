@@ -2,8 +2,8 @@
 // Created by spaske on 12/5/24.
 //
 
-#ifndef SHADERCOMPILER_HPP
-#define SHADERCOMPILER_HPP
+#ifndef SHADER_COMPILER_HPP
+#define SHADER_COMPILER_HPP
 #include <engine/resources/Shader.hpp>
 #include <filesystem>
 #include <string>
@@ -47,4 +47,4 @@ namespace rg {
         std::string m_sources;
     };
 }
-#endif //SHADERCOMPILER_HPP
+#endif //SHADER_COMPILER_HPP

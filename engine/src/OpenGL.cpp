@@ -13,13 +13,11 @@
 
 namespace rg {
 
-    uint32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels);
-
     bool OpenGL::initialize(void *(*loader)(const char *name)) {
         return gladLoadGLLoader((GLADloadproc) loader);
     }
 
-    uint32_t OpenGL::load_texture(std::filesystem::path path, bool flip_uvs) {
+    uint32_t OpenGL::load_texture(const std::filesystem::path &path, bool flip_uvs) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);
 
@@ -30,7 +28,7 @@ namespace rg {
             stbi_image_free(data);
         };
         if (data) {
-            GLenum format = stbi_number_of_channels_to_gl_format(nr_components);
+            int32_t format = texture_format(nr_components);
 
             glBindTexture(GL_TEXTURE_2D, texture_id);
             glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -44,6 +42,15 @@ namespace rg {
             throw AssetLoadingError(std::format("Failed to load texture {}", path.string()));
         }
         return texture_id;
+    }
+
+    int32_t OpenGL::texture_format(int32_t number_of_channels) {
+        switch (number_of_channels) {
+        case 1: return GL_RED;
+        case 3: return GL_RGB;
+        case 4: return GL_RGBA;
+        default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
+        }
     }
 
     uint32_t OpenGL::init_skybox_vao() {
@@ -61,7 +68,7 @@ namespace rg {
         glBindBuffer(GL_ARRAY_BUFFER, skybox_vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0); // NOLINT
         return skybox_vao;
     }
 
@@ -82,7 +89,7 @@ namespace rg {
 
     uint32_t face_index(std::string_view name);
 
-    uint32_t OpenGL::load_skybox_textures(std::filesystem::path path, bool flip_uvs) {
+    uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool flip_uvs) {
         RG_GUARANTEE(std::filesystem::is_directory(path),
                      "Directory '{}' doesn't exist. Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap.",
                      path.string())
@@ -155,7 +162,7 @@ namespace rg {
         }
     }
 
-    uint32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels) {
+    int32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels) {
         switch (number_of_channels) {
         case 1: return GL_RED;
         case 3: return GL_RGB;

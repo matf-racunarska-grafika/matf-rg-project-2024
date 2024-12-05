@@ -1,5 +1,5 @@
 //
-// Created by spaske00 on 13.5.24..
+// Created by spaske00 on 13.5.24.
 //
 
 #ifndef MATF_RG_PROJECT_ENGINE_HPP

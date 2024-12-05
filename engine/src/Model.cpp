@@ -6,7 +6,7 @@
 
 namespace rg {
 
-    void Model::draw(Shader *shader) {
+    void Model::draw(const Shader *shader) {
         for (auto &mesh: m_meshes) {
             mesh.draw(shader);
         }

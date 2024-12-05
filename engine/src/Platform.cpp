@@ -1,7 +1,10 @@
 //
-// Created by spaske00 on 13.5.24..
+// Created by spaske00 on 13.5.24.
 //
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -9,8 +12,6 @@
 #include <engine/platform/Platform.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <engine/resources/Mesh.hpp>
-
 #include <spdlog/spdlog.h>
 #include <utility>
 #include <engine/platform/OpenGL.hpp>
@@ -23,7 +24,7 @@ namespace rg {
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
 
-    static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+    static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
@@ -228,6 +229,17 @@ namespace rg {
         }
     }
 
+    void PlatformController::begin_gui() {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+    }
+
+    void PlatformController::end_gui() {
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
     void initialize_key_maps() {
 #include "glfw_key_mapping.include"
     }
@@ -236,9 +248,9 @@ namespace rg {
         controller<PlatformController>()->_platform_on_mouse(x, y);
     }
 
-    static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
-        g_mouse_position.scroll = yoffset;
-        controller<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
+    static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset) {
+        g_mouse_position.scroll = y_offset;
+        controller<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
     }
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {

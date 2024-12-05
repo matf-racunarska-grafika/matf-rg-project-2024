@@ -1,8 +1,10 @@
 
 //
 
-#ifndef MATF_RG_PROJECT_ASSETSCONTROLLER_HPP
-#define MATF_RG_PROJECT_ASSETSCONTROLLER_HPP
+#ifndef MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
+#define MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
+
+#define MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
 
 #include <engine/controller/Controller.hpp>
 #include <engine/resources/Model.hpp>
@@ -20,15 +22,15 @@ namespace rg {
         Model *model(const std::string &model_name);
 
         Texture *texture(const std::string &name,
-                         std::filesystem::path path = "",
-                         TextureType texture_type   = TextureType::Regular,
-                         bool flip_uvs              = false);
+                         const std::filesystem::path &path = "",
+                         TextureType texture_type          = TextureType::Regular,
+                         bool flip_uvs                     = false);
 
         Skybox *skybox(const std::string &name,
-                       std::filesystem::path path = ""
-                     , bool flip_uvs              = false);
+                       const std::filesystem::path &path = ""
+                     , bool flip_uvs                     = false);
 
-        Shader *shader(const std::string &name, std::filesystem::path path = "");
+        Shader *shader(const std::string &name, const std::filesystem::path &path = "");
 
     private:
         void load_models();

@@ -7,7 +7,6 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
-#include <unordered_set>
 
 namespace rg {
     struct Vertex {

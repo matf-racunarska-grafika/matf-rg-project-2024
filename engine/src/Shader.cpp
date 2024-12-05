@@ -50,7 +50,7 @@ namespace rg {
         glUniform4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, &value[0]);
     }
 
-    void Shader::set_vec4(const std::string &name, float x, float y, float z, float w) {
+    void Shader::set_vec4(const std::string &name, float x, float y, float z, float w) const {
         glUniform4f(glGetUniformLocation(m_shaderId, name.c_str()), x, y, z, w);
     }
 

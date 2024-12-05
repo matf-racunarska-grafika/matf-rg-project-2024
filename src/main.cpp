@@ -1,3 +1,4 @@
+#include <imgui.h>
 #include <memory>
 #include <engine/core/Engine.hpp>
 
@@ -109,9 +110,7 @@ void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+    rg::controller<rg::PlatformController>()->begin_gui();
     // draw info
     {
         auto backpack = rg::controller<rg::ResourcesController>()->model("backpack"); {
@@ -129,8 +128,7 @@ void MainController::draw_gui() {
             ImGui::End();
         }
     }
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    rg::controller<rg::PlatformController>()->end_gui();
 }
 
 class MainApp : public rg::App {

@@ -44,12 +44,12 @@ namespace rg {
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void Camera::process_mouse_movement(float xoffset, float yoffset, bool constrainPitch) {
-        xoffset *= MouseSensitivity;
-        yoffset *= MouseSensitivity;
+    void Camera::process_mouse_movement(float x_offset, float y_offset, bool constrainPitch) {
+        x_offset *= MouseSensitivity;
+        y_offset *= MouseSensitivity;
 
-        Yaw += xoffset;
-        Pitch += yoffset;
+        Yaw += x_offset;
+        Pitch += y_offset;
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
         if (constrainPitch) {
@@ -63,9 +63,9 @@ namespace rg {
         update_camera_vectors();
     }
 
-    // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void Camera::process_mouse_scroll(float yoffset) {
-        Zoom -= (float) yoffset;
+    // processes input received from a mouse scroll-wheel event. Only requires to be input on the vertical wheel-axis
+    void Camera::process_mouse_scroll(float y_offset) {
+        Zoom -= (float) y_offset;
         if (Zoom < 1.0f)
             Zoom = 1.0f;
         if (Zoom > 45.0f)

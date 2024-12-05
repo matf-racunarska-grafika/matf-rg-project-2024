@@ -17,7 +17,9 @@ namespace rg {
 
         static uint32_t initialize_texture(std::filesystem::path path, bool flip_uvs = false);
 
-        static uint32_t load_texture(std::filesystem::path path, bool flip_uvs);
+        static uint32_t load_texture(const std::filesystem::path &path, bool flip_uvs);
+
+        static int32_t texture_format(int32_t number_of_channels);
 
         static uint32_t init_skybox_vao();
 
@@ -25,7 +27,7 @@ namespace rg {
 
         static bool compile_shader(uint32_t shader_id, const std::string &shader_source);
 
-        static uint32_t load_skybox_textures(std::filesystem::path path, bool flip_uvs = false);
+        static uint32_t load_skybox_textures(const std::filesystem::path &path, bool flip_uvs = false);
 
         static void enable_depth_testing();
 
