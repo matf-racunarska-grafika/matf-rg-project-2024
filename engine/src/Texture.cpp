@@ -3,14 +3,9 @@
 //
 #include <glad/glad.h>
 #include <engine/resources/Texture.hpp>
-#include <engine/util/Utils.hpp>
 #include <engine/util/Errors.hpp>
-#include <stb_image.h>
-#include <spdlog/spdlog.h>
-#include <format>
 
 namespace rg {
-
     std::string_view texture_type_to_string(TextureType type) {
         switch (type) {
         case TextureType::Diffuse: return "Diffuse";
@@ -34,5 +29,4 @@ namespace rg {
         default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
         }
     }
-
 }
