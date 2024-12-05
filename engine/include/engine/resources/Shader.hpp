@@ -6,18 +6,6 @@
 
 namespace rg {
     using ShaderName = std::string;
-    struct ShaderParsingResult;
-
-    enum class ShaderType { Vertex, Fragment, Geometry };
-
-    inline std::string_view to_string(ShaderType type) {
-        switch (type) {
-        case ShaderType::Vertex: return "vertex";
-        case ShaderType::Fragment: return "fragment";
-        case ShaderType::Geometry: return "geometry";
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled shader type");
-        }
-    }
 
     class Shader {
         friend class ShaderController;

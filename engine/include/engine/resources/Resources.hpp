@@ -11,7 +11,7 @@
 #include <engine/resources/Skybox.hpp>
 
 namespace rg {
-    class ResourcesController : public Controller {
+    class ResourcesController final : public Controller {
     public:
         std::string_view name() const override {
             return "ResourcesController";
@@ -40,8 +40,6 @@ namespace rg {
         void load_shaders();
 
         void initialize() override;
-
-        void terminate() override;
 
         std::unordered_map<std::string, std::unique_ptr<Model> > m_models;
         std::unordered_map<std::string, std::unique_ptr<Texture> > m_textures;
