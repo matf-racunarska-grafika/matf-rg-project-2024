@@ -243,10 +243,12 @@ namespace rg {
 
         virtual void on_keyboard(Key key);
 
+        virtual void on_window_resize(int width, int height);
+
         virtual ~PlatformEventObserver() = default;
     };
 
-    class PlatformController : public Controller {
+    class PlatformController final : public Controller {
         friend class ControllerManager;
 
     public:

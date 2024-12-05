@@ -174,6 +174,9 @@ namespace rg {
     void PlatformEventObserver::on_keyboard(Key key) {
     }
 
+    void PlatformEventObserver::on_window_resize(int width, int height) {
+    }
+
     const Key &PlatformController::key(KeyId key) const {
         RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
@@ -214,6 +217,7 @@ namespace rg {
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) {
         m_window.m_width  = width;
         m_window.m_height = height;
+        m_platform_event_observer->on_window_resize(width, height);
     }
 
     void PlatformController::set_enable_cursor(bool enabled) {
