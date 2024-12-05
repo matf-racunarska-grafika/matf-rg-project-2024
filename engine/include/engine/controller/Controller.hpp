@@ -8,6 +8,7 @@
 #include <string_view>
 #include <vector>
 #include <memory>
+#include <engine/util/Errors.hpp>
 
 namespace rg {
     /**
@@ -39,7 +40,9 @@ namespace rg {
         * Returns the controller class name; used for logging.
         * @return Controller name
         */
-        virtual std::string_view name() const = 0;
+        virtual std::string_view name() const {
+            return typeid(*this).name();
+        };
 
         virtual ~Controller() = default;
 

@@ -2,11 +2,6 @@
 #include <engine/core/Engine.hpp>
 
 class MainController : public rg::Controller {
-public:
-    std::string_view name() const override {
-        return "MainController";
-    }
-
 protected:
     void initialize() override {
         // User initialization
