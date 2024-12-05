@@ -15,7 +15,7 @@ namespace rg {
     }
 
     void ControllerManager::initialize() {
-        top_sort();
+        topological_sort();
         std::string order_string;
         order_string.reserve(m_controllers.size() * 32);
         for (auto controller: m_controllers) {
@@ -65,29 +65,30 @@ namespace rg {
         }
     }
 
-    void ControllerManager::top_sort() {
+    void ControllerManager::topological_sort() {
         RG_GUARANTEE(!has_cycle(m_controllers), "Controller graph has a cycle!");
+        /* Make topological sort stable with regard to registration order if no other dependency exists. */
+        std::reverse(std::begin(m_controllers), std::end(m_controllers));
         std::unordered_set<Controller *> visited;
         std::vector<Controller *> stack;
         for (auto controller: m_controllers) {
             if (!visited.contains(controller)) {
-                top_sort_util(controller, stack, visited);
+                topological_sort_util(controller, stack, visited);
             }
         }
         RG_GUARANTEE(visited.size() == m_controllers.size(), "Not all controller were visited.");
         RG_GUARANTEE(stack.size() == m_controllers.size(), "Not the same size.");
-
         std::reverse(std::begin(stack), std::end(stack));
         m_controllers = std::move(stack);
     }
 
-    void ControllerManager::top_sort_util(Controller *controller, std::vector<Controller *> &stack,
-                                          std::unordered_set<Controller *> &visited) {
+    void ControllerManager::topological_sort_util(Controller *controller, std::vector<Controller *> &stack,
+                                                  std::unordered_set<Controller *> &visited) {
         visited.emplace(controller);
 
         for (Controller *executes_after: controller->next()) {
             if (!visited.contains(executes_after)) {
-                top_sort_util(executes_after, stack, visited);
+                topological_sort_util(executes_after, stack, visited);
             }
         }
 

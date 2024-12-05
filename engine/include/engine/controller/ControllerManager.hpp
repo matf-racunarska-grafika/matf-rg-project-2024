@@ -58,10 +58,10 @@ namespace rg {
 
         void terminate();
 
-        void top_sort();
+        void topological_sort();
 
-        void top_sort_util(Controller *controller, std::vector<Controller *> &stack,
-                           std::unordered_set<Controller *> &visited);
+        void topological_sort_util(Controller *controller, std::vector<Controller *> &stack,
+                                   std::unordered_set<Controller *> &visited);
 
         bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
                                            std::unordered_set<Controller *> &path);
