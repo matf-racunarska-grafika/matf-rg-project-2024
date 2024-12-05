@@ -80,7 +80,7 @@ namespace rg {
             throw FileNotFoundError(
                     path, std::format("Shader source file {} for shader {} not found.", path.string(), shader_name));
         }
-        return compile_from_source(std::move(shader_name), rg::read_text_file(path));
+        return compile_from_source(std::move(shader_name), read_text_file(path));
     }
 
     std::string *ShaderCompiler::now_parsing(ShaderParsingResult &result, const std::string &line) {

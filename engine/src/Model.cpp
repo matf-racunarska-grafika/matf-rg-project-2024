@@ -3,7 +3,6 @@
 //
 
 #include <engine/resources/Model.hpp>
-#include <engine/resources/Shader.hpp>
 
 namespace rg {
 
@@ -18,8 +17,4 @@ namespace rg {
             mesh.destroy();
         }
     }
-
-    void Model::initialize() {
-    }
-
 }

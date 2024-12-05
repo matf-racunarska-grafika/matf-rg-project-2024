@@ -122,21 +122,21 @@ namespace rg {
         int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
         int action          = glfw_platform_action(m_window.handle(), glfw_key_code);
         switch (key_data.state()) {
-        case rg::Key::State::Released: {
+        case Key::State::Released: {
             if (action == GLFW_PRESS) {
                 key_data.m_state = Key::State::JustPressed;
             }
             break;
         }
-        case rg::Key::State::JustReleased: {
+        case Key::State::JustReleased: {
             if (action == GLFW_PRESS) {
-                key_data.m_state = rg::Key::State::JustPressed;
+                key_data.m_state = Key::State::JustPressed;
             } else if (action == GLFW_RELEASE) {
                 key_data.m_state = Key::State::Released;
             }
             break;
         }
-        case rg::Key::State::JustPressed: {
+        case Key::State::JustPressed: {
             if (action == GLFW_RELEASE) {
                 key_data.m_state = Key::State::JustReleased;
             } else if (action == GLFW_PRESS) {
@@ -144,9 +144,9 @@ namespace rg {
             }
             break;
         }
-        case rg::Key::State::Pressed: {
+        case Key::State::Pressed: {
             if (action == GLFW_RELEASE) {
-                key_data.m_state = rg::Key::State::JustReleased;
+                key_data.m_state = Key::State::JustReleased;
             }
             break;
         }
@@ -155,10 +155,10 @@ namespace rg {
 
     std::string_view Key::to_string() const {
         switch (m_state) {
-        case Key::State::Released: return "Released";
-        case Key::State::JustPressed: return "JustPressed";
-        case Key::State::Pressed: return "Pressed";
-        case Key::State::JustReleased: return "JustReleased";
+        case State::Released: return "Released";
+        case State::JustPressed: return "JustPressed";
+        case State::Pressed: return "Pressed";
+        case State::JustReleased: return "JustReleased";
         default: return "UNIMPLEMENTED";
         }
     }
@@ -233,21 +233,21 @@ namespace rg {
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
-        rg::controller<PlatformController>()->_platform_on_mouse(x, y);
+        controller<PlatformController>()->_platform_on_mouse(x, y);
     }
 
     static void glfw_scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
         g_mouse_position.scroll = yoffset;
-        rg::controller<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
+        controller<PlatformController>()->_platform_on_scroll(xoffset, yoffset);
     }
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        rg::controller<PlatformController>()->_platform_on_keyboard(key, action);
+        controller<PlatformController>()->_platform_on_keyboard(key, action);
     }
 
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
-        rg::controller<PlatformController>()->_platform_on_framebuffer_resize(width, height);
+        controller<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
 } // namespace rg

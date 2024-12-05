@@ -13,8 +13,6 @@ namespace rg {
         friend class ResourcesController;
 
     public:
-        void initialize();
-
         void draw(Shader *shader);
 
         std::string_view class_name() const {

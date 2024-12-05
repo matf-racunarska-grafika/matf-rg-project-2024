@@ -172,7 +172,7 @@ namespace rg {
         std::vector<Vertex> vertices;
         vertices.reserve(mesh->mNumVertices);
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
-            rg::Vertex vertex{};
+            Vertex vertex{};
             vertex.Position.x = mesh->mVertices[i].x;
             vertex.Position.y = mesh->mVertices[i].y;
             vertex.Position.z = mesh->mVertices[i].z;
