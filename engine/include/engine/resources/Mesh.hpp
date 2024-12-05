@@ -21,12 +21,12 @@ namespace rg {
 
     class Mesh {
     public:
-        static Mesh create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-                           std::vector<Texture *> textures);
+        Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
+             std::vector<Texture *> textures);
 
         void initialize();
 
-        void draw(Shader *shader);
+        void draw(const Shader *shader);
 
         void destroy();
 

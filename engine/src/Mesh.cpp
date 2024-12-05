@@ -8,8 +8,9 @@
 
 namespace rg {
 
-    Mesh Mesh::create(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-                      std::vector<Texture *> textures) {
+    Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
+               std::vector<Texture *> textures) {
+        // NOLINTBEGIN
         static_assert(std::is_trivial_v<Vertex>);
         uint32_t VAO, VBO, EBO;
         glGenVertexArrays(1, &VAO);
@@ -39,14 +40,16 @@ namespace rg {
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *) offsetof(Vertex, Bitangent));
 
         glBindVertexArray(0);
-
-        return Mesh(VAO, indices.size(), std::move(textures));
+        // NOLINTEND
+        m_vao         = VAO;
+        m_num_indices = indices.size();
+        m_textures    = std::move(textures);
     }
 
     void Mesh::initialize() {
     }
 
-    void Mesh::draw(Shader *shader) {
+    void Mesh::draw(const Shader *shader) {
         std::unordered_map<std::string_view, uint32_t> counts;
         std::string uniform_name;
         uniform_name.reserve(32);

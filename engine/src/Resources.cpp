@@ -1,15 +1,15 @@
+#include <unordered_set>
+#include <utility>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <engine/platform/OpenGL.hpp>
+#include <engine/resources/Resources.hpp>
 #include <engine/resources/Shader.hpp>
 #include <engine/resources/ShaderCompiler.hpp>
-#include <engine/resources/Resources.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 #include <spdlog/spdlog.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <unordered_set>
-#include <utility>
-#include <engine/platform/OpenGL.hpp>
 
 namespace rg {
 
@@ -62,16 +62,16 @@ namespace rg {
     private:
         explicit AssimpSceneProcessor(ResourcesController *resources_controller, const aiScene *scene,
                                       std::filesystem::path model_path) :
-        m_resources_controller(resources_controller), m_model_path(std::move(model_path)), m_scene(scene) {
+        m_scene(scene), m_model_path(std::move(model_path)), m_resources_controller(resources_controller) {
         }
 
-        void process_node(aiNode *node);
+        void process_node(const aiNode *node);
 
         void process_mesh(aiMesh *mesh);
 
-        std::vector<Texture *> process_materials(aiMaterial *material);
+        std::vector<Texture *> process_materials(const aiMaterial *material);
 
-        void process_material_type(std::vector<Texture *> &textures, aiMaterial *material, aiTextureType type);
+        void process_material_type(std::vector<Texture *> &textures, const aiMaterial *material, aiTextureType type);
 
         static TextureType assimp_texture_type_to_engine(aiTextureType type);
 
@@ -119,7 +119,7 @@ namespace rg {
     }
 
     Texture *ResourcesController::texture(const std::string &name,
-                                          std::filesystem::path path,
+                                          const std::filesystem::path &path,
                                           TextureType type, bool flip_uvs) {
         auto &result = m_textures[name];
         if (!result) {
@@ -130,7 +130,7 @@ namespace rg {
     }
 
     Skybox *ResourcesController::skybox(const std::string &name,
-                                        std::filesystem::path path,
+                                        const std::filesystem::path &path,
                                         bool flip_uvs) {
         auto &result = m_sky_boxes[name];
         if (!result) {
@@ -142,7 +142,7 @@ namespace rg {
         return result.get();
     }
 
-    Shader *ResourcesController::shader(const std::string &name, std::filesystem::path path) {
+    Shader *ResourcesController::shader(const std::string &name, const std::filesystem::path &path) {
         auto &result = m_shaders[name];
         if (!result) {
             result = std::make_unique<Shader>(ShaderCompiler::compile_from_file(name, path));
@@ -158,7 +158,7 @@ namespace rg {
         return std::move(scene_processor.m_meshes);
     }
 
-    void AssimpSceneProcessor::process_node(aiNode *node) {
+    void AssimpSceneProcessor::process_node(const aiNode *node) {
         for (uint32_t i = 0; i < node->mNumMeshes; ++i) {
             auto mesh = m_scene->mMeshes[node->mMeshes[i]];
             process_mesh(mesh);
@@ -209,10 +209,10 @@ namespace rg {
 
         auto material                   = m_scene->mMaterials[mesh->mMaterialIndex];
         std::vector<Texture *> textures = process_materials(material);
-        m_meshes.emplace_back(Mesh::create(vertices, indices, std::move(textures)));
+        m_meshes.emplace_back(vertices, indices, std::move(textures));
     }
 
-    std::vector<Texture *> AssimpSceneProcessor::process_materials(aiMaterial *material) {
+    std::vector<Texture *> AssimpSceneProcessor::process_materials(const aiMaterial *material) {
         std::vector<Texture *> textures;
         auto ai_texture_types = {
                 aiTextureType_DIFFUSE,
@@ -227,7 +227,7 @@ namespace rg {
         return textures;
     }
 
-    void AssimpSceneProcessor::process_material_type(std::vector<Texture *> &textures, aiMaterial *material,
+    void AssimpSceneProcessor::process_material_type(std::vector<Texture *> &textures, const aiMaterial *material,
                                                      aiTextureType type) {
         auto material_count = material->GetTextureCount(type);
         for (uint32_t i = 0; i < material_count; ++i) {
