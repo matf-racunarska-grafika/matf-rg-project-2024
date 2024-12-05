@@ -2,9 +2,9 @@
 // Created by spaske00 on 13.5.24..
 //
 
-#include "engine/util/Utils.hpp"
-#include "engine/util/Errors.hpp"
-#include "spdlog/spdlog.h"
+#include <engine/util/Utils.hpp>
+#include <engine/util/Errors.hpp>
+#include <spdlog/spdlog.h>
 #include <fstream>
 
 namespace rg {
