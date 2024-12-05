@@ -95,14 +95,15 @@ namespace rg {
         for (const auto &file: std::filesystem::directory_iterator(path)) {
             stbi_set_flip_vertically_on_load(flip_uvs);
             unsigned char *data = stbi_load(absolute(file).c_str(), &width, &height, &nr_channels, 0);
+            defer {
+                stbi_image_free(data);
+            };
             if (data) {
                 uint32_t i = face_index(file.path().stem().c_str());
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
                              data);
-                stbi_image_free(data);
             } else {
-                spdlog::error("Failed to load cubemap texture {}", file.path().string());
-                stbi_image_free(data);
+                throw AssetLoadingError(std::format("Failed to load skybox texture {}", path.string()));
             }
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
