@@ -47,7 +47,7 @@ namespace rg {
     }
 
     std::string GuaranteeViolation::report() const {
-        return std::format("GuaranteeViolation in: {}:{}. {}. There is a logic error in the program. Please ensure "
+        return std::format("GuaranteeViolation in: {}:{}.\n{}\nThere is a logic error in the program. Please ensure "
                            "that the Guarantee is never violated.",
                            location().file_name(), location().line(), message());
     }
