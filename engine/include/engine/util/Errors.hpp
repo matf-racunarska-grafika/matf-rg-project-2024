@@ -6,9 +6,7 @@
 #include <filesystem>
 #include <source_location>
 #include <string>
-#include <format>
 #include <utility>
-#include <spdlog/spdlog.h>
 
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
@@ -47,7 +45,9 @@ namespace rg {
             return m_location;
         }
 
-        virtual std::string report() const = 0;
+        virtual std::string report() const {
+            return m_message;
+        };
 
     private:
         std::string m_message;
@@ -59,28 +59,28 @@ namespace rg {
         using Error::Error;
     };
 
-    class Unimplemented : public EngineError {
+    class Unimplemented final : public EngineError {
     public:
         using EngineError::EngineError;
 
         std::string report() const override;
     };
 
-    class ShouldNotReachHere : public EngineError {
+    class ShouldNotReachHere final : public EngineError {
     public:
         using EngineError::EngineError;
 
         std::string report() const override;
     };
 
-    class GuaranteeViolation : public EngineError {
+    class GuaranteeViolation final : public EngineError {
     public:
         using EngineError::EngineError;
 
         std::string report() const override;
     };
 
-    class FileNotFoundError : public EngineError {
+    class FileNotFoundError final : public EngineError {
     public:
         explicit FileNotFoundError(std::filesystem::path path, std::string message,
                                    std::source_location location = std::source_location::current())
@@ -96,7 +96,7 @@ namespace rg {
         std::filesystem::path m_path;
     };
 
-    class ConfigurationError : public EngineError {
+    class ConfigurationError final : public EngineError {
     public:
         using EngineError::EngineError;
 
@@ -108,14 +108,14 @@ namespace rg {
         using Error::Error;
     };
 
-    class ShaderCompilationError : public UserError {
+    class ShaderCompilationError final : public UserError {
     public:
         using UserError::UserError;
 
         std::string report() const override;
     };
 
-    class AssetLoadingError : public UserError {
+    class AssetLoadingError final : public UserError {
     public:
         using UserError::UserError;
 

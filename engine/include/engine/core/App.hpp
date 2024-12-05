@@ -2,13 +2,11 @@
 // Created by spaske on 20.4.24..
 //
 
-#ifndef MATF_RG_H
-#define MATF_RG_H
-#include <engine/controller/ControllerManager.hpp>
+#ifndef APP_H
+#define APP_H
 
 namespace rg {
-    class EngineError;
-    class UserError;
+    class Error;
 
     class App {
     public:
@@ -35,10 +33,6 @@ namespace rg {
 
         void terminate();
 
-        void handle_error(const std::exception &exception);
-
-        void handle_error(const EngineError &e);
-
     protected:
         virtual void setup() {
             // Intentionally blank because it doesn't have to be overridden.
@@ -48,8 +42,8 @@ namespace rg {
             return 0;
         }
 
-        virtual void handle_error(const UserError &);
+        virtual void handle_error(const Error &);
     };
 } // namespace rg
 
-#endif//MATF_RG_H
+#endif//APP_H

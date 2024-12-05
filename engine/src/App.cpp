@@ -20,15 +20,7 @@ namespace rg {
                 draw();
             }
             terminate();
-        } catch (const EngineError &e) {
-            handle_error(e);
-            terminate();
-            return -1;
-        } catch (const UserError &e) {
-            handle_error(e);
-            terminate();
-            return -1;
-        } catch (const std::exception &e) {
+        } catch (const Error &e) {
             handle_error(e);
             terminate();
         }
@@ -81,17 +73,8 @@ namespace rg {
         ControllerManager::instance()->terminate();
     }
 
-    void App::handle_error(const std::exception &exception) {
-        spdlog::error("std::exception occurred: {}", exception.what());
-    }
-
-    void App::handle_error(const UserError &e) {
+    void App::handle_error(const Error &e) {
         spdlog::error(e.report());
-    }
-
-    void App::handle_error(const EngineError &e) {
-        spdlog::error("EngineError: {}. This Error isn't recoverable, it indicates an error in the programs logic.",
-                      e.report());
     }
 
 } // namespace rg

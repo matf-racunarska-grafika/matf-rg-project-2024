@@ -1,7 +1,8 @@
 //
 
-#include "engine/util/Errors.hpp"
+#include <engine/util/Errors.hpp>
 #include <format>
+#include <spdlog/spdlog.h>
 
 namespace rg {
     static bool g_tracing = true;
@@ -18,20 +19,6 @@ namespace rg {
         if (g_tracing) {
             spdlog::info("{}, in {}:{}", location.function_name(), location.file_name(), location.line());
         }
-    }
-
-    void guarantee(bool expr, std::string msg, std::source_location source_location) {
-        if (!expr) {
-            throw GuaranteeViolation(std::move(msg), source_location);
-        }
-    }
-
-    void should_not_reach_here(std::string msg, std::source_location source_location) {
-        throw ShouldNotReachHere(std::move(msg), source_location);
-    }
-
-    void unimplemented(std::string msg, std::source_location source_location) {
-        throw Unimplemented(std::move(msg), source_location);
     }
 
     std::string Unimplemented::report() const {
