@@ -8,7 +8,7 @@
 #include <string_view>
 #include <vector>
 
-namespace rg {
+namespace rg::controller {
     /**
     * @class Controller
     * @breif Controllers are a hook into the Engines `main loop` execution.
@@ -122,27 +122,6 @@ namespace rg {
         std::vector<Controller *> m_next{};
         bool m_initialized{false};
         bool m_enabled{true};
-    };
-
-    /**
-     * @class EngineControllersSentinel
-     * @brief This controller does nothing. It servers as a sentinel
-     * controller between user controllers and engine controllers
-     * if the user wants his custom controller to execute after
-     * all the engine controllers.
-     *
-     *
-     * @code
-     * auto user_controller = ...;
-     * user_controller->after(rg::ControllerManager::instance()->get<EngineControllersSentinel>());
-     * @endcode
-     * This will make user_controller execute after all the engine controllers.
-     */
-    class EngineControllersSentinel : public Controller {
-    public:
-        std::string_view name() const override {
-            return "EngineControllersSentinel";
-        }
     };
 } // namespace rg
 

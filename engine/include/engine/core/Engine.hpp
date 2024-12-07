@@ -8,6 +8,7 @@
 #include <engine/core/App.hpp>
 #include <engine/controller/Controller.hpp>
 #include <engine/controller/ControllerManager.hpp>
+#include <engine/controller/EngineSentinelController.hpp>
 #include <engine/platform/Platform.hpp>
 #include <engine/platform/OpenGL.hpp>
 #include <engine/util/Utils.hpp>

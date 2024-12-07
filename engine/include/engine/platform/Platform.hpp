@@ -244,7 +244,7 @@ namespace rg {
         virtual ~PlatformEventObserver() = default;
     };
 
-    class PlatformController final : public Controller {
+    class PlatformController final : public controller::Controller {
         friend class ControllerManager;
 
     public:

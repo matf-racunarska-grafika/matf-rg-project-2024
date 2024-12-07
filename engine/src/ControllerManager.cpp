@@ -7,7 +7,7 @@
 #include <vector>
 
 //
-namespace rg {
+namespace rg::controller {
 
     ControllerManager *ControllerManager::instance() {
         static std::unique_ptr<ControllerManager> provider = std::make_unique<ControllerManager>();

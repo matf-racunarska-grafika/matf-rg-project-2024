@@ -11,8 +11,12 @@
 #include <unordered_set>
 
 namespace rg {
+    class App;
+}
+
+namespace rg::controller {
     class ControllerManager {
-        friend class App;
+        friend class rg::App;
 
     public:
         template<typename TController>
@@ -21,7 +25,7 @@ namespace rg {
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
             // RG_GUARANTEE(controller->is_initialized(),
-            //              "Trying to call {}::get or rg::controller<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
+            //              "Trying to call {}::get or rg::controller::get<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
             //              controller->name(), controller->name(), location.file_name(), location.line(),
             //              controller->name());
             return controller;
@@ -83,8 +87,13 @@ namespace rg {
     };
 
     template<typename TController>
-    TController *controller(std::source_location location = std::source_location::current()) {
+    TController *get(std::source_location location = std::source_location::current()) {
         return ControllerManager::get<TController>(location);
+    }
+
+    template<typename TController>
+    TController *register_controller(std::source_location location = std::source_location::current()) {
+        return ControllerManager::register_controller<TController>(location);
     }
 } // namespace rg
 #endif//MATF_RG_PROJECT_CONTROLLERMANAGER_HPP

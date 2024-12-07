@@ -2,7 +2,7 @@
 #include <memory>
 #include <engine/core/Engine.hpp>
 
-class MainController : public rg::Controller {
+class MainController : public rg::controller::Controller {
 protected:
     void initialize() override {
         // User initialization
@@ -10,7 +10,7 @@ protected:
     }
 
     bool loop() override {
-        const auto platform = rg::controller<rg::PlatformController>();
+        const auto platform = rg::controller::get<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
             return false;
         }
@@ -18,7 +18,7 @@ protected:
     }
 
     void poll_events() override {
-        const auto platform = rg::controller<rg::PlatformController>();
+        const auto platform = rg::controller::get<rg::PlatformController>();
         if (platform->key(rg::KeyId::KEY_F2).state() == rg::Key::State::JustPressed) {
             m_draw_gui = !m_draw_gui;
         }
@@ -33,7 +33,7 @@ protected:
     }
 
     void draw() override {
-        auto platform = rg::controller<rg::PlatformController>();
+        auto platform = rg::controller::get<rg::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
                                         ->window()->
@@ -43,7 +43,7 @@ protected:
         draw_backpack();
         draw_skybox();
         draw_gui();
-        rg::controller<rg::PlatformController>()->swap_buffers();
+        rg::controller::get<rg::PlatformController>()->swap_buffers();
     }
 
 private:
@@ -63,8 +63,8 @@ private:
 };
 
 void MainController::draw_backpack() {
-    auto shader   = rg::controller<rg::ResourcesController>()->shader("basic");
-    auto backpack = rg::controller<rg::ResourcesController>()->model("backpack");
+    auto shader   = rg::controller::get<rg::ResourcesController>()->shader("basic");
+    auto backpack = rg::controller::get<rg::ResourcesController>()->model("backpack");
     shader->use();
     shader->set_mat4("projection", m_projection);
     shader->set_mat4("view", m_camera.get_view_matrix());
@@ -73,8 +73,8 @@ void MainController::draw_backpack() {
 }
 
 void MainController::draw_skybox() {
-    auto shader      = rg::controller<rg::ResourcesController>()->shader("skybox");
-    auto skybox_cube = rg::controller<rg::ResourcesController>()->skybox("skybox");
+    auto shader      = rg::controller::get<rg::ResourcesController>()->shader("skybox");
+    auto skybox_cube = rg::controller::get<rg::ResourcesController>()->skybox("skybox");
     glm::mat4 view   = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
     shader->use();
     shader->set_mat4("view", view);
@@ -87,7 +87,7 @@ void MainController::update_camera() {
     if (m_draw_gui) {
         return;
     }
-    auto platform = rg::controller<rg::PlatformController>();
+    auto platform = rg::controller::get<rg::PlatformController>();
     float dt      = platform->dt();
     if (platform->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
         m_camera.process_keyboard(rg::FORWARD, dt);
@@ -110,10 +110,10 @@ void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-    rg::controller<rg::PlatformController>()->begin_gui(); {
+    rg::controller::get<rg::PlatformController>()->begin_gui(); {
         // Draw backpack scale slider window
         {
-            auto backpack  = rg::controller<rg::ResourcesController>()->model("backpack");
+            auto backpack  = rg::controller::get<rg::ResourcesController>()->model("backpack");
             static float f = 0.0f;
             ImGui::Begin(backpack->name().c_str());
             ImGui::Text("Loaded from: %s", backpack->path().c_str());
@@ -130,14 +130,14 @@ void MainController::draw_gui() {
             ImGui::End();
         }
     }
-    rg::controller<rg::PlatformController>()->end_gui();
+    rg::controller::get<rg::PlatformController>()->end_gui();
 }
 
 class MainApp final : public rg::App {
 protected:
     void setup() override {
-        auto main_controller = rg::ControllerManager::register_controller<MainController>();
-        main_controller->after(rg::ControllerManager::get<rg::EngineControllersSentinel>());
+        auto main_controller = rg::controller::register_controller<MainController>();
+        main_controller->after(rg::controller::get<rg::controller::EngineSentinelController>());
     }
 };
 

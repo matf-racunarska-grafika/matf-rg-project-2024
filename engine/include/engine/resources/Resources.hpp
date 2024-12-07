@@ -13,7 +13,7 @@
 #include <engine/resources/Skybox.hpp>
 
 namespace rg {
-    class ResourcesController final : public Controller {
+    class ResourcesController final : public controller::Controller {
     public:
         std::string_view name() const override {
             return "ResourcesController";

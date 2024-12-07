@@ -8,6 +8,7 @@
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/controller/ControllerManager.hpp>
+#include <engine/controller/EngineSentinelController.hpp>
 
 namespace rg {
     int App::run(int argc, char **argv) {
@@ -32,9 +33,9 @@ namespace rg {
         Configuration::instance()->initialize();
 
         // register engine controller
-        auto platform  = ControllerManager::register_controller<PlatformController>();
-        auto resources = ControllerManager::register_controller<ResourcesController>();
-        auto sentinel  = ControllerManager::register_controller<EngineControllersSentinel>();
+        auto platform  = controller::ControllerManager::register_controller<PlatformController>();
+        auto resources = controller::ControllerManager::register_controller<ResourcesController>();
+        auto sentinel  = controller::ControllerManager::register_controller<controller::EngineSentinelController>();
         resources->after(platform);
         sentinel->after(platform);
         sentinel->after(resources);
@@ -43,30 +44,30 @@ namespace rg {
     }
 
     void App::initialize() {
-        ControllerManager::instance()->initialize();
+        controller::ControllerManager::instance()->initialize();
     }
 
     bool App::loop() {
-        if (!ControllerManager::instance()->loop()) {
+        if (!controller::ControllerManager::instance()->loop()) {
             return false;
         }
         return true;
     }
 
     void App::poll_events() {
-        ControllerManager::instance()->poll_events();
+        controller::ControllerManager::instance()->poll_events();
     }
 
     void App::update() {
-        ControllerManager::instance()->update();
+        controller::ControllerManager::instance()->update();
     }
 
     void App::draw() {
-        ControllerManager::instance()->draw();
+        controller::ControllerManager::instance()->draw();
     }
 
     void App::terminate() {
-        ControllerManager::instance()->terminate();
+        controller::ControllerManager::instance()->terminate();
     }
 
     void App::setup() {

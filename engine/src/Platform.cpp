@@ -245,21 +245,21 @@ namespace rg {
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
-        controller<PlatformController>()->_platform_on_mouse(x, y);
+        controller::get<PlatformController>()->_platform_on_mouse(x, y);
     }
 
     static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset) {
         g_mouse_position.scroll = y_offset;
-        controller<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
+        controller::get<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
     }
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        controller<PlatformController>()->_platform_on_keyboard(key, action);
+        controller::get<PlatformController>()->_platform_on_keyboard(key, action);
     }
 
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
-        controller<PlatformController>()->_platform_on_framebuffer_resize(width, height);
+        controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
 } // namespace rg
