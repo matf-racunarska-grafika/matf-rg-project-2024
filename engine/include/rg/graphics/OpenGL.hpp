@@ -39,8 +39,6 @@ namespace rg::graphics {
 
         static void clear_buffers();
 
-        static void draw_skybox(const resources::Skybox *skybox);
-
         static void terminate();
 
         static std::string get_compilation_error_message(uint32_t shader_id);

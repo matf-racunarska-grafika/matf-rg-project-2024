@@ -130,18 +130,6 @@ namespace rg::graphics {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    void OpenGL::draw_skybox(const resources::Skybox *skybox) {
-        glDepthFunc(GL_LEQUAL);
-        glBindVertexArray(skybox->vao());
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->texture());
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-    }
-
     uint32_t face_index(std::string_view name) {
         if (name == "right") {
             return 0;
