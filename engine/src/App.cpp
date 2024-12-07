@@ -47,9 +47,6 @@ namespace rg {
     }
 
     bool App::loop() {
-        /*
-            * Any controller can stop the rendering loop.
-            */
         if (!ControllerManager::instance()->loop()) {
             return false;
         }
@@ -77,3 +74,7 @@ namespace rg {
     }
 
 } // namespace rg
+
+int main(int argc, char **argv) {
+    return rg::App::create()->run(argc, argv);
+}

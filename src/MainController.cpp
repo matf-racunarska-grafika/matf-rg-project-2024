@@ -110,16 +110,18 @@ void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-    rg::controller<rg::PlatformController>()->begin_gui();
-    // draw info
-    {
-        auto backpack = rg::controller<rg::ResourcesController>()->model("backpack"); {
+    rg::controller<rg::PlatformController>()->begin_gui(); {
+        // Draw backpack scale slider window
+        {
+            auto backpack  = rg::controller<rg::ResourcesController>()->model("backpack");
             static float f = 0.0f;
             ImGui::Begin(backpack->name().c_str());
             ImGui::Text("Loaded from: %s", backpack->path().c_str());
             ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
             ImGui::End();
-        } {
+        }
+        // Draw Camera Info window
+        {
             ImGui::Begin("Camera info");
             const auto &c = m_camera;
             ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
@@ -131,7 +133,7 @@ void MainController::draw_gui() {
     rg::controller<rg::PlatformController>()->end_gui();
 }
 
-class MainApp : public rg::App {
+class MainApp final : public rg::App {
 protected:
     void setup() override {
         auto main_controller = rg::ControllerManager::register_controller<MainController>();
@@ -139,6 +141,10 @@ protected:
     }
 };
 
-int main(int argc, char **argv) {
-    return std::make_unique<MainApp>()->run(argc, argv);
+namespace rg {
+    std::unique_ptr<App> App::create() {
+        return std::make_unique<MainApp>();
+    }
 }
+
+

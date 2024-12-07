@@ -18,6 +18,8 @@ namespace rg {
 
         virtual ~App() = default;
 
+        static std::unique_ptr<App> create();
+
     private:
         void setup_(int argc, char **argv);
 
