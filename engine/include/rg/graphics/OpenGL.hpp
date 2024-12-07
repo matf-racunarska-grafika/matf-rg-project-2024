@@ -21,9 +21,7 @@ namespace rg::graphics {
 
         static bool initialize(void *(*loader)(const char *name));
 
-        static uint32_t initialize_texture(std::filesystem::path path, bool flip_uvs = false);
-
-        static uint32_t load_texture(const std::filesystem::path &path, bool flip_uvs);
+        static uint32_t generate_texture(const std::filesystem::path &path, bool flip_uvs);
 
         static int32_t texture_format(int32_t number_of_channels);
 

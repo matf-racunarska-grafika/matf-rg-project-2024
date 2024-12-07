@@ -123,7 +123,7 @@ namespace rg::resources {
         auto &result = m_textures[name];
         if (!result) {
             spdlog::info("Loading texture: {}", path.string());
-            result = std::make_unique<Texture>(Texture(graphics::OpenGL::load_texture(path, flip_uvs), type, path,
+            result = std::make_unique<Texture>(Texture(graphics::OpenGL::generate_texture(path, flip_uvs), type, path,
                                                        path.stem()));
         }
         return result.get();

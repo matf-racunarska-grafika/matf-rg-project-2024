@@ -23,7 +23,7 @@ namespace rg::graphics {
             return &m_camera;
         }
 
-        glm::mat4 projection_matrix() const {
+        const glm::mat4 &projection_matrix() const {
             return m_projection;
         }
 

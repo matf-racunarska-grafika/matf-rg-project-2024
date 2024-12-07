@@ -17,7 +17,7 @@ namespace rg::graphics {
         return gladLoadGLLoader((GLADloadproc) loader);
     }
 
-    uint32_t OpenGL::load_texture(const std::filesystem::path &path, bool flip_uvs) {
+    uint32_t OpenGL::generate_texture(const std::filesystem::path &path, bool flip_uvs) {
         uint32_t texture_id;
         glGenTextures(1, &texture_id);
 
