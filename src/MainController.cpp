@@ -1,28 +1,28 @@
 #include <imgui.h>
 #include <memory>
-#include <rg/core/Engine.hpp>
+#include <rg/Engine.hpp>
 
 class MainController : public rg::controller::Controller {
 protected:
     void initialize() override {
         // User initialization
-        rg::OpenGL::enable_depth_testing();
+        rg::graphics::OpenGL::enable_depth_testing();
     }
 
     bool loop() override {
-        const auto platform = rg::controller::get<rg::PlatformController>();
-        if (platform->key(rg::KeyId::KEY_ESCAPE).state() == rg::Key::State::JustPressed) {
+        const auto platform = rg::controller::get<rg::platform::PlatformController>();
+        if (platform->key(rg::platform::KeyId::KEY_ESCAPE).state() == rg::platform::Key::State::JustPressed) {
             return false;
         }
         return true;
     }
 
     void poll_events() override {
-        const auto platform = rg::controller::get<rg::PlatformController>();
-        if (platform->key(rg::KeyId::KEY_F2).state() == rg::Key::State::JustPressed) {
+        const auto platform = rg::controller::get<rg::platform::PlatformController>();
+        if (platform->key(rg::platform::KeyId::KEY_F2).state() == rg::platform::Key::State::JustPressed) {
             m_draw_gui = !m_draw_gui;
         }
-        if (platform->key(rg::KEY_F1).state() == rg::Key::State::JustPressed) {
+        if (platform->key(rg::platform::KEY_F1).state() == rg::platform::Key::State::JustPressed) {
             m_cursor_enabled = !m_cursor_enabled;
             platform->set_enable_cursor(m_cursor_enabled);
         }
@@ -33,17 +33,17 @@ protected:
     }
 
     void draw() override {
-        auto platform = rg::controller::get<rg::PlatformController>();
+        auto platform = rg::controller::get<rg::platform::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
                                         ->window()->
                                         height(),
                                         0.1f, 100.f);
-        rg::OpenGL::clear_buffers();
+        rg::graphics::OpenGL::clear_buffers();
         draw_backpack();
         draw_skybox();
         draw_gui();
-        rg::controller::get<rg::PlatformController>()->swap_buffers();
+        rg::controller::get<rg::platform::PlatformController>()->swap_buffers();
     }
 
 private:
@@ -80,25 +80,25 @@ void MainController::draw_skybox() {
     shader->set_mat4("view", view);
     shader->set_mat4("projection", m_projection);
     // skybox cube
-    rg::OpenGL::draw_skybox(skybox_cube);
+    rg::graphics::OpenGL::draw_skybox(skybox_cube);
 }
 
 void MainController::update_camera() {
     if (m_draw_gui) {
         return;
     }
-    auto platform = rg::controller::get<rg::PlatformController>();
+    auto platform = rg::controller::get<rg::platform::PlatformController>();
     float dt      = platform->dt();
-    if (platform->key(rg::KEY_W).state() == rg::Key::State::Pressed) {
+    if (platform->key(rg::platform::KEY_W).state() == rg::platform::Key::State::Pressed) {
         m_camera.process_keyboard(rg::FORWARD, dt);
     }
-    if (platform->key(rg::KEY_S).state() == rg::Key::State::Pressed) {
+    if (platform->key(rg::platform::KEY_S).state() == rg::platform::Key::State::Pressed) {
         m_camera.process_keyboard(rg::BACKWARD, dt);
     }
-    if (platform->key(rg::KEY_A).state() == rg::Key::State::Pressed) {
+    if (platform->key(rg::platform::KEY_A).state() == rg::platform::Key::State::Pressed) {
         m_camera.process_keyboard(rg::LEFT, dt);
     }
-    if (platform->key(rg::KEY_D).state() == rg::Key::State::Pressed) {
+    if (platform->key(rg::platform::KEY_D).state() == rg::platform::Key::State::Pressed) {
         m_camera.process_keyboard(rg::RIGHT, dt);
     }
     auto mouse = platform->mouse();
@@ -110,7 +110,7 @@ void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-    rg::controller::get<rg::PlatformController>()->begin_gui(); {
+    rg::controller::get<rg::platform::PlatformController>()->begin_gui(); {
         // Draw backpack scale slider window
         {
             auto backpack  = rg::controller::get<rg::ResourcesController>()->model("backpack");
@@ -130,7 +130,7 @@ void MainController::draw_gui() {
             ImGui::End();
         }
     }
-    rg::controller::get<rg::PlatformController>()->end_gui();
+    rg::controller::get<rg::platform::PlatformController>()->end_gui();
 }
 
 class MainApp final : public rg::App {

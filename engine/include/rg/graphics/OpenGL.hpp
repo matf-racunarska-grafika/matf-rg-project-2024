@@ -10,7 +10,9 @@
 
 namespace rg {
     class Skybox;
+}
 
+namespace rg::graphics {
     class OpenGL {
     public:
         using ShaderProgramId = uint32_t;

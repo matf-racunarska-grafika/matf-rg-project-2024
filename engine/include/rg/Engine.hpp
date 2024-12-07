@@ -9,13 +9,13 @@
 #include <rg/controller/Controller.hpp>
 #include <rg/controller/ControllerManager.hpp>
 #include <rg/controller/EngineSentinelController.hpp>
-#include <rg/platform/Platform.hpp>
-#include <rg/platform/OpenGL.hpp>
+#include <rg/platform/PlatformController.hpp>
+#include <rg/graphics/OpenGL.hpp>
 #include <rg/util/Utils.hpp>
 #include <rg/util/Errors.hpp>
 
 #include <rg/resources/Resources.hpp>
-#include <rg/core/Camera.hpp>
+#include <rg/graphics/Camera.hpp>
 #include <rg/resources/Model.hpp>
 #include <rg/resources/Shader.hpp>
 #include <rg/resources/Texture.hpp>

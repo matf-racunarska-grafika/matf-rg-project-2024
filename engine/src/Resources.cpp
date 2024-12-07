@@ -3,7 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <rg/platform/OpenGL.hpp>
+#include <rg/graphics/OpenGL.hpp>
 #include <rg/resources/Resources.hpp>
 #include <rg/resources/Shader.hpp>
 #include <rg/resources/ShaderCompiler.hpp>
@@ -124,7 +124,8 @@ namespace rg {
         auto &result = m_textures[name];
         if (!result) {
             spdlog::info("Loading texture: {}", path.string());
-            result = std::make_unique<Texture>(Texture(OpenGL::load_texture(path, flip_uvs), type, path, path.stem()));
+            result = std::make_unique<Texture>(Texture(graphics::OpenGL::load_texture(path, flip_uvs), type, path,
+                                                       path.stem()));
         }
         return result.get();
     }
@@ -135,8 +136,8 @@ namespace rg {
         auto &result = m_sky_boxes[name];
         if (!result) {
             spdlog::info("Loading skybox: {}", path.string());
-            result = std::make_unique<Skybox>(Skybox(OpenGL::init_skybox_vao(),
-                                                     OpenGL::load_skybox_textures(path, flip_uvs),
+            result = std::make_unique<Skybox>(Skybox(graphics::OpenGL::init_skybox_vao(),
+                                                     graphics::OpenGL::load_skybox_textures(path, flip_uvs),
                                                      path, name));
         }
         return result.get();

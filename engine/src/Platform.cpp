@@ -9,14 +9,14 @@
 #include <GLFW/glfw3.h>
 
 #include <assimp/Importer.hpp>
-#include <rg/platform/Platform.hpp>
+#include <rg/platform/PlatformController.hpp>
 #include <rg/util/Utils.hpp>
 #include <rg/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <rg/platform/OpenGL.hpp>
+#include <rg/graphics/OpenGL.hpp>
 
-namespace rg {
+namespace rg::platform {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, GLFW_KEY_LAST + 1> g_glfw_key_to_engine;
@@ -61,7 +61,7 @@ namespace rg {
         glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
         glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
         glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
-        const int opengl_initialized = OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        const int opengl_initialized = graphics::OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
         RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
         int major, minor, revision;

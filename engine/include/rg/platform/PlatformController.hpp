@@ -14,7 +14,7 @@
 
 struct GLFWwindow;
 
-namespace rg {
+namespace rg::platform {
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
         MOUSE_BUTTON_2,

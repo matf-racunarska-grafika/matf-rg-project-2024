@@ -2,7 +2,7 @@
 // Created by spaske on 11/30/24.
 //
 
-#include <rg/core/Camera.hpp>
+#include <rg/graphics/Camera.hpp>
 
 namespace rg {
     // constructor with vectors

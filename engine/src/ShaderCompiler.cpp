@@ -6,9 +6,11 @@
 #include <rg/util/Errors.hpp>
 #include <format>
 #include <spdlog/spdlog.h>
-#include <rg/platform/OpenGL.hpp>
+#include <rg/graphics/OpenGL.hpp>
 
 namespace rg {
+    using namespace graphics;
+
     int to_opengl_type(ShaderType type);
 
     Shader ShaderCompiler::compile_from_source(std::string shader_name, std::string shader_source) {

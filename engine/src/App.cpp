@@ -3,7 +3,7 @@
 //
 #include <spdlog/spdlog.h>
 #include <rg/core/App.hpp>
-#include <rg/platform/Platform.hpp>
+#include <rg/platform/PlatformController.hpp>
 #include <rg/resources/Resources.hpp>
 #include <rg/util/Errors.hpp>
 #include <rg/util/Utils.hpp>
@@ -33,7 +33,7 @@ namespace rg {
         Configuration::instance()->initialize();
 
         // register engine controller
-        auto platform  = controller::ControllerManager::register_controller<PlatformController>();
+        auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
         auto resources = controller::ControllerManager::register_controller<ResourcesController>();
         auto sentinel  = controller::ControllerManager::register_controller<controller::EngineSentinelController>();
         resources->after(platform);

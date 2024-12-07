@@ -4,7 +4,7 @@
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP
-#include <rg/platform/OpenGL.hpp>
+#include <rg/graphics/OpenGL.hpp>
 #include <rg/resources/Shader.hpp>
 #include <filesystem>
 #include <string>
@@ -39,7 +39,7 @@ namespace rg {
           , m_sources(std::move(shader_source)) {
         }
 
-        OpenGL::ShaderProgramId compile(const ShaderParsingResult &shader_sources);
+        graphics::OpenGL::ShaderProgramId compile(const ShaderParsingResult &shader_sources);
 
     private:
         int compile(const std::string &shader_source, ShaderType type);
