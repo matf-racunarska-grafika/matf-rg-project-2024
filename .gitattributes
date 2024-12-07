@@ -1,5 +1,10 @@
 libs/** linguist-vendored=true
-rg-engine/**/*.hpp linguist-language=c++
-rg-engine/**/*.h linguist-language=c++
+resources/** linguist-vendored=true
+
+include/**/*.h linguist-language=c++
+include/**/*.hpp linguist-language=c++
+engine/**/*.hpp linguist-language=c++
+engine/**/*.h linguist-language=c++
+engine/**/*.cpp linguist-language=c++
 src/**/*.hpp linguist-language=c++
 src/**/*.h linguist-language=c++

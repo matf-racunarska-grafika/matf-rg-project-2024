@@ -3,6 +3,7 @@
 #include <engine/util/Utils.hpp>
 #include <string>
 #include <glm/glm.hpp>
+#include <utility>
 
 namespace rg {
     using ShaderName = std::string;
@@ -42,10 +43,20 @@ namespace rg {
 
         void set_mat4(const std::string &name, const glm::mat4 &mat) const;
 
+        const std::string &name() const;
+
+        const std::string &source() const;
+
+        const std::filesystem::path &source_path() const;
+
     private:
-        explicit Shader(unsigned shaderId);
+        Shader(unsigned shader_id, std::string name, std::string source,
+               std::filesystem::path source_path = "");
 
         unsigned m_shaderId;
+        std::string m_name;
+        std::string m_source;
+        std::filesystem::path m_source_path;
     };
 } // namespace rg
 
