@@ -26,7 +26,7 @@ namespace rg::graphics {
     }
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 Camera::get_view_matrix() const {
+    glm::mat4 Camera::view_matrix() const {
         return glm::lookAt(Position, Position + Front, Up);
     }
 
