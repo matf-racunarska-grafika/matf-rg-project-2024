@@ -82,6 +82,8 @@ namespace rg::controller {
         * @brief Registers the controller for execution.
         * The Controller instance that the register_controller returns isn't yet initialized.
         * It will be initialized during the @ref App::initialize.
+        * If the register_controller is called twice for the same controller, it's registered only once.
+        * The other calls just return the pointer to the already registered instance.
         * @returns Pointer to the only instance of the provided Controller class TController.
         */
         template<typename TController>
@@ -92,12 +94,10 @@ namespace rg::controller {
             RG_GUARANTEE(!manager->m_controllers_initialized,
                          "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register controllers in the setup() phase.",
                          controller->name(), location.file_name(), location.line());
-            RG_GUARANTEE(!controller->is_registered(),
-                         "Trying to register Controller: `{}` twice in file: {}:{}. Please make "
-                         "sure that every Controller is registered exactly once.",
-                         controller->name(), location.file_name(), location.line());
-            manager->m_controllers.push_back(controller);
-            controller->mark_as_registered();
+            if (!controller->is_registered()) {
+                manager->m_controllers.push_back(controller);
+                controller->mark_as_registered();
+            }
             return controller;
         }
 
@@ -152,10 +152,14 @@ namespace rg::controller {
             return controller.get();
         }
 
-        /* Store all the registered_controllers in a vector so that they are easier to iterate over. */
+        /**
+         * @brief Store all the registered_controllers in a vector so that they are easier to iterate over.
+         */
         std::vector<Controller *> m_controllers;
 
-        /* Internal variable guaranteeing that no controller is registered after @ref ControllerManager::initialized. */
+        /**
+         * @brief Internal variable guaranteeing that no controller is registered after @ref ControllerManager::initialized.
+         */
         bool m_controllers_initialized{false};
     };
 

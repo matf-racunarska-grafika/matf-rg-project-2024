@@ -160,12 +160,23 @@ namespace rg::controller {
         virtual void terminate() {
         }
 
-        /* List of controller that are dependent on this controller */
+        /**
+         * @brief List of controller that are dependent on this controller
+         */
         std::vector<Controller *> m_next{};
 
-        /* The ControllerManager uses this fields to ensure the propre Controller execution and access. */
+        /**
+         * @brief Internal Controller field used to ensure that the controller isn't registered twice.
+         */
         bool m_registered{false};
+        /**
+        *  @brief Internal field used to ensure that the controller isn't used before it's initialized.
+        */
         bool m_initialized{false};
+
+        /**
+        * @brief Internal field used to control weather the @ref ControllerManager executes the controller.
+        */
         bool m_enabled{true};
     };
 } // namespace rg
