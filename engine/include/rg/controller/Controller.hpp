@@ -7,6 +7,7 @@
 
 #include <string_view>
 #include <vector>
+#include <typeinfo>
 
 namespace rg::controller {
     /**

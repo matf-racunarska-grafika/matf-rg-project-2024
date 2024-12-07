@@ -14,7 +14,7 @@
 #include <rg/util/Utils.hpp>
 #include <rg/util/Errors.hpp>
 
-#include <rg/resources/Resources.hpp>
+#include <rg/resources/ResourcesController.hpp>
 #include <rg/graphics/Camera.hpp>
 #include <rg/resources/Model.hpp>
 #include <rg/resources/Shader.hpp>

@@ -6,9 +6,11 @@
 #ifndef APP_H
 #define APP_H
 
-namespace rg {
+namespace rg::util {
     class Error;
+}
 
+namespace rg {
     /**
     * @class App
     * @brief Defines the base App class that serves as the application core structure and the entry point.
@@ -143,7 +145,7 @@ namespace rg {
             return 0;
         }
 
-        virtual void handle_error(const Error &);
+        virtual void handle_error(const util::Error &);
 
     public:
         virtual ~App() = default;

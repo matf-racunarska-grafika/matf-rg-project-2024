@@ -39,7 +39,7 @@ namespace rg::graphics {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         } else {
-            throw AssetLoadingError(std::format("Failed to load texture {}", path.string()));
+            throw util::AssetLoadingError(std::format("Failed to load texture {}", path.string()));
         }
         return texture_id;
     }
@@ -110,7 +110,7 @@ namespace rg::graphics {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
                              data);
             } else {
-                throw AssetLoadingError(std::format("Failed to load skybox texture {}", path.string()));
+                throw util::AssetLoadingError(std::format("Failed to load skybox texture {}", path.string()));
             }
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

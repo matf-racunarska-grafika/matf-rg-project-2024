@@ -6,8 +6,10 @@
 #include <rg/util/Errors.hpp>
 #include <spdlog/spdlog.h>
 #include <fstream>
+#include <rg/util/Configuration.hpp>
+#include <rg/util/ArgParser.hpp>
 
-namespace rg {
+namespace rg::util {
 
     void Configuration::initialize() {
         auto config_path = get_config_path();

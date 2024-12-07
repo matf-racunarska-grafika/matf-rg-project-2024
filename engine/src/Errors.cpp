@@ -4,7 +4,7 @@
 #include <format>
 #include <spdlog/spdlog.h>
 
-namespace rg {
+namespace rg::util {
     static bool g_tracing = true;
 
     void tracing_on() {

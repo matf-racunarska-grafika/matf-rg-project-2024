@@ -11,6 +11,7 @@
 #include <rg/resources/Texture.hpp>
 #include <rg/resources/Shader.hpp>
 #include <rg/resources/Skybox.hpp>
+#include <unordered_map>
 
 namespace rg {
     class ResourcesController final : public controller::Controller {

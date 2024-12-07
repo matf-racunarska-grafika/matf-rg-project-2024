@@ -4,9 +4,10 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <rg/graphics/OpenGL.hpp>
-#include <rg/resources/Resources.hpp>
+#include <rg/resources/ResourcesController.hpp>
 #include <rg/resources/Shader.hpp>
 #include <rg/resources/ShaderCompiler.hpp>
+#include <rg/util/Configuration.hpp>
 #include <rg/util/Errors.hpp>
 #include <rg/util/Utils.hpp>
 #include <spdlog/spdlog.h>
@@ -28,7 +29,7 @@ namespace rg {
     }
 
     void ResourcesController::load_models() {
-        const auto &config = Configuration::config();
+        const auto &config = util::Configuration::config();
         if (exists(m_models_path)) {
             for (const auto &model_entry: config["resources"]["models"].items()) {
                 model(model_entry.key());
@@ -85,9 +86,9 @@ namespace rg {
             const std::string &model_name) {
         auto &result = m_models[model_name];
         if (!result) {
-            auto &config = Configuration::config();
+            auto &config = util::Configuration::config();
             if (!config["resources"]["models"].contains(model_name)) {
-                throw ConfigurationError(std::format(
+                throw util::ConfigurationError(std::format(
                         "No model ({}) specify in config.json. Please add the model to the config.json.",
                         model_name));
             }
@@ -108,7 +109,7 @@ namespace rg {
                     importer.ReadFile(model_path, flags);
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-                throw AssetLoadingError("Assimp error while reading model. ", model_path, model_name);
+                throw util::AssetLoadingError("Assimp error while reading model. ", model_path, model_name);
             }
 
             std::vector<Mesh> meshes = AssimpSceneProcessor::process_scene(this, scene, model_path);

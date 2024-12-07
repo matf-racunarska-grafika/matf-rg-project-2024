@@ -49,8 +49,9 @@ namespace rg {
     int ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
         int shader_id = glCreateShader(to_opengl_type(type));
         if (!OpenGL::compile_shader(shader_id, shader_source)) {
-            throw ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type),
-                                                     m_shader_name, OpenGL::get_compilation_error_message(shader_id)));
+            throw util::ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type),
+                                                           m_shader_name,
+                                                           OpenGL::get_compilation_error_message(shader_id)));
         }
         return shader_id;
     }
@@ -69,7 +70,7 @@ namespace rg {
             }
         }
         if (parsing_result.vertex_shader.empty() || parsing_result.fragment_shader.empty()) {
-            throw ShaderCompilationError(std::format(
+            throw util::ShaderCompilationError(std::format(
                     "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
                     m_shader_name));
         }
@@ -79,11 +80,11 @@ namespace rg {
     Shader ShaderCompiler::compile_from_file(std::string shader_name,
                                              const std::filesystem::path &shader_path) {
         if (!exists(shader_path)) {
-            throw FileNotFoundError(
+            throw util::FileNotFoundError(
                     shader_path, std::format("Shader source file {} for shader {} not found.", shader_path.string(),
                                              shader_name));
         }
-        std::string shader_source = read_text_file(shader_path);
+        std::string shader_source = util::read_text_file(shader_path);
         ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
         ShaderParsingResult parsing_result     = compiler.parse_source();
         OpenGL::ShaderProgramId shader_program = compiler.compile(parsing_result);

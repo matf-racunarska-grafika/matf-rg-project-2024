@@ -12,19 +12,19 @@
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
         if (!(expr)) {                                                                                                 \
-            throw rg::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
+            throw rg::util::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
         }                                                                                                              \
     } while (0)
 #define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
     do {                                                                                                               \
-        throw rg::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
+        throw rg::util::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
     } while (0)
 #define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
     do {                                                                                                               \
-        throw rg::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
+        throw rg::util::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
     } while (0)
 
-namespace rg {
+namespace rg::util {
     void tracing_on();
 
     void tracing_off();

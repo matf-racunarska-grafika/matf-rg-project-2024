@@ -8,13 +8,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <assimp/Importer.hpp>
 #include <rg/platform/PlatformController.hpp>
 #include <rg/util/Utils.hpp>
 #include <rg/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
 #include <rg/graphics/OpenGL.hpp>
+#include <rg/util/Configuration.hpp>
 
 namespace rg::platform {
 
@@ -48,7 +48,7 @@ namespace rg::platform {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        Configuration::json &config = Configuration::config();
+        util::Configuration::json &config = util::Configuration::config();
         int window_width = config["window"]["width"];
         int window_height = config["window"]["height"];
         std::string window_title = config["window"]["title"];

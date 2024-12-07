@@ -11,7 +11,6 @@
 #include <vector>
 #include <queue>
 #include <mutex>
-#include <json.hpp>
 #include <variant>
 #include <rg/util/Errors.hpp>
 
@@ -50,7 +49,7 @@ DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
 #define range(container) std::begin(container), std::end(container)
 #define crange(container) std::cbegin(container), std::cend(container)
 
-namespace rg {
+namespace rg::util {
     template<typename Value, typename Error>
     class Result {
     public:
@@ -107,67 +106,6 @@ namespace rg {
 
     private:
         std::variant<Value, Error> m_variant;
-    };
-
-    class Configuration {
-        friend class App;
-
-    public:
-        using json = nlohmann::json;
-
-        static json &config();
-
-        static Configuration *instance();
-
-        void initialize();
-
-    private:
-        static std::filesystem::path get_config_path();
-
-        static json create_default();
-
-        constexpr static std::string_view CONFIG_FILE_NAME = "config.json";
-
-        json m_config;
-    };
-
-    class ArgParser {
-        friend class App;
-
-    public:
-        static ArgParser *instance();
-
-        template<typename T>
-        std::optional<T> arg(std::string_view name) {
-            std::string arg_value = get_arg_value(name);
-            if (arg_value.empty()) {
-                return {};
-            }
-            std::size_t parsed = 0;
-            if constexpr (std::is_same_v<T, bool> || std::is_same_v<T, int> || std::is_same_v<T, int32_t>) {
-                return std::stoi(arg_value, &parsed);
-            } else if constexpr (std::is_same_v<T, long long> || std::is_same_v<T, int64_t>) {
-                return std::stoll(arg_value, &parsed);
-            } else if constexpr (std::is_same_v<T, float>) {
-                return std::stof(arg_value, &parsed);
-            } else if constexpr (std::is_same_v<T, double>) {
-                return std::stod(arg_value, &parsed);
-            } else if constexpr (std::is_same_v<T, std::string>) {
-                return arg_value;
-            } else {
-                static_assert(false, "This type is not supported!");
-            }
-        }
-
-        void initialize(int argc, char **argv);
-
-    private:
-        std::string get_arg_value(std::string_view arg_name);
-
-        ArgParser() = default;
-
-        int m_argc    = 0;
-        char **m_argv = nullptr;
     };
 
     std::string read_text_file(const std::filesystem::path &path);

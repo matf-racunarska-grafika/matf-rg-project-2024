@@ -4,11 +4,13 @@
 #include <spdlog/spdlog.h>
 #include <rg/core/App.hpp>
 #include <rg/platform/PlatformController.hpp>
-#include <rg/resources/Resources.hpp>
+#include <rg/resources/ResourcesController.hpp>
 #include <rg/util/Errors.hpp>
 #include <rg/util/Utils.hpp>
 #include <rg/controller/ControllerManager.hpp>
 #include <rg/controller/EngineSentinelController.hpp>
+#include <rg/util/ArgParser.hpp>
+#include <rg/util/Configuration.hpp>
 
 namespace rg {
     int App::run(int argc, char **argv) {
@@ -21,7 +23,7 @@ namespace rg {
                 draw();
             }
             terminate();
-        } catch (const Error &e) {
+        } catch (const util::Error &e) {
             handle_error(e);
             terminate();
         }
@@ -29,8 +31,8 @@ namespace rg {
     }
 
     void App::setup_(int argc, char **argv) {
-        ArgParser::instance()->initialize(argc, argv);
-        Configuration::instance()->initialize();
+        util::ArgParser::instance()->initialize(argc, argv);
+        util::Configuration::instance()->initialize();
 
         // register engine controller
         auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
@@ -74,7 +76,7 @@ namespace rg {
         RG_UNIMPLEMENTED("You should override App::setup in your App implementation.");
     }
 
-    void App::handle_error(const Error &e) {
+    void App::handle_error(const util::Error &e) {
         spdlog::error(e.report());
     }
 

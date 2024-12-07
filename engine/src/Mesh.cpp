@@ -5,6 +5,7 @@
 #include <rg/util/Utils.hpp>
 #include <rg/resources/Mesh.hpp>
 #include <rg/resources/Shader.hpp>
+#include <unordered_map>
 
 namespace rg {
 
