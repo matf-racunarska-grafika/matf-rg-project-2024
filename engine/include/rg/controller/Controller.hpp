@@ -16,6 +16,9 @@ namespace rg::controller {
     * By overriding member virtual functions of this class the user can
     * execute custom code during each of the `main loop` phases.
     *
+    * Every controller instance is a singleton instance that is managed by the @ref ControllerManager.
+    * There can be no two instances of the same controller.
+    *
     * @usage
     * \code
     * class LoggingController : public rg::Controller {
@@ -64,10 +67,7 @@ namespace rg::controller {
         }
 
         /**
-         * Returns the controllers that have a direct dependency to `this` controller.
-         * Example:
-         * ```c++
-         * ```
+        * Returns the controllers that have a direct dependency to `this` controller.
         * @returns Controllers executing after `this`
         */
         const std::vector<Controller *> &next() const {
@@ -83,14 +83,26 @@ namespace rg::controller {
             return m_initialized;
         }
 
+        /**
+        * @brief Controller will execute as long this function returns true.
+        *
+        * You can turn the controller on/off by calling @ref Controller::enable @ref Controller::disable
+        */
         bool is_enabled() const {
             return m_enabled;
         }
 
+        /**
+        * @brief Enables the controller. The @ref ControllerManager will execute the controllers hook methods.
+        * By default, controllers are enabled when registered.
+        */
         void enable() {
             m_enabled = true;
         }
 
+        /**
+        * @brief Disables the controller. The @ref ControllerManager won't execute the controllers hook methods.
+        */
         void disable() {
             m_enabled = false;
         }
@@ -114,19 +126,37 @@ namespace rg::controller {
         virtual void initialize() {
         }
 
+        /**
+        * @brief Checks whether the main loop should continue. Executes in the @ref App::loop.
+        * @returns true if the render loop should continue.
+        */
         virtual bool loop() {
             return true;
         }
 
+        /**
+        * @brief Process internal and external events. Executes in the @ref App::poll_events.
+        */
         virtual void poll_events() {
         }
 
+        /**
+        * @brief Update the controller state and prepare for drawing. Executes in the @ref App::update.
+        */
         virtual void update() {
         }
 
+        /**
+        * @brief Draw the world state. Executes in the @ref App::draw.
+        */
         virtual void draw() {
         }
 
+        /**
+        * @brief Terminate the controller. Executes in the @ref App::terminate.
+        *
+        * Note that the `terminate` executes in the reverse order from initialize.
+        */
         virtual void terminate() {
         }
 

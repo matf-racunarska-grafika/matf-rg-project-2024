@@ -15,10 +15,53 @@ namespace rg {
 }
 
 namespace rg::controller {
+    /**
+    * @class ControllerManager
+    * @brief Manages the @ref Controller registration, access, and execution.
+    *
+    * The ControllerManager calls:
+    *
+    * @ref Controller::initialize
+    *
+    * @ref Controller::loop
+    *
+    * @ref Controller::poll_events
+    *
+    * @ref Controller::update
+    *
+    * @ref Controller::draw
+    *
+    * @ref Controller::terminate
+    *
+    * for every @ref Controller instance that has been registered via @ref ControllerManager::register_controller.
+    * Every @ref Controller function in the list above is called in the corresponding @ref App function with the same name.
+    *
+    * Example usage:
+    * @code
+    * void setup_(...) {
+    *   auto graphics = rg::controller::register_controller<GraphicsController>();
+    *   auto platform = rg::controller::register_controller<PlatformController>();
+    *   // Specify that the PlatformController always executes before GraphicsController.
+    *   platform->before(graphics);
+    * }
+    *
+    * void draw() {
+    *   auto graphics = rg::controller::get<GraphicsController>();
+    *   graphics->begin_gui();
+    *   ...
+    *   graphics->end_gui();
+    * }
+    * @endcode
+    */
     class ControllerManager {
         friend class rg::App;
 
     public:
+        /**
+        * @brief Serves as a single access point for all the Controller types throughout the code base.
+        *
+        * @returns The only instance of the TController.
+        */
         template<typename TController>
         static TController *get(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
@@ -30,6 +73,12 @@ namespace rg::controller {
             return controller;
         }
 
+        /**
+        * @brief Registers the controller for execution.
+        * The Controller instance that the register_controller returns isn't yet initialized.
+        * It will be initialized during the @ref App::initialize.
+        * @returns Pointer to the only instance of the provided Controller class TController.
+        */
         template<typename TController>
         static TController *register_controller(std::source_location location = std::source_location::current()) {
             static_assert(std::is_base_of_v<Controller, TController>);
@@ -50,16 +99,38 @@ namespace rg::controller {
     private:
         static ControllerManager *instance();
 
+        /**
+        * @brief Topologically sorts and initializes Controllers based on the @ref Controller::before and @ref Controller::after relationships specified in the @ref App::setup.
+        * @brief Calls @ref Controller::initialize for every registered controller instance where @ref Controller::is_enabled is true.
+        *
+        */
         void initialize();
 
+        /**
+        * @brief Call @ref Controller::poll_events for every registered controller instance where @ref Controller::is_enabled is true.
+        */
         void poll_events();
 
+        /**
+        * @brief Call @ref Controller::loop for every registered controller instance where @ref Controller::is_enabled is true.
+        * The main loop exits as soon as one of the enabled Controllers returns false in the @ref Controller::loop.
+        * @returns false for the first registered controller that returned false, otherwise true and the loop continues.
+        */
         bool loop();
 
+        /**
+        * @brief Call @ref Controller::update for every registered controller instance where @ref Controller::is_enabled is true.
+        */
         void update();
 
+        /**
+        * @brief Call @ref Controller::draw for every registered controller instance where @ref Controller::is_enabled is true.
+        */
         void draw();
 
+        /**
+        * @brief Call @ref Controller::terminate for every registered controller instance in the reverse order of initialization.
+        */
         void terminate();
 
         void topological_sort();
@@ -86,11 +157,19 @@ namespace rg::controller {
         bool m_controllers_initialized{false};
     };
 
+    /**
+    * @brief Shorthand function for @ref ControllerManager::get.
+    * @returns The only instance of the TController.
+    */
     template<typename TController>
     TController *get(std::source_location location = std::source_location::current()) {
         return ControllerManager::get<TController>(location);
     }
 
+    /**
+    * @brief Shorthand function for @ref ControllerManager::register_controller.
+    * @returns Pointer to the only instance of the provided Controller class TController.
+    */
     template<typename TController>
     TController *register_controller(std::source_location location = std::source_location::current()) {
         return ControllerManager::register_controller<TController>(location);
