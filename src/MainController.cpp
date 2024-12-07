@@ -61,7 +61,7 @@ void MainController::draw_backpack() {
     auto backpack = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->get_view_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
     backpack->draw(shader);
 }

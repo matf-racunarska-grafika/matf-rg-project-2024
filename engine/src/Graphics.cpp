@@ -53,7 +53,7 @@ namespace rg::graphics {
     }
 
     void GraphicsController::draw_skybox(const resources::Shader *shader, const resources::Skybox *skybox) {
-        glm::mat4 view = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
+        glm::mat4 view = glm::mat4(glm::mat3(m_camera.view_matrix()));
         shader->use();
         shader->set_mat4("view", view);
         shader->set_mat4("projection", m_projection);
