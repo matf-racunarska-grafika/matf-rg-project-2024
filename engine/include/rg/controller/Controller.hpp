@@ -100,6 +100,17 @@ namespace rg::controller {
             m_initialized = true;
         }
 
+        void mark_as_registered() {
+            m_registered = true;
+        }
+
+        bool is_registered() const {
+            return m_registered;
+        }
+
+        /**
+        * @brief Initializes the controller. Executes in the @ref App::initialize.
+        */
         virtual void initialize() {
         }
 
@@ -121,6 +132,9 @@ namespace rg::controller {
 
         /* List of controller that are dependent on this controller */
         std::vector<Controller *> m_next{};
+
+        /* The ControllerManager uses this fields to ensure the propre Controller execution and access. */
+        bool m_registered{false};
         bool m_initialized{false};
         bool m_enabled{true};
     };

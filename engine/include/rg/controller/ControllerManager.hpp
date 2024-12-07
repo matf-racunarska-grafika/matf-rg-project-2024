@@ -24,10 +24,9 @@ namespace rg::controller {
             static_assert(std::is_base_of_v<Controller, TController>);
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
-            // RG_GUARANTEE(controller->is_initialized(),
-            //              "Trying to call {}::get or rg::controller::get<{}> in file:{}:{}, before it's been initialized. Call {}::get after setup().",
-            //              controller->name(), controller->name(), location.file_name(), location.line(),
-            //              controller->name());
+            RG_GUARANTEE(controller->is_registered(),
+                         "Trying to get an unregistered controller in: {}:{}.\nPlease call register_controller<> first.",
+                         location.file_name(), location.line());
             return controller;
         }
 
@@ -44,6 +43,7 @@ namespace rg::controller {
                          "sure that every Controller is registered exactly once.",
                          controller->name(), location.file_name(), location.line());
             manager->m_controllers.push_back(controller);
+            controller->mark_as_registered();
             return controller;
         }
 
