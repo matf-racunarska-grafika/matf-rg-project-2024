@@ -31,7 +31,7 @@ namespace rg {
 
     bool ControllerManager::loop() {
         for (auto controller: m_controllers) {
-            if (!controller->loop()) {
+            if (controller->is_enabled() && !controller->loop()) {
                 return false;
             }
         }
@@ -40,19 +40,25 @@ namespace rg {
 
     void ControllerManager::poll_events() {
         for (auto controller: m_controllers) {
-            controller->poll_events();
+            if (controller->is_enabled()) {
+                controller->poll_events();
+            }
         }
     }
 
     void ControllerManager::update() {
         for (auto controller: m_controllers) {
-            controller->update();
+            if (controller->is_enabled()) {
+                controller->update();
+            }
         }
     }
 
     void ControllerManager::draw() {
         for (auto controller: m_controllers) {
-            controller->draw();
+            if (controller->is_enabled()) {
+                controller->draw();
+            }
         }
     }
 

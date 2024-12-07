@@ -82,6 +82,18 @@ namespace rg {
             return m_initialized;
         }
 
+        bool is_enabled() const {
+            return m_enabled;
+        }
+
+        void enable() {
+            m_enabled = true;
+        }
+
+        void disable() {
+            m_enabled = false;
+        }
+
     private:
         void mark_initialized() {
             m_initialized = true;
@@ -109,6 +121,7 @@ namespace rg {
         /* List of controller that are dependent on this controller */
         std::vector<Controller *> m_next{};
         bool m_initialized{false};
+        bool m_enabled{true};
     };
 
     /**
