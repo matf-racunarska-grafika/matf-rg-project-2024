@@ -14,12 +14,13 @@ namespace rg {
     Shader ShaderCompiler::compile_from_source(std::string shader_name, std::string shader_source) {
         spdlog::info("ShaderCompiler::Compiling: {}", shader_name);
         ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
-        ShaderParsingResult parsing_result = compiler.parse_source();
-        Shader shader_program              = compiler.compile(parsing_result);
-        return shader_program;
+        ShaderParsingResult parsing_result     = compiler.parse_source();
+        OpenGL::ShaderProgramId shader_program = compiler.compile(parsing_result);
+        Shader result(shader_program, shader_name, shader_source, "");
+        return result;
     }
 
-    Shader ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
+    OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
         int shader_program_id  = glCreateProgram();
         int vertex_shader_id   = 0;
         int fragment_shader_id = 0;
@@ -40,8 +41,7 @@ namespace rg {
             glAttachShader(shader_program_id, geometry_shader_id);
         }
         glLinkProgram(shader_program_id);
-        Shader result(shader_program_id);
-        return result;
+        return shader_program_id;
     }
 
     int ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
@@ -75,12 +75,18 @@ namespace rg {
     }
 
     Shader ShaderCompiler::compile_from_file(std::string shader_name,
-                                             const std::filesystem::path &path) {
-        if (!exists(path)) {
+                                             const std::filesystem::path &shader_path) {
+        if (!exists(shader_path)) {
             throw FileNotFoundError(
-                    path, std::format("Shader source file {} for shader {} not found.", path.string(), shader_name));
+                    shader_path, std::format("Shader source file {} for shader {} not found.", shader_path.string(),
+                                             shader_name));
         }
-        return compile_from_source(std::move(shader_name), read_text_file(path));
+        std::string shader_source = read_text_file(shader_path);
+        ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
+        ShaderParsingResult parsing_result     = compiler.parse_source();
+        OpenGL::ShaderProgramId shader_program = compiler.compile(parsing_result);
+        Shader result(shader_program, shader_name, shader_source, shader_path);
+        return result;
     }
 
     std::string *ShaderCompiler::now_parsing(ShaderParsingResult &result, const std::string &line) {

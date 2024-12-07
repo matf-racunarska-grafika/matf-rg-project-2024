@@ -66,8 +66,11 @@ namespace rg {
         glUniformMatrix4fv(glGetUniformLocation(m_shaderId, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
 
-    Shader::Shader(unsigned shaderId) :
-    m_shaderId(shaderId) {
+    Shader::Shader(unsigned shader_id, std::string name, std::string source, std::filesystem::path source_path):
+    m_shaderId(shader_id)
+  , m_name(std::move(name))
+  , m_source(std::move(source))
+  , m_source_path(std::move(source_path)) {
     }
 
 }

@@ -13,6 +13,8 @@ namespace rg {
 
     class OpenGL {
     public:
+        using ShaderProgramId = uint32_t;
+
         static bool initialize(void *(*loader)(const char *name));
 
         static uint32_t initialize_texture(std::filesystem::path path, bool flip_uvs = false);

@@ -4,6 +4,7 @@
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP
+#include <engine/platform/OpenGL.hpp>
 #include <engine/resources/Shader.hpp>
 #include <filesystem>
 #include <string>
@@ -27,7 +28,7 @@ namespace rg {
     public:
         static Shader compile_from_source(std::string shader_name, std::string shader_source);
 
-        static Shader compile_from_file(std::string shader_name, const std::filesystem::path &path);
+        static Shader compile_from_file(std::string shader_name, const std::filesystem::path &shader_path);
 
         std::string *now_parsing(ShaderParsingResult &result, const std::string &line);
 
@@ -38,7 +39,7 @@ namespace rg {
           , m_sources(std::move(shader_source)) {
         }
 
-        Shader compile(const ShaderParsingResult &shader_sources);
+        OpenGL::ShaderProgramId compile(const ShaderParsingResult &shader_sources);
 
     private:
         int compile(const std::string &shader_source, ShaderType type);
