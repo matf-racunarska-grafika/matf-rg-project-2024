@@ -36,6 +36,11 @@ namespace rg::controller {
     * for every @ref Controller instance that has been registered via @ref ControllerManager::register_controller.
     * Every @ref Controller function in the list above is called in the corresponding @ref App function with the same name.
     *
+    * Because of the dependencies between the controllers specified with
+    * @ref Controller::before and @ref Controller::after we sort the controller instances
+    * topologically in the @ref ControllerManager::initialize to guarantee the correct order of execution
+    * and not have them depend on the order of registration.
+    *
     * Example usage:
     * @code
     * void setup_(...) {
@@ -87,7 +92,7 @@ namespace rg::controller {
             RG_GUARANTEE(!manager->m_controllers_initialized,
                          "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register controllers in the setup() phase.",
                          controller->name(), location.file_name(), location.line());
-            RG_GUARANTEE(!manager->is_registered_controller(controller),
+            RG_GUARANTEE(!controller->is_registered(),
                          "Trying to register Controller: `{}` twice in file: {}:{}. Please make "
                          "sure that every Controller is registered exactly once.",
                          controller->name(), location.file_name(), location.line());
@@ -133,27 +138,24 @@ namespace rg::controller {
         */
         void terminate();
 
-        void topological_sort();
-
-        void topological_sort_util(Controller *controller, std::vector<Controller *> &stack,
-                                   std::unordered_set<Controller *> &visited);
-
-        bool dfs_visits_controller_on_path(Controller *current, std::unordered_set<Controller *> &visited,
-                                           std::unordered_set<Controller *> &path);
-
-        bool has_cycle(const std::vector<Controller *> &controllers);
-
+        /**
+         * @brief Creates an TController instance if it doesn't exist.
+         * @returns A pointer to the only instance of the TController.
+         */
         template<typename TController>
         TController *create_if_absent() {
+            /*
+             * Local static variables are initialized only once when the execution first reaches their definition.
+             * The next time the execution reaches already initialized local static variables it does nothing.
+             */
             static std::unique_ptr<TController> controller = std::make_unique<TController>();
             return controller.get();
         }
 
-        bool is_registered_controller(Controller *controller) {
-            return std::find(m_controllers.cbegin(), m_controllers.cend(), controller) != m_controllers.cend();
-        }
-
+        /* Store all the registered_controllers in a vector so that they are easier to iterate over. */
         std::vector<Controller *> m_controllers;
+
+        /* Internal variable guaranteeing that no controller is registered after @ref ControllerManager::initialized. */
         bool m_controllers_initialized{false};
     };
 
