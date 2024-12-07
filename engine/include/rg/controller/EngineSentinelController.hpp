@@ -4,7 +4,7 @@
 
 #ifndef ENGINESENTINELCONTROLLER_HPP
 #define ENGINESENTINELCONTROLLER_HPP
-#include <engine/controller/Controller.hpp>
+#include <rg/controller/Controller.hpp>
 
 namespace rg::controller {
     /**

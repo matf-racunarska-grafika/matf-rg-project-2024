@@ -2,7 +2,7 @@
 // Created by spaske on 12/2/24.
 //
 #include <glad/glad.h>
-#include <engine/resources/Shader.hpp>
+#include <rg/resources/Shader.hpp>
 
 namespace rg {
 

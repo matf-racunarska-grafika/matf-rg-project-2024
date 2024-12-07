@@ -2,13 +2,13 @@
 // Created by spaske00 on 20.4.24
 //
 #include <spdlog/spdlog.h>
-#include <engine/core/App.hpp>
-#include <engine/platform/Platform.hpp>
-#include <engine/resources/Resources.hpp>
-#include <engine/util/Errors.hpp>
-#include <engine/util/Utils.hpp>
-#include <engine/controller/ControllerManager.hpp>
-#include <engine/controller/EngineSentinelController.hpp>
+#include <rg/core/App.hpp>
+#include <rg/platform/Platform.hpp>
+#include <rg/resources/Resources.hpp>
+#include <rg/util/Errors.hpp>
+#include <rg/util/Utils.hpp>
+#include <rg/controller/ControllerManager.hpp>
+#include <rg/controller/EngineSentinelController.hpp>
 
 namespace rg {
     int App::run(int argc, char **argv) {

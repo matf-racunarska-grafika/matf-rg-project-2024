@@ -5,12 +5,12 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <engine/controller/Controller.hpp>
-#include <engine/util/Utils.hpp>
+#include <rg/controller/Controller.hpp>
+#include <rg/util/Utils.hpp>
 #include <memory>
 #include <string>
 #include <vector>
-#include <engine/controller/ControllerManager.hpp>
+#include <rg/controller/ControllerManager.hpp>
 
 struct GLFWwindow;
 

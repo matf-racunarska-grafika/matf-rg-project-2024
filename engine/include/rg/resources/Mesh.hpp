@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include <engine/resources/Texture.hpp>
+#include <rg/resources/Texture.hpp>
 
 namespace rg {
     struct Vertex {

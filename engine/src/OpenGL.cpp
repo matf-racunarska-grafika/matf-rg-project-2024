@@ -5,11 +5,11 @@
 #include <filesystem>
 #include <array>
 #include <stb_image.h>
-#include <engine/platform/OpenGL.hpp>
-#include <engine/resources/Shader.hpp>
-#include <engine/resources/Skybox.hpp>
-#include <engine/util/Errors.hpp>
-#include <engine/util/Utils.hpp>
+#include <rg/platform/OpenGL.hpp>
+#include <rg/resources/Shader.hpp>
+#include <rg/resources/Skybox.hpp>
+#include <rg/util/Errors.hpp>
+#include <rg/util/Utils.hpp>
 
 namespace rg {
 

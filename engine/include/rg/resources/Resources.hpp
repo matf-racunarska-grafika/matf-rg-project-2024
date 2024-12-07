@@ -6,11 +6,11 @@
 
 #define MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
 
-#include <engine/controller/Controller.hpp>
-#include <engine/resources/Model.hpp>
-#include <engine/resources/Texture.hpp>
-#include <engine/resources/Shader.hpp>
-#include <engine/resources/Skybox.hpp>
+#include <rg/controller/Controller.hpp>
+#include <rg/resources/Model.hpp>
+#include <rg/resources/Texture.hpp>
+#include <rg/resources/Shader.hpp>
+#include <rg/resources/Skybox.hpp>
 
 namespace rg {
     class ResourcesController final : public controller::Controller {

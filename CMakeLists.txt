@@ -21,11 +21,12 @@ set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES} 
 
 ############## Sources ###############
 file(GLOB sources src/*.cpp engine/src/*.cpp)
-file(GLOB headers src/*.hpp include/*.hpp engine/include/engine/*.hpp)
+file(GLOB headers src/*.hpp include/*.hpp engine/include/rg/*.hpp)
 
 ################ Exec ################
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 target_include_directories(${PROJECT_NAME} PRIVATE engine/include include/ libs/json)
 add_dependencies(${PROJECT_NAME} ${LIBS})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")

@@ -2,8 +2,8 @@
 // Created by spaske on 12/2/24.
 //
 #include <glad/glad.h>
-#include <engine/resources/Texture.hpp>
-#include <engine/util/Errors.hpp>
+#include <rg/resources/Texture.hpp>
+#include <rg/util/Errors.hpp>
 
 namespace rg {
     std::string_view texture_type_to_string(TextureType type) {

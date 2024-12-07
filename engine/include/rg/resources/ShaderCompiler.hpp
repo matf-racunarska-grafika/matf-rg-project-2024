@@ -4,8 +4,8 @@
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP
-#include <engine/platform/OpenGL.hpp>
-#include <engine/resources/Shader.hpp>
+#include <rg/platform/OpenGL.hpp>
+#include <rg/resources/Shader.hpp>
 #include <filesystem>
 #include <string>
 

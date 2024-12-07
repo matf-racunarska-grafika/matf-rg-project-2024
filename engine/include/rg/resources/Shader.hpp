@@ -1,6 +1,6 @@
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
-#include <engine/util/Utils.hpp>
+#include <rg/util/Utils.hpp>
 #include <string>
 #include <glm/glm.hpp>
 #include <utility>

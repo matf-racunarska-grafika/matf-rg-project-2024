@@ -9,12 +9,12 @@
 #include <GLFW/glfw3.h>
 
 #include <assimp/Importer.hpp>
-#include <engine/platform/Platform.hpp>
-#include <engine/util/Utils.hpp>
-#include <engine/controller/ControllerManager.hpp>
+#include <rg/platform/Platform.hpp>
+#include <rg/util/Utils.hpp>
+#include <rg/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <engine/platform/OpenGL.hpp>
+#include <rg/platform/OpenGL.hpp>
 
 namespace rg {
 

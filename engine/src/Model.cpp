@@ -2,7 +2,7 @@
 // Created by spaske on 12/2/24.
 //
 
-#include <engine/resources/Model.hpp>
+#include <rg/resources/Model.hpp>
 
 namespace rg {
 

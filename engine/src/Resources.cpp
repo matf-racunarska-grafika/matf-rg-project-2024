@@ -3,12 +3,12 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <engine/platform/OpenGL.hpp>
-#include <engine/resources/Resources.hpp>
-#include <engine/resources/Shader.hpp>
-#include <engine/resources/ShaderCompiler.hpp>
-#include <engine/util/Errors.hpp>
-#include <engine/util/Utils.hpp>
+#include <rg/platform/OpenGL.hpp>
+#include <rg/resources/Resources.hpp>
+#include <rg/resources/Shader.hpp>
+#include <rg/resources/ShaderCompiler.hpp>
+#include <rg/util/Errors.hpp>
+#include <rg/util/Utils.hpp>
 #include <spdlog/spdlog.h>
 
 namespace rg {

@@ -2,9 +2,9 @@
 // Created by spaske on 12/2/24.
 //
 #include<glad/glad.h>
-#include <engine/util/Utils.hpp>
-#include <engine/resources/Mesh.hpp>
-#include <engine/resources/Shader.hpp>
+#include <rg/util/Utils.hpp>
+#include <rg/resources/Mesh.hpp>
+#include <rg/resources/Shader.hpp>
 
 namespace rg {
 

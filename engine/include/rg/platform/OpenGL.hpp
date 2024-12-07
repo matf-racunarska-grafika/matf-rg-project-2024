@@ -6,7 +6,7 @@
 #define OPENGL_HPP
 #include <cstdint>
 #include <filesystem>
-#include <engine/resources/Shader.hpp>
+#include <rg/resources/Shader.hpp>
 
 namespace rg {
     class Skybox;
