@@ -4,7 +4,7 @@
 
 #include <rg/graphics/Camera.hpp>
 
-namespace rg {
+namespace rg::graphics {
     // constructor with vectors
     Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
     Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
@@ -31,7 +31,7 @@ namespace rg {
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void Camera::process_keyboard(CameraMovement direction, float deltaTime) {
+    void Camera::process_keyboard(Movement direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
             Position += Front * velocity;

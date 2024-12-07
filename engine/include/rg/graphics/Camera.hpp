@@ -8,26 +8,27 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace rg {
-    // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
-    enum CameraMovement {
-        None,
-        FORWARD,
-        BACKWARD,
-        LEFT,
-        RIGHT
-    };
-
-    // Default camera values
-    constexpr float YAW         = -90.0f;
-    constexpr float PITCH       = 0.0f;
-    constexpr float SPEED       = 2.5f;
-    constexpr float SENSITIVITY = 0.1f;
-    constexpr float ZOOM        = 45.0f;
-
+namespace rg::graphics {
     // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
     class Camera {
     public:
+        // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
+        enum Movement {
+            None,
+            FORWARD,
+            BACKWARD,
+            LEFT,
+            RIGHT
+        };
+
+        // Default camera values
+
+        static constexpr float YAW         = -90.0f;
+        static constexpr float PITCH       = 0.0f;
+        static constexpr float SPEED       = 2.5f;
+        static constexpr float SENSITIVITY = 0.1f;
+        static constexpr float ZOOM        = 45.0f;
+
         // camera Attributes
         glm::vec3 Position{};
         glm::vec3 Front{};
@@ -53,7 +54,7 @@ namespace rg {
         glm::mat4 get_view_matrix() const;
 
         // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-        void process_keyboard(CameraMovement direction, float deltaTime);
+        void process_keyboard(Movement direction, float deltaTime);
 
         // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
         void process_mouse_movement(float x_offset, float y_offset, bool constrainPitch = true);
