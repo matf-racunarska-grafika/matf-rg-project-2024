@@ -61,8 +61,6 @@ namespace rg::platform {
         glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
         glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
         glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
-        const int opengl_initialized = graphics::OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-        RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
         int major, minor, revision;
         glfwGetVersion(&major, &minor, &revision);
@@ -73,12 +71,6 @@ namespace rg::platform {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO &io = ImGui::GetIO();
-        (void) io;
-        ImGui_ImplGlfw_InitForOpenGL(handle, true);
-        ImGui_ImplOpenGL3_Init("#version 330 core");
         register_platform_event_observer(std::make_unique<PlatformEventObserver>());
     }
 
@@ -227,17 +219,6 @@ namespace rg::platform {
         } else {
             glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
-    }
-
-    void PlatformController::begin_gui() {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-    }
-
-    void PlatformController::end_gui() {
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void initialize_key_maps() {

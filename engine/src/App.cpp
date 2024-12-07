@@ -11,6 +11,7 @@
 #include <rg/controller/EngineSentinelController.hpp>
 #include <rg/util/ArgParser.hpp>
 #include <rg/util/Configuration.hpp>
+#include <rg/graphics/GraphicsController.hpp>
 
 namespace rg {
     int App::run(int argc, char **argv) {
@@ -36,12 +37,12 @@ namespace rg {
 
         // register engine controller
         auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
+        auto graphics  = controller::ControllerManager::register_controller<graphics::GraphicsController>();
         auto resources = controller::ControllerManager::register_controller<resources::ResourcesController>();
         auto sentinel  = controller::ControllerManager::register_controller<controller::EngineSentinelController>();
-        resources->after(platform);
-        sentinel->after(platform);
-        sentinel->after(resources);
-
+        platform->before(graphics);
+        graphics->before(resources);
+        resources->before(sentinel);
         setup();
     }
 

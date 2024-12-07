@@ -58,10 +58,6 @@ namespace rg::platform {
 
         void set_enable_cursor(bool enabled);
 
-        void begin_gui();
-
-        void end_gui();
-
         void swap_buffers();
 
     private:

@@ -1,6 +1,7 @@
 #include <imgui.h>
 #include <memory>
 #include <rg/Engine.hpp>
+#include <rg/graphics/GraphicsController.hpp>
 
 class MainController : public rg::controller::Controller {
 protected:
@@ -110,27 +111,27 @@ void MainController::draw_gui() {
     if (!m_draw_gui) {
         return;
     }
-    rg::controller::get<rg::platform::PlatformController>()->begin_gui(); {
-        // Draw backpack scale slider window
-        {
-            auto backpack  = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
-            static float f = 0.0f;
-            ImGui::Begin(backpack->name().c_str());
-            ImGui::Text("Loaded from: %s", backpack->path().c_str());
-            ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
-            ImGui::End();
-        }
-        // Draw Camera Info window
-        {
-            ImGui::Begin("Camera info");
-            const auto &c = m_camera;
-            ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
-            ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-            ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
-            ImGui::End();
-        }
+    rg::controller::get<rg::graphics::GraphicsController>()->begin_gui();
+    // Draw backpack scale slider window
+    {
+        auto backpack  = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
+        static float f = 0.0f;
+        ImGui::Begin(backpack->name().c_str());
+        ImGui::Text("Loaded from: %s", backpack->path().c_str());
+        ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
+        ImGui::End();
     }
-    rg::controller::get<rg::platform::PlatformController>()->end_gui();
+    // Draw Camera Info window
+    {
+        ImGui::Begin("Camera info");
+        const auto &c = m_camera;
+        ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
+        ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
+        ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
+        ImGui::End();
+    }
+
+    rg::controller::get<rg::graphics::GraphicsController>()->end_gui();
 }
 
 class MainApp final : public rg::App {

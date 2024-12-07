@@ -24,6 +24,10 @@ namespace rg::platform {
             return m_title;
         }
 
+        GLFWwindow *handle_() const {
+            return m_handle;
+        }
+
     private:
         GLFWwindow *handle() const {
             return m_handle;
