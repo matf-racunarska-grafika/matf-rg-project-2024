@@ -8,7 +8,7 @@
 #include <vector>
 #include <rg/resources/Texture.hpp>
 
-namespace rg {
+namespace rg::resources {
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;

@@ -8,7 +8,7 @@
 #include <source_location>
 #include <string>
 #include <utility>
-
+// TODO(mspasic): add debug flag condition for throwing
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
         if (!(expr)) {                                                                                                 \

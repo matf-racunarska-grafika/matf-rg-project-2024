@@ -63,8 +63,8 @@ private:
 };
 
 void MainController::draw_backpack() {
-    auto shader   = rg::controller::get<rg::ResourcesController>()->shader("basic");
-    auto backpack = rg::controller::get<rg::ResourcesController>()->model("backpack");
+    auto shader   = rg::controller::get<rg::resources::ResourcesController>()->shader("basic");
+    auto backpack = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
     shader->use();
     shader->set_mat4("projection", m_projection);
     shader->set_mat4("view", m_camera.get_view_matrix());
@@ -73,8 +73,8 @@ void MainController::draw_backpack() {
 }
 
 void MainController::draw_skybox() {
-    auto shader      = rg::controller::get<rg::ResourcesController>()->shader("skybox");
-    auto skybox_cube = rg::controller::get<rg::ResourcesController>()->skybox("skybox");
+    auto shader      = rg::controller::get<rg::resources::ResourcesController>()->shader("skybox");
+    auto skybox_cube = rg::controller::get<rg::resources::ResourcesController>()->skybox("skybox");
     glm::mat4 view   = glm::mat4(glm::mat3(m_camera.get_view_matrix()));
     shader->use();
     shader->set_mat4("view", view);
@@ -113,7 +113,7 @@ void MainController::draw_gui() {
     rg::controller::get<rg::platform::PlatformController>()->begin_gui(); {
         // Draw backpack scale slider window
         {
-            auto backpack  = rg::controller::get<rg::ResourcesController>()->model("backpack");
+            auto backpack  = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
             static float f = 0.0f;
             ImGui::Begin(backpack->name().c_str());
             ImGui::Text("Loaded from: %s", backpack->path().c_str());

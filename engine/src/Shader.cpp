@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <rg/resources/Shader.hpp>
 
-namespace rg {
+namespace rg::resources {
 
     void Shader::use() const {
         glUseProgram(m_shaderId);

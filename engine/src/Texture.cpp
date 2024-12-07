@@ -5,7 +5,7 @@
 #include <rg/resources/Texture.hpp>
 #include <rg/util/Errors.hpp>
 
-namespace rg {
+namespace rg::resources {
     std::string_view texture_type_to_string(TextureType type) {
         switch (type) {
         case TextureType::Diffuse: return "Diffuse";

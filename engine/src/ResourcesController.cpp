@@ -5,14 +5,12 @@
 #include <assimp/scene.h>
 #include <rg/graphics/OpenGL.hpp>
 #include <rg/resources/ResourcesController.hpp>
-#include <rg/resources/Shader.hpp>
 #include <rg/resources/ShaderCompiler.hpp>
 #include <rg/util/Configuration.hpp>
 #include <rg/util/Errors.hpp>
-#include <rg/util/Utils.hpp>
 #include <spdlog/spdlog.h>
 
-namespace rg {
+namespace rg::resources {
 
     void ResourcesController::initialize() {
         load_shaders();

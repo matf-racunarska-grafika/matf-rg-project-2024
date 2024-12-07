@@ -36,7 +36,7 @@ namespace rg {
 
         // register engine controller
         auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
-        auto resources = controller::ControllerManager::register_controller<ResourcesController>();
+        auto resources = controller::ControllerManager::register_controller<resources::ResourcesController>();
         auto sentinel  = controller::ControllerManager::register_controller<controller::EngineSentinelController>();
         resources->after(platform);
         sentinel->after(platform);

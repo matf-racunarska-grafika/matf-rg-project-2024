@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <utility>
 
-namespace rg {
+namespace rg::resources {
     class Shader;
 
     enum class TextureType {

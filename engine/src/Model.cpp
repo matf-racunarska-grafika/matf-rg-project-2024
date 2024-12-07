@@ -4,7 +4,7 @@
 
 #include <rg/resources/Model.hpp>
 
-namespace rg {
+namespace rg::resources {
 
     void Model::draw(const Shader *shader) {
         for (auto &mesh: m_meshes) {

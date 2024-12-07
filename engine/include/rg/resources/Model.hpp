@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace rg {
+namespace rg::resources {
     class Model {
         friend class ResourcesController;
 

@@ -9,9 +9,7 @@
 #include <filesystem>
 #include <string>
 
-namespace rg {
-    struct ShaderParsingResult;
-
+namespace rg::resources {
     enum class ShaderType { Vertex, Fragment, Geometry };
 
     std::string_view to_string(ShaderType type);

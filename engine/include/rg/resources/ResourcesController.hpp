@@ -13,7 +13,7 @@
 #include <rg/resources/Skybox.hpp>
 #include <unordered_map>
 
-namespace rg {
+namespace rg::resources {
     class ResourcesController final : public controller::Controller {
     public:
         std::string_view name() const override {

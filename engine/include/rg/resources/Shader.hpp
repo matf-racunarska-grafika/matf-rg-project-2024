@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <utility>
 
-namespace rg {
+namespace rg::resources {
     using ShaderName = std::string;
 
     class Shader {

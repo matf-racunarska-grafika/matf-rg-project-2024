@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 #include <rg/graphics/OpenGL.hpp>
 
-namespace rg {
+namespace rg::resources {
     using namespace graphics;
 
     int to_opengl_type(ShaderType type);

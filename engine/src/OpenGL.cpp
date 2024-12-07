@@ -130,7 +130,7 @@ namespace rg::graphics {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    void OpenGL::draw_skybox(const Skybox *skybox) {
+    void OpenGL::draw_skybox(const resources::Skybox *skybox) {
         glDepthFunc(GL_LEQUAL);
         glBindVertexArray(skybox->vao());
         glActiveTexture(GL_TEXTURE0);

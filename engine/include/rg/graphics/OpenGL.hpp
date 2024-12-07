@@ -8,7 +8,9 @@
 #include <filesystem>
 #include <rg/resources/Shader.hpp>
 
-namespace rg {
+// TODO(mspasic): Add GL_ASSERT(...)
+
+namespace rg::resources {
     class Skybox;
 }
 
@@ -37,7 +39,7 @@ namespace rg::graphics {
 
         static void clear_buffers();
 
-        static void draw_skybox(const Skybox *skybox);
+        static void draw_skybox(const resources::Skybox *skybox);
 
         static void terminate();
 
