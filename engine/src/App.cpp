@@ -69,6 +69,10 @@ namespace rg {
         ControllerManager::instance()->terminate();
     }
 
+    void App::setup() {
+        RG_UNIMPLEMENTED("You should override App::setup in your App implementation.");
+    }
+
     void App::handle_error(const Error &e) {
         spdlog::error(e.report());
     }
