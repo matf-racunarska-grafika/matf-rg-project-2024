@@ -10,7 +10,7 @@ namespace rg::util {
     class Error;
 }
 
-namespace rg {
+namespace rg::core {
     /**
     * @class App
     * @brief Defines the base App class that serves as the application core structure and the entry point.

@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-namespace rg {
+namespace rg::core {
     class App;
 }
 
@@ -59,7 +59,7 @@ namespace rg::controller {
     * @endcode
     */
     class ControllerManager {
-        friend class rg::App;
+        friend class rg::core::App;
 
     public:
         /**

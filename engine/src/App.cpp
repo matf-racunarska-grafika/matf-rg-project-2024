@@ -13,7 +13,7 @@
 #include <rg/util/Configuration.hpp>
 #include <rg/graphics/GraphicsController.hpp>
 
-namespace rg {
+namespace rg::core {
     int App::run(int argc, char **argv) {
         try {
             setup_(argc, argv);
@@ -84,5 +84,5 @@ namespace rg {
 } // namespace rg
 
 int main(int argc, char **argv) {
-    return rg::App::create()->run(argc, argv);
+    return rg::core::App::create()->run(argc, argv);
 }
