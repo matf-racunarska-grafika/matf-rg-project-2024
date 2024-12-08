@@ -30,7 +30,7 @@ namespace rg::util {
     }
 
     std::filesystem::path Configuration::get_config_path() {
-        auto config_arg = ArgParser::instance()->arg<std::string>("--configuration");
+        auto config_arg = ArgParser::instance()->arg<std::string>("--configuration", "config.json");
         if (!config_arg.has_value() || !exists(std::filesystem::path(config_arg.value()))) {
             std::ofstream f(CONFIG_FILE_NAME.data());
             if (!f.is_open()) {

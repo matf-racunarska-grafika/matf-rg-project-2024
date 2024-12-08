@@ -29,6 +29,10 @@ namespace rg::resources {
     void ResourcesController::load_models() {
         const auto &config = util::Configuration::config();
         if (exists(m_models_path)) {
+            if (!config.contains("resources") || !config["resources"].contains("models")) {
+                throw rg::util::ConfigurationError(
+                        "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
+            }
             for (const auto &model_entry: config["resources"]["models"].items()) {
                 model(model_entry.key());
             }
