@@ -111,7 +111,7 @@ namespace rg::platform {
     }
 
     void PlatformController::update_key(Key &key_data) const {
-        int engine_key_code = key_data.key();
+        int engine_key_code = key_data.id();
         int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
         int action          = glfw_platform_action(m_window.handle(), glfw_key_code);
         switch (key_data.state()) {
@@ -146,12 +146,12 @@ namespace rg::platform {
         }
     }
 
-    std::string_view Key::to_string() const {
-        switch (m_state) {
-        case State::Released: return "Released";
-        case State::JustPressed: return "JustPressed";
-        case State::Pressed: return "Pressed";
-        case State::JustReleased: return "JustReleased";
+    std::string_view to_string(Key::State state) {
+        switch (state) {
+        case Key::State::Released: return "Released";
+        case Key::State::JustPressed: return "JustPressed";
+        case Key::State::Pressed: return "Pressed";
+        case Key::State::JustReleased: return "JustReleased";
         default: return "UNIMPLEMENTED";
         }
     }

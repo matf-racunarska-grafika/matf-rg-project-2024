@@ -1,12 +1,15 @@
+#include <glad/glad.h>
 #include <imgui.h>
 #include <memory>
+#include <spdlog/spdlog.h>
 #include <rg/Engine.hpp>
 #include <rg/graphics/GraphicsController.hpp>
 
 class MainPlatformEventObserver : public rg::platform::PlatformEventObserver {
 public:
     void on_keyboard(rg::platform::Key key) override {
-        spdlog::info("Keyboard event: key={}, state=", key, key.state());
+        spdlog::info("Keyboard event: key={}, state=", static_cast<int>(key.id()), to_string(key.state()));
+        glEnable(GL_DEPTH_TEST);
     }
 };
 

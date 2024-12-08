@@ -3,7 +3,6 @@
 
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
-#include <rg/util/Utils.hpp>
 #include <rg/resources/Mesh.hpp>
 #include <algorithm>
 #include <utility>

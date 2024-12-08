@@ -153,15 +153,13 @@ namespace rg::platform {
             return m_state;
         }
 
-        KeyId key() const {
+        KeyId id() const {
             return m_key;
         }
 
         State state() const {
             return m_state;
         }
-
-        std::string_view to_string() const;
 
         bool is_down() const {
             return (m_state == State::Pressed || m_state == State::JustPressed);
@@ -183,5 +181,7 @@ namespace rg::platform {
         float dy;
         float scroll;
     };
+
+    std::string_view to_string(Key::State state);
 }
 #endif //INPUT_HPP

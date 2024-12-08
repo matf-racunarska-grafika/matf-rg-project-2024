@@ -3,7 +3,6 @@
 #include <rg/util/Utils.hpp>
 #include <string>
 #include <glm/glm.hpp>
-#include <utility>
 
 namespace rg::resources {
     using ShaderName = std::string;
