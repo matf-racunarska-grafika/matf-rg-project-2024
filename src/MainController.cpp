@@ -3,11 +3,21 @@
 #include <rg/Engine.hpp>
 #include <rg/graphics/GraphicsController.hpp>
 
+class MainPlatformEventObserver : public rg::platform::PlatformEventObserver {
+public:
+    void on_keyboard(rg::platform::Key key) override {
+        spdlog::info("Keyboard event: key={}, state=", key, key.state());
+    }
+};
+
 class MainController : public rg::controller::Controller {
 protected:
     void initialize() override {
         // User initialization
         rg::graphics::OpenGL::enable_depth_testing();
+
+        auto observer = std::make_unique<MainPlatformEventObserver>();
+        rg::controller::get<rg::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
     }
 
     bool loop() override {
@@ -126,7 +136,7 @@ void MainController::draw_gui() {
     rg::controller::get<rg::graphics::GraphicsController>()->end_gui();
 }
 
-class MainApp final : public rg::App {
+class MainApp final : public rg::core::App {
 protected:
     void setup() override {
         auto main_controller = rg::controller::register_controller<MainController>();
@@ -135,7 +145,7 @@ protected:
 };
 
 namespace rg {
-    std::unique_ptr<App> App::create() {
+    std::unique_ptr<core::App> core::App::create() {
         return std::make_unique<MainApp>();
     }
 }
