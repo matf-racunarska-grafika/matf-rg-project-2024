@@ -102,7 +102,7 @@ namespace rg::resources {
                 flags |= aiProcess_FlipUVs;
             }
 
-            spdlog::info("load_model({}, {})", model_name, model_path.string());
+            spdlog::info("load_model(name={}, path={})", model_name, model_path.string());
             const aiScene *scene =
                     importer.ReadFile(model_path, flags);
 
