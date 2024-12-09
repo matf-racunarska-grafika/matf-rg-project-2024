@@ -25,11 +25,10 @@ target_link_libraries(engine PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC spdlog::spdlog glm imgui)
 
 
-############## Sources ###############
+############# App ###############
 file(GLOB sources src/*.cpp)
 file(GLOB headers include/*.hpp)
 
-################ Exec ################
 include_directories(include/)
 add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE engine)

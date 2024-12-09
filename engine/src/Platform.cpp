@@ -146,11 +146,11 @@ namespace engine::platform {
         }
     }
 
-    std::string_view Key::key_name() {
+    std::string_view Key::name() {
         return g_engine_key_to_string[m_key];
     }
 
-    std::string_view to_string(Key::State state) {
+    std::string_view Key::state_str() const {
         switch (state) {
         case Key::State::Released: return "Released";
         case Key::State::JustPressed: return "JustPressed";

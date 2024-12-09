@@ -157,11 +157,13 @@ namespace engine::platform {
             return m_key;
         }
 
-        std::string_view key_name();
+        std::string_view name();
 
         State state() const {
             return m_state;
         }
+
+        std::string_view state_str() const;
 
         bool is_down() const {
             return (m_state == State::Pressed || m_state == State::JustPressed);
@@ -183,7 +185,5 @@ namespace engine::platform {
         float dy;
         float scroll;
     };
-
-    std::string_view to_string(Key::State state);
 }
 #endif //INPUT_HPP

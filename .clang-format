@@ -1,3 +1,4 @@
+# Generated from CLion C/C++ Code Style settings
 ---
 Language: Cpp
 BasedOnStyle: LLVM
@@ -33,10 +34,15 @@ BreakBeforeBraces: Custom
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
 ColumnLimit: 120
-CompactNamespaces: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ContinuationIndentWidth: 8
 IncludeCategories: 
+  - Regex: '^<glad/glad\.h>'
+    Priority: -1
+    SortPriority: -3
+  - Regex: '^<engine\/'
+    Priority: -1
+    SortPriority: -2
   - Regex: '^<.*'
     Priority: 1
   - Regex: '^".*'

@@ -7,8 +7,12 @@ University of Belgrade for the school year of 2024/2025.
 
 ## Linux
 
-To setup the necessary libraries run:  
+**To setup the necessary libraries run:**  
 `./setup.sh`
+
+**To generate docs run:**  
+`doxygen Doxyfile`   
+Open the documentation file in your browser: `docs/html/index.html`
 
 # Engine
 
@@ -79,38 +83,37 @@ Here is how the `Engine` is structured. You only need to include `<engine/core/E
 and all the header files will be available.
 
 ```bash
-├── controller
-│   ├── Controller.hpp
-│   ├── ControllerManager.hpp
-│   └── EngineSentinelController.hpp
-├── core
-│   └── App.hpp
-├── Declarations.hpp
-├── Engine.hpp
-├── graphics
-│   ├── Camera.hpp
-│   ├── GraphicsController.hpp
-│   └── OpenGL.hpp
-├── platform
-│   ├── Input.hpp
-│   ├── PlatformController.hpp
-│   ├── PlatformEventObserver.hpp
-│   └── Window.hpp
-├── resources
-│   ├── Mesh.hpp
-│   ├── Model.hpp
-│   ├── ResourcesController.hpp
-│   ├── ShaderCompiler.hpp
-│   ├── Shader.hpp
-│   ├── Skybox.hpp
-│   └── Texture.hpp
-└── util
-    ├── ArgParser.hpp
-    ├── Configuration.hpp
-    ├── Errors.hpp
-    └── Utils.hpp
-
-
+├── engine
+│   ├── controller
+│   │   ├── Controller.hpp
+│   │   ├── ControllerManager.hpp
+│   │   └── EngineSentinelController.hpp
+│   ├── core
+│   │   └── App.hpp
+│   ├── Declarations.hpp
+│   ├── Engine.hpp
+│   ├── graphics
+│   │   ├── Camera.hpp
+│   │   ├── GraphicsController.hpp
+│   │   └── OpenGL.hpp
+│   ├── platform
+│   │   ├── Input.hpp
+│   │   ├── PlatformController.hpp
+│   │   ├── PlatformEventObserver.hpp
+│   │   └── Window.hpp
+│   ├── resources
+│   │   ├── Mesh.hpp
+│   │   ├── Model.hpp
+│   │   ├── ResourcesController.hpp
+│   │   ├── ShaderCompiler.hpp
+│   │   ├── Shader.hpp
+│   │   ├── Skybox.hpp
+│   │   └── Texture.hpp
+│   └── util
+│       ├── ArgParser.hpp
+│       ├── Configuration.hpp
+│       ├── Errors.hpp
+│       └── Utils.hpp
 ```
 
 ## How to...
@@ -118,7 +121,8 @@ and all the header files will be available.
 ### How to include and use engine files?
 
 All the source files (.cpp) go into src/ directory, and all the header files go into the include/ directory.
-To use the engine you just need to include `#include <engine/Engine.hpp>` and all the engine header files will be available.
+To use the engine you just need to include `#include <engine/Engine.hpp>` and all the engine header files will be
+available.
 
 ### How the engine manages resources?
 
@@ -142,7 +146,9 @@ The pointer to the `resource` that the `ResourcesController` returns is a *non-o
 For a basic app setup you need to:
 
 1. Create a class for your app, let's call it `MyApp`, in the src/.
-2. Inherit from the `rg::core::App` and implement `setup()` and `App::create`.
+2. Inherit from the `rg::core::App` and implement `setup()`.
+3. Instantiate `MyApp` object in the `main` function and call `run` on it.
+4. Compile and run the program.
 
 ```c++
 #include <engine/Engne.hpp>
@@ -156,18 +162,12 @@ void MyApp::setup() {
     spdlog::info("Hello, setup!");
 }
 
-namespace rg {
-    std::unique_ptr<core::App> core::App::create() {
-        return std::make_unique<MainApp>();
-    }
+int main(int argc, char** argv) {
+    return std::make_unique<MyApp>()->run(argc, argv);
 }
 ```
 
-4. Run the program.
-
-*-But where is the main function?* You may ask. The `main` function is located
-
-### How are the `resources` managed?
+### How are `resources` managed?
 
 Resources currently include: `textures`, `shaders`, `models`, `skyboxes`.
 The `ResourcesController` manages the loading, storing, and accessing the resource objects.
@@ -337,7 +337,7 @@ There is also an option to register callbacks for platform events via: `Platform
 class MainPlatformEventObserver final : public rg::platform::PlatformEventObserver {
 public:
     void on_keyboard(rg::platform::Key key) override {
-        spdlog::info("Keyboard event: key={}, state=", key, key.state());
+        spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str());
     }
 };
 class MainController : public rg::controller::Controller {
@@ -370,30 +370,34 @@ also, the `PlatformController` will update the window properties if the size of 
 ### How to add new OpenGL calls?
 
 Rendering actions that require more than one OpenGL call should be abstracted in the `rg::graphics::OpenGL` class.
-For example, here is the function that compiles the GLSL shader and returns true if the compilation was successful:
+For example, here is the function that compiles the GLSL shader and returns the shader_id.
 
 ```C++
-bool OpenGL::compile_shader(uint32_t shader_id, const std::string &shader_source) {
+uint32_t OpenGL::compile_shader(const std::string &shader_source,
+                                resources::ShaderType shader_type) {
+    uint32_t shader_id             = CHECKED_GL_CALL(glCreateShader, shader_type_to_opengl_type(shader_type));
     const char *shader_source_cstr = shader_source.c_str();
-    glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
-    glCompileShader(shader_id);
-    int success;
-    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
-    return success;
+    CHECKED_GL_CALL(glShaderSource, shader_id, 1, &shader_source_cstr, nullptr);
+    CHECKED_GL_CALL(glCompileShader, shader_id);
+    return shader_id;
 }
 ```
 
+The `CHECK_GL_CALL` macro throws an `OpenGLError` in DEBUG mode if the OpenGL call failed. The engine will print the
+error description of
+and the source location in which it occurred.
+
 Why this way? It's less error-prone, and it's easier to add debugging assertions and error checks if needed.
-**There shouldn't be any raw OpenGL calls, except in the engine when they are one line long.**
 
 ### How to add a custom controller?
 
 `Controller`s are a way to hook into the engine execution. To create a custom controller:
 
 1. Create a custom controller class that extends the `rg::controller::Controller`
-2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `draw`, `terminate`) for which you want to
+2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
+   `terminate`) for which you want to
    execute custom code.
-3. Register the controller in the `YourApp::setup`.
+3. Register the controller in the `MainApp::setup`.
 
 Here is the example of creating the `MainController` that enables `depth testing`.
 

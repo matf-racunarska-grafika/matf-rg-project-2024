@@ -5,7 +5,8 @@
 #ifndef DECLARATIONS_HPP
 #define DECLARATIONS_HPP
 
-namespace engine { namespace controller {
+namespace engine {
+    namespace controller {
         class Controller;
         class ControllerManager;
         class EngineSentinelController;
@@ -16,12 +17,15 @@ namespace engine { namespace controller {
     }
 
     namespace platform {
+        class Key;
+        struct MousePosition;
         class PlatformController;
     }
 
     namespace graphics {
         class Camera;
         class OpenGL;
+        class GraphicsController;
     }
 
     namespace resources {
@@ -48,7 +52,9 @@ namespace engine { namespace controller {
         class ConfigurationError;
         class ShaderCompilationError;
         class AssetLoadingError;
+        class OpenGLError;
 
-    }}
+    }
+}
 
 #endif //DECLARATIONS_HPP
