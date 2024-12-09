@@ -137,6 +137,10 @@ namespace engine::graphics {
         glEnable(GL_DEPTH_TEST);
     }
 
+    void OpenGL::disable_depth_testing() {
+        glDisable(GL_DEPTH_TEST);
+    }
+
     void OpenGL::clear_buffers() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }

@@ -17,12 +17,18 @@ namespace engine::resources {
 namespace engine::graphics {
     /**
     * @class OpenGL
-    * @brief
+    * @brief This class serves as the OpenGL interface for your app, since the engine doesn't directly link OpenGL to the app executable.
+    *
+    * Any OpenGL additional direct OpenGL calls you need should be added here.
     */
     class OpenGL {
     public:
         using ShaderProgramId = uint32_t;
 
+        /**
+        * @brief Converts @ref resources::ShaderType to the OpenGL shader type enum.
+        * @returns GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER
+        */
         static int32_t shader_type_to_opengl_type(resources::ShaderType type);
 
         /**
@@ -54,17 +60,45 @@ namespace engine::graphics {
         static bool shader_compiled_successfully(uint32_t shader_id);
 
         /**
-        *
+        * @brief Compiles the shader from source.
+        * @param shader_source source code for the shader
+        * @param shader_type the type of the shader to create1
+        * @returns OpenGL context object of the shader.
         */
         static uint32_t compile_shader(const std::string &shader_source,
                                        resources::ShaderType shader_type);
 
+        /**
+        * @brief Loads the skybox textures from the `path`.
+        * Make sure that images are named: front.jpg, back.jpg, up.jpg, down.jpg, left.jpg, down.jpg.
+        * They can be of the other extension as well, but the function will assign each texture to the appropriate
+        * side of the cubemap based on the texture file name.
+        * @param path directory in which cubemap textures are located.
+        * @param flip_uvs wheater to flip_uvs on texture loading.
+        * @returns OpenGL id to the cubemap texture
+        */
         static uint32_t load_skybox_textures(const std::filesystem::path &path, bool flip_uvs = false);
 
+        /**
+        * @brief Enables depth testing.
+        */
         static void enable_depth_testing();
 
+        /**
+        * @brief Disables depth testing.
+        */
+        static void disable_depth_testing();
+
+        /**
+        * @brief Clears GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, and GL_STENCIL_BUFFER_BIT.
+        */
         static void clear_buffers();
 
+        /**
+        * @brief Retrieve the shader compilation error log message.
+        * @param shader_id Shader id for which the compilation failed.
+        * @returns shader compilation error message.
+        */
         static std::string get_compilation_error_message(uint32_t shader_id);
     };
 }
