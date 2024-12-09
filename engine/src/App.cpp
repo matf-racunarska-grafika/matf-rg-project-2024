@@ -83,6 +83,3 @@ namespace rg::core {
 
 } // namespace rg
 
-int main(int argc, char **argv) {
-    return rg::core::App::create()->run(argc, argv);
-}

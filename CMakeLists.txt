@@ -4,8 +4,6 @@ project(matf-rg-project)
 set(CMAKE_CXX_STANDARD 20)
 
 ################ Libs ################
-find_package(OpenGL REQUIRED)
-
 add_subdirectory(libs/spdlog)
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE SPDLOG_DEBUG_ON SPDLOG_TRACE_ON RG_ENGINE_TRACE)
 
@@ -17,16 +15,22 @@ add_subdirectory(libs/assimp)
 add_subdirectory(libs/stb)
 add_subdirectory(libs/imgui)
 
-set(LIBS glfw glad OpenGL::GL stb spdlog::spdlog glm assimp ${ASSIMP_LIBRARIES} imgui)
+############## ENGINE  ###############
+file(GLOB engine-sources engine/src/*.cpp)
+file(GLOB engine-headers engine/include/rg/*.hpp)
+
+add_library(engine ${engine-sources})
+target_include_directories(engine PUBLIC engine/include)
+target_link_libraries(engine PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
+        PUBLIC spdlog::spdlog glm imgui)
+
 
 ############## Sources ###############
-file(GLOB sources src/*.cpp engine/src/*.cpp)
-file(GLOB headers src/*.hpp include/*.hpp engine/include/rg/*.hpp)
+file(GLOB sources src/*.cpp)
+file(GLOB headers include/*.hpp)
 
 ################ Exec ################
-add_executable(${PROJECT_NAME} ${sources} ${headers})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+add_executable(${PROJECT_NAME} ${sources})
+target_link_libraries(${PROJECT_NAME} PRIVATE engine)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
-target_include_directories(${PROJECT_NAME} PRIVATE engine/include include/ libs/json)
-add_dependencies(${PROJECT_NAME} ${LIBS})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")

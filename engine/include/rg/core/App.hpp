@@ -45,26 +45,6 @@ namespace rg::core {
         */
         int run(int argc, char **argv);
 
-        /**
-        * @brief Creates a new instance of the App. The user implements this function.
-        *
-        * To create your own app, you should inherit the App class and implement setup() and create() functions.
-        * The function @ref App::create should return the instance of the user class.
-        *
-        * @code
-        * class MyComputerGraphicsProjectApp : public rg::App {
-        * public:
-        *    void setup(int argc, char** argv) override {...}
-        * };
-        * namespace rg {
-        *     std::unique_ptr<App> create() {
-        *        return std::make_unique<MyComputerGraphicsProjectApp>();
-        *     }
-        * }
-        * @endcode
-        */
-        static std::unique_ptr<App> create();
-
     private:
         /**
         * @brief The first function that the engine calls to do its internal Controller classes `setup_`.

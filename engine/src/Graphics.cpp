@@ -47,6 +47,10 @@ namespace rg::graphics {
         ImGui::NewFrame();
     }
 
+    void GraphicsController::draw_imgui_demo(bool *show_imgui_demo) {
+        ImGui::ShowDemoWindow(show_imgui_demo);
+    }
+
     void GraphicsController::end_gui() {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

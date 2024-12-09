@@ -1,19 +1,17 @@
-#include <glad/glad.h>
 #include <imgui.h>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <rg/Engine.hpp>
 #include <rg/graphics/GraphicsController.hpp>
 
-class MainPlatformEventObserver : public rg::platform::PlatformEventObserver {
+class MainPlatformEventObserver final : public rg::platform::PlatformEventObserver {
 public:
     void on_keyboard(rg::platform::Key key) override {
         spdlog::info("Keyboard event: key={}, state=", static_cast<int>(key.id()), to_string(key.state()));
-        glEnable(GL_DEPTH_TEST);
     }
 };
 
-class MainController : public rg::controller::Controller {
+class MainController final : public rg::controller::Controller {
 protected:
     void initialize() override {
         // User initialization
@@ -33,6 +31,9 @@ protected:
 
     void poll_events() override {
         const auto platform = rg::controller::get<rg::platform::PlatformController>();
+        if (platform->key(rg::platform::KeyId::KEY_F3).state() == rg::platform::Key::State::JustPressed) {
+            m_draw_imgui_demo = !m_draw_imgui_demo;
+        }
         if (platform->key(rg::platform::KeyId::KEY_F2).state() == rg::platform::Key::State::JustPressed) {
             m_draw_gui = !m_draw_gui;
         }
@@ -40,6 +41,7 @@ protected:
             m_cursor_enabled = !m_cursor_enabled;
             platform->set_enable_cursor(m_cursor_enabled);
         }
+
     }
 
     void update() override {
@@ -66,6 +68,7 @@ private:
     float m_backpack_scale{1.0f};
     bool m_draw_gui{false};
     bool m_cursor_enabled{true};
+    bool m_draw_imgui_demo{false};
 };
 
 void MainController::draw_backpack() {
@@ -112,22 +115,26 @@ void MainController::update_camera() {
 }
 
 void MainController::draw_gui() {
-    if (!m_draw_gui) {
+    if (!m_draw_gui && !m_draw_imgui_demo) {
         return;
     }
-    rg::controller::get<rg::graphics::GraphicsController>()->begin_gui();
-    auto camera = rg::controller::get<rg::graphics::GraphicsController>()->camera();
-    // Draw backpack scale slider window
-    {
+
+    auto graphics = rg::controller::get<rg::graphics::GraphicsController>();
+    auto camera   = rg::controller::get<rg::graphics::GraphicsController>()->camera();
+    graphics->begin_gui();
+    if (m_draw_imgui_demo) {
+        graphics->draw_imgui_demo(&m_draw_imgui_demo);
+    }
+    if (m_draw_gui) {
+        // Draw backpack scale slider window
         auto backpack  = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
         static float f = 0.0f;
         ImGui::Begin(backpack->name().c_str());
         ImGui::Text("Loaded from: %s", backpack->path().c_str());
         ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
         ImGui::End();
-    }
-    // Draw Camera Info window
-    {
+
+        // Draw camera info
         ImGui::Begin("Camera info");
         const auto &c = *camera;
         ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
@@ -135,8 +142,7 @@ void MainController::draw_gui() {
         ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
         ImGui::End();
     }
-
-    rg::controller::get<rg::graphics::GraphicsController>()->end_gui();
+    graphics->end_gui();
 }
 
 class MainApp final : public rg::core::App {
@@ -147,10 +153,9 @@ protected:
     }
 };
 
-namespace rg {
-    std::unique_ptr<core::App> core::App::create() {
-        return std::make_unique<MainApp>();
-    }
+int main(int argc, char **argv) {
+    return std::make_unique<MainApp>()->run(argc, argv);
 }
+
 
 
