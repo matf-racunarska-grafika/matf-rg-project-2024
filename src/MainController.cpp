@@ -12,7 +12,7 @@ public:
 };
 
 class MainController final : public rg::controller::Controller {
-protected:
+private:
     void initialize() override {
         // User initialization
         rg::graphics::OpenGL::enable_depth_testing();
@@ -45,15 +45,20 @@ protected:
         update_camera();
     }
 
-    void draw() override {
+    void begin_draw() override {
         rg::graphics::OpenGL::clear_buffers();
+    }
+
+    void draw() override {
         draw_backpack();
         draw_skybox();
         draw_gui();
+    }
+
+    void end_draw() override {
         rg::controller::get<rg::platform::PlatformController>()->swap_buffers();
     }
 
-private:
     void draw_skybox();
 
     void draw_backpack();
@@ -81,8 +86,6 @@ void MainController::draw_backpack() {
 void MainController::draw_skybox() {
     auto shader      = rg::controller::get<rg::resources::ResourcesController>()->shader("skybox");
     auto skybox_cube = rg::controller::get<rg::resources::ResourcesController>()->skybox("skybox");
-
-    // skybox cube
     rg::controller::get<rg::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
 }
 
