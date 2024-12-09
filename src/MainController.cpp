@@ -7,7 +7,7 @@
 
 namespace app {
     void MainPlatformEventObserver::on_keyboard(engine::platform::Key key) {
-        spdlog::info("Keyboard event: key={}, state=", static_cast<int>(key.id()), to_string(key.state()));
+        spdlog::info("Keyboard event: key={}, state={}", key.key_name(), to_string(key.state()));
     }
 
     void MainController::initialize() {

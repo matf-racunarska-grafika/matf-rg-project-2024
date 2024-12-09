@@ -157,6 +157,8 @@ namespace engine::platform {
             return m_key;
         }
 
+        std::string_view key_name();
+
         State state() const {
             return m_state;
         }

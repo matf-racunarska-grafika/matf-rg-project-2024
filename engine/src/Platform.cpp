@@ -17,7 +17,7 @@
 #include <engine/util/Configuration.hpp>
 
 namespace engine::platform {
-
+    static std::array<std::string_view, KEY_COUNT> g_engine_key_to_string;
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, GLFW_KEY_LAST + 1> g_glfw_key_to_engine;
     static MousePosition g_mouse_position;
@@ -146,6 +146,10 @@ namespace engine::platform {
         }
     }
 
+    std::string_view Key::key_name() {
+        return g_engine_key_to_string[m_key];
+    }
+
     std::string_view to_string(Key::State state) {
         switch (state) {
         case Key::State::Released: return "Released";
@@ -223,6 +227,7 @@ namespace engine::platform {
 
     void initialize_key_maps() {
 #include "glfw_key_mapping.include"
+#include "engine_key_to_string.include"
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
