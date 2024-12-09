@@ -36,6 +36,14 @@ namespace engine::graphics {
     public:
         using ShaderProgramId = uint32_t;
 
+        /**
+        * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref util::OpenGLError.
+        * @param location Source location of where the call was made.
+        * @param glfun OpenGL function to call.
+        * @param args  OpenGL function arguments.
+        *
+        * @returns Return value if the `glfun` has it, otherwise void.
+        */
         template<typename TResult, typename... TOpenGLArgs, typename... Args>
         static TResult call(std::source_location location, TResult (*glfun)(TOpenGLArgs...), Args... args) {
             // @formatter:off
@@ -131,6 +139,10 @@ namespace engine::graphics {
         static std::string get_compilation_error_message(uint32_t shader_id);
 
     private:
+        /**
+        * @brief Throws @ref util::OpenGLError if an OpenGL error occurred. Used internally.
+        * @param location Source location from where the OpenGL call was made.
+        */
         static void assert_no_error(std::source_location location);
     };
 }
