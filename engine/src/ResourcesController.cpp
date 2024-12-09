@@ -139,7 +139,7 @@ namespace engine::resources {
         auto &result = m_sky_boxes[name];
         if (!result) {
             spdlog::info("Loading skybox: {}", path.string());
-            result = std::make_unique<Skybox>(Skybox(graphics::OpenGL::init_skybox_vao(),
+            result = std::make_unique<Skybox>(Skybox(graphics::OpenGL::init_skybox_cube(),
                                                      graphics::OpenGL::load_skybox_textures(path, flip_uvs),
                                                      path, name));
         }
