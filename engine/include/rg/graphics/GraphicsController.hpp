@@ -27,8 +27,6 @@ namespace rg::graphics {
             return m_projection;
         }
 
-        void draw_imgui_demo(bool *show_imgui_demo);
-
     private:
         void initialize() override;
 
