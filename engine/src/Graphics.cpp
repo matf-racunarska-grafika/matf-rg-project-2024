@@ -16,7 +16,7 @@
 namespace engine::graphics {
 
     void GraphicsController::initialize() {
-        const int opengl_initialized = OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
         IMGUI_CHECKVERSION();
