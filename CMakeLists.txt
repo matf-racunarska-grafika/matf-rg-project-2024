@@ -19,7 +19,7 @@ add_subdirectory(libs/imgui)
 file(GLOB engine-sources engine/src/*.cpp)
 file(GLOB engine-headers engine/include/rg/*.hpp)
 
-add_library(engine ${engine-sources})
+add_library(engine ${engine-sources} ${engine-headers})
 target_include_directories(engine PUBLIC engine/include)
 target_link_libraries(engine PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC spdlog::spdlog glm imgui)
@@ -30,7 +30,8 @@ file(GLOB sources src/*.cpp)
 file(GLOB headers include/*.hpp)
 
 ################ Exec ################
-add_executable(${PROJECT_NAME} ${sources})
+include_directories(include/)
+add_executable(${PROJECT_NAME} ${sources} ${headers})
 target_link_libraries(${PROJECT_NAME} PRIVATE engine)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}")

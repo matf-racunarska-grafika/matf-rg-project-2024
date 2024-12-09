@@ -93,18 +93,11 @@ namespace rg::controller {
         }
 
         /**
-        * @brief Enables the controller. The @ref ControllerManager will execute the controllers hook methods.
+        * @brief Enables or disables the controller based on value. The @ref ControllerManager will execute the controllers hook methods.
         * By default, controllers are enabled when registered.
         */
-        void enable() {
-            m_enabled = true;
-        }
-
-        /**
-        * @brief Disables the controller. The @ref ControllerManager won't execute the controllers hook methods.
-        */
-        void disable() {
-            m_enabled = false;
+        void set_enable(bool value) {
+            m_enabled = value;
         }
 
     private:

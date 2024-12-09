@@ -45,9 +45,7 @@ namespace rg::controller {
 
     void ControllerManager::poll_events() {
         for (auto controller: m_controllers) {
-            if (controller->is_enabled()) {
-                controller->poll_events();
-            }
+            controller->poll_events();
         }
     }
 
