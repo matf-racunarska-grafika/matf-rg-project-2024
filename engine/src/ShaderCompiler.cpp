@@ -23,10 +23,10 @@ namespace engine::resources {
     }
 
     OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
-        int shader_program_id  = glCreateProgram();
-        int vertex_shader_id   = 0;
-        int fragment_shader_id = 0;
-        int geometry_shader_id = 0;
+        uint32_t shader_program_id  = glCreateProgram();
+        uint32_t vertex_shader_id   = 0;
+        uint32_t fragment_shader_id = 0;
+        uint32_t geometry_shader_id = 0;
         defer {
             glDeleteShader(vertex_shader_id);
             glDeleteShader(fragment_shader_id);
@@ -46,9 +46,9 @@ namespace engine::resources {
         return shader_program_id;
     }
 
-    int ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
-        int shader_id = glCreateShader(to_opengl_type(type));
-        if (!OpenGL::compile_shader(shader_id, shader_source)) {
+    uint32_t ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
+        uint32_t shader_id = OpenGL::compile_shader(shader_source, type);
+        if (!OpenGL::shader_compiled_successfully(shader_id)) {
             throw util::ShaderCompilationError(std::format("{} shader compilation {} failed:\n{}", to_string(type),
                                                            m_shader_name,
                                                            OpenGL::get_compilation_error_message(shader_id)));
@@ -105,15 +105,6 @@ namespace engine::resources {
         RG_SHOULD_NOT_REACH_HERE("Unknown type of shader prefix: {}. Did you mean: #shader {}|{}|{}", line,
                                  to_string(ShaderType::Vertex), to_string(ShaderType::Fragment),
                                  to_string(ShaderType::Geometry));
-    }
-
-    int to_opengl_type(ShaderType type) {
-        switch (type) {
-        case ShaderType::Vertex: return GL_VERTEX_SHADER;
-        case ShaderType::Fragment: return GL_FRAGMENT_SHADER;
-        case ShaderType::Geometry: return GL_GEOMETRY_SHADER;
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled ShaderType");
-        }
     }
 
     std::string_view to_string(ShaderType type) {

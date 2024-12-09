@@ -7,14 +7,19 @@
 #include <stb_image.h>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/Shader.hpp>
+#include <engine/resources/ShaderCompiler.hpp>
 #include <engine/resources/Skybox.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
 
 namespace engine::graphics {
-
-    bool OpenGL::initialize(void *(*loader)(const char *name)) {
-        return gladLoadGLLoader((GLADloadproc) loader);
+    int32_t OpenGL::shader_type_to_opengl_type(resources::ShaderType type) {
+        switch (type) {
+        case resources::ShaderType::Vertex: return GL_VERTEX_SHADER;
+        case resources::ShaderType::Fragment: return GL_FRAGMENT_SHADER;
+        case resources::ShaderType::Geometry: return GL_GEOMETRY_SHADER;
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled ShaderType");
+        }
     }
 
     uint32_t OpenGL::generate_texture(const std::filesystem::path &path, bool flip_uvs) {
@@ -53,7 +58,7 @@ namespace engine::graphics {
         }
     }
 
-    uint32_t OpenGL::init_skybox_vao() {
+    uint32_t OpenGL::init_skybox_cube() {
         static unsigned int skybox_vao = 0;
         if (skybox_vao != 0) {
             return skybox_vao;
@@ -72,13 +77,19 @@ namespace engine::graphics {
         return skybox_vao;
     }
 
-    bool OpenGL::compile_shader(uint32_t shader_id, const std::string &shader_source) {
-        const char *shader_source_cstr = shader_source.c_str();
-        glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
-        glCompileShader(shader_id);
+    bool OpenGL::shader_compiled_successfully(uint32_t shader_id) {
         int success;
         glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
         return success;
+    }
+
+    uint32_t OpenGL::compile_shader(const std::string &shader_source,
+                                    resources::ShaderType shader_type) {
+        uint32_t shader_id             = glCreateShader(shader_type_to_opengl_type(shader_type));
+        const char *shader_source_cstr = shader_source.c_str();
+        glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
+        glCompileShader(shader_id);
+        return shader_id;
     }
 
     std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {

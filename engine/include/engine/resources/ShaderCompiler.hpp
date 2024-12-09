@@ -10,9 +10,6 @@
 #include <string>
 
 namespace engine::resources {
-    enum class ShaderType { Vertex, Fragment, Geometry };
-
-    std::string_view to_string(ShaderType type);
 
     struct ShaderParsingResult {
         std::string vertex_shader;
@@ -40,7 +37,7 @@ namespace engine::resources {
         graphics::OpenGL::ShaderProgramId compile(const ShaderParsingResult &shader_sources);
 
     private:
-        int compile(const std::string &shader_source, ShaderType type);
+        uint32_t compile(const std::string &shader_source, ShaderType type);
 
         std::string m_shader_name;
         std::string m_sources;

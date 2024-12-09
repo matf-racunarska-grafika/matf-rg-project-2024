@@ -7,6 +7,10 @@
 namespace engine::resources {
     using ShaderName = std::string;
 
+    enum class ShaderType { Vertex, Fragment, Geometry };
+
+    std::string_view to_string(ShaderType type);
+
     class Shader {
         friend class ShaderController;
         friend class ShaderCompiler;
