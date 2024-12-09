@@ -116,6 +116,13 @@ namespace engine::util {
         std::string report() const override;
     };
 
+    class OpenGLError final : public UserError {
+    public:
+        using UserError::UserError;
+
+        std::string report() const override;
+    };
+
     class AssetLoadingError final : public UserError {
     public:
         using UserError::UserError;

@@ -8,11 +8,22 @@
 #include <filesystem>
 #include <engine/resources/Shader.hpp>
 
-// TODO(mspasic): Add GL_ASSERT(...)
-
 namespace engine::resources {
     class Skybox;
 }
+
+/**
+* @brief Do an error-checked OpenGL call. Throws an OpenGL error if the call fails.
+* @param func OpenGL function to call
+* @param ... Function arguments
+*
+* Example:
+* @code
+* uint32_t texture_id = 0;
+* CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
+* @endcode
+*/
+#define CHECKED_GL_CALL(func, ...) OpenGL::call(std::source_location::current(), func, __VA_ARGS__)
 
 namespace engine::graphics {
     /**
@@ -24,6 +35,24 @@ namespace engine::graphics {
     class OpenGL {
     public:
         using ShaderProgramId = uint32_t;
+
+        template<typename TResult, typename... TOpenGLArgs, typename... Args>
+        static TResult call(std::source_location location, TResult (*glfun)(TOpenGLArgs...), Args... args) {
+            // @formatter:off
+            if constexpr (!std::is_same_v<TResult, void>) {
+                auto result = glfun(std::forward<Args>(args)...);
+                #ifndef NDEBUG
+                    assert_no_error(location);
+                #endif
+                return result;
+            } else {
+                glfun(std::forward<Args>(args)...);
+                #ifndef NDEBUG
+                    assert_no_error(location);
+                #endif
+            }
+            // @formatter:on
+        }
 
         /**
         * @brief Converts @ref resources::ShaderType to the OpenGL shader type enum.
@@ -100,6 +129,9 @@ namespace engine::graphics {
         * @returns shader compilation error message.
         */
         static std::string get_compilation_error_message(uint32_t shader_id);
+
+    private:
+        static void assert_no_error(std::source_location location);
     };
 }
 #endif //OPENGL_HPP

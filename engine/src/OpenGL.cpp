@@ -23,8 +23,8 @@ namespace engine::graphics {
     }
 
     uint32_t OpenGL::generate_texture(const std::filesystem::path &path, bool flip_uvs) {
-        uint32_t texture_id;
-        glGenTextures(1, &texture_id);
+        uint32_t texture_id = 0;
+        CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
 
         int32_t width, height, nr_components;
         stbi_set_flip_vertically_on_load(flip_uvs);
@@ -35,14 +35,14 @@ namespace engine::graphics {
         if (data) {
             int32_t format = texture_format(nr_components);
 
-            glBindTexture(GL_TEXTURE_2D, texture_id);
-            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, texture_id);
+            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            CHECKED_GL_CALL(glGenerateMipmap, GL_TEXTURE_2D);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         } else {
             throw util::AssetLoadingError(std::format("Failed to load texture {}", path.string()));
         }
@@ -67,35 +67,61 @@ namespace engine::graphics {
 #include <skybox_vertices.include>
         };
         uint32_t skybox_vbo = 0;
-        glGenVertexArrays(1, &skybox_vao);
-        glGenBuffers(1, &skybox_vbo);
-        glBindVertexArray(skybox_vao);
-        glBindBuffer(GL_ARRAY_BUFFER, skybox_vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0); // NOLINT
+        CHECKED_GL_CALL(glGenVertexArrays, 1, &skybox_vao);
+        CHECKED_GL_CALL(glGenBuffers, 1, &skybox_vbo);
+        CHECKED_GL_CALL(glBindVertexArray, skybox_vao);
+        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, skybox_vbo);
+        CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+        CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
+        CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0); // NOLINT
         return skybox_vao;
     }
 
     bool OpenGL::shader_compiled_successfully(uint32_t shader_id) {
         int success;
-        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
+        CHECKED_GL_CALL(glGetShaderiv, shader_id, GL_COMPILE_STATUS, &success);
         return success;
     }
 
     uint32_t OpenGL::compile_shader(const std::string &shader_source,
                                     resources::ShaderType shader_type) {
-        uint32_t shader_id             = glCreateShader(shader_type_to_opengl_type(shader_type));
+        uint32_t shader_id             = CHECKED_GL_CALL(glCreateShader, shader_type_to_opengl_type(shader_type));
         const char *shader_source_cstr = shader_source.c_str();
-        glShaderSource(shader_id, 1, &shader_source_cstr, nullptr);
-        glCompileShader(shader_id);
+        CHECKED_GL_CALL(glShaderSource, shader_id, 1, &shader_source_cstr, nullptr);
+        CHECKED_GL_CALL(glCompileShader, shader_id);
         return shader_id;
     }
 
     std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
         char infoLog[512];
-        glGetShaderInfoLog(shader_id, 512, nullptr, infoLog);
+        CHECKED_GL_CALL(glGetShaderInfoLog, shader_id, 512, nullptr, infoLog);
         return infoLog;
+    }
+
+    std::string_view gl_call_error_description(GLenum error) {
+        switch (error) {
+        case GL_NO_ERROR: return
+                    "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0. ";
+        case GL_INVALID_ENUM: return
+                    "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.  ";
+        case GL_INVALID_VALUE: return
+                    "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.  ";
+        case GL_INVALID_OPERATION: return
+                    "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.  ";
+        case GL_INVALID_FRAMEBUFFER_OPERATION: return
+                    "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete."
+                    "The offending command is ignored and has no other side effect than to set the error flag.";
+        case GL_OUT_OF_MEMORY: return
+                    "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded. . ";
+        default: return "No Description";
+        }
+    }
+
+    void OpenGL::assert_no_error(std::source_location location) {
+        if (auto error = glGetError(); error != GL_NO_ERROR) {
+            throw util::OpenGLError(std::format("OpenGL call error: '{}'", gl_call_error_description(error)),
+                                    location);
+        };
     }
 
     uint32_t face_index(std::string_view name);
@@ -106,8 +132,8 @@ namespace engine::graphics {
                      path.string())
         ;
         uint32_t texture_id;
-        glGenTextures(1, &texture_id);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+        CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, texture_id);
 
         int width, height, nr_channels;
         for (const auto &file: std::filesystem::directory_iterator(path)) {
@@ -118,31 +144,32 @@ namespace engine::graphics {
             };
             if (data) {
                 uint32_t i = face_index(file.path().stem().c_str());
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-                             data);
+                CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB,
+                                GL_UNSIGNED_BYTE,
+                                data);
             } else {
                 throw util::AssetLoadingError(std::format("Failed to load skybox texture {}", path.string()));
             }
         }
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
         return texture_id;
     }
 
     void OpenGL::enable_depth_testing() {
-        glEnable(GL_DEPTH_TEST);
+        CHECKED_GL_CALL(glEnable, GL_DEPTH_TEST);
     }
 
     void OpenGL::disable_depth_testing() {
-        glDisable(GL_DEPTH_TEST);
+        CHECKED_GL_CALL(glDisable, GL_DEPTH_TEST);
     }
 
     void OpenGL::clear_buffers() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     uint32_t face_index(std::string_view name) {
