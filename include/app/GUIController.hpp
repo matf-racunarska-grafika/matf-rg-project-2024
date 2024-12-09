@@ -4,10 +4,10 @@
 
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
-#include <rg/Engine.hpp>
+#include <engine/Engine.hpp>
 
 namespace app {
-    class GUIController final : public rg::controller::Controller {
+    class GUIController final : public engine::controller::Controller {
         void initialize() override;
 
         void poll_events() override;

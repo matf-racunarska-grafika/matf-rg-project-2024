@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace rg::graphics {
+namespace engine::graphics {
     /**
      *  @class Camera
      *  @brief Camera processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL.

@@ -2,13 +2,13 @@
 // Created by spaske on 12/5/24.
 //
 #include <glad/glad.h>
-#include <rg/resources/ShaderCompiler.hpp>
-#include <rg/util/Errors.hpp>
+#include <engine/resources/ShaderCompiler.hpp>
+#include <engine/util/Errors.hpp>
 #include <format>
 #include <spdlog/spdlog.h>
-#include <rg/graphics/OpenGL.hpp>
+#include <engine/graphics/OpenGL.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
     using namespace graphics;
 
     int to_opengl_type(ShaderType type);

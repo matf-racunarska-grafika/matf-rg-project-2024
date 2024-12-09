@@ -7,9 +7,9 @@
 
 namespace app {
     void MainApp::setup() {
-        auto main_controller = rg::controller::register_controller<MainController>();
-        auto gui_controller  = rg::controller::register_controller<GUIController>();
-        main_controller->after(rg::controller::get<rg::controller::EngineSentinelController>());
+        auto main_controller = engine::controller::register_controller<MainController>();
+        auto gui_controller  = engine::controller::register_controller<GUIController>();
+        main_controller->after(engine::controller::get<engine::controller::EngineSentinelController>());
         main_controller->before(gui_controller);
     }
 }

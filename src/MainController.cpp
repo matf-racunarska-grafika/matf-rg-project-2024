@@ -1,34 +1,35 @@
 #include <memory>
 #include <spdlog/spdlog.h>
-#include <rg/Engine.hpp>
-#include <rg/graphics/GraphicsController.hpp>
+#include <engine/Engine.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 #include <app/MainController.hpp>
 #include <app/GUIController.hpp>
 
 namespace app {
-    void MainPlatformEventObserver::on_keyboard(rg::platform::Key key) {
+    void MainPlatformEventObserver::on_keyboard(engine::platform::Key key) {
         spdlog::info("Keyboard event: key={}, state=", static_cast<int>(key.id()), to_string(key.state()));
     }
 
     void MainController::initialize() {
         // User initialization
-        rg::graphics::OpenGL::enable_depth_testing();
+        engine::graphics::OpenGL::enable_depth_testing();
 
         auto observer = std::make_unique<MainPlatformEventObserver>();
-        rg::controller::get<rg::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+        engine::controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
+                std::move(observer));
     }
 
     bool MainController::loop() {
-        const auto platform = rg::controller::get<rg::platform::PlatformController>();
-        if (platform->key(rg::platform::KeyId::KEY_ESCAPE).state() == rg::platform::Key::State::JustPressed) {
+        const auto platform = engine::controller::get<engine::platform::PlatformController>();
+        if (platform->key(engine::platform::KeyId::KEY_ESCAPE).state() == engine::platform::Key::State::JustPressed) {
             return false;
         }
         return true;
     }
 
     void MainController::poll_events() {
-        const auto platform = rg::controller::get<rg::platform::PlatformController>();
-        if (platform->key(rg::platform::KEY_F1).state() == rg::platform::Key::State::JustPressed) {
+        const auto platform = engine::controller::get<engine::platform::PlatformController>();
+        if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
             m_cursor_enabled = !m_cursor_enabled;
             platform->set_enable_cursor(m_cursor_enabled);
         }
@@ -39,7 +40,7 @@ namespace app {
     }
 
     void MainController::begin_draw() {
-        rg::graphics::OpenGL::clear_buffers();
+        engine::graphics::OpenGL::clear_buffers();
     }
 
     void MainController::draw() {
@@ -48,13 +49,13 @@ namespace app {
     }
 
     void MainController::end_draw() {
-        rg::controller::get<rg::platform::PlatformController>()->swap_buffers();
+        engine::controller::get<engine::platform::PlatformController>()->swap_buffers();
     }
 
     void MainController::draw_backpack() {
-        auto graphics = rg::controller::get<rg::graphics::GraphicsController>();
-        auto shader   = rg::controller::get<rg::resources::ResourcesController>()->shader("basic");
-        auto backpack = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
+        auto graphics = engine::controller::get<engine::graphics::GraphicsController>();
+        auto shader   = engine::controller::get<engine::resources::ResourcesController>()->shader("basic");
+        auto backpack = engine::controller::get<engine::resources::ResourcesController>()->model("backpack");
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -63,30 +64,30 @@ namespace app {
     }
 
     void MainController::draw_skybox() {
-        auto shader      = rg::controller::get<rg::resources::ResourcesController>()->shader("skybox");
-        auto skybox_cube = rg::controller::get<rg::resources::ResourcesController>()->skybox("skybox");
-        rg::controller::get<rg::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+        auto shader      = engine::controller::get<engine::resources::ResourcesController>()->shader("skybox");
+        auto skybox_cube = engine::controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+        engine::controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 
     void MainController::update_camera() {
-        auto gui = rg::controller::get<GUIController>();
+        auto gui = engine::controller::get<GUIController>();
         if (gui->is_enabled()) {
             return;
         }
-        auto platform = rg::controller::get<rg::platform::PlatformController>();
-        auto camera   = rg::controller::get<rg::graphics::GraphicsController>()->camera();
+        auto platform = engine::controller::get<engine::platform::PlatformController>();
+        auto camera   = engine::controller::get<engine::graphics::GraphicsController>()->camera();
         float dt      = platform->dt();
-        if (platform->key(rg::platform::KEY_W).state() == rg::platform::Key::State::Pressed) {
-            camera->process_keyboard(rg::graphics::Camera::Movement::FORWARD, dt);
+        if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) {
+            camera->process_keyboard(engine::graphics::Camera::Movement::FORWARD, dt);
         }
-        if (platform->key(rg::platform::KEY_S).state() == rg::platform::Key::State::Pressed) {
-            camera->process_keyboard(rg::graphics::Camera::Movement::BACKWARD, dt);
+        if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) {
+            camera->process_keyboard(engine::graphics::Camera::Movement::BACKWARD, dt);
         }
-        if (platform->key(rg::platform::KEY_A).state() == rg::platform::Key::State::Pressed) {
-            camera->process_keyboard(rg::graphics::Camera::Movement::LEFT, dt);
+        if (platform->key(engine::platform::KEY_A).state() == engine::platform::Key::State::Pressed) {
+            camera->process_keyboard(engine::graphics::Camera::Movement::LEFT, dt);
         }
-        if (platform->key(rg::platform::KEY_D).state() == rg::platform::Key::State::Pressed) {
-            camera->process_keyboard(rg::graphics::Camera::Movement::RIGHT, dt);
+        if (platform->key(engine::platform::KEY_D).state() == engine::platform::Key::State::Pressed) {
+            camera->process_keyboard(engine::graphics::Camera::Movement::RIGHT, dt);
         }
         auto mouse = platform->mouse();
         camera->process_mouse_movement(mouse.dx, mouse.dy);

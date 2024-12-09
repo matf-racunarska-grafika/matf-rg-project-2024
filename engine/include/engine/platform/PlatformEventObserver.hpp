@@ -4,9 +4,9 @@
 
 #ifndef PLATFORMEVENTOBSERVER_HPP
 #define PLATFORMEVENTOBSERVER_HPP
-#include <rg/platform/Input.hpp>
+#include <engine/platform/Input.hpp>
 
-namespace rg::platform {
+namespace engine::platform {
     class PlatformEventObserver {
     public:
         virtual void on_mouse(MousePosition position);

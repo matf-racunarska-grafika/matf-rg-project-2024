@@ -5,13 +5,13 @@
 #include <filesystem>
 #include <array>
 #include <stb_image.h>
-#include <rg/graphics/OpenGL.hpp>
-#include <rg/resources/Shader.hpp>
-#include <rg/resources/Skybox.hpp>
-#include <rg/util/Errors.hpp>
-#include <rg/util/Utils.hpp>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/Shader.hpp>
+#include <engine/resources/Skybox.hpp>
+#include <engine/util/Errors.hpp>
+#include <engine/util/Utils.hpp>
 
-namespace rg::graphics {
+namespace engine::graphics {
 
     bool OpenGL::initialize(void *(*loader)(const char *name)) {
         return gladLoadGLLoader((GLADloadproc) loader);

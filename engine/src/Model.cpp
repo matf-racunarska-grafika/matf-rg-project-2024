@@ -2,9 +2,9 @@
 // Created by spaske on 12/2/24.
 //
 
-#include <rg/resources/Model.hpp>
+#include <engine/resources/Model.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
 
     void Model::draw(const Shader *shader) {
         for (auto &mesh: m_meshes) {

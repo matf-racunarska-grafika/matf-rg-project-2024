@@ -3,11 +3,11 @@
 
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
-#include <rg/resources/Mesh.hpp>
+#include <engine/resources/Mesh.hpp>
 #include <algorithm>
 #include <utility>
 
-namespace rg::resources {
+namespace engine::resources {
     class Model {
         friend class ResourcesController;
 
@@ -49,6 +49,6 @@ namespace rg::resources {
                               , m_name(std::move(name)) {
         }
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_MODEL_HPP

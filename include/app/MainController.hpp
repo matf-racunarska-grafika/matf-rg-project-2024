@@ -6,12 +6,12 @@
 #define MAINCONTROLLER_HPP
 
 namespace app {
-    class MainPlatformEventObserver final : public rg::platform::PlatformEventObserver {
+    class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
     public:
-        void on_keyboard(rg::platform::Key key) override;
+        void on_keyboard(engine::platform::Key key) override;
     };
 
-    class MainController final : public rg::controller::Controller {
+    class MainController final : public engine::controller::Controller {
         void initialize() override;
 
         bool loop() override;

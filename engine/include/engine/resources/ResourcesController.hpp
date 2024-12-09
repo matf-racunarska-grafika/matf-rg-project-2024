@@ -6,14 +6,14 @@
 
 #define MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
 
-#include <rg/controller/Controller.hpp>
-#include <rg/resources/Model.hpp>
-#include <rg/resources/Texture.hpp>
-#include <rg/resources/Shader.hpp>
-#include <rg/resources/Skybox.hpp>
+#include <engine/controller/Controller.hpp>
+#include <engine/resources/Model.hpp>
+#include <engine/resources/Texture.hpp>
+#include <engine/resources/Shader.hpp>
+#include <engine/resources/Skybox.hpp>
 #include <unordered_map>
 
-namespace rg::resources {
+namespace engine::resources {
     class ResourcesController final : public controller::Controller {
     public:
         std::string_view name() const override {
@@ -54,6 +54,6 @@ namespace rg::resources {
         const std::filesystem::path m_shaders_path  = "resources/shaders";
         const std::filesystem::path m_skyboxes_path = "resources/skyboxes";
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_ASSETSCONTROLLER_HPP

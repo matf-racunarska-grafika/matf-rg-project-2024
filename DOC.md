@@ -118,7 +118,7 @@ and all the header files will be available.
 ### How to include and use engine files?
 
 All the source files (.cpp) go into src/ directory, and all the header files go into the include/ directory.
-To use the engine you just need to include `#include <rg/Engine.hpp>` and all the engine header files will be available.
+To use the engine you just need to include `#include <engine/Engine.hpp>` and all the engine header files will be available.
 
 ### How the engine manages resources?
 
@@ -145,7 +145,7 @@ For a basic app setup you need to:
 2. Inherit from the `rg::core::App` and implement `setup()` and `App::create`.
 
 ```c++
-#include <rg/Engne.hpp>
+#include <engine/Engne.hpp>
 class MyApp : public rg::core::App {
 
 public:

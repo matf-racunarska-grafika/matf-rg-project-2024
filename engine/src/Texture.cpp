@@ -2,10 +2,10 @@
 // Created by spaske on 12/2/24.
 //
 #include <glad/glad.h>
-#include <rg/resources/Texture.hpp>
-#include <rg/util/Errors.hpp>
+#include <engine/resources/Texture.hpp>
+#include <engine/util/Errors.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
     std::string_view texture_type_to_string(TextureType type) {
         switch (type) {
         case TextureType::Diffuse: return "Diffuse";

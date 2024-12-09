@@ -5,7 +5,7 @@
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
 #include <json.hpp>
-namespace rg::util {
+namespace engine::util {
  class Configuration {
         friend class App;
 

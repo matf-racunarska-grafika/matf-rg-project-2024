@@ -5,17 +5,17 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <rg/controller/Controller.hpp>
+#include <engine/controller/Controller.hpp>
 #include <memory>
 #include <vector>
-#include <rg/platform/Input.hpp>
-#include <rg/platform/Window.hpp>
-#include <rg/platform/PlatformEventObserver.hpp>
-#include <rg/controller/ControllerManager.hpp>
+#include <engine/platform/Input.hpp>
+#include <engine/platform/Window.hpp>
+#include <engine/platform/PlatformEventObserver.hpp>
+#include <engine/controller/ControllerManager.hpp>
 
 struct GLFWwindow;
 
-namespace rg::platform {
+namespace engine::platform {
     struct FrameTime {
         float dt;
         float previous;
@@ -78,6 +78,6 @@ namespace rg::platform {
 
         void update_key(Key &key_data) const;
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_PLATFORM_H

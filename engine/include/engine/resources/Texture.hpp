@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <utility>
 
-namespace rg::resources {
+namespace engine::resources {
     class Shader;
 
     enum class TextureType {
@@ -58,5 +58,5 @@ namespace rg::resources {
         std::filesystem::path m_path{};
         std::string m_name{};
     };
-} // namespace rg
+} // namespace engine
 #endif//MATF_RG_PROJECT_TEXTURE_HPP

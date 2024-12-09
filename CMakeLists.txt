@@ -17,7 +17,7 @@ add_subdirectory(libs/imgui)
 
 ############## ENGINE  ###############
 file(GLOB engine-sources engine/src/*.cpp)
-file(GLOB engine-headers engine/include/rg/*.hpp)
+file(GLOB engine-headers engine/include/engine/*.hpp)
 
 add_library(engine ${engine-sources} ${engine-headers})
 target_include_directories(engine PUBLIC engine/include)

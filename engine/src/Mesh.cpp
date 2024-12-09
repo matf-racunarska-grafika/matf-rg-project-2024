@@ -2,12 +2,12 @@
 // Created by spaske on 12/2/24.
 //
 #include<glad/glad.h>
-#include <rg/util/Utils.hpp>
-#include <rg/resources/Mesh.hpp>
-#include <rg/resources/Shader.hpp>
+#include <engine/util/Utils.hpp>
+#include <engine/resources/Mesh.hpp>
+#include <engine/resources/Shader.hpp>
 #include <unordered_map>
 
-namespace rg::resources {
+namespace engine::resources {
 
     Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
                std::vector<Texture *> textures) {

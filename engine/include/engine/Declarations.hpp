@@ -5,7 +5,7 @@
 #ifndef DECLARATIONS_HPP
 #define DECLARATIONS_HPP
 
-namespace rg { namespace controller {
+namespace engine { namespace controller {
         class Controller;
         class ControllerManager;
         class EngineSentinelController;

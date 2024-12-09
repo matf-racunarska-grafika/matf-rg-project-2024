@@ -2,18 +2,18 @@
 // Created by spaske00 on 20.4.24
 //
 #include <spdlog/spdlog.h>
-#include <rg/core/App.hpp>
-#include <rg/platform/PlatformController.hpp>
-#include <rg/resources/ResourcesController.hpp>
-#include <rg/util/Errors.hpp>
-#include <rg/util/Utils.hpp>
-#include <rg/controller/ControllerManager.hpp>
-#include <rg/controller/EngineSentinelController.hpp>
-#include <rg/util/ArgParser.hpp>
-#include <rg/util/Configuration.hpp>
-#include <rg/graphics/GraphicsController.hpp>
+#include <engine/core/App.hpp>
+#include <engine/platform/PlatformController.hpp>
+#include <engine/resources/ResourcesController.hpp>
+#include <engine/util/Errors.hpp>
+#include <engine/util/Utils.hpp>
+#include <engine/controller/ControllerManager.hpp>
+#include <engine/controller/EngineSentinelController.hpp>
+#include <engine/util/ArgParser.hpp>
+#include <engine/util/Configuration.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 
-namespace rg::core {
+namespace engine::core {
     int App::run(int argc, char **argv) {
         try {
             setup_(argc, argv);
@@ -83,5 +83,5 @@ namespace rg::core {
         spdlog::error(e.report());
     }
 
-} // namespace rg
+} // namespace engine
 

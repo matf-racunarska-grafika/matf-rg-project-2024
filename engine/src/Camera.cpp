@@ -2,9 +2,9 @@
 // Created by spaske on 11/30/24.
 //
 
-#include <rg/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
 
-namespace rg::graphics {
+namespace engine::graphics {
     // constructor with vectors
     Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
     Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
@@ -57,6 +57,7 @@ namespace rg::graphics {
                 Pitch = 89.0f;
             if (Pitch < -89.0f)
                 Pitch = -89.0f;
+
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles

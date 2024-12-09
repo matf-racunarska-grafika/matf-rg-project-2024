@@ -4,12 +4,12 @@
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP
-#include <rg/graphics/OpenGL.hpp>
-#include <rg/resources/Shader.hpp>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/Shader.hpp>
 #include <filesystem>
 #include <string>
 
-namespace rg::resources {
+namespace engine::resources {
     enum class ShaderType { Vertex, Fragment, Geometry };
 
     std::string_view to_string(ShaderType type);

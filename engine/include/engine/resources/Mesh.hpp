@@ -6,9 +6,9 @@
 
 #include <glm/glm.hpp>
 #include <vector>
-#include <rg/resources/Texture.hpp>
+#include <engine/resources/Texture.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;
@@ -45,6 +45,6 @@ namespace rg::resources {
 
         static std::string_view texture_type_to_uniform_name_convention(TextureType type);
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_MESH_HPP

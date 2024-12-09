@@ -3,14 +3,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <rg/graphics/OpenGL.hpp>
-#include <rg/resources/ResourcesController.hpp>
-#include <rg/resources/ShaderCompiler.hpp>
-#include <rg/util/Configuration.hpp>
-#include <rg/util/Errors.hpp>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/ResourcesController.hpp>
+#include <engine/resources/ShaderCompiler.hpp>
+#include <engine/util/Configuration.hpp>
+#include <engine/util/Errors.hpp>
 #include <spdlog/spdlog.h>
 
-namespace rg::resources {
+namespace engine::resources {
 
     void ResourcesController::initialize() {
         load_shaders();
@@ -30,7 +30,7 @@ namespace rg::resources {
         const auto &config = util::Configuration::config();
         if (exists(m_models_path)) {
             if (!config.contains("resources") || !config["resources"].contains("models")) {
-                throw rg::util::ConfigurationError(
+                throw engine::util::ConfigurationError(
                         "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
             }
             for (const auto &model_entry: config["resources"]["models"].items()) {
@@ -255,4 +255,4 @@ namespace rg::resources {
         }
     }
 
-} // namespace rg
+} // namespace engine

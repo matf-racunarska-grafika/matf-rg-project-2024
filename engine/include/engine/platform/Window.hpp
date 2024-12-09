@@ -7,7 +7,7 @@
 #include <string>
 #include <GLFW/glfw3.h>
 
-namespace rg::platform {
+namespace engine::platform {
     class Window final {
         friend class PlatformController;
 

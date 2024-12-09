@@ -2,9 +2,9 @@
 // Created by spaske on 12/2/24.
 //
 #include <glad/glad.h>
-#include <rg/resources/Shader.hpp>
+#include <engine/resources/Shader.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
 
     void Shader::use() const {
         glUseProgram(m_shaderId);

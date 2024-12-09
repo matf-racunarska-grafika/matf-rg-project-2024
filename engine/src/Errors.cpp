@@ -1,10 +1,10 @@
 //
 
-#include <rg/util/Errors.hpp>
+#include <engine/util/Errors.hpp>
 #include <format>
 #include <spdlog/spdlog.h>
 
-namespace rg::util {
+namespace engine::util {
     static bool g_tracing = true;
 
     void tracing_on() {
@@ -57,4 +57,4 @@ namespace rg::util {
         return std::format("AssetLoadingError: {}:{}.\n{}\n Failed to load model {} from path: {}\n",
                            location().file_name(), location().line(), message(), m_model_name, m_path.string());
     }
-} // namespace rg
+} // namespace engine

@@ -7,13 +7,13 @@
 #include <imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <rg/controller/ControllerManager.hpp>
-#include <rg/graphics/GraphicsController.hpp>
-#include <rg/graphics/OpenGL.hpp>
-#include <rg/platform/PlatformController.hpp>
-#include <rg/resources/Skybox.hpp>
+#include <engine/controller/ControllerManager.hpp>
+#include <engine/graphics/GraphicsController.hpp>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/platform/PlatformController.hpp>
+#include <engine/resources/Skybox.hpp>
 
-namespace rg::graphics {
+namespace engine::graphics {
 
     void GraphicsController::initialize() {
         const int opengl_initialized = OpenGL::initialize(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -23,13 +23,13 @@ namespace rg::graphics {
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
         (void) io;
-        auto handle = rg::controller::get<platform::PlatformController>()->window()->handle_();
+        auto handle = engine::controller::get<platform::PlatformController>()->window()->handle_();
         ImGui_ImplGlfw_InitForOpenGL(handle, true);
         ImGui_ImplOpenGL3_Init("#version 330 core");
     }
 
     void GraphicsController::update() {
-        auto platform = rg::controller::get<rg::platform::PlatformController>();
+        auto platform = engine::controller::get<engine::platform::PlatformController>();
         m_projection  = glm::perspective(glm::radians(45.0f),
                                         static_cast<float>(platform->window()->width()) / platform
                                         ->window()->

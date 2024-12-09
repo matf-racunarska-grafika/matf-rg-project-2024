@@ -2,14 +2,14 @@
 // Created by spaske00 on 13.5.24.
 //
 
-#include <rg/util/Utils.hpp>
-#include <rg/util/Errors.hpp>
+#include <engine/util/Utils.hpp>
+#include <engine/util/Errors.hpp>
 #include <spdlog/spdlog.h>
 #include <fstream>
-#include <rg/util/Configuration.hpp>
-#include <rg/util/ArgParser.hpp>
+#include <engine/util/Configuration.hpp>
+#include <engine/util/ArgParser.hpp>
 
-namespace rg::util {
+namespace engine::util {
 
     void Configuration::initialize() {
         auto config_path = get_config_path();
@@ -94,4 +94,4 @@ namespace rg::util {
         ss << file.rdbuf();
         return ss.str();
     }
-} // namespace rg
+} // namespace engine

@@ -9,7 +9,7 @@
 #include <vector>
 #include <typeinfo>
 
-namespace rg::controller {
+namespace engine::controller {
     /**
     * @class Controller
     * @breif Controllers are a hook into the Engines `main loop` execution.
@@ -21,7 +21,7 @@ namespace rg::controller {
     *
     * @usage
     * \code
-    * class LoggingController : public rg::Controller {
+    * class LoggingController : public engine::Controller {
     * public:
     *
     *   void initialize() override { spdlog::log("Logging::initialize"); }
@@ -30,7 +30,7 @@ namespace rg::controller {
     * \endcode
     * To have the engine execute the code from the `LoggingController` we must first register it:
     * \code
-    * rg::ControllerManager::instance()->register_controller<LoggingController>();
+    * engine::ControllerManager::instance()->register_controller<LoggingController>();
     * \endcode
     *
     */
@@ -184,6 +184,6 @@ namespace rg::controller {
         */
         bool m_enabled{true};
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_CONTROLLER_HPP

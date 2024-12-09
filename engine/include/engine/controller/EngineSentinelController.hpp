@@ -4,9 +4,9 @@
 
 #ifndef ENGINESENTINELCONTROLLER_HPP
 #define ENGINESENTINELCONTROLLER_HPP
-#include <rg/controller/Controller.hpp>
+#include <engine/controller/Controller.hpp>
 
-namespace rg::controller {
+namespace engine::controller {
     /**
      * @class EngineSentinelController
      * @brief This controller does nothing. It servers as a sentinel
@@ -18,7 +18,7 @@ namespace rg::controller {
      * This will make user_controller execute after all the engine controllers.
      * @code
      * auto user_controller = ...;
-     * user_controller->after(rg::controller::get<EngineSentinelController>());
+     * user_controller->after(engine::controller::get<EngineSentinelController>());
      * @endcode
      */
     class EngineSentinelController final : public Controller {

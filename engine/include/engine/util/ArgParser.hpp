@@ -8,7 +8,7 @@
 #include <optional>
 #include <string>
 
-namespace rg::util {
+namespace engine::util {
     class ArgParser {
         friend class App;
 

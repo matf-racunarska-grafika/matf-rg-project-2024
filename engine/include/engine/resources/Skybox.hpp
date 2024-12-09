@@ -8,7 +8,7 @@
 #include <filesystem>
 #include <utility>
 
-namespace rg::resources {
+namespace engine::resources {
     class Skybox {
         friend class ResourcesController;
 

@@ -4,10 +4,10 @@
 
 #ifndef MAINAPP_HPP
 #define MAINAPP_HPP
-#include <rg/Engine.hpp>
+#include <engine/Engine.hpp>
 
 namespace app {
-    class MainApp final : public rg::core::App {
+    class MainApp final : public engine::core::App {
         void setup() override;
     };
 }

@@ -12,19 +12,19 @@
 #define RG_GUARANTEE(expr, msg, ...)                                                                                   \
     do {                                                                                                               \
         if (!(expr)) {                                                                                                 \
-            throw rg::util::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
+            throw engine::util::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
         }                                                                                                              \
     } while (0)
 #define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
     do {                                                                                                               \
-        throw rg::util::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
+        throw engine::util::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
     } while (0)
 #define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
     do {                                                                                                               \
-        throw rg::util::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
+        throw engine::util::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
     } while (0)
 
-namespace rg::util {
+namespace engine::util {
     void tracing_on();
 
     void tracing_off();
@@ -133,6 +133,6 @@ namespace rg::util {
         std::filesystem::path m_path;
         std::string m_model_name;
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_ERRORS_HPP

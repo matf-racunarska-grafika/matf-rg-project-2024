@@ -12,7 +12,7 @@
 #include <queue>
 #include <mutex>
 #include <variant>
-#include <rg/util/Errors.hpp>
+#include <engine/util/Errors.hpp>
 
 template<class... Ts>
 struct overloaded : Ts... {
@@ -49,7 +49,7 @@ DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
 #define range(container) std::begin(container), std::end(container)
 #define crange(container) std::cbegin(container), std::cend(container)
 
-namespace rg::util {
+namespace engine::util {
     template<typename Value, typename Error>
     class Result {
     public:
@@ -124,6 +124,6 @@ namespace rg::util {
     } // namespace alg
 
     namespace ds {
-    }} // namespace rg
+    }} // namespace engine
 
 #endif//MATF_RG_PROJECT_UTILS_HPP

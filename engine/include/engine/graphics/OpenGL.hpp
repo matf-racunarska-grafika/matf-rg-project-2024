@@ -6,15 +6,15 @@
 #define OPENGL_HPP
 #include <cstdint>
 #include <filesystem>
-#include <rg/resources/Shader.hpp>
+#include <engine/resources/Shader.hpp>
 
 // TODO(mspasic): Add GL_ASSERT(...)
 
-namespace rg::resources {
+namespace engine::resources {
     class Skybox;
 }
 
-namespace rg::graphics {
+namespace engine::graphics {
     class OpenGL {
     public:
         using ShaderProgramId = uint32_t;

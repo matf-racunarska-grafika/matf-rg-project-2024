@@ -1,10 +1,10 @@
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
-#include <rg/util/Utils.hpp>
+#include <engine/util/Utils.hpp>
 #include <string>
 #include <glm/glm.hpp>
 
-namespace rg::resources {
+namespace engine::resources {
     using ShaderName = std::string;
 
     class Shader {
@@ -57,6 +57,6 @@ namespace rg::resources {
         std::string m_source;
         std::filesystem::path m_source_path;
     };
-} // namespace rg
+} // namespace engine
 
 #endif//MATF_RG_PROJECT_SHADER_HPP

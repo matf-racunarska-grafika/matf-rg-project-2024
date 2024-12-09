@@ -2,9 +2,9 @@
 // Created by spaske on 12/9/24.
 //
 #include <imgui.h>
-#include <rg/Engine.hpp>
+#include <engine/Engine.hpp>
 #include <app/GUIController.hpp>
-#include <rg/graphics/GraphicsController.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 
 namespace app {
     void GUIController::initialize() {
@@ -12,18 +12,18 @@ namespace app {
     }
 
     void GUIController::poll_events() {
-        const auto platform = rg::controller::get<rg::platform::PlatformController>();
-        if (platform->key(rg::platform::KeyId::KEY_F2).state() == rg::platform::Key::State::JustPressed) {
+        const auto platform = engine::controller::get<engine::platform::PlatformController>();
+        if (platform->key(engine::platform::KeyId::KEY_F2).state() == engine::platform::Key::State::JustPressed) {
             set_enable(!is_enabled());
         }
     }
 
     void GUIController::draw() {
-        auto graphics = rg::controller::get<rg::graphics::GraphicsController>();
-        auto camera   = rg::controller::get<rg::graphics::GraphicsController>()->camera();
+        auto graphics = engine::controller::get<engine::graphics::GraphicsController>();
+        auto camera   = engine::controller::get<engine::graphics::GraphicsController>()->camera();
         graphics->begin_gui();
         // Draw backpack scale slider window
-        // auto backpack  = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
+        // auto backpack  = engine::controller::get<engine::resources::ResourcesController>()->model("backpack");
         // static float f = 0.0f;
         // ImGui::Begin(backpack->name().c_str());
         // ImGui::Text("Loaded from: %s", backpack->path().c_str());

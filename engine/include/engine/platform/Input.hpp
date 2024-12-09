@@ -6,7 +6,7 @@
 #define INPUT_HPP
 #include <string_view>
 
-namespace rg::platform {
+namespace engine::platform {
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
         MOUSE_BUTTON_2,

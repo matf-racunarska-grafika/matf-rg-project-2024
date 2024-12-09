@@ -8,15 +8,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <rg/platform/PlatformController.hpp>
-#include <rg/util/Utils.hpp>
-#include <rg/controller/ControllerManager.hpp>
+#include <engine/platform/PlatformController.hpp>
+#include <engine/util/Utils.hpp>
+#include <engine/controller/ControllerManager.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <rg/graphics/OpenGL.hpp>
-#include <rg/util/Configuration.hpp>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/util/Configuration.hpp>
 
-namespace rg::platform {
+namespace engine::platform {
 
     static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
     static std::array<KeyId, GLFW_KEY_LAST + 1> g_glfw_key_to_engine;
@@ -243,4 +243,4 @@ namespace rg::platform {
         controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
-} // namespace rg
+} // namespace engine

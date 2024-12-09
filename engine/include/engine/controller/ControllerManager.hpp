@@ -3,18 +3,18 @@
 
 #ifndef MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
 #define MATF_RG_PROJECT_CONTROLLERMANAGER_HPP
-#include <rg/controller/Controller.hpp>
-#include <rg/util/Errors.hpp>
+#include <engine/controller/Controller.hpp>
+#include <engine/util/Errors.hpp>
 #include <source_location>
 #include <type_traits>
 #include <algorithm>
 #include <unordered_set>
 
-namespace rg::core {
+namespace engine::core {
     class App;
 }
 
-namespace rg::controller {
+namespace engine::controller {
     /**
     * @class ControllerManager
     * @brief Manages the @ref Controller registration, access, and execution.
@@ -44,14 +44,14 @@ namespace rg::controller {
     * Example usage:
     * @code
     * void setup_(...) {
-    *   auto graphics = rg::controller::register_controller<GraphicsController>();
-    *   auto platform = rg::controller::register_controller<PlatformController>();
+    *   auto graphics = engine::controller::register_controller<GraphicsController>();
+    *   auto platform = engine::controller::register_controller<PlatformController>();
     *   // Specify that the PlatformController always executes before GraphicsController.
     *   platform->before(graphics);
     * }
     *
     * void draw() {
-    *   auto graphics = rg::controller::get<GraphicsController>();
+    *   auto graphics = engine::controller::get<GraphicsController>();
     *   graphics->begin_gui();
     *   ...
     *   graphics->end_gui();
@@ -59,7 +59,7 @@ namespace rg::controller {
     * @endcode
     */
     class ControllerManager {
-        friend class rg::core::App;
+        friend class engine::core::App;
 
     public:
         /**
@@ -190,5 +190,5 @@ namespace rg::controller {
     TController *register_controller(std::source_location location = std::source_location::current()) {
         return ControllerManager::register_controller<TController>(location);
     }
-} // namespace rg
+} // namespace engine
 #endif//MATF_RG_PROJECT_CONTROLLERMANAGER_HPP

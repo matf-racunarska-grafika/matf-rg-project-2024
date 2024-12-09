@@ -4,11 +4,11 @@
 
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
-#include <rg/graphics/Camera.hpp>
-#include <rg/controller/Controller.hpp>
-#include <rg/Declarations.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/controller/Controller.hpp>
+#include <engine/Declarations.hpp>
 
-namespace rg::graphics {
+namespace engine::graphics {
     class GraphicsController final : public controller::Controller {
     public:
         std::string_view name() const override;
