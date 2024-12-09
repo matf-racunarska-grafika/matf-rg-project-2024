@@ -66,7 +66,9 @@ namespace rg::core {
     }
 
     void App::draw() {
+        controller::ControllerManager::instance()->begin_draw();
         controller::ControllerManager::instance()->draw();
+        controller::ControllerManager::instance()->end_draw();
     }
 
     void App::terminate() {

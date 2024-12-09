@@ -59,10 +59,26 @@ namespace rg::controller {
         }
     }
 
+    void ControllerManager::begin_draw() {
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->begin_draw();
+            }
+        }
+    }
+
     void ControllerManager::draw() {
         for (auto controller: m_controllers) {
             if (controller->is_enabled()) {
                 controller->draw();
+            }
+        }
+    }
+
+    void ControllerManager::end_draw() {
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->end_draw();
             }
         }
     }

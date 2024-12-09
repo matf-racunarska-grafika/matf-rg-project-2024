@@ -44,7 +44,7 @@ namespace rg::controller {
         */
         virtual std::string_view name() const {
             return typeid(*this).name();
-        };
+        }
 
         virtual ~Controller() = default;
 
@@ -147,9 +147,21 @@ namespace rg::controller {
         }
 
         /**
+        * @brief Perform preparation for drawing. Executes in the @ref App::draw, before @ref Controller::draw.
+        */
+        virtual void begin_draw() {
+        }
+
+        /**
         * @brief Draw the world state. Executes in the @ref App::draw.
         */
         virtual void draw() {
+        }
+
+        /**
+        * @brief Finalize drawing. Executes in the @ref App::draw, after @ref Controller::draw.
+        */
+        virtual void end_draw() {
         }
 
         /**

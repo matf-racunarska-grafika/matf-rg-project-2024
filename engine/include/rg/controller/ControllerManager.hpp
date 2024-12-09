@@ -129,9 +129,19 @@ namespace rg::controller {
         void update();
 
         /**
+        * @brief Call @ref Controller::begin_draw for every registered controller instance where @ref Controller::is_enabled is true.
+        */
+        void begin_draw();
+
+        /**
         * @brief Call @ref Controller::draw for every registered controller instance where @ref Controller::is_enabled is true.
         */
         void draw();
+
+        /**
+        * @brief Call @ref Controller::end_draw for every registered controller instance where @ref Controller::is_enabled is true.
+        */
+        void end_draw();
 
         /**
         * @brief Call @ref Controller::terminate for every registered controller instance in the reverse order of initialization.
