@@ -12,7 +12,7 @@
 namespace engine::controller {
     /**
     * @class Controller
-    * @breif Controllers are a hook into the Engines `main loop` execution.
+    * @brief Controllers are a hook into the Engines `main loop` execution.
     * By overriding member virtual functions of this class the user can
     * execute custom code during each of the `main loop` phases.
     *
@@ -32,7 +32,6 @@ namespace engine::controller {
     * \code
     * engine::ControllerManager::instance()->register_controller<LoggingController>();
     * \endcode
-    *
     */
     class Controller {
         friend class ControllerManager;
@@ -75,7 +74,7 @@ namespace engine::controller {
         }
 
         /**
-        * \breif Used by the @ref ControllerManager to ensure that the controller was initialized
+        * \brief Used by the @ref ControllerManager to ensure that the controller was initialized
         * before being used.
         * @return true if @ref Controller::initialize() has been called
         */
@@ -93,7 +92,9 @@ namespace engine::controller {
         }
 
         /**
-        * @brief Enables or disables the controller based on value. The @ref ControllerManager will execute the controllers hook methods.
+        * @brief Enables or disables the controller based on value.
+        * The @ref ControllerManager executes only the enabled controllers,
+        * except for the @ref Controller::poll_events function, that's executed always.
         * By default, controllers are enabled when registered.
         */
         void set_enable(bool value) {
@@ -114,13 +115,13 @@ namespace engine::controller {
         }
 
         /**
-        * @brief Initializes the controller. Executes in the @ref App::initialize.
+        * @brief Initializes the controller. Executes in the @ref core::App::initialize.
         */
         virtual void initialize() {
         }
 
         /**
-        * @brief Checks whether the main loop should continue. Executes in the @ref App::loop.
+        * @brief Checks whether the main loop should continue. Executes in the @ref core::App::loop.
         * @returns true if the render loop should continue.
         */
         virtual bool loop() {
@@ -128,37 +129,37 @@ namespace engine::controller {
         }
 
         /**
-        * @brief Process internal and external events. Executes in the @ref App::poll_events.
+        * @brief Process internal and external events. Executes in the @ref core::App::poll_events.
         */
         virtual void poll_events() {
         }
 
         /**
-        * @brief Update the controller state and prepare for drawing. Executes in the @ref App::update.
+        * @brief Update the controller state and prepare for drawing. Executes in the @ref core::App::update.
         */
         virtual void update() {
         }
 
         /**
-        * @brief Perform preparation for drawing. Executes in the @ref App::draw, before @ref Controller::draw.
+        * @brief Perform preparation for drawing. Executes in the @ref core::App::draw, before @ref Controller::draw.
         */
         virtual void begin_draw() {
         }
 
         /**
-        * @brief Draw the world state. Executes in the @ref App::draw.
+        * @brief Draw the world state. Executes in the @ref core::App::draw.
         */
         virtual void draw() {
         }
 
         /**
-        * @brief Finalize drawing. Executes in the @ref App::draw, after @ref Controller::draw.
+        * @brief Finalize drawing. Executes in the @ref core::App::draw, after @ref Controller::draw.
         */
         virtual void end_draw() {
         }
 
         /**
-        * @brief Terminate the controller. Executes in the @ref App::terminate.
+        * @brief Terminate the controller. Executes in the @ref core::App::terminate.
         *
         * Note that the `terminate` executes in the reverse order from initialize.
         */
