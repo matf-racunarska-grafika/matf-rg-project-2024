@@ -3,9 +3,38 @@
 #define GRAPHICSCONTROLLER_HPP
 #include <engine/graphics/Camera.hpp>
 #include <engine/controller/Controller.hpp>
+#include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/Declarations.hpp>
 
 namespace engine::graphics {
+    /**
+    * @brief Parameters used to define a perspective projection matrix.
+    */
+    struct PerspectiveMatrixParams {
+        float FOV;
+        float Width;
+        float Height;
+        float Near;
+        float Far;
+    };
+
+    /**
+    * @brief Parameters used to define an orthographic projection matrix.
+    */
+    struct OrthographicMatrixParams {
+        float Left;
+        float Right;
+        float Bottom;
+        float Top;
+        float Near;
+        float Far;
+    };
+
+    enum ProjectionType {
+        Perspective,
+        Orthographic
+    };
+
     /**
     * @class GraphicsController
     * @brief Implements basic drawing methods that the @ref core::App implementation uses.
@@ -50,23 +79,90 @@ namespace engine::graphics {
         }
 
         /**
-        * @brief The projection matrix will be updated in the window size changes.
-        * @returns The projection matrix.
+        * @brief Compute the projection matrix.
+        * @returns Return perspective projection by default.
         */
-        const glm::mat4 &projection_matrix() const {
-            return m_projection;
+        template<ProjectionType type = Perspective>
+        glm::mat4 projection_matrix() const {
+            if constexpr (type == Perspective) {
+                return glm::perspective(m_perspective_params.FOV,
+                                        m_perspective_params.Width / m_perspective_params.Height,
+                                        m_perspective_params.Near, m_perspective_params.Far);
+            } else {
+                return glm::ortho(m_ortho_params.Left, m_ortho_params.Right, m_ortho_params.Bottom, m_ortho_params.Top,
+                                  m_ortho_params.Near, m_ortho_params.Far);
+            }
+        }
+
+        /**
+        * @brief Compute the projection matrix.
+        * @returns Return perspective projection by default.
+        */
+        glm::mat4 projection_matrix(ProjectionType type = Perspective) const {
+            switch (type) {
+            case Perspective: return projection_matrix<Perspective>();
+            case Orthographic: return projection_matrix<Orthographic>();
+            default: RG_SHOULD_NOT_REACH_HERE("Unsupported type");
+            }
+        }
+
+        /**
+        * @brief Use this function to change the perspective projection matrix parameters.
+        * Projection matrix is always computed when the @ref GraphicsController::projection_matrix is called.
+        * @returns @ref PerspectiveMatrixParams
+        */
+        PerspectiveMatrixParams &perspective_params() {
+            return m_perspective_params;
+        }
+
+        /**
+        * @brief Get the current @ref PerspectiveMatrixParams values.
+        * @returns @ref PerspectiveMatrixParams
+        */
+        const PerspectiveMatrixParams &perspective_params() const {
+            return m_perspective_params;
+        }
+
+        /**
+        * @brief Use this function to change the orthographic projection matrix parameters.
+        * Projection matrix is always computed
+        * when @ref GraphicsController::projection_matrix is called.
+        * @returns @ref PerspectiveMatrixParams
+        */
+        OrthographicMatrixParams &orthographic_params() {
+            return m_ortho_params;
+        }
+
+        /**
+        * @brief Get the current @ref OrthographicMatrixParams values.
+        * @returns @ref PerspectiveMatrixParams
+        */
+        const OrthographicMatrixParams &orthographic_params() const {
+            return m_ortho_params;
         }
 
     private:
         /**
-        * @brief Initializes OpenGL and ImGUI.
+        * @brief Initializes OpenGL, ImGUI, and projection matrix params;
         */
         void initialize() override;
 
-        void update() override;
+        PerspectiveMatrixParams m_perspective_params{};
+        OrthographicMatrixParams m_ortho_params{};
 
-        glm::mat4 m_projection{};
+        glm::mat4 m_projection_matrix{};
         Camera m_camera{};
+    };
+
+    class GraphicsPlatformEventObserver final : public platform::PlatformEventObserver {
+    public:
+        explicit GraphicsPlatformEventObserver(GraphicsController *graphics) : m_graphics(graphics) {
+        }
+
+        void on_window_resize(int width, int height) override;
+
+    private:
+        GraphicsController *m_graphics;
     };
 }
 #endif //GRAPHICSCONTROLLER_HPP

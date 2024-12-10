@@ -20,18 +20,33 @@ namespace engine::graphics {
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
         (void) io;
-        auto handle = engine::controller::get<platform::PlatformController>()->window()->handle_();
+        auto platform               = engine::controller::get<platform::PlatformController>();
+        auto handle                 = platform->window()->handle_();
+        m_perspective_params.FOV    = glm::radians(m_camera.Zoom);
+        m_perspective_params.Width  = static_cast<float>(platform->window()->width());
+        m_perspective_params.Height = static_cast<float>(platform->window()->height());
+        m_perspective_params.Near   = 0.1f;
+        m_perspective_params.Far    = 100.f;
+
+        m_ortho_params.Bottom = 0.0f;
+        m_ortho_params.Top    = static_cast<float>(platform->window()->height());
+        m_ortho_params.Left   = 0.0f;
+        m_ortho_params.Right  = static_cast<float>(platform->window()->width());
+        m_ortho_params.Near   = 0.1f;
+        m_ortho_params.Far    = 100.0f;
+
+        platform->register_platform_event_observer(
+                std::make_unique<GraphicsPlatformEventObserver>(this));
         ImGui_ImplGlfw_InitForOpenGL(handle, true);
         ImGui_ImplOpenGL3_Init("#version 330 core");
     }
 
-    void GraphicsController::update() {
-        auto platform = engine::controller::get<engine::platform::PlatformController>();
-        m_projection  = glm::perspective(glm::radians(45.0f),
-                                        static_cast<float>(platform->window()->width()) / platform
-                                        ->window()->
-                                        height(),
-                                        0.1f, 100.f);
+    void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
+        m_graphics->perspective_params().Width  = static_cast<float>(width);
+        m_graphics->perspective_params().Height = static_cast<float>(height);
+
+        m_graphics->orthographic_params().Right = static_cast<float>(width);
+        m_graphics->orthographic_params().Top   = static_cast<float>(height);
     }
 
     std::string_view GraphicsController::name() const {
@@ -53,7 +68,7 @@ namespace engine::graphics {
         glm::mat4 view = glm::mat4(glm::mat3(m_camera.view_matrix()));
         shader->use();
         shader->set_mat4("view", view);
-        shader->set_mat4("projection", m_projection);
+        shader->set_mat4("projection", projection_matrix<>());
         glDepthFunc(GL_LEQUAL);
         glBindVertexArray(skybox->vao());
         glActiveTexture(GL_TEXTURE0);
@@ -64,7 +79,4 @@ namespace engine::graphics {
 
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
-
-    // TODO(mspasic); Imgui terminate
-
 }
