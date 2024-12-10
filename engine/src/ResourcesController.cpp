@@ -20,6 +20,10 @@ namespace engine::resources {
     }
 
     void ResourcesController::load_shaders() {
+        if (!exists(m_shaders_path)) {
+            spdlog::info("[ResourcesController]: no {} found to load the shaders from", m_shaders_path.string());
+            return;
+        }
         for (const auto &shader_path: std::filesystem::directory_iterator(m_shaders_path)) {
             const auto name = shader_path.path().stem().string();
             shader(name, shader_path);
@@ -27,31 +31,37 @@ namespace engine::resources {
     }
 
     void ResourcesController::load_models() {
+        if (!exists(m_models_path)) {
+            spdlog::info("[ResourcesController]: no {} found to load the models from", m_models_path.string());
+            return;
+        }
         const auto &config = util::Configuration::config();
-        if (exists(m_models_path)) {
-            if (!config.contains("resources") || !config["resources"].contains("models")) {
-                throw engine::util::ConfigurationError(
-                        "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
-            }
-            for (const auto &model_entry: config["resources"]["models"].items()) {
-                model(model_entry.key());
-            }
+        if (!config.contains("resources") || !config["resources"].contains("models")) {
+            throw util::ConfigurationError(
+                    "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
+        }
+        for (const auto &model_entry: config["resources"]["models"].items()) {
+            model(model_entry.key());
         }
     }
 
     void ResourcesController::load_textures() {
-        if (exists(m_textures_path)) {
-            for (const auto &texture_entry: std::filesystem::directory_iterator(m_textures_path)) {
-                texture(texture_entry.path().stem().string(), texture_entry.path());
-            }
+        if (!exists(m_textures_path)) {
+            spdlog::info("[ResourcesController]: no {} found to load the textures from", m_textures_path.string());
+            return;
+        }
+        for (const auto &texture_entry: std::filesystem::directory_iterator(m_textures_path)) {
+            texture(texture_entry.path().stem().string(), texture_entry.path());
         }
     }
 
     void ResourcesController::load_skyboxes() {
-        if (exists(m_skyboxes_path)) {
-            for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
-                skybox(sky_boxes_entry.path().stem().string(), sky_boxes_entry.path());
-            }
+        if (!exists(m_skyboxes_path)) {
+            spdlog::info("[ResourcesController]: no {} found to load the skyboxes from", m_skyboxes_path.string());
+            return;
+        }
+        for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
+            skybox(sky_boxes_entry.path().stem().string(), sky_boxes_entry.path());
         }
     }
 
