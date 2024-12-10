@@ -18,8 +18,6 @@ namespace engine::resources {
     public:
         void use() const;
 
-        void destroy() const;
-
         unsigned id() const;
 
         void set_bool(const std::string &name, bool value) const;
@@ -55,6 +53,8 @@ namespace engine::resources {
     private:
         Shader(unsigned shader_id, std::string name, std::string source,
                std::filesystem::path source_path = "");
+
+        void destroy() const;
 
         unsigned m_shaderId;
         std::string m_name;
