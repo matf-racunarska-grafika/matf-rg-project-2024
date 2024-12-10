@@ -17,3 +17,4 @@ _deps
 *.a
 /docs/
 engine/test/app/test-app
+app/APP

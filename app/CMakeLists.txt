@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
-project(MY-APP)
+project(APP)
 file(GLOB sources src/*.cpp)
 file(GLOB headers include/*.hpp)
 
