@@ -9,7 +9,7 @@ add_compile_definitions(SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_TRACE SPDLOG_DEBUG_ON S
 
 add_subdirectory(libs/glfw)
 add_subdirectory(libs/glad)
-include_directories(libs/json)
+add_subdirectory(libs/json)
 add_subdirectory(libs/glm)
 add_subdirectory(libs/assimp)
 add_subdirectory(libs/stb)
@@ -22,7 +22,7 @@ file(GLOB engine-headers engine/include/engine/*.hpp)
 add_library(engine ${engine-sources} ${engine-headers})
 target_include_directories(engine PUBLIC engine/include)
 target_link_libraries(engine PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
-        PUBLIC spdlog::spdlog glm imgui)
+        PUBLIC spdlog::spdlog glm imgui json)
 
 ############# TEST ###############
 option(BUILD_TEST_APP "Builds a test application" ON)
