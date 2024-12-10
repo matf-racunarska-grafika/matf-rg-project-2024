@@ -30,6 +30,8 @@ namespace engine::platform {
 
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
+    static void glfw_window_close_callback(GLFWwindow *window);
+
     static int glfw_platform_action(GLFWwindow *window, int glfw_key_code);
 
     void initialize_key_maps();
@@ -61,6 +63,7 @@ namespace engine::platform {
         glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
         glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
         glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
+        glfwSetWindowCloseCallback(m_window.handle(), glfw_window_close_callback);
 
         int major, minor, revision;
         glfwGetVersion(&major, &minor, &revision);
@@ -217,6 +220,12 @@ namespace engine::platform {
         m_platform_event_observer->on_window_resize(width, height);
     }
 
+    void PlatformController::_platform_on_window_close(GLFWwindow *window) {
+        if (m_window.handle() == window) {
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+    }
+
     void PlatformController::set_enable_cursor(bool enabled) {
         if (enabled) {
             glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -246,6 +255,10 @@ namespace engine::platform {
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
         controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
+    }
+
+    void glfw_window_close_callback(GLFWwindow *window) {
+        controller::get<PlatformController>()->_platform_on_window_close(window);
     }
 
 } // namespace engine

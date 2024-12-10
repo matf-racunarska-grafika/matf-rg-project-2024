@@ -74,6 +74,8 @@ namespace engine::platform {
 
         void _platform_on_framebuffer_resize(int width, int height);
 
+        void _platform_on_window_close(GLFWwindow *window);
+
         void set_enable_cursor(bool enabled);
 
         void swap_buffers();
