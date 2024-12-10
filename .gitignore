@@ -16,4 +16,4 @@ _deps
 /.idea/
 *.a
 /docs/
-matf-rg-project
+engine/test/app/test-app
