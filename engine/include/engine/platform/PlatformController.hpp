@@ -127,6 +127,8 @@ namespace engine::platform {
         */
         void _platform_on_window_close(GLFWwindow *window);
 
+        void _platform_on_mouse_button(int button, int action);
+
     private:
         Key &key_ref(KeyId key);
 

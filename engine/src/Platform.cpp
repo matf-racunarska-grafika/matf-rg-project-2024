@@ -29,6 +29,8 @@ namespace engine::platform {
 
     static void glfw_window_close_callback(GLFWwindow *window);
 
+    static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
+
     static int glfw_platform_action(GLFWwindow *window, int glfw_key_code);
 
     void initialize_key_maps();
@@ -60,6 +62,7 @@ namespace engine::platform {
         glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
         glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
         glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
+        glfwSetMouseButtonCallback(m_window.handle(), glfw_mouse_button_callback);
         glfwSetWindowCloseCallback(m_window.handle(), glfw_window_close_callback);
 
         int major, minor, revision;
@@ -231,6 +234,13 @@ namespace engine::platform {
         }
     }
 
+    void PlatformController::_platform_on_mouse_button(int button, int action) {
+        for (auto &observer: m_platform_event_observers) {
+            auto result = key(g_glfw_key_to_engine[button]);
+            observer->on_key(result);
+        }
+    }
+
     void PlatformController::set_enable_cursor(bool enabled) {
         if (enabled) {
             glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -246,6 +256,10 @@ namespace engine::platform {
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
         controller::get<PlatformController>()->_platform_on_mouse(x, y);
+    }
+
+    void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+        controller::get<PlatformController>()->_platform_on_mouse_button(button, action);
     }
 
     static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset) {
