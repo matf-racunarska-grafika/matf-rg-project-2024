@@ -6,7 +6,7 @@
 #include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 
-namespace app {
+namespace engine::test::app {
     void GUIController::initialize() {
         set_enable(false);
     }

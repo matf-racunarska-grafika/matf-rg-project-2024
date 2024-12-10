@@ -5,7 +5,7 @@
 #include <app/MainApp.hpp>
 #include <app/MainController.hpp>
 
-namespace app {
+namespace engine::test::app {
     void MainApp::setup() {
         auto main_controller = engine::controller::register_controller<MainController>();
         auto gui_controller  = engine::controller::register_controller<GUIController>();
@@ -15,5 +15,5 @@ namespace app {
 }
 
 int main(int argc, char **argv) {
-    return std::make_unique<app::MainApp>()->run(argc, argv);
+    return std::make_unique<engine::test::app::MainApp>()->run(argc, argv);
 }

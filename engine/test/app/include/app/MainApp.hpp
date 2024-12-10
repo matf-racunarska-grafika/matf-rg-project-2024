@@ -6,7 +6,7 @@
 #define MAINAPP_HPP
 #include <engine/Engine.hpp>
 
-namespace app {
+namespace engine::test::app {
     class MainApp final : public engine::core::App {
         void setup() override;
     };

@@ -5,7 +5,7 @@
 #include <app/MainController.hpp>
 #include <app/GUIController.hpp>
 
-namespace app {
+namespace engine::test::app {
     void MainPlatformEventObserver::on_key(engine::platform::Key key) {
         spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str());
     }

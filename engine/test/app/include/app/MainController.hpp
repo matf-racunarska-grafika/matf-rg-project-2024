@@ -5,7 +5,7 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 
-namespace app {
+namespace engine::test::app {
     class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
     public:
         void on_key(engine::platform::Key key) override;
