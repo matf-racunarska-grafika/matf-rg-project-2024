@@ -95,38 +95,38 @@ namespace engine::resources {
     };
 
     Model *ResourcesController::model(
-            const std::string &model_name) {
-        auto &result = m_models[model_name];
+            const std::string &name) {
+        auto &result = m_models[name];
         if (!result) {
             auto &config = util::Configuration::config();
-            if (!config["resources"]["models"].contains(model_name)) {
+            if (!config["resources"]["models"].contains(name)) {
                 throw util::ConfigurationError(std::format(
                         "No model ({}) specify in config.json. Please add the model to the config.json.",
-                        model_name));
+                        name));
             }
             std::filesystem::path model_path = m_models_path /
                                                std::filesystem::path(
-                                                       config["resources"]["models"][model_name]["path"].get<
+                                                       config["resources"]["models"][name]["path"].get<
                                                            std::string>());
 
             Assimp::Importer importer;
             int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                         aiProcess_CalcTangentSpace;
-            if (config["resources"]["models"][model_name].value<bool>("flip_uvs", false)) {
+            if (config["resources"]["models"][name].value<bool>("flip_uvs", false)) {
                 flags |= aiProcess_FlipUVs;
             }
 
-            spdlog::info("load_model(name={}, path={})", model_name, model_path.string());
+            spdlog::info("load_model(name={}, path={})", name, model_path.string());
             const aiScene *scene =
                     importer.ReadFile(model_path, flags);
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-                throw util::AssetLoadingError("Assimp error while reading model. ", model_path, model_name);
+                throw util::AssetLoadingError("Assimp error while reading model. ", model_path, name);
             }
 
             std::vector<Mesh> meshes = AssimpSceneProcessor::process_scene(this, scene, model_path);
             result                   = std::make_unique<Model>(Model(std::move(meshes), model_path,
-                                                   model_name));
+                                                   name));
         }
         return result.get();
     }
