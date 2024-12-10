@@ -78,7 +78,7 @@ namespace engine::platform {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
-        m_platform_event_observer.reset(nullptr);
+        m_platform_event_observers.clear();
         glfwDestroyWindow(m_window.handle());
         glfwTerminate();
     }
@@ -188,7 +188,7 @@ namespace engine::platform {
     }
 
     void PlatformController::register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer) {
-        m_platform_event_observer = std::move(observer);
+        m_platform_event_observers.emplace_back(std::move(observer));
     }
 
     void PlatformController::_platform_on_mouse(double x, double y) {
@@ -198,23 +198,31 @@ namespace engine::platform {
         g_mouse_position.dy = last_y - y; // because in glfw the top left corner is the (0,0)
         g_mouse_position.x  = x;
         g_mouse_position.y  = y;
-        m_platform_event_observer->on_mouse_move(g_mouse_position);
+        for (auto &observer: m_platform_event_observers) {
+            observer->on_mouse_move(g_mouse_position);
+        }
     }
 
     void PlatformController::_platform_on_keyboard(int key_code, int action) {
         const Key result = key(g_glfw_key_to_engine[key_code]);
-        m_platform_event_observer->on_key(result);
+        for (auto &observer: m_platform_event_observers) {
+            observer->on_key(result);
+        }
     }
 
     void PlatformController::_platform_on_scroll(double x, double y) {
         g_mouse_position.scroll = y;
-        m_platform_event_observer->on_mouse_move(g_mouse_position);
+        for (auto &observer: m_platform_event_observers) {
+            observer->on_mouse_move(g_mouse_position);
+        }
     }
 
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) {
         m_window.m_width  = width;
         m_window.m_height = height;
-        m_platform_event_observer->on_window_resize(width, height);
+        for (auto &observer: m_platform_event_observers) {
+            observer->on_window_resize(width, height);
+        }
     }
 
     void PlatformController::_platform_on_window_close(GLFWwindow *window) {

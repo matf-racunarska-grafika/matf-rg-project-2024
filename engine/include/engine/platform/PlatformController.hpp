@@ -151,7 +151,7 @@ namespace engine::platform {
         FrameTime m_frame_time;
         Window m_window;
         std::vector<Key> m_keys;
-        std::unique_ptr<PlatformEventObserver> m_platform_event_observer;
+        std::vector<std::unique_ptr<PlatformEventObserver> > m_platform_event_observers;
     };
 } // namespace engine
 
