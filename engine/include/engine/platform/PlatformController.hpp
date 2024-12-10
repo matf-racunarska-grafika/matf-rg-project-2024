@@ -11,17 +11,35 @@
 #include <engine/platform/Input.hpp>
 #include <engine/platform/Window.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
-#include <engine/controller/ControllerManager.hpp>
+#include <engine/Declarations.hpp>
 
 struct GLFWwindow;
 
 namespace engine::platform {
+    /**
+    * @struct FrameTime
+    * @brief Stores elapsed time for frames in seconds.
+    */
     struct FrameTime {
+        /**
+        * @brief Elapsed seconds for the previous frame.
+        */
         float dt;
+
+        /**
+        * @brief Time from the initialization of the Platform to the moment when the previous frame began.
+        */
         float previous;
+
+        /**
+        * @brief Time from the initialization of the Platform to the moment when the current frame began.
+        */
         float current;
     };
 
+    /**
+    * @class PlatformController
+    */
     class PlatformController final : public controller::Controller {
         friend class ControllerManager;
 

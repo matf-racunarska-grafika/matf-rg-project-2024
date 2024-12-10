@@ -6,8 +6,12 @@
 #include <app/GUIController.hpp>
 
 namespace app {
-    void MainPlatformEventObserver::on_keyboard(engine::platform::Key key) {
+    void MainPlatformEventObserver::on_key(engine::platform::Key key) {
         spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str());
+    }
+
+    void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+        spdlog::info("MousePosition: {} {}", position.x, position.y);
     }
 
     void MainController::initialize() {

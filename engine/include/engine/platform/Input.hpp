@@ -7,6 +7,9 @@
 #include <string_view>
 
 namespace engine::platform {
+    /**
+    * @brief All the Keys that the engine can register.
+    */
     enum KeyId {
         MOUSE_BUTTON_1 = 0,
         MOUSE_BUTTON_2,
@@ -143,32 +146,80 @@ namespace engine::platform {
         KEY_COUNT,
     };
 
-    class Key {
+    /**
+    * @class Key
+    * @brief Represents the state of the key in a given frame.
+    */
+    class Key final {
         friend class PlatformController;
 
     public:
-        enum class State { Released, JustPressed, Pressed, JustReleased };
+        /**
+        * @brief The state of the key with regard to whether it is pressed or not.
+        */
+        enum class State {
+            /**
+            * @brief The key is up.
+            */
+            Released,
+            /**
+            * @brief The key has just been pressed in the current frame.
+            * This state only lasts for the frame in which the key was first registered as pressed.
+            */
+            JustPressed,
+            /**
+            * @brief The key is being held down.
+            * If the key was `JustPressed` in the previous frame, and it is still down in the current frame,
+            * its state transitions into Pressed.
+            */
+            Pressed,
+            /**
+            * @brief Lasts only for the frame in which the key was released.
+            * In the next frame, if the key is not pressed again, it transitions into Released.
+            */
+            JustReleased
+        };
 
+        /**
+        * @returns The state of the key in the current frame.
+        */
         State &state() {
             return m_state;
         }
 
+        /**
+        * @returns The id of the key.
+        */
         KeyId id() const {
             return m_key;
         }
 
+        /**
+        * @returns The @ref KeyId as a string.
+        */
         std::string_view name();
 
         State state() const {
             return m_state;
         }
 
+        /**
+        *  @returns The @ref State of the key as a string_view.
+        */
         std::string_view state_str() const;
 
+        /**
+        * @brief Shorthand method for checking whether the key is down.
+        * @returns True if the key is Pressed or JustPressed
+        */
         bool is_down() const {
             return (m_state == State::Pressed || m_state == State::JustPressed);
         }
 
+        /**
+        * @brief Shorthand method for checking whether the key is up.
+        * @returns True if the key is Released or JustReleased
+        */
         bool is_up() const {
             return (m_state == State::Released || m_state == State::JustReleased);
         }
@@ -178,11 +229,31 @@ namespace engine::platform {
         State m_state = State::Released;
     };
 
+    /**
+    *  @struct MousePosition
+    *  @brief Represents mouse position in a given frame relative to the top left corner of the screen.
+    */
     struct MousePosition {
+        /**
+        * @brief X coordinate of the mouse position relative to the top left corner of the screen.
+        */
         float x;
+        /**
+        * @brief Y coordinate of the mouse position relative to the top left corner of the screen.
+        */
         float y;
+        /**
+        * @brief The change in the X coordinate from the previous frame.
+        */
         float dx;
+        /**
+        * @brief The change in the Y coordinate from the previous frame.
+        */
         float dy;
+
+        /**
+        * @brief The rotation of the scroll button.
+        */
         float scroll;
     };
 }

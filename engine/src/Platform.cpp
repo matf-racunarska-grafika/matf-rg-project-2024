@@ -151,7 +151,7 @@ namespace engine::platform {
     }
 
     std::string_view Key::state_str() const {
-        switch (state) {
+        switch (m_state) {
         case Key::State::Released: return "Released";
         case Key::State::JustPressed: return "JustPressed";
         case Key::State::Pressed: return "Pressed";
@@ -165,10 +165,10 @@ namespace engine::platform {
         return m_keys[key];
     }
 
-    void PlatformEventObserver::on_mouse(MousePosition position) {
+    void PlatformEventObserver::on_mouse_move(MousePosition position) {
     }
 
-    void PlatformEventObserver::on_keyboard(Key key) {
+    void PlatformEventObserver::on_key(Key key) {
     }
 
     void PlatformEventObserver::on_window_resize(int width, int height) {
@@ -198,17 +198,17 @@ namespace engine::platform {
         g_mouse_position.dy = last_y - y; // because in glfw the top left corner is the (0,0)
         g_mouse_position.x  = x;
         g_mouse_position.y  = y;
-        m_platform_event_observer->on_mouse(g_mouse_position);
+        m_platform_event_observer->on_mouse_move(g_mouse_position);
     }
 
     void PlatformController::_platform_on_keyboard(int key_code, int action) {
         const Key result = key(g_glfw_key_to_engine[key_code]);
-        m_platform_event_observer->on_keyboard(result);
+        m_platform_event_observer->on_key(result);
     }
 
     void PlatformController::_platform_on_scroll(double x, double y) {
         g_mouse_position.scroll = y;
-        m_platform_event_observer->on_mouse(g_mouse_position);
+        m_platform_event_observer->on_mouse_move(g_mouse_position);
     }
 
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) {

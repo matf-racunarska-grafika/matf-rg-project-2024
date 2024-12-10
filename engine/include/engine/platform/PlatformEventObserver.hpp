@@ -9,9 +9,9 @@
 namespace engine::platform {
     class PlatformEventObserver {
     public:
-        virtual void on_mouse(MousePosition position);
+        virtual void on_mouse_move(MousePosition position);
 
-        virtual void on_keyboard(Key key);
+        virtual void on_key(Key key);
 
         virtual void on_window_resize(int width, int height);
 
