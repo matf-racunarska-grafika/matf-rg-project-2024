@@ -29,3 +29,9 @@ option(BUILD_TEST_APP "Builds a test application" ON)
 if (BUILD_TEST_APP)
     add_subdirectory(engine/test/app)
 endif ()
+
+############ APP #################
+option(BUILD_APP "Builds the app" ON)
+if (BUILD_APP)
+    add_subdirectory(app/)
+endif ()
