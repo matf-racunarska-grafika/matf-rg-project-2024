@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/5/24.
-//
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP

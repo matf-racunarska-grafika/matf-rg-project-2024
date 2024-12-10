@@ -1,6 +1,3 @@
-//
-// Created by spaske00 on 13.5.24.
-//
 
 #include <engine/util/Utils.hpp>
 #include <engine/util/Errors.hpp>

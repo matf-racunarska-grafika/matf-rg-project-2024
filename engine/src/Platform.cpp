@@ -1,6 +1,3 @@
-//
-// Created by spaske00 on 13.5.24.
-//
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>

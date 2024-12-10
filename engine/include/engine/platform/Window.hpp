@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/7/24.
-//
 
 #ifndef WINDOW_HPP
 #define WINDOW_HPP

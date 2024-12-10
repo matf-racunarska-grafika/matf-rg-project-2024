@@ -1,6 +1,3 @@
-//
-// Created by spaske00 on 13.5.24.
-//
 
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H

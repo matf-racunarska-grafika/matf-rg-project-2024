@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/3/24.
-//
 
 #ifndef OPENGL_HPP
 #define OPENGL_HPP
@@ -38,6 +35,7 @@ namespace engine::graphics {
 
         /**
         * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref util::OpenGLError.
+
         * @param location Source location of where the call was made.
         * @param glfun OpenGL function to call.
         * @param args  OpenGL function arguments.
@@ -138,7 +136,8 @@ namespace engine::graphics {
         */
         static std::string get_compilation_error_message(uint32_t shader_id);
 
-    private:
+    private
+    :
         /**
         * @brief Throws @ref util::OpenGLError if an OpenGL error occurred. Used internally.
         * @param location Source location from where the OpenGL call was made.

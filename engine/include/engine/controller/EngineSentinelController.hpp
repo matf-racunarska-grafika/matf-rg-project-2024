@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/7/24.
-//
 
 #ifndef ENGINESENTINELCONTROLLER_HPP
 #define ENGINESENTINELCONTROLLER_HPP

@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/2/24.
-//
 
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP

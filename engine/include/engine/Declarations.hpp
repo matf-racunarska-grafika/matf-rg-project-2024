@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/7/24.
-//
 
 #ifndef DECLARATIONS_HPP
 #define DECLARATIONS_HPP

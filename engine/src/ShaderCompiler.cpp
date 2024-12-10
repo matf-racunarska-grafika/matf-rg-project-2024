@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/5/24.
-//
 #include <glad/glad.h>
 #include <engine/resources/ShaderCompiler.hpp>
 #include <engine/util/Errors.hpp>

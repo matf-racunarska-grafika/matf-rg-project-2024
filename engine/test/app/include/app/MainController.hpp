@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/9/24.
-//
 
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP

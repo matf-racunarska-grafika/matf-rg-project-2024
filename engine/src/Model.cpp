@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/2/24.
-//
 
 #include <engine/resources/Model.hpp>
 

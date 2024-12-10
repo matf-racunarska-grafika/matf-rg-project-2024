@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/3/24.
-//
 #include <glad/glad.h>
 #include <filesystem>
 #include <array>

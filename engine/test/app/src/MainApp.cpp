@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/9/24.
-//
 #include <app/GUIController.hpp>
 #include <app/MainApp.hpp>
 #include <app/MainController.hpp>

@@ -1,6 +1,3 @@
-//
-// Created by spaske on 11/30/24.
-//
 
 #include <engine/graphics/Camera.hpp>
 

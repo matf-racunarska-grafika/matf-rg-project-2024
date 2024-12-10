@@ -1,6 +1,3 @@
-//
-// Created by spaske00 on 20.4.24
-//
 #include <spdlog/spdlog.h>
 #include <engine/core/App.hpp>
 #include <engine/platform/PlatformController.hpp>

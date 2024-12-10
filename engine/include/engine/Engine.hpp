@@ -1,6 +1,3 @@
-//
-// Created by spaske00 on 13.5.24.
-//
 
 #ifndef MATF_RG_PROJECT_ENGINE_HPP
 #define MATF_RG_PROJECT_ENGINE_HPP

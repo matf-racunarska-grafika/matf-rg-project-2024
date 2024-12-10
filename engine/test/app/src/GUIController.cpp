@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/9/24.
-//
 #include <imgui.h>
 #include <engine/Engine.hpp>
 #include <app/GUIController.hpp>

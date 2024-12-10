@@ -1,6 +1,3 @@
-//
-// Created by spaske on 12/9/24.
-//
 
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
