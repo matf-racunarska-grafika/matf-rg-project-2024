@@ -95,7 +95,7 @@ namespace engine::platform {
         g_mouse_position.dx = g_mouse_position.dy = 0.0f;
         glfwPollEvents();
         for (int i = 0; i < KEY_COUNT; ++i) {
-            update_key(key(static_cast<KeyId>(i)));
+            update_key(key_ref(static_cast<KeyId>(i)));
         }
     }
 
@@ -160,7 +160,7 @@ namespace engine::platform {
         }
     }
 
-    Key &PlatformController::key(KeyId key) {
+    Key &PlatformController::key_ref(KeyId key) {
         RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
     }

@@ -9,8 +9,8 @@ namespace engine::test::app {
     }
 
     void GUIController::poll_events() {
-        const auto platform = engine::controller::get<engine::platform::PlatformController>();
-        if (platform->key(engine::platform::KeyId::KEY_F2).state() == engine::platform::Key::State::JustPressed) {
+        const auto platform = engine::controller::get<platform::PlatformController>();
+        if (platform->key(platform::KeyId::KEY_F2).state() == platform::Key::State::JustPressed) {
             set_enable(!is_enabled());
         }
     }
