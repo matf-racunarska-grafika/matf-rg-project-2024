@@ -57,13 +57,13 @@ namespace engine::platform {
         RG_GUARANTEE(handle, "GLFW3 platform failed to create a Window.");
         m_window = Window(handle, window_width, window_height, window_title);
 
-        glfwMakeContextCurrent(m_window.handle());
-        glfwSetCursorPosCallback(m_window.handle(), glfw_mouse_callback);
-        glfwSetScrollCallback(m_window.handle(), glfw_scroll_callback);
-        glfwSetKeyCallback(m_window.handle(), glfw_key_callback);
-        glfwSetFramebufferSizeCallback(m_window.handle(), glfw_framebuffer_size_callback);
-        glfwSetMouseButtonCallback(m_window.handle(), glfw_mouse_button_callback);
-        glfwSetWindowCloseCallback(m_window.handle(), glfw_window_close_callback);
+        glfwMakeContextCurrent(m_window.handle_());
+        glfwSetCursorPosCallback(m_window.handle_(), glfw_mouse_callback);
+        glfwSetScrollCallback(m_window.handle_(), glfw_scroll_callback);
+        glfwSetKeyCallback(m_window.handle_(), glfw_key_callback);
+        glfwSetFramebufferSizeCallback(m_window.handle_(), glfw_framebuffer_size_callback);
+        glfwSetMouseButtonCallback(m_window.handle_(), glfw_mouse_button_callback);
+        glfwSetWindowCloseCallback(m_window.handle_(), glfw_window_close_callback);
 
         int major, minor, revision;
         glfwGetVersion(&major, &minor, &revision);
@@ -82,7 +82,7 @@ namespace engine::platform {
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
         m_platform_event_observers.clear();
-        glfwDestroyWindow(m_window.handle());
+        glfwDestroyWindow(m_window.handle_());
         glfwTerminate();
     }
 
@@ -91,7 +91,7 @@ namespace engine::platform {
         m_frame_time.current  = glfwGetTime();
         m_frame_time.dt       = m_frame_time.current - m_frame_time.previous;
 
-        return !glfwWindowShouldClose(m_window.handle());
+        return !glfwWindowShouldClose(m_window.handle_());
     }
 
     void PlatformController::poll_events() {
@@ -103,7 +103,7 @@ namespace engine::platform {
     }
 
     void PlatformController::swap_buffers() {
-        glfwSwapBuffers(m_window.handle());
+        glfwSwapBuffers(m_window.handle_());
     }
 
     int glfw_platform_action(GLFWwindow *window, int glfw_key_code) {
@@ -116,7 +116,7 @@ namespace engine::platform {
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.id();
         int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
-        int action          = glfw_platform_action(m_window.handle(), glfw_key_code);
+        int action          = glfw_platform_action(m_window.handle_(), glfw_key_code);
         switch (key_data.state()) {
         case Key::State::Released: {
             if (action == GLFW_PRESS) {
@@ -229,7 +229,7 @@ namespace engine::platform {
     }
 
     void PlatformController::_platform_on_window_close(GLFWwindow *window) {
-        if (m_window.handle() == window) {
+        if (m_window.handle_() == window) {
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
     }
@@ -243,9 +243,9 @@ namespace engine::platform {
 
     void PlatformController::set_enable_cursor(bool enabled) {
         if (enabled) {
-            glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(m_window.handle_(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else {
-            glfwSetInputMode(m_window.handle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(m_window.handle_(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
     }
 
