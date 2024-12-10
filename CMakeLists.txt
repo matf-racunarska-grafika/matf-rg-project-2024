@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(matf-rg-project)
+project(matf-rg-engine)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -19,9 +19,9 @@ add_subdirectory(libs/imgui)
 file(GLOB engine-sources engine/src/*.cpp)
 file(GLOB engine-headers engine/include/engine/*.hpp)
 
-add_library(engine ${engine-sources} ${engine-headers})
-target_include_directories(engine PUBLIC engine/include)
-target_link_libraries(engine PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
+add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers})
+target_include_directories(${PROJECT_NAME} PUBLIC engine/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC spdlog::spdlog glm imgui json)
 
 ############# TEST ###############
