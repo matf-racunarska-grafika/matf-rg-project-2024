@@ -41,7 +41,8 @@ namespace engine::graphics {
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         } else {
-            throw util::AssetLoadingError(std::format("Failed to load texture {}", path.string()));
+            throw util::EngineError(util::EngineError::Type::AssetLoadingError,
+                                    std::format("Failed to load texture {}", path.string()));
         }
         return texture_id;
     }
@@ -116,7 +117,8 @@ namespace engine::graphics {
 
     void OpenGL::assert_no_error(std::source_location location) {
         if (auto error = glGetError(); error != GL_NO_ERROR) {
-            throw util::OpenGLError(std::format("OpenGL call error: '{}'", gl_call_error_description(error)),
+            throw util::EngineError(util::EngineError::Type::OpenGLError,
+                                    std::format("OpenGL call error: '{}'", gl_call_error_description(error)),
                                     location);
         };
     }
@@ -145,7 +147,8 @@ namespace engine::graphics {
                                 GL_UNSIGNED_BYTE,
                                 data);
             } else {
-                throw util::AssetLoadingError(std::format("Failed to load skybox texture {}", path.string()));
+                throw util::EngineError(util::EngineError::Type::AssetLoadingError,
+                                        std::format("Failed to load skybox texture {}", path.string()));
             }
         }
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

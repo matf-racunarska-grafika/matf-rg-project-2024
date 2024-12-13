@@ -7,8 +7,32 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
+#define BIT(k) (1 << k)
 
 namespace engine::resources {
+    enum VertexAttribute {
+        VertexAttribute_Position  = BIT(1),
+        VertexAttribute_Normal    = BIT(2),
+        VertexAttribute_TexCords  = BIT(3),
+        VertexAttribute_Tangent   = BIT(4),
+        VertexAttribute_BiTangent = BIT(5),
+    };
+
+    static VertexAttribute vertex_attributes[] = {
+        VertexAttribute_Position,
+        VertexAttribute_Normal,
+        VertexAttribute_TexCords,
+        VertexAttribute_Tangent,
+        VertexAttribute_BiTangent,
+    };
+
+    struct VerticesDescriptor {
+        void *memory;
+        int32_t attributes;
+        int32_t count;
+        int32_t size_in_bytes;
+    };
+
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;

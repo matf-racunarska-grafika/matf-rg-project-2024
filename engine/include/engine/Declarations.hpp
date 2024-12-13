@@ -42,15 +42,6 @@ namespace engine {
         class Configuration;
         class Error;
         class EngineError;
-        class Unimplemented;
-        class ShouldNotReachHere;
-        class GuaranteeViolation;
-        class FileNotFoundError;
-        class ConfigurationError;
-        class ShaderCompilationError;
-        class AssetLoadingError;
-        class OpenGLError;
-
     }
 }
 

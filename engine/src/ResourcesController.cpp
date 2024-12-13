@@ -37,8 +37,8 @@ namespace engine::resources {
         }
         const auto &config = util::Configuration::config();
         if (!config.contains("resources") || !config["resources"].contains("models")) {
-            throw util::ConfigurationError(
-                    "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
+            throw util::EngineError(util::EngineError::Type::ConfigurationError,
+                                    "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
         }
         for (const auto &model_entry: config["resources"]["models"].items()) {
             model(model_entry.key());
@@ -100,9 +100,9 @@ namespace engine::resources {
         if (!result) {
             auto &config = util::Configuration::config();
             if (!config["resources"]["models"].contains(name)) {
-                throw util::ConfigurationError(std::format(
-                        "No model ({}) specify in config.json. Please add the model to the config.json.",
-                        name));
+                throw util::EngineError(util::EngineError::Type::ConfigurationError, std::format(
+                                                "No model ({}) specify in config.json. Please add the model to the config.json.",
+                                                name));
             }
             std::filesystem::path model_path = m_models_path /
                                                std::filesystem::path(
@@ -121,7 +121,9 @@ namespace engine::resources {
                     importer.ReadFile(model_path, flags);
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-                throw util::AssetLoadingError("Assimp error while reading model. ", model_path, name);
+                throw util::EngineError(util::EngineError::Type::AssetLoadingError,
+                                        std::format("Assimp error while reading model: {} from path {}.",
+                                                    model_path.string(), name));
             }
 
             std::vector<Mesh> meshes = AssimpSceneProcessor::process_scene(this, scene, model_path);

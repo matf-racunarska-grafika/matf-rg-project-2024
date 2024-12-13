@@ -17,6 +17,12 @@ namespace engine::resources {
         glDeleteTextures(1, &m_id);
     }
 
+    void Texture::bind(int32_t sampler) {
+        RG_GUARANTEE(sampler >= GL_TEXTURE0 && sampler <= GL_TEXTURE31, "sampler out of range");
+        glActiveTexture(sampler);
+        glBindTexture(GL_TEXTURE_2D, m_id);
+    }
+
     std::string_view Texture::uniform_name_convention(TextureType type) {
         switch (type) {
         case TextureType::Diffuse: return "texture_diffuse";

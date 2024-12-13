@@ -3,34 +3,12 @@
 #ifndef MATF_RG_PROJECT_ERRORS_HPP
 #define MATF_RG_PROJECT_ERRORS_HPP
 
-#include <filesystem>
-#include <format> //NOLINT
 #include <source_location>
 #include <string>
 #include <utility>
-// TODO(mspasic): add debug flag condition for throwing
-#define RG_GUARANTEE(expr, msg, ...)                                                                                   \
-    do {                                                                                                               \
-        if (!(expr)) {                                                                                                 \
-            throw engine::util::GuaranteeViolation(std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
-        }                                                                                                              \
-    } while (0)
-#define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
-    do {                                                                                                               \
-        throw engine::util::ShouldNotReachHere(std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
-    } while (0)
-#define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
-    do {                                                                                                               \
-        throw engine::util::Unimplemented(std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
-    } while (0)
+#include <format>
 
 namespace engine::util {
-    void tracing_on();
-
-    void tracing_off();
-
-    void trace(std::source_location location = std::source_location::current());
-
     class Error : public std::exception {
     public:
         explicit Error(std::string message, std::source_location location = std::source_location::current())
@@ -55,91 +33,59 @@ namespace engine::util {
         std::source_location m_location;
     };
 
-    class EngineError : public Error {
+    class EngineError final : public Error {
     public:
-        using Error::Error;
-    };
+        enum class Type {
+            Unimplemented,
+            ShouldNotReachHere,
+            GuaranteeViolation,
+            FileNotFound,
+            ConfigurationError,
+            ShaderCompilationError,
+            OpenGLError,
+            AssetLoadingError,
 
-    class Unimplemented final : public EngineError {
-    public:
-        using EngineError::EngineError;
+            EngineErrorCount
+        };
 
-        std::string report() const override;
-    };
+        static std::string_view type_string(Type error);
 
-    class ShouldNotReachHere final : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class GuaranteeViolation final : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
-    };
-
-    class FileNotFoundError final : public EngineError {
-    public:
-        explicit FileNotFoundError(std::filesystem::path path, std::string message,
-                                   std::source_location location = std::source_location::current())
-        : EngineError(std::move(message), location)
-      , m_path(std::move(path)) {
+        EngineError(Type error_type, std::string message,
+                    std::source_location location = std::source_location::current())
+        : Error(std::move(message), std::move(location))
+      , m_error(error_type) {
         }
 
         std::string report() const override;
 
-        const std::filesystem::path &file_path() const;
-
     private:
-        std::filesystem::path m_path;
-    };
-
-    class ConfigurationError final : public EngineError {
-    public:
-        using EngineError::EngineError;
-
-        std::string report() const override;
+        Type m_error;
     };
 
     class UserError : public Error {
     public:
         using Error::Error;
     };
-
-    class ShaderCompilationError final : public UserError {
-    public:
-        using UserError::UserError;
-
-        std::string report() const override;
-    };
-
-    class OpenGLError final : public UserError {
-    public:
-        using UserError::UserError;
-
-        std::string report() const override;
-    };
-
-    class AssetLoadingError final : public UserError {
-    public:
-        using UserError::UserError;
-
-        AssetLoadingError(std::string message, std::filesystem::path path, std::string model_name,
-                          std::source_location location = std::source_location::current())
-        : UserError(std::move(message), location)
-      , m_path(std::move(path))
-      , m_model_name(std::move(model_name)) {
-        }
-
-        std::string report() const override;
-
-    private:
-        std::filesystem::path m_path;
-        std::string m_model_name;
-    };
 } // namespace engine
+
+#define RG_GUARANTEE(expr, msg, ...)                                                                                   \
+    do {                                                                                                               \
+        if (!(expr)) {                                                                                                 \
+            throw engine::util::EngineError(engine::util::EngineError::Type::GuaranteeViolation, std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
+        }                                                                                                              \
+    } while (0)
+#define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
+    do {                                                                                                               \
+        throw engine::util::EngineError(engine::util::EngineError::Type::ShouldNotReachHere, std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
+    } while (0)
+#define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
+    do {                                                                                                               \
+        throw engine::util::EngineError(engine::util::EngineError::Type::Unimplemented, std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
+    } while (0)
+
+#define RG_ENGINE_ERROR(type, msg, ...) \
+    do { \
+        throw engine::util::EngineError(type, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
+    } while(0)
 
 #endif//MATF_RG_PROJECT_ERRORS_HPP

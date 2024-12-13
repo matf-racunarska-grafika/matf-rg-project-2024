@@ -35,6 +35,8 @@ namespace engine::resources {
             return m_id;
         }
 
+        void bind(int32_t sampler);
+
         const std::filesystem::path &path() const {
             return m_path;
         }

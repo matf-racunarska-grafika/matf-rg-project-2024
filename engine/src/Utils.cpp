@@ -7,21 +7,38 @@
 #include <engine/util/ArgParser.hpp>
 
 namespace engine::util {
+    static bool g_tracing = true;
+
+    void tracing_on() {
+        g_tracing = true;
+    }
+
+    void tracing_off() {
+        g_tracing = false;
+    }
+
+    void trace(std::source_location location) {
+        if (g_tracing) {
+            spdlog::info("{}, in {}:{}", location.function_name(), location.file_name(), location.line());
+        }
+    }
 
     void Configuration::initialize() {
         auto config_path = get_config_path();
         std::ifstream f(config_path);
         if (!f.is_open()) {
-            throw FileNotFoundError(config_path, "Failed to load configuration file.");
+            throw EngineError(EngineError::Type::FileNotFound,
+                              std::format("Failed to load configuration file {}", config_path.string()));
         }
 
         try {
             m_config = json::parse(f);
         } catch (const std::exception &e) {
             std::string message(e.what());
-            throw ConfigurationError(std::format("Error \"{}\" occurred while parsing the configuration file. "
-                                                 "Please make sure that the file is in the correct json format.",
-                                                 message));
+            throw EngineError(EngineError::Type::ConfigurationError, std::format(
+                                      "Error \"{}\" occurred while parsing the configuration file. "
+                                      "Please make sure that the file is in the correct json format.",
+                                      message));
         }
         spdlog::info("Configuration initialized.");
     }
@@ -31,7 +48,8 @@ namespace engine::util {
         if (!config_arg.has_value() || !exists(std::filesystem::path(config_arg.value()))) {
             std::ofstream f(CONFIG_FILE_NAME.data());
             if (!f.is_open()) {
-                throw ConfigurationError(std::format("Failed to open configuration file."));
+                throw EngineError(EngineError::Type::ConfigurationError,
+                                  std::format("Failed to open configuration file."));
             }
             auto config = create_default();
             f << config.dump(4);
@@ -55,10 +73,6 @@ namespace engine::util {
 
     Configuration::json &Configuration::config() {
         return instance()->m_config;
-    }
-
-    std::string ConfigurationError::report() const {
-        return std::format("ConfigurationError {}:{}. {}.", location().file_name(), location().line(), message());
     }
 
     ArgParser *ArgParser::instance() {
