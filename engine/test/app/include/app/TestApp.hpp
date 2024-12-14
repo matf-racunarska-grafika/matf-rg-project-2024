@@ -4,7 +4,7 @@
 #include <engine/core/Engine.hpp>
 
 namespace engine::test::app {
-    class MainApp final : public engine::core::App {
+    class TestApp final : public engine::core::App {
         void setup() override;
     };
 }

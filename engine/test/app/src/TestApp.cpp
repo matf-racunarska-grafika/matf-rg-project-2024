@@ -1,9 +1,9 @@
 #include <app/GUIController.hpp>
-#include <app/MainApp.hpp>
+#include <app/TestApp.hpp>
 #include <app/MainController.hpp>
 
 namespace engine::test::app {
-    void MainApp::setup() {
+    void TestApp::setup() {
         auto main_controller = engine::controller::register_controller<MainController>();
         auto gui_controller  = engine::controller::register_controller<GUIController>();
         main_controller->after(engine::controller::get<controller::EngineSentinelController>());
@@ -12,5 +12,5 @@ namespace engine::test::app {
 }
 
 int main(int argc, char **argv) {
-    return std::make_unique<engine::test::app::MainApp>()->run(argc, argv);
+    return std::make_unique<engine::test::app::TestApp>()->run(argc, argv);
 }
