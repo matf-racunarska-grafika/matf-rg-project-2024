@@ -1,7 +1,7 @@
 
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
-#include <engine/Engine.hpp>
+#include <engine/core/Engine.hpp>
 
 namespace engine::test::app {
     class GUIController final : public engine::controller::Controller {

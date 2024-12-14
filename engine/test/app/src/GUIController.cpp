@@ -1,5 +1,5 @@
 #include <imgui.h>
-#include <engine/Engine.hpp>
+#include <engine/core/Engine.hpp>
 #include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 

@@ -1,7 +1,7 @@
 
 #ifndef MAINAPP_HPP
 #define MAINAPP_HPP
-#include <engine/Engine.hpp>
+#include <engine/core/Engine.hpp>
 
 namespace engine::test::app {
     class MainApp final : public engine::core::App {

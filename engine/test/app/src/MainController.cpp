@@ -1,6 +1,6 @@
 #include <memory>
 #include <spdlog/spdlog.h>
-#include <engine/Engine.hpp>
+#include <engine/core/Engine.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <app/MainController.hpp>
 #include <app/GUIController.hpp>
