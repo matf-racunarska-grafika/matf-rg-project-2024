@@ -33,13 +33,15 @@ namespace engine::core {
         util::Configuration::instance()->initialize();
 
         // register engine controller
+        auto begin     = controller::ControllerManager::register_controller<controller::EngineControllersBegin>();
         auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
         auto graphics  = controller::ControllerManager::register_controller<graphics::GraphicsController>();
         auto resources = controller::ControllerManager::register_controller<resources::ResourcesController>();
-        auto sentinel  = controller::ControllerManager::register_controller<controller::EngineSentinelController>();
+        auto end       = controller::ControllerManager::register_controller<controller::EngineControllersEnd>();
+        begin->before(platform);
         platform->before(graphics);
         graphics->before(resources);
-        resources->before(sentinel);
+        resources->before(end);
         setup();
     }
 

@@ -6,7 +6,7 @@ namespace engine {
     namespace controller {
         class Controller;
         class ControllerManager;
-        class EngineSentinelController;
+        class EngineControllersBegin;
     };
 
     namespace core {

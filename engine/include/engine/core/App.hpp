@@ -42,6 +42,24 @@ namespace engine::core {
     public:
         /**
         * @brief The main entry point into the App.
+        * @code
+        * int App::run(int argc, char **argv) {
+        *    try {
+        *        setup_(argc, argv);
+        *        initialize();
+        *        while (loop()) {
+        *            poll_events();
+        *            update();
+        *            draw();
+        *        }
+        *        terminate();
+        *    } catch (const Error &e) {
+        *        handle_error(e);
+        *        terminate();
+        *    }
+        *    return on_exit();
+        * }
+        * @endcode
         */
         int run(int argc, char **argv);
 

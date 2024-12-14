@@ -185,6 +185,48 @@ namespace engine::controller {
         */
         bool m_enabled{true};
     };
+
+    /**
+     * @class EngineControllersBegin
+     * @brief This controller does nothing and together with @ref EngineControllersEnd it servers as a sentinel
+     * controller for marking the engine controllers.
+     *
+     * This makes it easier for the concrete `App` implementation to order its custom controllers before/after
+     * engine controllers.
+     *
+     * Here is an example of how to make the `user_controller` execute before all the engine controllers:
+     * @code
+     * auto user_controller = ...;
+     * user_controller->before(engine::controller::get<EngineControllersBegin>());
+     * @endcode
+     */
+    class EngineControllersBegin final : public Controller {
+    public:
+        std::string_view name() const override {
+            return "EngineControllersBegin";
+        }
+    };
+
+    /**
+     * @class EngineControllersEnd
+     * @brief This controller does nothing and together with @ref EngineControllersEnd it servers as a sentinel
+     * controller for marking the engine controllers.
+     *
+     * This makes it easier for the concrete `App` implementation to order its custom controllers before/after
+     * engine controllers.
+     *
+     * Here is an example of how to make the `user_controller` execute after all the engine controllers:
+     * @code
+     * auto user_controller = ...;
+     * user_controller->after(engine::controller::get<EngineControllersEnd>());
+     * @endcode
+     */
+    class EngineControllersEnd final : public Controller {
+    public:
+        std::string_view name() const override {
+            return "EngineControllersEnd";
+        }
+    };
 } // namespace engine
 
 #endif//MATF_RG_PROJECT_CONTROLLER_HPP

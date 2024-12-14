@@ -6,8 +6,8 @@ namespace engine::test::app {
     void TestApp::setup() {
         auto main_controller = engine::controller::register_controller<MainController>();
         auto gui_controller  = engine::controller::register_controller<GUIController>();
-        main_controller->after(engine::controller::get<controller::EngineSentinelController>());
-        main_controller->before(gui_controller);
+        main_controller->after(engine::controller::get<controller::EngineControllersEnd>());
+        gui_controller->after(main_controller);
     }
 }
 
