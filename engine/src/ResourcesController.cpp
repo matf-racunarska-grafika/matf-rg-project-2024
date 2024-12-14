@@ -67,17 +67,14 @@ namespace engine::resources {
 
     class AssimpSceneProcessor {
     public:
-        using TextureLoadingCallback = std::function<Texture *(std::filesystem::path)>;
+        std::vector<Mesh> process_meshes();
 
-        static std::vector<Mesh> process_scene(ResourcesController *resources_controller, const aiScene *scene,
-                                               std::filesystem::path model_path);
-
-    private:
         explicit AssimpSceneProcessor(ResourcesController *resources_controller, const aiScene *scene,
                                       std::filesystem::path model_path) :
         m_scene(scene), m_model_path(std::move(model_path)), m_resources_controller(resources_controller) {
         }
 
+    private:
         void process_node(const aiNode *node);
 
         void process_mesh(aiMesh *mesh);
@@ -108,7 +105,6 @@ namespace engine::resources {
                                                std::filesystem::path(
                                                        config["resources"]["models"][name]["path"].get<
                                                            std::string>());
-
             Assimp::Importer importer;
             int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                         aiProcess_CalcTangentSpace;
@@ -125,8 +121,8 @@ namespace engine::resources {
                                         std::format("Assimp error while reading model: {} from path {}.",
                                                     model_path.string(), name));
             }
-
-            std::vector<Mesh> meshes = AssimpSceneProcessor::process_scene(this, scene, model_path);
+            AssimpSceneProcessor scene_processor(this, scene, model_path);
+            std::vector<Mesh> meshes = scene_processor.process_meshes();
             result                   = std::make_unique<Model>(Model(std::move(meshes), model_path,
                                                    name));
         }
@@ -166,12 +162,10 @@ namespace engine::resources {
         return result.get();
     }
 
-    std::vector<Mesh> AssimpSceneProcessor::process_scene(ResourcesController *resources_controller,
-                                                          const aiScene *scene,
-                                                          std::filesystem::path model_path) {
-        AssimpSceneProcessor scene_processor(resources_controller, scene, std::move(model_path));
-        scene_processor.process_node(scene->mRootNode);
-        return std::move(scene_processor.m_meshes);
+    std::vector<Mesh> AssimpSceneProcessor::process_meshes() {
+        m_meshes.clear();
+        process_node(m_scene->mRootNode);
+        return std::move(m_meshes);
     }
 
     void AssimpSceneProcessor::process_node(const aiNode *node) {
