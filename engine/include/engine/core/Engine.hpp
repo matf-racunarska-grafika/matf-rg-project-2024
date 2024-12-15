@@ -6,7 +6,6 @@
 
 #include <engine/controller/Controller.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <engine/controller/EngineSentinelController.hpp>
 
 #include <engine/platform/Window.hpp>
 #include <engine/platform/Input.hpp>

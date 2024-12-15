@@ -8,7 +8,6 @@
 #include <engine/platform/Input.hpp>
 #include <engine/platform/Window.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
-#include <engine/Declarations.hpp>
 
 struct GLFWwindow;
 

@@ -3,9 +3,7 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
-#include <engine/util/Utils.hpp>
 #include <engine/controller/ControllerManager.hpp>
-#include <engine/controller/EngineSentinelController.hpp>
 #include <engine/util/ArgParser.hpp>
 #include <engine/util/Configuration.hpp>
 #include <engine/graphics/GraphicsController.hpp>

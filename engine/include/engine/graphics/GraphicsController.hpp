@@ -4,7 +4,11 @@
 #include <engine/graphics/Camera.hpp>
 #include <engine/controller/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
-#include <engine/Declarations.hpp>
+
+namespace engine::resources {
+    class Skybox;
+    class Shader;
+}
 
 namespace engine::graphics {
     /**

@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-#include <engine/Declarations.hpp>
 #include <engine/resources/ShaderCompiler.hpp>
 #include <engine/util/Errors.hpp>
 #include <format>
