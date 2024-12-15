@@ -3,7 +3,7 @@
 #include <app/MainController.hpp>
 
 namespace engine::test::app {
-    void TestApp::setup() {
+    void TestApp::app_setup() {
         auto main_controller = engine::controller::register_controller<MainController>();
         auto gui_controller  = engine::controller::register_controller<GUIController>();
         main_controller->after(engine::controller::get<controller::EngineControllersEnd>());

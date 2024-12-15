@@ -11,7 +11,8 @@
 namespace engine::core {
     int App::run(int argc, char **argv) {
         try {
-            setup_(argc, argv);
+            engine_setup(argc, argv);
+            app_setup();
             initialize();
             while (loop()) {
                 poll_events();
@@ -26,7 +27,7 @@ namespace engine::core {
         return on_exit();
     }
 
-    void App::setup_(int argc, char **argv) {
+    void App::engine_setup(int argc, char **argv) {
         util::ArgParser::instance()->initialize(argc, argv);
         util::Configuration::instance()->initialize();
 
@@ -40,7 +41,6 @@ namespace engine::core {
         platform->before(graphics);
         graphics->before(resources);
         resources->before(end);
-        setup();
     }
 
     void App::initialize() {
@@ -72,8 +72,8 @@ namespace engine::core {
         controller::ControllerManager::instance()->terminate();
     }
 
-    void App::setup() {
-        RG_UNIMPLEMENTED("You should override App::setup in your App implementation.");
+    void App::app_setup() {
+        RG_UNIMPLEMENTED("You should override App::app_setup in your App implementation.");
     }
 
     void App::handle_error(const util::Error &e) {

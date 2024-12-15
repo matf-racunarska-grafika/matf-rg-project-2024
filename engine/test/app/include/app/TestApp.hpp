@@ -5,7 +5,7 @@
 
 namespace engine::test::app {
     class TestApp final : public engine::core::App {
-        void setup() override;
+        void app_setup() override;
     };
 }
 #endif //MAINAPP_HPP

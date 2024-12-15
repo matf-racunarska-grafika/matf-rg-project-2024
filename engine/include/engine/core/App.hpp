@@ -22,7 +22,7 @@ namespace engine::core {
     * @code
     * int App::run(int argc, char **argv) {
     *    try {
-    *        setup_(argc, argv);
+    *        engine_setup(argc, argv);
     *        initialize();
     *        while (loop()) {
     *            poll_events();
@@ -45,7 +45,7 @@ namespace engine::core {
         * @code
         * int App::run(int argc, char **argv) {
         *    try {
-        *        setup_(argc, argv);
+        *        engine_setup(argc, argv);
         *        initialize();
         *        while (loop()) {
         *            poll_events();
@@ -65,16 +65,16 @@ namespace engine::core {
 
     private:
         /**
-        * @brief The first function that the engine calls to do its internal Controller classes `setup_`.
+        * @brief The first function that the engine calls to do its internal Controller classes `engine_setup`.
         *
-        * After the engine `setup_` is finished, `setup_` calls the @ref App::setup(int argc, char** argv) that
+        * After the engine `engine_setup` is finished, `engine_setup` calls the @ref App::user_setup(int argc, char** argv) that
         * you can override and do your custom setup operations.
         * This is where you should register your own controllers.
         */
-        void setup_(int argc, char **argv);
+        void engine_setup(int argc, char **argv);
 
         /**
-        * @brief Initializes all the controllers registered in @ref App::setup. Calls @ref engine::Controller::initialize for registered controllers.
+        * @brief Initializes all the controllers registered in @ref App::user_setup. Calls @ref engine::Controller::initialize for registered controllers.
         *
         * After this functions finishes all the controllers have been initialized, and they can be now used
         * by calling @ref engine::ControllerManager::get<TController>() or shorter @ref engine::controller.
@@ -124,11 +124,11 @@ namespace engine::core {
 
     protected:
         /**
-        * @brief Override to define your custom app setup that gets called after engine `setup_`.
+        * @brief Override to define your custom app setup that gets called after engine `engine_setup`.
         *
-        * This function gets called by the `App::setup_` after the engine finishes internal setup.
+        * This function gets called by the `App::engine_setup` after the engine finishes internal setup.
         */
-        virtual void setup();
+        virtual void app_setup();
 
         /**
         * @brief Called right before the App exits.

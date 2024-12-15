@@ -29,7 +29,7 @@ class App {
 public:
 int run(int argc, char** argv) {
   try {
-    setup_(argc, argv);
+    engine_setup(argc, argv);
     initialize();
     while (loop()) {
         poll_events();
@@ -43,7 +43,7 @@ int run(int argc, char** argv) {
 };
 ```
 
-* `setup_` - here, the engine controllers are setup, afterwards the `setup` function is called
+* `engine_setup` - here, the engine controllers are setup, afterwards the `setup` function is called
 * `setup` - the function that the user of the `App` overrides and implements a custom setup for the App
 * `initialize` - `App` should gather whatever `Resources` it needs and initialize its state.
 * `loop` - `App` can check whether it should continue running. If the `loop` method returns `false`,
@@ -65,7 +65,7 @@ class App {
         int run(int argc, char **argv);
         virtual ~App() = default;
     private:
-        void setup_(int argc, char **argv);
+        void engine_setup(int argc, char **argv);
         void initialize();
         void poll_events();
         bool loop();
@@ -160,7 +160,7 @@ public:
   void setup() override;
 };
 
-void MyApp::setup() {
+void MyApp::user_setup() {
     spdlog::info("Hello, setup!");
 }
 
@@ -400,7 +400,7 @@ Why this way? It's less error-prone and more straightforward to add debugging as
 2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
    `terminate`) for which you want to
    execute custom code.
-3. Register the controller in the `MainApp::setup`.
+3. Register the controller in the `MainApp::user_setup`.
 
 Here is the example of creating the `MainController` that enables `depth testing`.
 
