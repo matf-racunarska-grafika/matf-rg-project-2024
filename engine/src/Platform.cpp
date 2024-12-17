@@ -73,15 +73,14 @@ namespace engine::platform {
         for (int key = 0; key < m_keys.size(); ++key) {
             m_keys[key].m_key = static_cast<KeyId>(key);
         }
-
-        register_platform_event_observer(std::make_unique<PlatformEventObserver>());
     }
 
     void PlatformController::terminate() {
-
         m_platform_event_observers.clear();
-        glfwDestroyWindow(m_window.handle_());
-        glfwTerminate();
+        if (m_window.handle_()) {
+            glfwDestroyWindow(m_window.handle_());
+            glfwTerminate();
+        }
     }
 
     bool PlatformController::loop() {
