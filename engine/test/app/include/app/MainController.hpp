@@ -10,7 +10,7 @@ namespace engine::test::app {
         void on_mouse_move(engine::platform::MousePosition position) override;
     };
 
-    class MainController final : public engine::controller::Controller {
+    class MainController final : public engine::core::Controller {
         void initialize() override;
 
         bool loop() override;

@@ -5,11 +5,13 @@
 #ifndef MATF_RG_PROJECT_CONTROLLER_HPP
 #define MATF_RG_PROJECT_CONTROLLER_HPP
 
+#include <engine/util/Errors.hpp>
+#include <memory>
 #include <string_view>
 #include <vector>
 #include <typeinfo>
 
-namespace engine::controller {
+namespace engine::core {
     /**
     * @class Controller
     * @brief Controllers are a hook into the Engines `main loop` execution.
@@ -34,9 +36,24 @@ namespace engine::controller {
     * \endcode
     */
     class Controller {
-        friend class ControllerManager;
+        friend class App;
 
     public:
+        /**
+        * @brief Serves as a single access point for all the Controller types throughout the code base.
+        *
+        * @returns The only instance of the TController.
+        */
+        template<typename TController>
+        static TController *get(std::source_location location = std::source_location::current()) {
+            static_assert(std::is_base_of_v<Controller, TController>);
+            static TController *controller = create_if_absent<TController>();
+            RG_GUARANTEE(controller->is_registered(),
+                         "Trying to get an unregistered controller in: {}:{}.\nPlease call register_controller<> first during App::app_setup.",
+                         location.file_name(), location.line());
+            return controller;
+        }
+
         /**
         * Returns the controller class name; used for logging.
         * @return Controller name
@@ -153,6 +170,13 @@ namespace engine::controller {
         virtual void terminate() {
         }
 
+        template<typename TController>
+        static TController *create_if_absent() {
+            static_assert(std::is_base_of_v<Controller, TController>);
+            static std::unique_ptr<TController> controller = std::make_unique<TController>();
+            return controller.get();
+        }
+
         /**
          * @brief List of controller that are dependent on this controller
          */
@@ -180,7 +204,7 @@ namespace engine::controller {
      * Here is an example of how to make the `user_controller` execute before all the engine controllers:
      * @code
      * auto user_controller = ...;
-     * user_controller->before(engine::controller::get<EngineControllersBegin>());
+     * user_controller->before(engine::core::Controller::get<EngineControllersBegin>());
      * @endcode
      */
     class EngineControllersBegin final : public Controller {
@@ -201,7 +225,7 @@ namespace engine::controller {
      * Here is an example of how to make the `user_controller` execute after all the engine controllers:
      * @code
      * auto user_controller = ...;
-     * user_controller->after(engine::controller::get<EngineControllersEnd>());
+     * user_controller->after(engine::core::Controller::get<EngineControllersEnd>());
      * @endcode
      */
     class EngineControllersEnd final : public Controller {

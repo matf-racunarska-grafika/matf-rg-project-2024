@@ -4,7 +4,6 @@
 #include <imgui_impl_opengl3.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <engine/controller/ControllerManager.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -16,7 +15,7 @@ namespace engine::graphics {
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
-        auto platform               = engine::controller::get<platform::PlatformController>();
+        auto platform               = engine::core::Controller::get<platform::PlatformController>();
         auto handle                 = platform->window()->handle_();
         m_perspective_params.FOV    = glm::radians(m_camera.Zoom);
         m_perspective_params.Width  = static_cast<float>(platform->window()->width());

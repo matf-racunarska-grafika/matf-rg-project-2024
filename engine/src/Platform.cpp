@@ -7,7 +7,7 @@
 
 #include <engine/platform/PlatformController.hpp>
 #include <engine/util/Utils.hpp>
-#include <engine/controller/ControllerManager.hpp>
+
 #include <spdlog/spdlog.h>
 #include <utility>
 #include <engine/graphics/OpenGL.hpp>
@@ -252,29 +252,29 @@ namespace engine::platform {
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
-        controller::get<PlatformController>()->_platform_on_mouse(x, y);
+        core::Controller::get<PlatformController>()->_platform_on_mouse(x, y);
     }
 
     void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-        controller::get<PlatformController>()->_platform_on_mouse_button(button, action);
+        core::Controller::get<PlatformController>()->_platform_on_mouse_button(button, action);
     }
 
     static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset) {
         g_mouse_position.scroll = y_offset;
-        controller::get<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
+        core::Controller::get<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
     }
 
     static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-        controller::get<PlatformController>()->_platform_on_keyboard(key, action);
+        core::Controller::get<PlatformController>()->_platform_on_keyboard(key, action);
     }
 
     static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
         glViewport(0, 0, width, height);
-        controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
+        core::Controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
     }
 
     void glfw_window_close_callback(GLFWwindow *window) {
-        controller::get<PlatformController>()->_platform_on_window_close(window);
+        core::Controller::get<PlatformController>()->_platform_on_window_close(window);
     }
 
 } // namespace engine

@@ -19,12 +19,12 @@ namespace engine::test::app {
         engine::graphics::OpenGL::enable_depth_testing();
 
         auto observer = std::make_unique<MainPlatformEventObserver>();
-        engine::controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
+        engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
                 std::move(observer));
     }
 
     bool MainController::loop() {
-        const auto platform = engine::controller::get<engine::platform::PlatformController>();
+        const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         if (platform->key(engine::platform::KeyId::KEY_ESCAPE).state() == engine::platform::Key::State::JustPressed) {
             return false;
         }
@@ -32,7 +32,7 @@ namespace engine::test::app {
     }
 
     void MainController::poll_events() {
-        const auto platform = engine::controller::get<engine::platform::PlatformController>();
+        const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
             m_cursor_enabled = !m_cursor_enabled;
             platform->set_enable_cursor(m_cursor_enabled);
@@ -53,13 +53,13 @@ namespace engine::test::app {
     }
 
     void MainController::end_draw() {
-        engine::controller::get<engine::platform::PlatformController>()->swap_buffers();
+        engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
     }
 
     void MainController::draw_backpack() {
-        auto graphics = engine::controller::get<engine::graphics::GraphicsController>();
-        auto shader   = engine::controller::get<engine::resources::ResourcesController>()->shader("basic");
-        auto backpack = engine::controller::get<engine::resources::ResourcesController>()->model("backpack");
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto shader   = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+        auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -68,18 +68,18 @@ namespace engine::test::app {
     }
 
     void MainController::draw_skybox() {
-        auto shader      = engine::controller::get<engine::resources::ResourcesController>()->shader("skybox");
-        auto skybox_cube = engine::controller::get<engine::resources::ResourcesController>()->skybox("skybox");
-        engine::controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+        auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+        auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+        engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 
     void MainController::update_camera() {
-        auto gui = engine::controller::get<GUIController>();
+        auto gui = engine::core::Controller::get<GUIController>();
         if (gui->is_enabled()) {
             return;
         }
-        auto platform = engine::controller::get<engine::platform::PlatformController>();
-        auto camera   = engine::controller::get<engine::graphics::GraphicsController>()->camera();
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         float dt      = platform->dt();
         if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) {
             camera->process_keyboard(engine::graphics::Camera::Movement::FORWARD, dt);

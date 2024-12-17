@@ -10,7 +10,10 @@ namespace engine::util {
     class Error;
 }
 
+#include <vector>
+
 namespace engine::core {
+    class Controller;
     /**
     * @class App
     * @brief Defines the base App class that serves as the application core structure and the entry point.
@@ -18,11 +21,12 @@ namespace engine::core {
     * The main function calls @ref App::run that defines the core structure of the application.
     * You can hook into the engine execution by overriding the desired methods in your
     * implementations of the @ref engine::Controller class and registering your implementations
-    * via @ref engine::ControllerManager.
+    * via @ref App::register_controller.
     * @code
     * int App::run(int argc, char **argv) {
     *    try {
     *        engine_setup(argc, argv);
+    *        app_setup();
     *        initialize();
     *        while (loop()) {
     *            poll_events();
@@ -46,6 +50,7 @@ namespace engine::core {
         * int App::run(int argc, char **argv) {
         *    try {
         *        engine_setup(argc, argv);
+        *        app_setup();
         *        initialize();
         *        while (loop()) {
         *            poll_events();
@@ -77,7 +82,7 @@ namespace engine::core {
         * @brief Initializes all the controllers registered in @ref App::user_setup. Calls @ref engine::Controller::initialize for registered controllers.
         *
         * After this functions finishes all the controllers have been initialized, and they can be now used
-        * by calling @ref engine::ControllerManager::get<TController>() or shorter @ref engine::controller.
+        * by calling @ref engine::core::Controller::get<TController>()
         */
         void initialize();
 
@@ -125,8 +130,6 @@ namespace engine::core {
     protected:
         /**
         * @brief Override to define your custom app setup that gets called after engine `engine_setup`.
-        *
-        * This function gets called by the `App::engine_setup` after the engine finishes internal setup.
         */
         virtual void app_setup();
 
@@ -137,7 +140,7 @@ namespace engine::core {
         * and all the internal engine systems have been shutdown.
         * This functions gets called just before the return from main.
         *
-        * @returns The return value from the int main(...).
+        * @returns The value that should be returned from the int main(...).
         */
         virtual int on_exit() {
             return 0;
@@ -145,8 +148,29 @@ namespace engine::core {
 
         virtual void handle_error(const util::Error &);
 
+        /**
+        * @brief Registers the controller for execution.
+        * The Controller instance that the register_controller returns isn't yet initialized.
+        * It will be initialized during the @ref App::initialize.
+        * If the register_controller is called twice for the same controller, it's registered only once.
+        * The other calls just return the pointer to the already registered instance.
+        * @returns Pointer to the only instance of the provided Controller class TController.
+        */
+        template<typename TController>
+        TController *register_controller() {
+            TController *controller = TController::template create_if_absent<TController>();
+            if (!controller->is_registered()) {
+                m_controllers.push_back(controller);
+                controller->mark_as_registered();
+            }
+            return controller;
+        }
+
     public:
         virtual ~App() = default;
+
+    private:
+        std::vector<Controller *> m_controllers;
     };
 } // namespace engine
 

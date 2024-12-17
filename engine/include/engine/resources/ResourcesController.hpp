@@ -1,7 +1,7 @@
 #ifndef MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
 #define MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP
 
-#include <engine/controller/Controller.hpp>
+#include <engine/core/Controller.hpp>
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Texture.hpp>
 #include <engine/resources/Shader.hpp>
@@ -13,7 +13,7 @@ namespace engine::resources {
     * @class @ref ResourcesController
     * @brief Manages app resources: @ref Model, @ref Texture, @ref Shader, and @ref Skybox.
     */
-    class ResourcesController final : public controller::Controller {
+    class ResourcesController final : public core::Controller {
     public:
         std::string_view name() const override {
             return "ResourcesController";

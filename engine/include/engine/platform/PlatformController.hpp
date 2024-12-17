@@ -2,7 +2,7 @@
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H
 
-#include <engine/controller/Controller.hpp>
+#include <engine/core/Controller.hpp>
 #include <memory>
 #include <vector>
 #include <engine/platform/Input.hpp>
@@ -38,7 +38,7 @@ namespace engine::platform {
     * @brief Registers Platform events such as mouse movement, key press, window events...
     *
     */
-    class PlatformController final : public controller::Controller {
+    class PlatformController final : public core::Controller {
         friend class ControllerManager;
 
     public:

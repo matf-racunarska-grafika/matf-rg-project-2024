@@ -3,10 +3,11 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
-#include <engine/controller/ControllerManager.hpp>
+
 #include <engine/util/ArgParser.hpp>
 #include <engine/util/Configuration.hpp>
 #include <engine/graphics/GraphicsController.hpp>
+#include <engine/util/Utils.hpp>
 
 namespace engine::core {
     int App::run(int argc, char **argv) {
@@ -32,11 +33,11 @@ namespace engine::core {
         util::Configuration::instance()->initialize();
 
         // register engine controller
-        auto begin     = controller::ControllerManager::register_controller<controller::EngineControllersBegin>();
-        auto platform  = controller::ControllerManager::register_controller<platform::PlatformController>();
-        auto graphics  = controller::ControllerManager::register_controller<graphics::GraphicsController>();
-        auto resources = controller::ControllerManager::register_controller<resources::ResourcesController>();
-        auto end       = controller::ControllerManager::register_controller<controller::EngineControllersEnd>();
+        auto begin     = register_controller<EngineControllersBegin>();
+        auto platform  = register_controller<platform::PlatformController>();
+        auto graphics  = register_controller<graphics::GraphicsController>();
+        auto resources = register_controller<resources::ResourcesController>();
+        auto end       = register_controller<EngineControllersEnd>();
         begin->before(platform);
         platform->before(graphics);
         graphics->before(resources);
@@ -44,32 +45,69 @@ namespace engine::core {
     }
 
     void App::initialize() {
-        controller::ControllerManager::instance()->initialize();
+        // Mark controller repository as initialized to prevent controller registration after the setup phase.
+        // Topologically sort controllers based on their dependency graph formed by before/after methods.
+        {
+            auto get_dependant_controllers = [](Controller *curr) {
+                return curr->next();
+            };
+            RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), get_dependant_controllers),
+                         "Please make sure that there are no cycles in the controller dependency graph.");
+            util::alg::topological_sort(range(m_controllers), get_dependant_controllers);
+        }
+        for (auto controller: m_controllers) {
+            spdlog::info("{}::initialize", controller->name());
+            controller->initialize();
+        }
     }
 
     bool App::loop() {
-        if (!controller::ControllerManager::instance()->loop()) {
-            return false;
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled() && !controller->loop()) {
+                return false;
+            }
         }
         return true;
     }
 
     void App::poll_events() {
-        controller::ControllerManager::instance()->poll_events();
+        for (auto controller: m_controllers) {
+            controller->poll_events();
+        }
     }
 
     void App::update() {
-        controller::ControllerManager::instance()->update();
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->update();
+            }
+        }
     }
 
     void App::draw() {
-        controller::ControllerManager::instance()->begin_draw();
-        controller::ControllerManager::instance()->draw();
-        controller::ControllerManager::instance()->end_draw();
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->begin_draw();
+            }
+        }
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->draw();
+            }
+        }
+        for (auto controller: m_controllers) {
+            if (controller->is_enabled()) {
+                controller->end_draw();
+            }
+        }
     }
 
     void App::terminate() {
-        controller::ControllerManager::instance()->terminate();
+        for (auto it = m_controllers.rbegin(); it != m_controllers.rend(); ++it) {
+            auto controller = *it;
+            controller->terminate();
+            spdlog::info("{}::terminate", controller->name());
+        }
     }
 
     void App::app_setup() {
@@ -79,6 +117,5 @@ namespace engine::core {
     void App::handle_error(const util::Error &e) {
         spdlog::error(e.report());
     }
-
 } // namespace engine
 

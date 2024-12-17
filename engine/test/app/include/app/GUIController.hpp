@@ -4,7 +4,7 @@
 #include <engine/core/Engine.hpp>
 
 namespace engine::test::app {
-    class GUIController final : public engine::controller::Controller {
+    class GUIController final : public engine::core::Controller {
         void initialize() override;
 
         void poll_events() override;

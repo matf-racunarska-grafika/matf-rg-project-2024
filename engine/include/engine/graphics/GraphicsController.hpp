@@ -2,7 +2,7 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 #include <engine/graphics/Camera.hpp>
-#include <engine/controller/Controller.hpp>
+#include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
 struct ImGuiContext;
@@ -48,7 +48,7 @@ namespace engine::graphics {
     * This class should implement all the complex functions needed for drawing an entity in the scene.
     * For example @ref GraphicsController::draw_skybox.
     */
-    class GraphicsController final : public controller::Controller {
+    class GraphicsController final : public core::Controller {
     public:
         std::string_view name() const override;
 
@@ -57,7 +57,7 @@ namespace engine::graphics {
         *
         * Example:
         * @code
-        * auto graphics = engine::controller::get<engine::graphics::GraphicsController>();
+        * auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         * graphics->begin_gui();
         * ImGui::Begin("Camera info");
         * const auto &c = ...;

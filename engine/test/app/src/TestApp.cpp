@@ -4,9 +4,9 @@
 
 namespace engine::test::app {
     void TestApp::app_setup() {
-        auto main_controller = engine::controller::register_controller<MainController>();
-        auto gui_controller  = engine::controller::register_controller<GUIController>();
-        main_controller->after(engine::controller::get<controller::EngineControllersEnd>());
+        auto main_controller = register_controller<MainController>();
+        auto gui_controller  = register_controller<GUIController>();
+        main_controller->after(core::Controller::get<core::EngineControllersEnd>());
         gui_controller->after(main_controller);
     }
 }

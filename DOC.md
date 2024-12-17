@@ -148,13 +148,13 @@ The pointer to the `resource` that the `ResourcesController` returns is a *non-o
 For a basic app setup, you need to:
 
 1. Create a class for your App, let's call it `MyApp`, in the src/.
-2. Inherit from the `rg::core::App` and implement `setup()`.
+2. Inherit from the `engine::core::App` and implement `setup()`.
 3. Instantiate `MyApp` object in the `main` function and call `run` on it.
 4. Compile and run the program.
 
 ```cpp
 #include <engine/Engne.hpp>
-class MyApp : public rg::core::App {
+class MyApp : public engine::core::App {
 
 public:
   void setup() override;
@@ -209,7 +209,7 @@ The `resources/models/` directory stores all the models. Let's add a backpack mo
 5. Use the model in your App:
 
 ```cpp
-    Model* backpack = rg::controller::get<rg::resources::ResourcesController>()->model("backpack");
+    Model* backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
     Shader* shader   = ... 
     backpack->draw(shader);
 ```
@@ -220,7 +220,7 @@ The `resources/models/` directory stores all the models. Let's add a backpack mo
 2. Use it in the App (`ResourcesController` will automatically load it)
 
 ```cpp
-Texture* texture = rg::controller::get<ResourcesController>()->texture("awesomeface");
+Texture* texture = engine::core::Controller::get<ResourcesController>()->texture("awesomeface");
 ```
 
 ### How to add a shader?
@@ -230,7 +230,7 @@ Texture* texture = rg::controller::get<ResourcesController>()->texture("awesomef
 3. Use it in the App:
 
 ```cpp
-Shader* shader = rg::controller::get<ResourcesController>()->shader("your_shader");
+Shader* shader = engine::core::Controller::get<ResourcesController>()->shader("your_shader");
 Model* backpack = ...;
 backpack->draw(shader);
 ```
@@ -268,7 +268,7 @@ For GUI to be visible it should be drawn last, after all the world objects.
 Here is an example of displaying camera info in a GUI.
 
 ```cpp
-    auto graphics = rg::controller::get<rg::graphics::GraphicsController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->begin_gui();
     // Draw Camera Info window
     {
@@ -308,10 +308,10 @@ the program can't do anything about, like the missing asset file.
 
 The `PlatformController` differentiates between four types of button/key states:
 
-1. `rg::platform::Key::State::JustPressed` -> Only in the first frame when the button was registered as pressed
-2. `rg::platform::Key::State::Pressed` -> Every subsequent frame if the button is still held
-3. `rg::platform::Key::State::JustReleased` -> Just the first frame in which the button was registered as released
-4. `rg::platform::Key::State::Released` -> Button is not pressed
+1. `engine::platform::Key::State::JustPressed` -> Only in the first frame when the button was registered as pressed
+2. `engine::platform::Key::State::Pressed` -> Every subsequent frame if the button is still held
+3. `engine::platform::Key::State::JustReleased` -> Just the first frame in which the button was registered as released
+4. `engine::platform::Key::State::Released` -> Button is not pressed
 
 Use the `PlatformController::key` method to get the state of the key in a given frame:
 
@@ -319,36 +319,37 @@ Here is an example of turning GUI on/off drawing using the `F2` key:
 
 ```cpp
 void poll_events() override {
-    const auto platform = rg::controller::get<rg::platform::PlatformController>();
-    if (platform->key(rg::platform::KeyId::KEY_F2).state() == rg::platform::Key::State::JustPressed) {
+    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KeyId::KEY_F2).state() == engine::platform::Key::State::JustPressed) {
         m_draw_gui = !m_draw_gui;
     }
 }
 ```
 
-Keys have a unique identifier: via `rg::platform::KeyId`.
+Keys have a unique identifier: via `engine::platform::KeyId`.
 
 ### How to register a callback for platform events?
 
 Registering callbacks for platform events via: `PlatformEventObserver` is also available.
 
-1. Implement the event observer by extending the class `rg::platform::PlatformEventObserver`, and override methods you'd
+1. Implement the event observer by extending the class `engine::platform::PlatformEventObserver`, and override methods
+   you'd
    like to have a custom operation executed once the event happens
 2. Register the `observer` instance in the `PlatformController`.
 
 ```cpp
-class MainPlatformEventObserver final : public rg::platform::PlatformEventObserver {
+class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
 public:
-    void on_keyboard(rg::platform::Key key) override {
+    void on_keyboard(engine::platform::Key key) override {
         spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str());
     }
 };
-class MainController : public rg::controller::Controller {
+class MainController : public engine::core::Controller {
 protected:
     void initialize() override {
         // ... 
         auto observer = std::make_unique<MainPlatformEventObserver>();
-        rg::controller::get<rg::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+        engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
     }
     // ...
 }
@@ -362,7 +363,7 @@ the `key` on which the event occurred as an argument.
 `PlatformController` initializes and stores the `Window` handle, which you can access via:
 
 ```cpp
-    auto platform = rg::controller::get<rg::platform::PlatformController>();
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->window()->height()
     platform->window()->width()
     platform->window()->title()
@@ -372,7 +373,7 @@ Also, the `PlatformController` will update the window properties if the size of 
 
 ### How to add new OpenGL calls?
 
-Rendering actions that require more than one OpenGL call should be abstracted in the `rg::graphics::OpenGL` class.
+Rendering actions that require more than one OpenGL call should be abstracted in the `engine::graphics::OpenGL` class.
 For example, `OpenGL::compile_shaer` compiles a GLSL shader and returns the shader_id.
 
 ```cpp
@@ -396,7 +397,7 @@ Why this way? It's less error-prone and more straightforward to add debugging as
 
 `Controllers` are a way to hook into the engine execution. To create a custom controller:
 
-1. Create a custom controller class that extends the `rg::controller::Controller`
+1. Create a custom controller class that extends the `engine::core::Controller`
 2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
    `terminate`) for which you want to
    execute custom code.
@@ -405,18 +406,18 @@ Why this way? It's less error-prone and more straightforward to add debugging as
 Here is the example of creating the `MainController` that enables `depth testing`.
 
 ```cpp
-class MainController : public rg::controller::Controller {
+class MainController : public engine::core::Controller {
 protected:
     void initialize() override {
-        rg::graphics::OpenGL::enable_depth_testing();
+        engine::graphics::OpenGL::enable_depth_testing();
     }
 };
-class MainApp final : public rg::core::App {
+class MainApp final : public engine::core::App {
 protected:
     void setup() override {
-        auto main_controller = rg::controller::register_controller<MainController>();
+        auto main_controller = engine::controller::register_controller<MainController>();
         /* Make sure that the main_controller executes after all the engine controllers. */
-        main_controller->after(rg::controller::get<rg::controller::EngineSentinelController>());
+        main_controller->after(engine::core::Controller::get<engine::controller::EngineSentinelController>());
     }
 };
 
@@ -468,7 +469,7 @@ passed as the second argument to the `arg` method.
 ```cpp
 
 void setup() override {
-    auto parser = rg::util::ArgParser()->instance();
+    auto parser = engine::util::ArgParser()->instance();
     auto fps = parser->arg<int>("--fps", 60);
 }
 ```
