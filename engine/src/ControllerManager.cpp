@@ -32,7 +32,6 @@ namespace engine::controller {
         for (auto controller: m_controllers) {
             spdlog::info("{}::initialize", controller->name());
             controller->initialize();
-            controller->mark_initialized();
             order_string.push_back('\n');
             order_string.append(controller->name());
         }

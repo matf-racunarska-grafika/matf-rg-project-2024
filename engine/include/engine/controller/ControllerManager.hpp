@@ -72,7 +72,7 @@ namespace engine::controller {
             auto manager                   = instance();
             static TController *controller = manager->create_if_absent<TController>();
             RG_GUARANTEE(controller->is_registered(),
-                         "Trying to get an unregistered controller in: {}:{}.\nPlease call register_controller<> first.",
+                         "Trying to get an unregistered controller in: {}:{}.\nPlease call register_controller<> first during App::app_setup.",
                          location.file_name(), location.line());
             return controller;
         }
@@ -91,7 +91,7 @@ namespace engine::controller {
             auto manager            = instance();
             TController *controller = manager->create_if_absent<TController>();
             RG_GUARANTEE(!manager->m_controllers_initialized,
-                         "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have benn called. Please make sure to register controllers in the setup() phase.",
+                         "Trying to register Controller: `{}` in file: {}:{} after initialize_controllers() have been called. Please make sure to register controllers in the app_setup() phase.",
                          controller->name(), location.file_name(), location.line());
             if (!controller->is_registered()) {
                 manager->m_controllers.push_back(controller);

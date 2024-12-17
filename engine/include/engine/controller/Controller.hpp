@@ -74,15 +74,6 @@ namespace engine::controller {
         }
 
         /**
-        * \brief Used by the @ref ControllerManager to ensure that the controller was initialized
-        * before being used.
-        * @return true if @ref Controller::initialize() has been called
-        */
-        bool is_initialized() const {
-            return m_initialized;
-        }
-
-        /**
         * @brief Controller will execute as long this function returns true.
         *
         * You can turn the controller on/off by calling @ref Controller::enable @ref Controller::disable
@@ -102,10 +93,6 @@ namespace engine::controller {
         }
 
     private:
-        void mark_initialized() {
-            m_initialized = true;
-        }
-
         void mark_as_registered() {
             m_registered = true;
         }
@@ -175,10 +162,6 @@ namespace engine::controller {
          * @brief Internal Controller field used to ensure that the controller isn't registered twice.
          */
         bool m_registered{false};
-        /**
-        *  @brief Internal field used to ensure that the controller isn't used before it's initialized.
-        */
-        bool m_initialized{false};
 
         /**
         * @brief Internal field used to control weather the @ref ControllerManager executes the controller.
