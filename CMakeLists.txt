@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(matf-rg-project)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 ################ Libs ################
 add_subdirectory(libs/spdlog EXCLUDE_FROM_ALL)
