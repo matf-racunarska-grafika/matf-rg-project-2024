@@ -14,25 +14,26 @@
 namespace engine::core {
     /**
     * @class Controller
-    * @brief Controllers are a hook into the Engines `main loop` execution.
-    * By overriding member virtual functions of this class the user can
+    * @brief Controllers are a hook into the @ref App `main loop` execution.
+    * By overriding virtual functions of this class the user can
     * execute custom code during each of the `main loop` phases.
     *
-    * Every controller instance is a singleton instance that is managed by the @ref ControllerManager.
+    * Every controller instance is a singleton instance that is managed by the @ref App.
     * There can be no two instances of the same controller.
     *
     * @usage
     * \code
     * class LoggingController : public engine::Controller {
     * public:
-    *
     *   void initialize() override { spdlog::log("Logging::initialize"); }
     *   void terminate() override { spdlog::log("Logging::terminate"); }
     * };
     * \endcode
     * To have the engine execute the code from the `LoggingController` we must first register it:
     * \code
-    * engine::ControllerManager::instance()->register_controller<LoggingController>();
+    * void MyApp::app_setup() {
+    *   register_controller<LoggingController>();
+    * }
     * \endcode
     */
     class Controller {
@@ -178,7 +179,9 @@ namespace engine::core {
         }
 
         /**
-         * @brief List of controller that are dependent on this controller
+         * @brief List of controllers that are dependent on this controller.
+         * If controller `A` is in the `m_next`, that means that `this` Controller will execute before
+         * the controller `A`.
          */
         std::vector<Controller *> m_next{};
 

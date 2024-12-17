@@ -38,7 +38,7 @@ namespace engine::resources {
         const auto &config = util::Configuration::config();
         if (!config.contains("resources") || !config["resources"].contains("models")) {
             throw util::EngineError(util::EngineError::Type::ConfigurationError,
-                                    "No configuration for models in the config.json, please provide the resources config. See the example in the DOC.md");
+                                    "No configuration for models in the config.json, please provide the resources config. See the example in the README.md");
         }
         for (const auto &model_entry: config["resources"]["models"].items()) {
             model(model_entry.key());

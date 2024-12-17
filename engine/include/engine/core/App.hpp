@@ -79,6 +79,11 @@ namespace engine::core {
         void engine_setup(int argc, char **argv);
 
         /**
+        * @brief Override to define your custom app setup that gets called after engine `engine_setup`.
+        */
+        virtual void app_setup();
+
+        /**
         * @brief Initializes all the controllers registered in @ref App::user_setup. Calls @ref engine::Controller::initialize for registered controllers.
         *
         * After this functions finishes all the controllers have been initialized, and they can be now used
@@ -127,12 +132,6 @@ namespace engine::core {
         */
         void terminate();
 
-    protected:
-        /**
-        * @brief Override to define your custom app setup that gets called after engine `engine_setup`.
-        */
-        virtual void app_setup();
-
         /**
         * @brief Called right before the App exits.
         *
@@ -148,6 +147,7 @@ namespace engine::core {
 
         virtual void handle_error(const util::Error &);
 
+    protected:
         /**
         * @brief Registers the controller for execution.
         * The Controller instance that the register_controller returns isn't yet initialized.

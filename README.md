@@ -30,6 +30,7 @@ public:
 int run(int argc, char** argv) {
   try {
     engine_setup(argc, argv);
+    app_setup();
     initialize();
     while (loop()) {
         poll_events();
@@ -43,8 +44,8 @@ int run(int argc, char** argv) {
 };
 ```
 
-* `engine_setup` - here, the engine controllers are setup, afterwards the `setup` function is called
-* `setup` - the function that the user of the `App` overrides and implements a custom setup for the App
+* `engine_setup` - here, the engine controllers are setup
+* `app_setup` - the function that the user of the `App` overrides and implements a custom setup for the App
 * `initialize` - `App` should gather whatever `Resources` it needs and initialize its state.
 * `loop` - `App` can check whether it should continue running. If the `loop` method returns `false`,
   the `Main loop` stops, and the `App` terminates.
@@ -53,7 +54,7 @@ int run(int argc, char** argv) {
 * `update` - `App` updates the world state, processes physics, events, and world logic, and reacts to the user inputs.
 * `draw` - `App` uses `OpenGL` and draws the current state of the world.
 * `terminate` - `App` terminates its state
-* `on_exit` -
+* `on_exit` - do a final cleanup, and return an exit code
 
 ## The App class
 
@@ -73,7 +74,7 @@ class App {
         void draw();
         void terminate();
     protected:
-        virtual void setup() { // the user extends and implements setup }
+        virtual void app_setup() { // the user extends and implements setup }
         virtual int on_exit() { return 0; }
         virtual void handle_error(const Error &);
     };
@@ -85,70 +86,43 @@ Here is how the `Engine` is structured. You only need to include `<engine/core/E
 and all the header files will be available.
 
 ```bash
-├── engine
-│   ├── controller
-│   │   ├── Controller.hpp
-│   │   ├── ControllerManager.hpp
-│   │   └── EngineSentinelController.hpp
-│   ├── core
-│   │   └── App.hpp
-│   ├── Engine.hpp
-│   ├── graphics
-│   │   ├── Camera.hpp
-│   │   ├── GraphicsController.hpp
-│   │   └── OpenGL.hpp
-│   ├── platform
-│   │   ├── Input.hpp
-│   │   ├── PlatformController.hpp
-│   │   ├── PlatformEventObserver.hpp
-│   │   └── Window.hpp
-│   ├── resources
-│   │   ├── Mesh.hpp
-│   │   ├── Model.hpp
-│   │   ├── ResourcesController.hpp
-│   │   ├── ShaderCompiler.hpp
-│   │   ├── Shader.hpp
-│   │   ├── Skybox.hpp
-│   │   └── Texture.hpp
-│   └── util
-│       ├── ArgParser.hpp
-│       ├── Configuration.hpp
-│       ├── Errors.hpp
-│       └── Utils.hpp
+├── core
+│   ├── App.hpp
+│   ├── Controller.hpp
+│   └── Engine.hpp
+├── graphics
+│   ├── Camera.hpp
+│   ├── GraphicsController.hpp
+│   └── OpenGL.hpp
+├── platform
+│   ├── Input.hpp
+│   ├── PlatformController.hpp
+│   ├── PlatformEventObserver.hpp
+│   └── Window.hpp
+├── resources
+│   ├── Mesh.hpp
+│   ├── Model.hpp
+│   ├── ResourcesController.hpp
+│   ├── ShaderCompiler.hpp
+│   ├── Shader.hpp
+│   ├── Skybox.hpp
+│   └── Texture.hpp
+└── util
+    ├── ArgParser.hpp
+    ├── Configuration.hpp
+    ├── Errors.hpp
+    └── Utils.hpp
+p
 ```
 
-## How to...
+## How ...
 
-### How to include and use engine files?
-
-All the source files (.cpp) go into src/ directory, and all the header files go into the include/ directory.
-To use the engine, you must include `#include <engine/core/Engine.hpp>`, and all the engine header files will be
-available.
-
-### How does the engine manage resources?
-
-For every type of resource, the `ResourcesController` has a corresponding that retrieves it:
-
-* `Model* ResourcesController::model("backpack")`
-* `Shader* ResourcesController::shader("basic")`
-* `Texture* ResourcesController::texture("awesomeface")`
-* `Skybox* ResourcesController::skybox("skybox")`
-
-The argument is always the resource name without the file extension. For textures and shaders, the name is just the name
-of
-the file without the extension. For models and skyboxes, it's the name of the directory, because they have multiple
-files
-associated with them.
-
-The pointer to the `resource` that the `ResourcesController` returns is a *non-owning pointer*, meaning you should
-**Never call delete on it.** All the memory is managed by the `ResourcesController.`
-
-### How do you set up a basic app?
+### How to set up a basic app?
 
 For a basic app setup, you need to:
 
-1. Create a class for your App, let's call it `MyApp`, in the src/.
-2. Inherit from the `engine::core::App` and implement `setup()`.
+1. Create a class for your App, let's call it `MyApp`, in the `app/src/`.
+2. Inherit from the `engine::core::App` and implement `app_setup()`.
 3. Instantiate `MyApp` object in the `main` function and call `run` on it.
 4. Compile and run the program.
 
@@ -169,11 +143,57 @@ int main(int argc, char** argv) {
 }
 ```
 
-### How are `resources` managed?
+### How to add a custom controller?
+
+`Controllers` are a way to hook into the engine execution. To create a custom controller:
+
+1. Create a custom controller class that extends the `engine::core::Controller`
+2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
+   `terminate`) for which you want to
+   execute custom code.
+3. Register the controller in the `MainApp::user_setup`.
+
+Here is the example of creating the `MainController` that enables `depth testing`.
+
+```cpp
+class MainController : public engine::core::Controller {
+protected:
+    void initialize() override {
+        engine::graphics::OpenGL::enable_depth_testing();
+    }
+};
+class MainApp final : public engine::core::App {
+protected:
+    void app_setup() override {
+        auto main_controller = engine::controller::register_controller<MainController>();
+        /* Make sure that the main_controller executes after all the engine controllers. */
+        main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
+    }
+};
+
+```
+
+### How does the engine manage resources?
 
 Resources currently include: `textures`, `shaders`, `models`, `skyboxes`.
 The `ResourcesController` manages the loading, storing, and accessing the resource objects.
 During the `App::initialize`, the `ResourcesController` will load all the resources in the `resources` directory.
+
+For every type of resource, the `ResourcesController` has a corresponding function that retrieves it:
+
+* `Model* ResourcesController::model("backpack")`
+* `Shader* ResourcesController::shader("basic")`
+* `Texture* ResourcesController::texture("awesomeface")`
+* `Skybox* ResourcesController::skybox("skybox")`
+
+The argument is always the resource name without the file extension. For textures and shaders, the name is just the name
+of
+the file without the extension. For models and skyboxes, it's the name of the directory, because they have multiple
+files
+associated with them.
+
+The pointer to the `resource` that the `ResourcesController` returns is a *non-owning pointer*, meaning you should
+**never call delete on it.** All the memory is managed internally by the `ResourcesController.`
 
 ### How to add a model?
 
@@ -284,14 +304,14 @@ Here is an example of displaying camera info in a GUI.
 
 ![img.png](extra/img.png)
 
-### How do you throw and handle errors?
+### How to throw and handle errors?
 
 The `Engine` defines a base `Error` type with two subclasses, `EngineError` and `UserError`. They serve
 as a *graceful* way to terminate the application and provide the user with some helpful information on how to **fix**
 the
 error.
 
-For example, the `ResourcesController` will throw `AssetLoadingError` if it can't read the model file.
+For example, the `ResourcesController` will throw `AssetLoadingError` if it can't read the asset file.
 
 ```cpp
 if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -301,7 +321,8 @@ if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 }
 ```
 
-`Exceptions` shouldn't be used as a control-flow mechanism but only to inform the user of an `exceptional` event that
+`Exceptions` shouldn't be used as a control-flow mechanism, instead they should be used to inform the user of an
+`exceptional` event that
 the program can't do anything about, like the missing asset file.
 
 ### How to get the key/mouse press event?
@@ -330,8 +351,6 @@ Keys have a unique identifier: via `engine::platform::KeyId`.
 
 ### How to register a callback for platform events?
 
-Registering callbacks for platform events via: `PlatformEventObserver` is also available.
-
 1. Implement the event observer by extending the class `engine::platform::PlatformEventObserver`, and override methods
    you'd
    like to have a custom operation executed once the event happens
@@ -358,7 +377,7 @@ protected:
 Now, for every keyboard event, the `PlatformController` will call `MainPlatformEventObserver::on_keyboard` and pass
 the `key` on which the event occurred as an argument.
 
-### How do you get Window properties?
+### How to get Window properties?
 
 `PlatformController` initializes and stores the `Window` handle, which you can access via:
 
@@ -387,41 +406,11 @@ uint32_t OpenGL::compile_shader(const std::string &shader_source,
 }
 ```
 
-If the OpenGL call fails, the `CHECK_GL_CALL` macro throws an `OpenGLError` in DEBUG mode. The engine will print the
+If the OpenGL call fails, the `CHECKED_GL_CALL` macro throws an `OpenGLError` in DEBUG mode. The engine will print the
 error description of
 and the source location in which it occurred.
 
 Why this way? It's less error-prone and more straightforward to add debugging assertions and error checks if needed.
-
-### How do you add a custom controller?
-
-`Controllers` are a way to hook into the engine execution. To create a custom controller:
-
-1. Create a custom controller class that extends the `engine::core::Controller`
-2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
-   `terminate`) for which you want to
-   execute custom code.
-3. Register the controller in the `MainApp::user_setup`.
-
-Here is the example of creating the `MainController` that enables `depth testing`.
-
-```cpp
-class MainController : public engine::core::Controller {
-protected:
-    void initialize() override {
-        engine::graphics::OpenGL::enable_depth_testing();
-    }
-};
-class MainApp final : public engine::core::App {
-protected:
-    void setup() override {
-        auto main_controller = engine::controller::register_controller<MainController>();
-        /* Make sure that the main_controller executes after all the engine controllers. */
-        main_controller->after(engine::core::Controller::get<engine::controller::EngineSentinelController>());
-    }
-};
-
-```
 
 ### How do you add a configuration option?
 
