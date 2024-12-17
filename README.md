@@ -20,10 +20,6 @@ Open the documentation file in your browser: `docs/html/index.html`
 
 ## Main loop
 
-Here is the main loop of the engine. The user of this engine extends and implements the `App` class.
-The `Engine` has clear stages, `setup`, `initialization`, `loop`, `poll_events`, `update`, `draw`, `terminate`, and
-`on_exit`.
-
 ```cpp
 class App {
 public:
@@ -73,7 +69,6 @@ class App {
         void update();
         void draw();
         void terminate();
-    protected:
         virtual void app_setup() { // the user extends and implements setup }
         virtual int on_exit() { return 0; }
         virtual void handle_error(const Error &);
