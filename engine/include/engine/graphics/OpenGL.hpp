@@ -20,7 +20,7 @@ namespace engine::resources {
 * CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
 * @endcode
 */
-#define CHECKED_GL_CALL(func, ...) OpenGL::call(std::source_location::current(), func, __VA_ARGS__)
+#define CHECKED_GL_CALL(func, ...) engine::graphics::OpenGL::call(std::source_location::current(), func, __VA_ARGS__)
 
 namespace engine::graphics {
     /**

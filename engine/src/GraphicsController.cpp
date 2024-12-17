@@ -75,14 +75,13 @@ namespace engine::graphics {
         shader->use();
         shader->set_mat4("view", view);
         shader->set_mat4("projection", projection_matrix<>());
-        glDepthFunc(GL_LEQUAL);
-        glBindVertexArray(skybox->vao());
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox->texture());
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to default
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        CHECKED_GL_CALL(glDepthFunc, GL_LEQUAL);
+        CHECKED_GL_CALL(glBindVertexArray, skybox->vao());
+        CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, skybox->texture());
+        CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 36);
+        CHECKED_GL_CALL(glBindVertexArray, 0);
+        CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
     }
 }
