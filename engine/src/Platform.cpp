@@ -78,9 +78,7 @@ namespace engine::platform {
     }
 
     void PlatformController::terminate() {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+
         m_platform_event_observers.clear();
         glfwDestroyWindow(m_window.handle_());
         glfwTerminate();

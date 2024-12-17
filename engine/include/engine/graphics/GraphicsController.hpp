@@ -5,6 +5,8 @@
 #include <engine/controller/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
+struct ImGuiContext;
+
 namespace engine::resources {
     class Skybox;
     class Shader;
@@ -151,11 +153,14 @@ namespace engine::graphics {
         */
         void initialize() override;
 
+        void terminate();
+
         PerspectiveMatrixParams m_perspective_params{};
         OrthographicMatrixParams m_ortho_params{};
 
         glm::mat4 m_projection_matrix{};
         Camera m_camera{};
+        ImGuiContext *m_imgui_context{};
     };
 
     class GraphicsPlatformEventObserver final : public platform::PlatformEventObserver {

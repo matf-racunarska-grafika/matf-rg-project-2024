@@ -16,10 +16,6 @@ namespace engine::graphics {
         const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
         RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO &io = ImGui::GetIO();
-        (void) io;
         auto platform               = engine::controller::get<platform::PlatformController>();
         auto handle                 = platform->window()->handle_();
         m_perspective_params.FOV    = glm::radians(m_camera.Zoom);
@@ -34,11 +30,22 @@ namespace engine::graphics {
         m_ortho_params.Right  = static_cast<float>(platform->window()->width());
         m_ortho_params.Near   = 0.1f;
         m_ortho_params.Far    = 100.0f;
-
         platform->register_platform_event_observer(
                 std::make_unique<GraphicsPlatformEventObserver>(this));
-        ImGui_ImplGlfw_InitForOpenGL(handle, true);
-        ImGui_ImplOpenGL3_Init("#version 330 core");
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+        (void) io;
+        RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
+        RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");
+    }
+
+    void GraphicsController::terminate() {
+        if (ImGui::GetCurrentContext()) {
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+        }
     }
 
     void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
