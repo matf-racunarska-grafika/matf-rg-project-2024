@@ -15,7 +15,7 @@
 
 namespace engine::resources {
     /**
-    * @class @ref ResourcesController
+    * @class ResourcesController
     * @brief Manages app resources: @ref Model, @ref Texture, @ref Shader, and @ref Skybox.
     */
     class ResourcesController final : public core::Controller {

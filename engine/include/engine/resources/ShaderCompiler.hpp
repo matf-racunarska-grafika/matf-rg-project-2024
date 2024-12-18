@@ -11,6 +11,10 @@
 #include <string>
 
 namespace engine::resources {
+	/**
+	* @struct ShaderParsingResult
+	* @brief Contains the parsed vertex, fragment, and geometry shaders, since the ShaderCompiler expects a single .glsl source file.
+	*/
 	struct ShaderParsingResult {
 		std::string vertex_shader;
 		std::string fragment_shader;

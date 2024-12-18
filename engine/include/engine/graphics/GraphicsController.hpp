@@ -167,6 +167,10 @@ namespace engine::graphics {
         ImGuiContext *m_imgui_context{};
     };
 
+    /**
+    * @class GraphicsPlatformEventObserver
+    * @brief Observers change in window size in order to update the projection matrix.
+    */
     class GraphicsPlatformEventObserver final : public platform::PlatformEventObserver {
     public:
         explicit GraphicsPlatformEventObserver(GraphicsController *graphics) : m_graphics(graphics) {
