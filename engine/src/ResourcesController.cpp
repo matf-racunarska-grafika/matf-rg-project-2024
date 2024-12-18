@@ -227,7 +227,7 @@ namespace engine::resources {
 
         auto material                   = m_scene->mMaterials[mesh->mMaterialIndex];
         std::vector<Texture *> textures = process_materials(material);
-        m_meshes.emplace_back(vertices, indices, std::move(textures));
+        m_meshes.emplace_back(Mesh(vertices, indices, std::move(textures)));
     }
 
     std::vector<Texture *> AssimpSceneProcessor::process_materials(const aiMaterial *material) {

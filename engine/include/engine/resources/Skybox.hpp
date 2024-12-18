@@ -15,14 +15,6 @@ namespace engine::resources {
 
     public:
         /**
-        * @brief Creates a skybox object within the OpenGL context.
-        * @param path The path to the skybox texture.
-        * @param name The name of the skybox by which it can be referenced using the @ref engine::resources::ResourcesController::skybox function.
-        * @returns The skybox object.
-        */
-        static Skybox create(std::filesystem::path path, std::string name);
-
-        /**
         * @brief Returns the OpenGL ID of the skybox.
         * @returns The OpenGL ID of the skybox.
         */
@@ -46,10 +38,10 @@ namespace engine::resources {
     private:
         Skybox() = default;
 
-        uint32_t m_vao;
-        uint32_t m_texture_id;
-        std::filesystem::path m_path;
-        std::string m_name;
+        uint32_t m_vao{0};
+        uint32_t m_texture_id{0};
+        std::filesystem::path m_path{};
+        std::string m_name{};
 
         /**
         * @brief Constructs a Skybox object.

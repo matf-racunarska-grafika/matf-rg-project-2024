@@ -23,22 +23,6 @@ namespace engine::resources {
         void draw(const Shader *shader);
 
         /**
-        * @brief Returns the name of the class.
-        * @returns The name of the class.
-        */  
-        std::string_view class_name() const {
-            return "Model";
-        }
-
-        /**
-        * @brief Returns the name of the class.
-        * @returns The name of the class.
-        */  
-        static std::string_view type_name() {
-            return "Model";
-        }
-
-        /**
         * @brief Destroys the model in the OpenGL context.
         */  
         void destroy();

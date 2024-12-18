@@ -44,9 +44,6 @@ namespace engine::resources {
         m_textures    = std::move(textures);
     }
 
-    void Mesh::initialize() {
-    }
-
     void Mesh::draw(const Shader *shader) {
         std::unordered_map<std::string_view, uint32_t> counts;
         std::string uniform_name;
