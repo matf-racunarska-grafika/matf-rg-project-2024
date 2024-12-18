@@ -6,12 +6,24 @@
 #include <string>
 
 namespace engine::util {
+    /**
+    * @class ArgParser  
+    * @brief Parses command line arguments.
+    */
     class ArgParser {
         friend class App;
 
     public:
         static ArgParser *instance();
 
+        /**
+        * @brief Get the value of an argument.
+        * Supported types: bool, int, long long, float, double, std::string.
+        * @tparam T The type of the argument.
+        * @param name The name of the argument.
+        * @param default_value The default value of the argument.
+        * @returns The value of the argument.
+        */
         template<typename T>
         std::optional<T> arg(std::string_view name, std::optional<T> default_value = {}) {
             std::string arg_value = get_arg_value(name);
@@ -34,9 +46,19 @@ namespace engine::util {
             }
         }
 
+        /**
+        * @brief Initialize the ArgParser with the command line arguments.
+        * @param argc The number of command line arguments.
+        * @param argv The command line arguments.
+        */
         void initialize(int argc, char **argv);
 
     private:
+        /**
+        * @brief Get the string value of an argument.
+        * @param arg_name The name of the argument.
+        * @returns The string value of the argument.
+        */
         std::string get_arg_value(std::string_view arg_name);
 
         ArgParser() = default;

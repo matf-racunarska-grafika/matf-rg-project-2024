@@ -110,6 +110,16 @@ namespace engine::platform {
         return glfwGetKey(window, glfw_key_code);
     }
 
+    /**
+     * @brief Updates the state of a key. 
+     * Key states are repesented as a state machine with the following states: Released, JustPressed, Pressed, JustReleased.
+     * The state machine transitions are as follows:
+     * - Released -> JustPressed if the key is pressed.
+     * - JustPressed -> Pressed if the key is still pressed.
+     * - Pressed -> JustReleased if the key is released.
+     * - JustReleased -> Released if the key is released.
+     * @param key_data The key to update.
+     */
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.id();
         int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
@@ -247,8 +257,10 @@ namespace engine::platform {
     }
 
     void initialize_key_maps() {
-#include "glfw_key_mapping.include"
-#include "engine_key_to_string.include"
+        // formatter: off
+        #include "glfw_key_mapping.include"
+        #include "engine_key_to_string.include"
+        // formatter: on
     }
 
     static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {

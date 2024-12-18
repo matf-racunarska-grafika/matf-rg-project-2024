@@ -65,8 +65,16 @@ namespace engine::resources {
         }
     }
 
+    /**
+     * @class AssimpSceneProcessor
+     * @brief Processes the meshes in an Assimp scene.
+     */
     class AssimpSceneProcessor {
     public:
+        /**
+         * @brief Processes the meshes in the scene.
+         * @returns The meshes in the scene.
+         */
         std::vector<Mesh> process_meshes();
 
         explicit AssimpSceneProcessor(ResourcesController *resources_controller, const aiScene *scene,

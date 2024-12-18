@@ -62,7 +62,9 @@ namespace engine::graphics {
             return skybox_vao;
         }
         float vertices[] = {
-#include <skybox_vertices.include>
+            // formatter: off
+            #include <skybox_vertices.include>
+            // formatter: on
         };
         uint32_t skybox_vbo = 0;
         CHECKED_GL_CALL(glGenVertexArrays, 1, &skybox_vao);

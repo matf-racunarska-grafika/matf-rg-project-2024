@@ -150,7 +150,7 @@ namespace engine::core {
     protected:
         /**
         * @brief Registers the controller for execution.
-        * The Controller instance that the register_controller returns isn't yet initialized.
+        * The Controller instance that the register_controller returns isn't initialized yet.
         * It will be initialized during the @ref App::initialize.
         * If the register_controller is called twice for the same controller, it's registered only once.
         * The other calls just return the pointer to the already registered instance.

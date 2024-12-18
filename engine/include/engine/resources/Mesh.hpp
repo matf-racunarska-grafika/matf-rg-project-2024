@@ -7,32 +7,12 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
-#define BIT(k) (1 << k)
 
 namespace engine::resources {
-    enum VertexAttribute {
-        VertexAttribute_Position  = BIT(1),
-        VertexAttribute_Normal    = BIT(2),
-        VertexAttribute_TexCords  = BIT(3),
-        VertexAttribute_Tangent   = BIT(4),
-        VertexAttribute_BiTangent = BIT(5),
-    };
-
-    static VertexAttribute vertex_attributes[] = {
-        VertexAttribute_Position,
-        VertexAttribute_Normal,
-        VertexAttribute_TexCords,
-        VertexAttribute_Tangent,
-        VertexAttribute_BiTangent,
-    };
-
-    struct VerticesDescriptor {
-        void *memory;
-        int32_t attributes;
-        int32_t count;
-        int32_t size_in_bytes;
-    };
-
+    /**
+    * @struct Vertex
+    * @brief Represents a vertex in the mesh.
+    */
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;
@@ -42,22 +22,49 @@ namespace engine::resources {
         glm::vec3 Bitangent;
     };
 
+    /**
+    * @class Mesh
+    * @brief Represents a mesh in the model in the OpenGL context.
+    */
     class Mesh {
     public:
+        /**
+        * @brief Constructs a Mesh object.
+        * @param vertices The vertices in the mesh.
+        * @param indices The indices in the mesh.
+        * @param textures The textures in the mesh.
+        */
         Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
              std::vector<Texture *> textures);
 
         void initialize();
 
+        /**
+        * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
+        * @param shader The shader to use for drawing.
+        */
         void draw(const Shader *shader);
 
+        /**
+        * @brief Destroys the mesh in the OpenGL context.
+        */
         void destroy();
 
+        /**
+        * @brief Returns the name of the class.
+        * @returns The name of the class.
+        */
         std::string_view name() const {
             return "Mesh";
         }
 
     private:
+        /**
+        * @brief Constructs a Mesh object. Used internally by the @ref engine::resources::ResourcesController class. You are not supposed to call this constructor directly from user code.
+        * @param id The OpenGL ID of the mesh.
+        * @param num_indices The number of indices in the mesh.
+        * @param textures The textures in the mesh.
+        */      
         Mesh(uint32_t id, uint64_t num_indices, std::vector<Texture *> textures) : m_vao(id)
           , m_num_indices(num_indices)
           , m_textures(std::move(textures)) {

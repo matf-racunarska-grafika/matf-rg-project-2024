@@ -32,7 +32,7 @@ namespace engine::core {
         util::ArgParser::instance()->initialize(argc, argv);
         util::Configuration::instance()->initialize();
 
-        // register engine controller
+        // register engine controllers
         auto begin     = register_controller<EngineControllersBegin>();
         auto platform  = register_controller<platform::PlatformController>();
         auto graphics  = register_controller<graphics::GraphicsController>();
@@ -45,15 +45,14 @@ namespace engine::core {
     }
 
     void App::initialize() {
-        // Mark controller repository as initialized to prevent controller registration after the setup phase.
         // Topologically sort controllers based on their dependency graph formed by before/after methods.
         {
-            auto get_dependant_controllers = [](Controller *curr) {
+            auto adjacent_controllers = [](Controller *curr) {
                 return curr->next();
             };
-            RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), get_dependant_controllers),
+            RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), adjacent_controllers),
                          "Please make sure that there are no cycles in the controller dependency graph.");
-            util::alg::topological_sort(range(m_controllers), get_dependant_controllers);
+            util::alg::topological_sort(range(m_controllers), adjacent_controllers);
         }
         for (auto controller: m_controllers) {
             spdlog::info("{}::initialize", controller->name());
@@ -72,6 +71,8 @@ namespace engine::core {
 
     void App::poll_events() {
         for (auto controller: m_controllers) {
+            // We don't check if the controller is enabled for poll_events because the controller may enable itself in the poll_events if it needs to.
+            // For example, a GUIController may enable itself in the poll_events method if a button to enable/disable the GUI was pressed.
             controller->poll_events();
         }
     }
@@ -103,6 +104,7 @@ namespace engine::core {
     }
 
     void App::terminate() {
+        // We terminate controllers in reverse order of their registration to ensure that controllers that depend on other controllers are terminated last.
         for (auto it = m_controllers.rbegin(); it != m_controllers.rend(); ++it) {
             auto controller = *it;
             controller->terminate();

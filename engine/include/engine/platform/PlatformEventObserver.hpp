@@ -8,7 +8,7 @@ namespace engine::platform {
     * @class PlatformEventObserver
     * @brief Platform events callback object.
     * Extend this class and override the methods you want to be called by the @ref PlatformController, then
-    * register an instance with @ref PlatformController::register_platform_event_observer.
+    * register an instance with @ref PlatformController::register_observer.
     */
     class PlatformEventObserver {
     public:
