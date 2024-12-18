@@ -1,3 +1,7 @@
+/**
+ * @file Window.hpp
+ * @brief Defines the Window class  that provides basic window properties.
+*/
 
 #ifndef WINDOW_HPP
 #define WINDOW_HPP

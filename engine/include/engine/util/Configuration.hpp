@@ -1,3 +1,7 @@
+/**
+ * @file Configuration.hpp
+ * @brief Defines the Configuration class that serves as the interface for configuration management.
+*/
 
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP

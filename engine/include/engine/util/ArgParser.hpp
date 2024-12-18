@@ -1,3 +1,7 @@
+/**
+ * @file ArgParser.hpp
+ * @brief Defines the ArgParser class that serves as the interface for argument parsing.
+*/
 
 #ifndef ARGPARSER_HPP
 #define ARGPARSER_HPP

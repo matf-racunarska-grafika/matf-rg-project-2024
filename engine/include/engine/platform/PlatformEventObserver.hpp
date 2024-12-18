@@ -1,3 +1,7 @@
+/**
+ * @file PlatformEventObserver.hpp
+ * @brief Defines the PlatformEventObserver class that serves as the interface for platform-specific event observers.
+ */
 
 #ifndef PLATFORMEVENTOBSERVER_HPP
 #define PLATFORMEVENTOBSERVER_HPP

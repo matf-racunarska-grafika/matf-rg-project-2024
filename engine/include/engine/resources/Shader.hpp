@@ -1,3 +1,8 @@
+/**
+ * @file Shader.hpp
+ * @brief Defines the Shader class that serves as an abstraction over OpenGL shaders.
+ */
+
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
 #include <engine/util/Utils.hpp>

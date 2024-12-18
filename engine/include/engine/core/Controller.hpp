@@ -1,5 +1,6 @@
 /**
  * @file Controller.hpp
+ * @brief Defines the Controller class that serves as the base class for all controllers in the engine.
  */
 
 #ifndef MATF_RG_PROJECT_CONTROLLER_HPP
@@ -17,6 +18,8 @@ namespace engine::core {
     * @brief Controllers are a hook into the @ref App `main loop` execution.
     * By overriding virtual functions of this class the user can
     * execute custom code during each of the `main loop` phases.
+    * 
+    * Register controller with @ref App::register_controller during the @ref App::app_setup function.
     *
     * Every controller instance is a singleton instance that is managed by the @ref App.
     * There can be no two instances of the same controller.
@@ -42,6 +45,7 @@ namespace engine::core {
     public:
         /**
         * @brief Serves as a single access point for all the Controller types throughout the code base.
+        * Make sure to register the controller via @ref App::register_controller before calling this function.
         *
         * @returns The only instance of the TController.
         */

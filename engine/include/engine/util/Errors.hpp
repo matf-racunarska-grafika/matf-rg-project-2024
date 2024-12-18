@@ -1,4 +1,7 @@
-//
+/**
+ * @file Errors.hpp
+ * @brief Defines  Error, UserError, and EngineError classes, along with macros for error handling.
+*/
 
 #ifndef MATF_RG_PROJECT_ERRORS_HPP
 #define MATF_RG_PROJECT_ERRORS_HPP

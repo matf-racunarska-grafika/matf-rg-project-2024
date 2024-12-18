@@ -1,3 +1,7 @@
+/**
+ * @file Utils.hpp
+ * @brief Defines utility functions, macros, algorithms, and data structures.
+ */
 
 #ifndef MATF_RG_PROJECT_UTILS_HPP
 #define MATF_RG_PROJECT_UTILS_HPP

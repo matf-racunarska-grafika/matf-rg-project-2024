@@ -1,3 +1,7 @@
+/**
+ * @file PlatformController.hpp
+ * @brief Defines the PlatformController class that serves as the interface for platform-specific functionality, such as input handling and window management.
+ */
 
 #ifndef MATF_RG_PROJECT_PLATFORM_H
 #define MATF_RG_PROJECT_PLATFORM_H

@@ -1,3 +1,7 @@
+/**
+ * @file OpenGL.hpp
+ * @brief Defines the OpenGL class that serves as the interface for OpenGL.
+ */
 
 #ifndef OPENGL_HPP
 #define OPENGL_HPP

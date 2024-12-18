@@ -1,5 +1,7 @@
-
-//
+/**
+ * @file Model.hpp
+ * @brief Defines the Model class that serves as the interface for model rendering.
+*/
 
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP

@@ -1,5 +1,7 @@
-
-//
+/**
+ * @file Texture.hpp
+ * @brief Defines the Texture class that serves as an abstraction over OpenGL textures.
+*/
 
 #ifndef MATF_RG_PROJECT_TEXTURE_HPP
 #define MATF_RG_PROJECT_TEXTURE_HPP

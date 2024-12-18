@@ -1,5 +1,7 @@
-
-//
+/**
+ * @file Mesh.hpp
+ * @brief Defines the Mesh class that serves as the interface for mesh rendering and storing processed assimp scenes.
+ */
 
 #ifndef MATF_RG_PROJECT_MESH_HPP
 #define MATF_RG_PROJECT_MESH_HPP

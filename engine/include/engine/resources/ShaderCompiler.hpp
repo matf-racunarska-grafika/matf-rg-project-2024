@@ -1,3 +1,7 @@
+/**
+ * @file ShaderCompiler.hpp
+ * @brief Defines the ShaderCompiler class that serves as the interface for shader compilation.
+*/
 
 #ifndef SHADER_COMPILER_HPP
 #define SHADER_COMPILER_HPP

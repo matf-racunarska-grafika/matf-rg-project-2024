@@ -1,3 +1,7 @@
+/**
+ * @file GraphicsController.hpp
+ * @brief Defines the GraphicsController class that initializes OpenGL and ImGUI, and provides basic drawing functions.
+*/
 
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP

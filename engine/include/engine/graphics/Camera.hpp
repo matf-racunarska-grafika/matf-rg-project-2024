@@ -1,3 +1,8 @@
+/**
+ * @file Camera.hpp
+ * @brief Defines the Camera class for rendering.
+ */
+
 #ifndef CAMERA_H
 #define CAMERA_H
 

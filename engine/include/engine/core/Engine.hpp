@@ -1,3 +1,7 @@
+/**
+ * @file Engine.hpp
+ * @brief Includes all the engine headers.
+ */
 
 #ifndef MATF_RG_PROJECT_ENGINE_HPP
 #define MATF_RG_PROJECT_ENGINE_HPP
