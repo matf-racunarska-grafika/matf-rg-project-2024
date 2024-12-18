@@ -147,20 +147,21 @@ namespace engine::util {
             std::unordered_set<ElementType> visited;
             std::vector<ElementType> stack;
 
-            std::function<void(ElementType &)> visit = [&](ElementType &current) mutable -> void {
+            auto visit = [&](auto& self, ElementType &current) mutable -> void {
                 visited.emplace(current);
                 for (auto next: adjacent(current)) {
                     if (!visited.contains(next)) {
-                        visit(next);
+                        self(self, next);
                     }
                 }
                 stack.push_back(current);
             };
 
+
             auto it = first;
             while (it != last) {
                 if (!visited.contains(*it)) {
-                    visit(*it);
+                    visit(visit, *it);
                 }
                 ++it;
             }
@@ -180,11 +181,11 @@ namespace engine::util {
             using ElementType = std::remove_reference_t<decltype(*first)>;
             std::unordered_set<ElementType> visited;
             std::unordered_set<ElementType> path;
-            std::function<bool(ElementType &)> visit = [&](ElementType &current) -> bool {
+            auto visit = [&](auto& self, ElementType &current) mutable -> bool {
                 visited.emplace(current);
                 path.emplace(current);
                 for (ElementType &next: adjacent(current)) {
-                    if (!visited.contains(next) && visit(next)) {
+                    if (!visited.contains(next) && self(self, next)) {
                         return true;
                     }
                     if (path.contains(next)) {
@@ -196,7 +197,7 @@ namespace engine::util {
             };
 
             for (auto root = first; root != last; ++root) {
-                if (!visited.contains(*root) && visit(*root)) {
+                if (!visited.contains(*root) && visit(visit, *root)) {
                     if constexpr (!std::is_same_v<OutputIt, std::nullptr_t>) {
                         std::move(path.begin(), path.end(), cycle_output);
                     };
