@@ -1,10 +1,6 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path": "backpack/backpack.obj",
-        "flip_uvs": false
-      }
     }
   },
   "window": {
