@@ -24,7 +24,9 @@ namespace engine::graphics {
             FORWARD,
             BACKWARD,
             LEFT,
-            RIGHT
+            RIGHT,
+            UP,
+            DOWN
         };
 
         /**
@@ -99,17 +101,17 @@ namespace engine::graphics {
         /**
          * @brief Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems).
          */
-        void process_keyboard(Movement direction, float deltaTime);
+        void move_camera(Movement direction, float deltaTime);
 
         /**
          * @brief Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
          */
-        void process_mouse_movement(float x_offset, float y_offset, bool constrainPitch = true);
+        void rotate_camera(float x_offset, float y_offset, bool constrainPitch = true);
 
         /**
          * @brief Processes input received from a mouse scroll-wheel event. Only requires to be input on the vertical wheel-axis
          */
-        void process_mouse_scroll(float y_offset);
+        void zoom(float offset);
 
     private:
         /**

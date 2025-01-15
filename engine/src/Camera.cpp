@@ -28,7 +28,7 @@ namespace engine::graphics {
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void Camera::process_keyboard(Movement direction, float deltaTime) {
+    void Camera::move_camera(Movement direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
             Position += Front * velocity;
@@ -38,10 +38,14 @@ namespace engine::graphics {
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+        if (direction == UP)
+            Position += Up * velocity;
+        if (direction == DOWN)
+            Position -= Up * velocity;
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void Camera::process_mouse_movement(float x_offset, float y_offset, bool constrainPitch) {
+    void Camera::rotate_camera(float x_offset, float y_offset, bool constrainPitch) {
         x_offset *= MouseSensitivity;
         y_offset *= MouseSensitivity;
 
@@ -62,8 +66,8 @@ namespace engine::graphics {
     }
 
     // processes input received from a mouse scroll-wheel event. Only requires to be input on the vertical wheel-axis
-    void Camera::process_mouse_scroll(float y_offset) {
-        Zoom -= (float) y_offset;
+    void Camera::zoom(float offset) {
+        Zoom -= (float) offset;
         if (Zoom < 1.0f)
             Zoom = 1.0f;
         if (Zoom > 45.0f)

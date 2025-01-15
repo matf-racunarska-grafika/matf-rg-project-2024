@@ -82,20 +82,20 @@ namespace engine::test::app {
         auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         float dt      = platform->dt();
         if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) {
-            camera->process_keyboard(engine::graphics::Camera::Movement::FORWARD, dt);
+            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
         }
         if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) {
-            camera->process_keyboard(engine::graphics::Camera::Movement::BACKWARD, dt);
+            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
         }
         if (platform->key(engine::platform::KEY_A).state() == engine::platform::Key::State::Pressed) {
-            camera->process_keyboard(engine::graphics::Camera::Movement::LEFT, dt);
+            camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
         }
         if (platform->key(engine::platform::KEY_D).state() == engine::platform::Key::State::Pressed) {
-            camera->process_keyboard(engine::graphics::Camera::Movement::RIGHT, dt);
+            camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
         }
         auto mouse = platform->mouse();
-        camera->process_mouse_movement(mouse.dx, mouse.dy);
-        camera->process_mouse_scroll(mouse.scroll);
+        camera->rotate_camera(mouse.dx, mouse.dy);
+        camera->zoom(mouse.scroll);
     }
 }
 
