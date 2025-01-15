@@ -11,6 +11,12 @@ namespace engine::test::app {
     };
 
     class MainController final : public engine::core::Controller {
+    public:
+        std::string_view name() const override {
+            return "test::app::MainController";
+        }
+
+    private:
         void initialize() override;
 
         bool loop() override;

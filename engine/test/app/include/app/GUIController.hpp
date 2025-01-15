@@ -5,6 +5,12 @@
 
 namespace engine::test::app {
     class GUIController final : public engine::core::Controller {
+    public:
+        std::string_view name() const override {
+            return "test::app::GUIController";
+        }
+
+    private:
         void initialize() override;
 
         void poll_events() override;
