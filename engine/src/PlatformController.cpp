@@ -175,15 +175,6 @@ namespace engine::platform {
         return m_keys[key];
     }
 
-    void PlatformEventObserver::on_mouse_move(MousePosition position) {
-    }
-
-    void PlatformEventObserver::on_key(Key key) {
-    }
-
-    void PlatformEventObserver::on_window_resize(int width, int height) {
-    }
-
     const Key &PlatformController::key(KeyId key) const {
         RG_GUARANTEE(key >= 0 && key < m_keys.size(), "KeyId out of bounds!");
         return m_keys[key];
