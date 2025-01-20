@@ -1,0 +1,14 @@
+<map id="engine/include/engine/platform/PlatformEventObserver.hpp" name="engine/include/engine/platform/PlatformEventObserver.hpp">
+<area shape="rect" id="node1" title="Defines the PlatformEventObserver class that serves as the interface for platform&#45;specific event obse..." alt="" coords="177,5,414,47"/>
+<area shape="rect" id="node2" href="$d0/db5/GraphicsController_8hpp.html" title="Defines the GraphicsController class that initializes OpenGL and ImGUI, and provides basic drawing fu..." alt="" coords="74,95,285,136"/>
+<area shape="rect" id="node7" href="$df/d98/PlatformController_8hpp.html" title="Defines the PlatformController class that serves as the interface for platform&#45;specific functionality..." alt="" coords="309,95,516,136"/>
+<area shape="rect" id="node3" href="$db/d4d/App_8cpp.html" title=" " alt="" coords="329,191,464,218"/>
+<area shape="rect" id="node4" href="$d9/d97/GraphicsController_8cpp.html" title=" " alt="" coords="86,191,305,218"/>
+<area shape="rect" id="node5" href="$d5/d21/GUIController_8cpp.html" title=" " alt="" coords="331,363,465,404"/>
+<area shape="rect" id="node6" href="$dc/d21/MainController_8cpp.html" title=" " alt="" coords="172,363,307,404"/>
+<area shape="rect" id="node8" href="$d3/d48/Engine_8hpp.html" title="Includes all the engine headers." alt="" coords="489,184,635,225"/>
+<area shape="rect" id="node12" href="$dc/d09/PlatformController_8cpp.html" title=" " alt="" coords="660,191,875,218"/>
+<area shape="rect" id="node9" href="$db/ddd/GUIController_8hpp.html" title=" " alt="" coords="309,273,465,315"/>
+<area shape="rect" id="node11" href="$d4/dcf/TestApp_8hpp.html" title=" " alt="" coords="541,273,697,315"/>
+<area shape="rect" id="node10" href="$db/dd3/TestApp_8cpp.html" title=" " alt="" coords="526,363,659,404"/>
+</map>

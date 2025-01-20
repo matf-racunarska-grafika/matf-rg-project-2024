@@ -1,0 +1,14 @@
+<map id="engine/include/engine/resources/Shader.hpp" name="engine/include/engine/resources/Shader.hpp">
+<area shape="rect" id="node1" title="Defines the Shader class that serves as an abstraction over OpenGL shaders." alt="" coords="429,5,581,47"/>
+<area shape="rect" id="node2" href="$d7/d09/Utils_8hpp.html" title="Defines utility functions, macros, algorithms, and data structures." alt="" coords="317,95,454,121"/>
+<area shape="rect" id="node11" title=" " alt="" coords="478,95,533,121"/>
+<area shape="rect" id="node12" title=" " alt="" coords="557,95,651,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,64,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="89,169,202,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="227,169,285,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="309,169,368,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="392,169,475,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="499,169,578,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="603,169,707,196"/>
+<area shape="rect" id="node10" title=" " alt="" coords="731,169,813,196"/>
+</map>

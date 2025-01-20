@@ -1,0 +1,16 @@
+<map id="engine/include/engine/graphics/OpenGL.hpp" name="engine/include/engine/graphics/OpenGL.hpp">
+<area shape="rect" id="node1" title="Defines the OpenGL class that serves as the interface for OpenGL." alt="" coords="167,5,319,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="144,95,205,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,244,88,271"/>
+<area shape="rect" id="node4" href="$d4/d6e/Shader_8hpp.html" title="Defines the Shader class that serves as an abstraction over OpenGL shaders." alt="" coords="334,95,525,121"/>
+<area shape="rect" id="node5" href="$d7/d09/Utils_8hpp.html" title="Defines utility functions, macros, algorithms, and data structures." alt="" coords="294,169,431,196"/>
+<area shape="rect" id="node13" title=" " alt="" coords="455,169,510,196"/>
+<area shape="rect" id="node14" title=" " alt="" coords="535,169,628,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="112,244,171,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="195,244,309,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="333,244,392,271"/>
+<area shape="rect" id="node9" title=" " alt="" coords="416,244,475,271"/>
+<area shape="rect" id="node10" title=" " alt="" coords="499,244,578,271"/>
+<area shape="rect" id="node11" title=" " alt="" coords="603,244,707,271"/>
+<area shape="rect" id="node12" title=" " alt="" coords="731,244,813,271"/>
+</map>

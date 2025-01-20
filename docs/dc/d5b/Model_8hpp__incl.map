@@ -1,0 +1,11 @@
+<map id="engine/include/engine/resources/Model.hpp" name="engine/include/engine/resources/Model.hpp">
+<area shape="rect" id="node1" title="Defines the Model class that serves as the interface for model rendering." alt="" coords="364,5,511,47"/>
+<area shape="rect" id="node2" href="$d1/d62/Mesh_8hpp.html" title="Defines the Mesh class that serves as the interface for mesh rendering and storing processed assimp s..." alt="" coords="137,95,319,121"/>
+<area shape="rect" id="node8" title=" " alt="" coords="400,244,453,271"/>
+<area shape="rect" id="node9" title=" " alt="" coords="475,95,549,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,99,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="123,169,181,196"/>
+<area shape="rect" id="node5" href="$d0/ddc/Texture_8hpp.html" title="Defines the Texture class that serves as an abstraction over OpenGL textures." alt="" coords="206,169,399,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="160,244,248,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="272,244,355,271"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="engine/include/engine/util/Configuration.hpp" name="engine/include/engine/util/Configuration.hpp">
+<area shape="rect" id="node1" title="Defines the Configuration class that serves as the interface for configuration management." alt="" coords="520,5,669,47"/>
+<area shape="rect" id="node2" href="$d3/d48/Engine_8hpp.html" title="Includes all the engine headers." alt="" coords="157,95,304,136"/>
+<area shape="rect" id="node8" href="$db/d4d/App_8cpp.html" title=" " alt="" coords="329,102,463,129"/>
+<area shape="rect" id="node9" href="$dc/d09/PlatformController_8cpp.html" title=" " alt="" coords="487,102,702,129"/>
+<area shape="rect" id="node10" href="$de/d81/ResourcesController_8cpp.html" title=" " alt="" coords="727,102,956,129"/>
+<area shape="rect" id="node11" href="$df/d0c/Utils_8cpp.html" title=" " alt="" coords="980,102,1119,129"/>
+<area shape="rect" id="node3" href="$db/ddd/GUIController_8hpp.html" title=" " alt="" coords="95,184,251,225"/>
+<area shape="rect" id="node4" href="$d5/d21/GUIController_8cpp.html" title=" " alt="" coords="5,273,139,315"/>
+<area shape="rect" id="node5" href="$dc/d21/MainController_8cpp.html" title=" " alt="" coords="171,273,306,315"/>
+<area shape="rect" id="node7" href="$d4/dcf/TestApp_8hpp.html" title=" " alt="" coords="327,184,483,225"/>
+<area shape="rect" id="node6" href="$db/dd3/TestApp_8cpp.html" title=" " alt="" coords="335,273,468,315"/>
+</map>

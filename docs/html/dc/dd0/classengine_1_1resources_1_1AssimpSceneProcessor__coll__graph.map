@@ -1,0 +1,5 @@
+<map id="engine::resources::AssimpSceneProcessor" name="engine::resources::AssimpSceneProcessor">
+<area shape="rect" id="node1" title="Processes the meshes in an Assimp scene." alt="" coords="5,185,168,227"/>
+<area shape="rect" id="node2" href="$d3/d93/classengine_1_1resources_1_1ResourcesController.html" title="Manages app resources: Model, Texture, Shader, and Skybox." alt="" coords="16,81,157,123"/>
+<area shape="rect" id="node3" href="$d1/d39/classengine_1_1core_1_1Controller.html" title="Controllers are a hook into the App main loop execution. By overriding virtual functions of this clas..." alt="" coords="8,5,165,32"/>
+</map>

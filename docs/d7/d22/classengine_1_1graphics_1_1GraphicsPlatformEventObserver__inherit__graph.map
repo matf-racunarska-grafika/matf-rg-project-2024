@@ -1,0 +1,4 @@
+<map id="engine::graphics::GraphicsPlatformEventObserver" name="engine::graphics::GraphicsPlatformEventObserver">
+<area shape="rect" id="node1" title="Observers change in window size in order to update the projection matrix." alt="" coords="5,95,183,136"/>
+<area shape="rect" id="node2" href="$dc/d04/classengine_1_1platform_1_1PlatformEventObserver.html" title="Platform events callback object. Extend this class and override the methods you want to be called by ..." alt="" coords="8,5,180,47"/>
+</map>

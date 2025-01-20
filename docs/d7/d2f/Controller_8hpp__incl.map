@@ -1,0 +1,12 @@
+<map id="engine/include/engine/core/Controller.hpp" name="engine/include/engine/core/Controller.hpp">
+<area shape="rect" id="node1" title="Defines the Controller class that serves as the base class for all controllers in the engine." alt="" coords="370,5,517,47"/>
+<area shape="rect" id="node2" href="$d2/def/Errors_8hpp.html" title="Defines Error, UserError, and EngineError classes, along with macros for error handling." alt="" coords="136,95,281,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="306,95,375,121"/>
+<area shape="rect" id="node8" title=" " alt="" coords="399,95,487,121"/>
+<area shape="rect" id="node9" title=" " alt="" coords="511,95,570,121"/>
+<area shape="rect" id="node10" title=" " alt="" coords="595,95,663,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,119,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="143,169,197,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="222,169,275,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="299,169,358,196"/>
+</map>

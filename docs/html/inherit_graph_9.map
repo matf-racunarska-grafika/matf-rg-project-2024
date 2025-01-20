@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$dc/d04/classengine_1_1platform_1_1PlatformEventObserver.html" title="Platform events callback object. Extend this class and override the methods you want to be called by ..." alt="" coords="5,39,177,80"/>
+<area shape="rect" id="node2" href="$dd/d4b/classengine_1_1graphics_1_1GraphicsPlatformEventObserver.html" title="Observers change in window size in order to update the projection matrix." alt="" coords="230,5,407,47"/>
+<area shape="rect" id="node3" href="$d3/dfa/classengine_1_1test_1_1app_1_1MainPlatformEventObserver.html" title=" " alt="" coords="225,71,412,112"/>
+</map>

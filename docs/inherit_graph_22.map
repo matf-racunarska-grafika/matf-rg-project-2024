@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,31,109,57"/>
+<area shape="rect" id="node2" href="$dd/ddd/classengine_1_1util_1_1Error.html" title="Base class for all errors." alt="" coords="157,31,279,57"/>
+<area shape="rect" id="node3" href="$d6/dbf/classengine_1_1util_1_1EngineError.html" title="Represents an error that occurred in the engine." alt="" coords="327,5,488,32"/>
+<area shape="rect" id="node4" href="$dc/d57/classengine_1_1util_1_1UserError.html" title="Represents an error that occurred in the user&#39;s code." alt="" coords="333,56,482,83"/>
+</map>
