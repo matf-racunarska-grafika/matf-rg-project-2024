@@ -5,7 +5,7 @@ To demonstrate most of the `engine` features, let's recreate part of the `engine
 ## 1. The TestApp class
 
 The first thing we need to do is to create a class that extends the `engine::app::App` class and override the
-`App::user_setup` method, let's call it `TestApp`.
+`App::app_setup` method, let's call it `TestApp`.
 
 In the `include/app` create `TestApp.hpp`
 
@@ -21,15 +21,15 @@ namespace engine::test::app {
 
 The only file we need to include to use the `engine` is the `<engine/core/Engine.hpp>`.
 
-And in the `src/` create `TestApp.cpp`, define `TestApp::user_setup()` and `main`:
+And in the `src/` create `TestApp.cpp`, define `TestApp::app_setup()` and `main`:
 
 ```cpp
 #include <app/TestApp.hpp>
 #include <spdlog/spdlog.h>
 
 namespace engine::test::app {
-    void TestApp::user_setup() {
-        spdlog::info("Hello, TestApp::user_setup");
+    void TestApp::app_setup() {
+        spdlog::info("Hello, TestApp::app_setup");
     }
 }
 
@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
 }
 ```
 
-The `TestApp::user_setup()` prints "Hello, TestApp::user_setup".
+The `TestApp::app_setup()` prints "Hello, TestApp::app_setup".
 The main function creates a new instance of our app `std::make_unique<engine::test::app::TestApp>()`
 and calls `engine::core::App::run`.
 
@@ -47,7 +47,7 @@ Now lets build and run this app and we should see a trace and an empty window:
 ```
 [2024-12-14 15:57:40.098] [info] ArgParser initialized.
 [2024-12-14 15:57:40.098] [info] Configuration initialized.
-[2024-12-14 15:57:40.098] [info] Hello, TestApp::user_setup <--- Here is our `TestApp::user_setup()` .
+[2024-12-14 15:57:40.098] [info] Hello, TestApp::app_setup <--- Here is our `TestApp::app_setup()` .
 [2024-12-14 15:57:40.098] [info] PlatformGLFW3Controller::initialize
 [2024-12-14 15:57:40.527] [info] Platform[GLFW 3.5.0]
 [2024-12-14 15:57:40.527] [info] GraphicsController::initialize
@@ -59,7 +59,7 @@ The method `App::run` runs the application:
 ```cpp
 int run(int argc, char** argv) {
   try {
-    engine_setup(argc, argv); <--- This where `TestApp::user_setup` is called
+    engine_setup(argc, argv); <--- This where `TestApp::app_setup` is called
     initialize();
     while (loop()) {
         poll_events();
@@ -72,7 +72,7 @@ int run(int argc, char** argv) {
 }
 ```
 
-Notice that the `engine::core::App::engine_setup` with the suffix `_` and `engine::core::App::user_setup` are different
+Notice that the `engine::core::App::engine_setup` with the suffix `_` and `engine::core::App::app_setup` are different
 methods.
 The `engine_setup` first executes the engine
 setup code and then calls the user implementation of the `setup`.
@@ -112,10 +112,10 @@ If we ran the app at this point, we won't see anything change in log, because al
 we didn't register our implementation to the `engine`.
 To register an `engine::core::Controller` implementation and have the `engine` execute it, we have to call
 `engine::core::App::register_controller` during
-`TestApp::user_setup`:
+`TestApp::app_setup`:
 
 ```cpp
-void TestApp::user_setup() {
+void TestApp::app_setup() {
     spdlog::info("Hello, from the main controller initialization!");
     auto main_controller = engine::core::App::register_controller<MainController>();
     main_controller->after(engine::core::App::get_controller<controller::EngineControllersEnd>());

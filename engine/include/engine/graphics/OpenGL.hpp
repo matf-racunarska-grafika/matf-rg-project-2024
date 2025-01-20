@@ -38,7 +38,7 @@ namespace engine::graphics {
         using ShaderProgramId = uint32_t;
 
         /**
-        * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref util::OpenGLError.
+        * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 
         * @param location Source location of where the call was made.
         * @param glfun OpenGL function to call.
@@ -140,10 +140,9 @@ namespace engine::graphics {
         */
         static std::string get_compilation_error_message(uint32_t shader_id);
 
-    private
-    :
+    private:
         /**
-        * @brief Throws @ref util::OpenGLError if an OpenGL error occurred. Used internally.
+        * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.
         * @param location Source location from where the OpenGL call was made.
         */
         static void assert_no_error(std::source_location location);

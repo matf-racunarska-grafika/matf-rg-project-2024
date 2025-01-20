@@ -43,8 +43,6 @@ namespace engine::platform {
     *
     */
     class PlatformController final : public core::Controller {
-        friend class ControllerManager;
-
     public:
         /**
         * @brief Get the state of the @ref Key in the current frame

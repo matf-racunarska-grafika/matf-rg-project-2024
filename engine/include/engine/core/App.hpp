@@ -20,7 +20,7 @@ namespace engine::core {
     *
     * The main function calls @ref App::run that defines the core structure of the application.
     * You can hook into the engine execution by overriding the desired methods in your
-    * implementations of the @ref engine::Controller class and registering your implementations
+    * implementations of the @ref engine::core::Controller class and registering your implementations
     * via @ref App::register_controller.
     * @code
     * int App::run(int argc, char **argv) {
@@ -71,20 +71,16 @@ namespace engine::core {
     private:
         /**
         * @brief The first function that the engine calls to do its internal Controller classes `engine_setup`.
-        *
-        * After the engine `engine_setup` is finished, `engine_setup` calls the @ref App::user_setup(int argc, char** argv) that
-        * you can override and do your custom setup operations.
-        * This is where you should register your own controllers.
         */
         void engine_setup(int argc, char **argv);
 
         /**
-        * @brief Override to define your custom app setup that gets called after engine `engine_setup`.
+        * @brief Override to define your custom app setup that gets called after the `engine_setup`.
         */
         virtual void app_setup();
 
         /**
-        * @brief Initializes all the controllers registered in @ref App::user_setup. Calls @ref engine::Controller::initialize for registered controllers.
+        * @brief Initializes all the controllers registered in @ref App::app_setup. Calls @ref engine::core::Controller::initialize for registered controllers.
         *
         * After this functions finishes all the controllers have been initialized, and they can be now used
         * by calling @ref engine::core::Controller::get<TController>()
@@ -92,7 +88,7 @@ namespace engine::core {
         void initialize();
 
         /**
-        * @brief Processes all pending events. Calls @ref engine::Controller::poll_events for registered controllers.
+        * @brief Processes all pending events. Calls @ref engine::core::Controller::poll_events for registered controllers.
         *
         * It handles input events, system events, and any other types of events
         * that have been queued. This is where the platform events are processed.
@@ -100,7 +96,7 @@ namespace engine::core {
         void poll_events();
 
         /**
-        * @brief Checks whether the render loop should continue executing. Calls @ref engine::Controller::loop for registered controllers.
+        * @brief Checks whether the render loop should continue executing. Calls @ref engine::core::Controller::loop for registered controllers.
         *
         * This is where you should check if an internal or external event happened
         * that stops the main render loop. For example the user presses ESC.
@@ -110,7 +106,7 @@ namespace engine::core {
         bool loop();
 
         /**
-        * @brief Updates the app logic state. Calls @ref engine::Controller::update for registered controllers.
+        * @brief Updates the app logic state. Calls @ref engine::core::Controller::update for registered controllers.
         *
         * This is where all the App state should be updated including handling events
         * registered in @ref App::poll_events, processing physics, world logic etc.
@@ -118,7 +114,7 @@ namespace engine::core {
         void update();
 
         /**
-        * @brief Draws the frame. Calls @ref engine::Controller::draw for registered controllers.
+        * @brief Draws the frame. Calls @ref engine::core::Controller::draw for registered controllers.
         *
         * This is where all the drawing should happen based on the state
         * that the @ref App::update computed.
@@ -126,7 +122,7 @@ namespace engine::core {
         void draw();
 
         /**
-        * @brief Terminates the app. Calls @ref engine::Controller::terminate for registered controllers in the **reverse order**.
+        * @brief Terminates the app. Calls @ref engine::core::Controller::terminate for registered controllers in the **reverse order**.
         *
         * Terminate is called always, regardless of whether the app closes successfully or an error occurs.
         */

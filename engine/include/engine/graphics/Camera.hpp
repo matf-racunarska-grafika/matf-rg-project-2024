@@ -68,12 +68,12 @@ namespace engine::graphics {
         float Pitch{};
 
         /**
-        * @brief Used in @ref Camera::process_keyboard_movement. The higher the value the faster the camera will move on keyboard action.
+        * @brief Used in @ref Camera::move_camera. The higher the value the faster the camera will move on keyboard action.
         */
         float MovementSpeed{};
 
         /**
-        * @brief Used in @ref Camera::process_mouse_movement. The higher the value the faster the camera will move on mouse action.
+        * @brief Used in @ref Camera::rotate_camera. The higher the value the faster the camera will move on mouse action.
         */
         float MouseSensitivity{};
 

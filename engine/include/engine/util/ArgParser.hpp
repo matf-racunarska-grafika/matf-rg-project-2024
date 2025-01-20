@@ -11,7 +11,7 @@
 
 namespace engine::util {
     /**
-    * @class ArgParser  
+    * @class ArgParser
     * @brief Parses command line arguments.
     */
     class ArgParser {

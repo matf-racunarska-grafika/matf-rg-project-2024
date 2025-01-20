@@ -40,7 +40,7 @@ namespace engine::platform {
 
         /**
         * @brief Get the window handle pointer. You are not supposed to use this value outside the `engine` namespace.
-        * @returns An opaque pointer to the @ref GLFWwindow. You are not supposed to use this return value
+        * @returns An opaque pointer to the GLFWwindow. You are not supposed to use this return value
         * outside the Engine.
         */
         GLFWwindow *handle_() const {

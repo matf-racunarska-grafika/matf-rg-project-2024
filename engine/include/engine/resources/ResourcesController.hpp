@@ -64,6 +64,7 @@ namespace engine::resources {
 
         /**
         * @brief Retrieves the @ref Shader with a given name. You are not supposed to call `delete` on this pointer.
+        * @param name of the .glsl file in the `resources/shaders` directory
         * @param path to the shader.glsl file that contains shader source code.
         * @returns The pointer to the @ref Shader associated with the `name`.
         */

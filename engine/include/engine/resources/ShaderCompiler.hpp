@@ -24,8 +24,8 @@ namespace engine::resources {
 	/**
 	* @class ShaderCompiler
 	* @brief Compiles GLSL shaders from a single source file.
-	* Vertex, Fragment and Geometry shaders are seperated by the `// #shader vertex|fragment|geometry` directive.
-	* All the code following the directive belongs to the source of the shader specified in the #shader directive.
+	* Vertex, Fragment and Geometry shaders are separated by the `// #shader vertex|fragment|geometry` directive.
+	* All the code following the directive belongs to the source of the shader specified in the `#shader` directive.
 	* Here is an example:
 	* @code
 	* //#shader vertex
@@ -83,7 +83,7 @@ namespace engine::resources {
 
 		/**
 		* @brief Returns the output field from the @ref ShaderParsingResult for which to continue appending `line`s of the `m_sources`.
-		* Detects if the line contains // #shader directive and returns a pointer to the appropriate
+		* Detects if the line contains `//#shader` directive and returns a pointer to the appropriate
 		* field in the @ref ShaderParsingResult.
 		*/
 		std::string *now_parsing(ShaderParsingResult &result, const std::string &line);

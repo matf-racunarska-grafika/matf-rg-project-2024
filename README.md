@@ -129,7 +129,7 @@ public:
   void setup() override;
 };
 
-void MyApp::user_setup() {
+void MyApp::app_setup() {
     spdlog::info("Hello, setup!");
 }
 
@@ -146,7 +146,7 @@ int main(int argc, char** argv) {
 2. Implement for the phase (`initialize`, `loop`, `poll_events`, `update`, `begin_draw`, `draw`, `end_draw`,
    `terminate`) for which you want to
    execute custom code.
-3. Register the controller in the `MainApp::user_setup`.
+3. Register the controller in the `MainApp::app_setup`.
 
 Here is the example of creating the `MainController` that enables `depth testing`.
 
@@ -160,7 +160,7 @@ protected:
 class MainApp final : public engine::core::App {
 protected:
     void app_setup() override {
-        auto main_controller = engine::controller::register_controller<MainController>();
+        auto main_controller = register_controller<MainController>();
         /* Make sure that the main_controller executes after all the engine controllers. */
         main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
     }

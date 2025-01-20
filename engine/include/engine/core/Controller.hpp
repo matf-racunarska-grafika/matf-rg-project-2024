@@ -24,9 +24,8 @@ namespace engine::core {
     * Every controller instance is a singleton instance that is managed by the @ref App.
     * There can be no two instances of the same controller.
     *
-    * @usage
     * \code
-    * class LoggingController : public engine::Controller {
+    * class LoggingController : public engine::core::Controller {
     * public:
     *   void initialize() override { spdlog::log("Logging::initialize"); }
     *   void terminate() override { spdlog::log("Logging::terminate"); }
@@ -98,7 +97,7 @@ namespace engine::core {
         /**
         * @brief Controller will execute as long this function returns true.
         *
-        * You can turn the controller on/off by calling @ref Controller::enable @ref Controller::disable
+        * You can turn the controller on/off by calling @ref Controller::set_enable.
         */
         bool is_enabled() const {
             return m_enabled;
@@ -106,7 +105,7 @@ namespace engine::core {
 
         /**
         * @brief Enables or disables the controller based on value.
-        * The @ref ControllerManager executes only the enabled controllers,
+        * The @ref engine::core::App executes only the enabled controllers,
         * except for the @ref Controller::poll_events function, that's executed always.
         * By default, controllers are enabled when registered.
         */
@@ -150,7 +149,7 @@ namespace engine::core {
         }
 
         /**
-        * @brief Perform preparation for drawing. Executes in the @ref core::App::draw, before @ref Controller::draw.
+        * @brief Perform preparation for drawing. Executes in the @ref core::App::draw, before @ref core::Controller::draw.
         */
         virtual void begin_draw() {
         }
@@ -162,7 +161,7 @@ namespace engine::core {
         }
 
         /**
-        * @brief Finalize drawing. Executes in the @ref core::App::draw, after @ref Controller::draw.
+        * @brief Finalize drawing. Executes in the @ref core::App::draw, after @ref engine::core::Controller::draw.
         */
         virtual void end_draw() {
         }
@@ -195,7 +194,7 @@ namespace engine::core {
         bool m_registered{false};
 
         /**
-        * @brief Internal field used to control weather the @ref ControllerManager executes the controller.
+        * @brief Internal field used to control weather the @ref engine::core::App executes the controller.
         */
         bool m_enabled{true};
     };
