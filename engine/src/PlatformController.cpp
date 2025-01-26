@@ -215,7 +215,7 @@ namespace engine::platform {
     void PlatformController::_platform_on_scroll(double x, double y) {
         g_mouse_position.scroll = y;
         for (auto &observer: m_platform_event_observers) {
-            observer->on_mouse_move(g_mouse_position);
+            observer->on_scroll(g_mouse_position);
         }
     }
 
