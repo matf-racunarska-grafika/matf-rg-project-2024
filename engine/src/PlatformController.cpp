@@ -93,6 +93,7 @@ namespace engine::platform {
 
     void PlatformController::poll_events() {
         g_mouse_position.dx = g_mouse_position.dy = 0.0f;
+        g_mouse_position.scroll = 0.0f;
         glfwPollEvents();
         for (int i = 0; i < KEY_COUNT; ++i) {
             update_key(key_ref(static_cast<KeyId>(i)));
