@@ -93,6 +93,7 @@ namespace engine::platform {
 
     void PlatformController::poll_events() {
         g_mouse_position.dx = g_mouse_position.dy = 0.0f;
+        g_mouse_position.scroll = 0.0f;
         glfwPollEvents();
         for (int i = 0; i < KEY_COUNT; ++i) {
             update_key(key_ref(static_cast<KeyId>(i)));
@@ -214,7 +215,7 @@ namespace engine::platform {
     void PlatformController::_platform_on_scroll(double x, double y) {
         g_mouse_position.scroll = y;
         for (auto &observer: m_platform_event_observers) {
-            observer->on_mouse_move(g_mouse_position);
+            observer->on_scroll(g_mouse_position);
         }
     }
 

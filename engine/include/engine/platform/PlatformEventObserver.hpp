@@ -22,6 +22,11 @@ namespace engine::platform {
         virtual void on_mouse_move(MousePosition position) { }
 
         /**
+         * @brief Called by @ref engine::platform::PlatformController for every frame in which the scroll button is moved.
+         */
+        virtual void on_scroll(MousePosition position) {}
+
+        /**
         * @brief Called by @ref engine::platform::PlatformController for every frame in an event occurred on the keyboard or mouse key.
         */
         virtual void on_key(Key key) { }
