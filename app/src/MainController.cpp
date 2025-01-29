@@ -27,6 +27,30 @@ namespace app {
         return true;
     }
 
+    void MainController::update_camera() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+        float dt = platform->dt();
+        if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
+            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
+            camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
+            camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
+        }
+    }
+
+    void MainController::update() {
+        update_camera();
+    }
+
+
     void MainController::draw_temple() {
         //Model
         auto resources                  = engine::core::Controller::get<engine::resources::ResourcesController>();

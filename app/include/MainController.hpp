@@ -12,7 +12,9 @@ namespace app {
 
         void initialize() override;
         bool loop() override;
+        void update_camera();
         void draw_temple();
+        void update() override;
         void draw() override;
         void begin_draw() override;
         void end_draw() override;
