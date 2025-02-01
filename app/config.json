@@ -1,14 +1,14 @@
 {
   "resources": {
     "models": {
-      "temple" : {
-        "path" : "MOLIMTE/Rotunda1_01.obj"
+      "terrain" : {
+        "path" : "terrain/Rock_terrain_retopo.obj"
       }
     }
   },
   "window": {
-    "height": 1200,
+    "height": 600,
     "title": "Hello, window!",
-    "width": 1600
+    "width": 800
   }
 }
