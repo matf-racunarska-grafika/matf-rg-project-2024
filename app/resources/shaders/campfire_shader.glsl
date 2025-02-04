@@ -1,84 +1,75 @@
 //#shader vertex
 #version 330 core
-
-// Input vertex attributes (adjust locations as needed)
-layout (location = 0) in vec3 aPosition;
+layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoord;
-layout (location = 3) in vec3 aTangent; // required for normal mapping
+layout (location = 2) in vec2 aTexCoords;
 
-// Uniform transformation matrices
+out vec3 FragPos;
+out vec3 Normal;
+out vec2 TexCoords;
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-// Outputs to the fragment shader
-out vec2 TexCoord;
-out vec3 FragPos;
-out mat3 TBN; // Tangent, Bitangent, Normal matrix
-
 void main()
 {
-    // Calculate the world-space position of the fragment.
-    FragPos = vec3(model * vec4(aPosition, 1.0));
-    TexCoord = aTexCoord;
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+    TexCoords = aTexCoords;
 
-    // Transform the normal and tangent vectors to world space.
-    vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
-    vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
-    // Re-compute bitangent (could also be provided as a vertex attribute)
-    vec3 B = normalize(cross(N, T));
-
-    // Build TBN matrix to transform normal from tangent space to world space.
-    TBN = mat3(T, B, N);
-
-    // Final vertex position in clip space.
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
 //#shader fragment
 #version 330 core
-
-in vec2 TexCoord;
-in vec3 FragPos;
-in mat3 TBN;
-
 out vec4 FragColor;
 
-uniform sampler2D baseTexture;
-uniform sampler2D normalMap;
-uniform sampler2D occlusionRoughMetalMap;
-uniform sampler2D emissiveMap;
+struct Material {
+// Specular color of the model.
+    vec3 specular;
+    float shininess;
+};
 
-uniform vec3 lightPos;
+struct Light {
+    vec3 position;
+
+// You can either set these as uniforms from your code,
+// or assign constant values here if they’re fixed.
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+uniform sampler2D texture_diffuse1;
 uniform vec3 viewPos;
+uniform Material material;
+uniform Light light;
 
 void main()
 {
-    vec4 baseColor = texture(baseTexture, TexCoord);
+    // Normalize input normals
+    vec3 norm = normalize(Normal);
+    // Calculate the direction from the fragment to the light source
+    vec3 lightDir = normalize(light.position - FragPos);
 
-    // Sample and unpack the normal map from [0, 1] to [-1, 1].
-    vec3 normalTex = texture(normalMap, TexCoord).rgb;
-    normalTex = normalize(normalTex * 2.0 - 1.0);
-    // Transform the normal from tangent space to world space.
-    vec3 normal = normalize(TBN * normalTex);
-    vec3 emissive = texture(emissiveMap, TexCoord).rgb;
+    // Ambient component: base color modulated by the ambient light
+    vec3 ambient = light.ambient * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
 
-    // --- Simple Phong Lighting ---
-    // Calculate light direction.
-    vec3 lightDir = normalize(lightPos - FragPos);
-    // Diffuse shading.
-    float diff = max(dot(normal, lightDir), 0.0);
+    // Diffuse component: Lambert’s cosine law
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
 
-    // Specular shading.
+    // Specular component: using Blinn-Phong or Phong reflection model.
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-    vec3 ambient = 0.1 * baseColor.rgb;         // Ambient term
-    vec3 diffuse = diff * baseColor.rgb;          // Diffuse term
-    vec3 specular = spec * vec3(0.5);             // Specular term (adjust specular color/intensity as needed)
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * material.specular;
 
-    vec3 finalColor = ambient + diffuse + specular + emissive;
-
-    FragColor = vec4(finalColor, baseColor.a);
+    vec3 result = ambient + diffuse + specular;
+    FragColor = vec4(result, 1.0);
 }
