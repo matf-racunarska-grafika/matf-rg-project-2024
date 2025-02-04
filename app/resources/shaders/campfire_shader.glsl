@@ -45,17 +45,16 @@ in mat3 TBN;
 
 out vec4 FragColor;
 
-uniform sampler2D baseTexture;         // Base Color (map_Kd)
-uniform sampler2D normalMap;           // Normal Map (map_bump)
-uniform sampler2D occlusionRoughMetalMap; // (map_Ks) - Optional: could be used for more advanced PBR shading.
-uniform sampler2D emissiveMap;         // Emissive (map_Ke)
+uniform sampler2D baseTexture;
+uniform sampler2D normalMap;
+uniform sampler2D occlusionRoughMetalMap;
+uniform sampler2D emissiveMap;
 
-uniform vec3 lightPos; // Position of a point/directional light in world space
-uniform vec3 viewPos;  // Camera position in world space
+uniform vec3 lightPos;
+uniform vec3 viewPos;
 
 void main()
 {
-    // Sample the base color.
     vec4 baseColor = texture(baseTexture, TexCoord);
 
     // Sample and unpack the normal map from [0, 1] to [-1, 1].
@@ -63,12 +62,6 @@ void main()
     normalTex = normalize(normalTex * 2.0 - 1.0);
     // Transform the normal from tangent space to world space.
     vec3 normal = normalize(TBN * normalTex);
-
-    // (Optional) Sample the occlusion/roughness/metallic texture.
-    // float ormFactor = texture(occlusionRoughMetalMap, TexCoord).r;
-    // Use ormFactor as needed in your lighting or PBR calculations.
-
-    // Sample the emissive texture.
     vec3 emissive = texture(emissiveMap, TexCoord).rgb;
 
     // --- Simple Phong Lighting ---

@@ -18,6 +18,9 @@
       },
       "campfire" : {
         "path" : "campfire/en_campfire_01.obj"
+      },
+      "sun" : {
+        "path" : "sun/13913_Sun_v2_l3.obj"
       }
     }
   },

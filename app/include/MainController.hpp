@@ -23,6 +23,9 @@ class MainController : public engine::core::Controller {
     void draw_logs();
     void draw_lighthouse();
 
+    void drawLightSource_day();
+    void drawLightSource_night();
+
     void update() override;
 
     void update_camera();

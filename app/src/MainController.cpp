@@ -13,6 +13,7 @@
 namespace app {
 
     bool mouse_enabled;
+    bool is_day;
 
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     public:
@@ -31,6 +32,7 @@ namespace app {
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         mouse_enabled = false;
         platform->set_enable_cursor(mouse_enabled);
+        is_day = true;
     }
 
     bool MainController::loop() {
@@ -51,7 +53,8 @@ namespace app {
 
     void MainController::draw() {
         draw_campfire();
-        draw_island();
+        // drawLightSource_day();
+        // draw_island();
         draw_skybox();
     }
 
@@ -90,7 +93,11 @@ namespace app {
 
     void MainController::draw_skybox() {
         auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
-        auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+        engine::resources::Skybox* skybox_cube;
+        if (is_day)
+            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_day");
+        else
+            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_night");
         engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 
@@ -108,6 +115,25 @@ namespace app {
         model = glm::scale(model, glm::vec3(5.0f, 0.8f, 5.0f));
         shader->set_mat4("model", model);
         island->draw(shader);
+    }
+
+    void MainController::drawLightSource_day() {
+        if (!is_day)
+            return;
+
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model* sun = resources->model("sun");
+        engine::resources::Shader* shader = resources->shader("daylight_shader");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
+        shader->set_mat4("model", model);
+        sun->draw(shader);
     }
 
     void MainController::update() {
@@ -149,6 +175,9 @@ namespace app {
         if (platform->key(engine::platform::KeyId::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
             mouse_enabled = !mouse_enabled;
             platform->set_enable_cursor(mouse_enabled);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_N).state() == engine::platform::Key::State::JustPressed) {
+            is_day = !is_day;
         }
     }
 }
