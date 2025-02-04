@@ -48,14 +48,37 @@ namespace app {
     }
 
     void MainController::draw() {
-        draw_backpack();
+        draw_island();
         draw_skybox();
     }
 
-    void MainController::draw_backpack() {
+    void MainController::draw_tree2() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* backpack = resources->model("backpack");
+        engine::resources::Model* tree = resources->model("tree2");
+        engine::resources::Shader* shader = resources->shader("tree_shader2");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
+        shader->set_mat4("model", model);
+
+        tree->draw(shader);
+    }
+
+    void MainController::draw_skybox() {
+        auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+        auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+        engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+    }
+
+    void MainController::draw_island() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model* island = resources->model("island");
         engine::resources::Shader* shader = resources->shader("basic");
 
         shader->use();
@@ -63,15 +86,10 @@ namespace app {
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-        model = glm::scale(model, glm::vec3(0.3f));
+        model = glm::scale(model, glm::vec3(1.0f));
         shader->set_mat4("model", model);
-        backpack->draw(shader);
-    }
 
-    void MainController::draw_skybox() {
-        auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
-        auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
-        engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+        island->draw(shader);
     }
 
     void MainController::update() {

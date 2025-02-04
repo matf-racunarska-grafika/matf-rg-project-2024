@@ -3,6 +3,18 @@
     "models": {
       "backpack" : {
         "path" : "backpack/backpack.obj"
+      },
+      "island" : {
+        "path": "island/Low Poly Pirate Landscapes.obj"
+      },
+      "mushroom" : {
+        "path" : "mushroom/MushMaxv1.obj"
+      },
+      "rock" : {
+        "path" : "rock/rock.obj"
+      },
+      "tree2" : {
+        "path" : "tree2/untitled.obj"
       }
     }
   },
