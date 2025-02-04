@@ -8,6 +8,8 @@
 #include <MainController.hpp>
 #include <GUIController.hpp>
 
+#include "../../engine/libs/glad/include/glad/glad.h"
+
 namespace app {
 
     bool mouse_enabled;
@@ -48,6 +50,7 @@ namespace app {
     }
 
     void MainController::draw() {
+        draw_campfire();
         draw_island();
         draw_skybox();
     }
@@ -69,6 +72,22 @@ namespace app {
         tree->draw(shader);
     }
 
+    void MainController::draw_campfire() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model* campfire = resources->model("campfire");
+        engine::resources::Shader* shader = resources->shader("campfire_shader");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
+        shader->set_mat4("model", model);
+        campfire->draw(shader);
+    }
+
     void MainController::draw_skybox() {
         auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
         auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
@@ -78,17 +97,16 @@ namespace app {
     void MainController::draw_island() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* island = resources->model("island");
-        engine::resources::Shader* shader = resources->shader("basic");
+        engine::resources::Model* island = resources->model("ostrvo4");
+        engine::resources::Shader* shader = resources->shader("island_shader");
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-        model = glm::scale(model, glm::vec3(1.0f));
+        model = glm::scale(model, glm::vec3(5.0f, 0.8f, 5.0f));
         shader->set_mat4("model", model);
-
         island->draw(shader);
     }
 

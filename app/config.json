@@ -4,9 +4,6 @@
       "backpack" : {
         "path" : "backpack/backpack.obj"
       },
-      "island" : {
-        "path": "island/Low Poly Pirate Landscapes.obj"
-      },
       "mushroom" : {
         "path" : "mushroom/MushMaxv1.obj"
       },
@@ -15,6 +12,12 @@
       },
       "tree2" : {
         "path" : "tree2/untitled.obj"
+      },
+      "ostrvo4" : {
+        "path" : "ostrvo4/cwmdu-cairn-edit.obj"
+      },
+      "campfire" : {
+        "path" : "campfire/en_campfire_01.obj"
       }
     }
   },
