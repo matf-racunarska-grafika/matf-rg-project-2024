@@ -2,11 +2,11 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoords;
+// Texture coordinates are not needed since no texture is used.
+// layout (location = 2) in vec2 aTexCoords;
 
 out vec3 FragPos;
 out vec3 Normal;
-out vec2 TexCoords;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -14,9 +14,10 @@ uniform mat4 projection;
 
 void main()
 {
+    // Transform vertex position into world space
     FragPos = vec3(model * vec4(aPos, 1.0));
+    // Correctly transform normals in case of non-uniform scaling
     Normal = mat3(transpose(inverse(model))) * aNormal;
-    TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
@@ -24,9 +25,14 @@ void main()
 #version 330 core
 out vec4 FragColor;
 
+in vec3 FragPos;
+in vec3 Normal;
+
 struct Material {
-    vec3 specular;
-    float shininess;
+    vec3 ambient;    // From Ka (ambient reflectivity)
+    vec3 diffuse;    // From Kd (diffuse reflectivity)
+    vec3 specular;   // From Ks (specular reflectivity)
+    float shininess; // From Ns (specular exponent)
 };
 
 struct Light {
@@ -36,25 +42,25 @@ struct Light {
     vec3 specular;
 };
 
-in vec3 FragPos;
-in vec3 Normal;
-in vec2 TexCoords;
-
-uniform sampler2D texture_diffuse1;
-uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform vec3 viewPos;
 
 void main()
 {
+    // Normalize the normal vector
     vec3 norm = normalize(Normal);
+    // Calculate the direction from the fragment to the light source
     vec3 lightDir = normalize(light.position - FragPos);
 
-    vec3 ambient = light.ambient * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
+    // Ambient component
+    vec3 ambient = light.ambient * material.ambient;
 
+    // Diffuse component
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
+    vec3 diffuse = light.diffuse * diff * material.diffuse;
 
+    // Specular component
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);

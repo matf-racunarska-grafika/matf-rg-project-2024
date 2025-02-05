@@ -21,6 +21,12 @@
       },
       "log" : {
         "path" : "log/Log.obj"
+      },
+      "tent" : {
+        "path" : "tent/Tent.obj"
+      },
+      "island" : {
+        "path" : "island/Island02.obj"
       }
     }
   },

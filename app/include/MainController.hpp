@@ -1,6 +1,7 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 #include <spdlog/spdlog.h>
+#include <cstdlib>
 
 namespace app {
 class MainController : public engine::core::Controller {
@@ -17,7 +18,9 @@ class MainController : public engine::core::Controller {
     void draw_island();
 
     void draw_tree1();
-    void draw_tree2();
+    void draw_tree2(const glm::vec3& position);
+    void draw_forest();
+    void draw_forest_instanced();
     void draw_vegetation();
     void draw_mushroom();
 
@@ -27,13 +30,13 @@ class MainController : public engine::core::Controller {
     void draw_log();
     void draw_logs();
 
+    void draw_tents();
+
     void drawLightSource_day();
     void drawLightSource_night();
 
     void update() override;
-
     void update_camera();
-
 
 public:
     std::string_view name() const override {
