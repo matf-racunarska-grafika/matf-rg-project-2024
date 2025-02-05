@@ -13,14 +13,14 @@
       "tree2" : {
         "path" : "tree2/untitled.obj"
       },
-      "ostrvo4" : {
-        "path" : "ostrvo4/cwmdu-cairn-edit.obj"
-      },
       "campfire" : {
         "path" : "campfire/en_campfire_01.obj"
       },
       "sun" : {
         "path" : "sun/13913_Sun_v2_l3.obj"
+      },
+      "log" : {
+        "path" : "log/Log.obj"
       }
     }
   },
