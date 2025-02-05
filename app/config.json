@@ -9,6 +9,12 @@
       },
       "column" : {
         "path" : "column/columns_001.obj"
+      },
+      "butterfly" : {
+        "path" : "butterfly/Blue_butterfly.obj"
+      },
+      "gazebo" : {
+        "path" : "gazebo/Gazebo.obj"
       }
     }
   },

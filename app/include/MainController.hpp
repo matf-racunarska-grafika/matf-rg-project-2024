@@ -16,8 +16,10 @@ namespace app {
         void update() override;
         void draw_terrain();
         void draw_monument();
+        void draw_gazebo();
         void draw_columns();
         void draw_skybox();
+        void draw_butterfly();
         void draw() override;
         void begin_draw() override;
         void end_draw() override;

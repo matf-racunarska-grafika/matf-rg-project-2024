@@ -37,10 +37,11 @@ namespace engine::resources {
         * @param shader The shader to use for drawing.
         */
         void draw(const Shader *shader);
+        void draw_instanced(const Shader *shader, int amount);
 
         /**
-        * @brief Destroys the mesh in the OpenGL context.
-        */
+         * @brief Destroys the mesh in the OpenGL context.
+         */
         void destroy();
 
     private:

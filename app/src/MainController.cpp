@@ -14,6 +14,7 @@
 #include <wayland-client-core.h>
 
 #include "../../engine/libs/assimp/code/AssetLib/3MF/3MFXmlTags.h"
+#include "../../engine/libs/glad/include/glad/glad.h"
 
 namespace engine::test::app {
     class GUIController;
@@ -69,11 +70,9 @@ namespace app {
         }
         if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
             camera->MovementSpeed = 5.0f;
-        }
-        else if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_up()) {
+        } else if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_up()) {
             camera->MovementSpeed = 2.5f;
         }
-
     }
 
     void MainController::update() {
@@ -83,15 +82,18 @@ namespace app {
     void MainController::draw_terrain() {
         auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics                     = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
         engine::resources::Model *terrain = resources->model("terrain");
         engine::resources::Shader *shader = resources->shader("basic");
 
         shader->use();
+        shader->set_vec3("LightPos", glm::vec3(7.0f,30.0f, -1.0f));
+        shader->set_vec3("viewPos", camera->Position);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(7.0f, -11.0f, -1.0f));
-        model = glm::scale(model, glm::vec3(1.0f));
+        model           = glm::translate(model, glm::vec3(7.0f, -11.0f, -1.0f));
+        model           = glm::scale(model, glm::vec3(1.0f));
         shader->set_mat4("model", model);
 
         terrain->draw(shader);
@@ -99,28 +101,58 @@ namespace app {
     void MainController::draw_monument() {
         auto resources                     = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics                      = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+
         engine::resources::Model *monument = resources->model("monument");
         engine::resources::Shader *shader  = resources->shader("basic");
 
         shader->use();
+        shader->set_vec3("LightPos", glm::vec3(7.0f,30.0f, -1.0f));
+        shader->set_vec3("viewPos", camera->Position);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         shader->set_mat4("model", glm::mat4(1.0f));
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(7.0f, -10.6f, -1.0f));
-        model = glm::scale(model, glm::vec3(1.0f));
+        model           = glm::translate(model, glm::vec3(7.0f, -10.6f, -1.0f));
+        model           = glm::scale(model, glm::vec3(1.0f));
         shader->set_mat4("model", model);
 
         monument->draw(shader);
     }
 
-    void MainController::draw_columns() {
+    void MainController::draw_gazebo() {
         auto resources                     = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics                      = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *column = resources->model("column");
+        auto camera = graphics->camera();
+
+        engine::resources::Model *gazebo = resources->model("gazebo");
         engine::resources::Shader *shader  = resources->shader("basic");
 
         shader->use();
+        shader->set_vec3("LightPos", glm::vec3(7.0f,30.0f, -1.0f));
+        shader->set_vec3("viewPos", camera->Position);
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("model", glm::mat4(1.0f));
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(7.0f, -10.6f, -1.0f));
+        model           = glm::scale(model, glm::vec3(0.1f));
+        shader->set_mat4("model", model);
+
+        gazebo->draw(shader);
+    }
+
+    void MainController::draw_columns() {
+        auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                     = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+
+        engine::resources::Model *column  = resources->model("column");
+        engine::resources::Shader *shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_vec3("LightPos", glm::vec3(7.0f,30.0f, -1.0f));
+        shader->set_vec3("viewPos", camera->Position);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model1 = glm::mat4(1.0f);
@@ -128,32 +160,24 @@ namespace app {
         glm::mat4 model3 = glm::mat4(1.0f);
         glm::mat4 model4 = glm::mat4(1.0f);
 
-        model1 = glm::translate(model1, glm::vec3(3.5f, -10.5f, 3.0f)); //front left
+        model1 = glm::translate(model1, glm::vec3(3.5f, -10.5f, 3.0f)); // front left
         model1 = glm::scale(model1, glm::vec3(0.4f));
 
-        model2 = glm::translate(model2, glm::vec3(10.0f, -10.9f, 3.0f)); //back left
+        model2 = glm::translate(model2, glm::vec3(10.0f, -10.9f, 3.0f)); // back left
         model2 = glm::scale(model2, glm::vec3(0.4f));
 
-        model3 = glm::translate(model3, glm::vec3(3.5f, -10.4f, -4.8f)); //front right
+        model3 = glm::translate(model3, glm::vec3(3.5f, -10.4f, -4.8f)); // front right
         model3 = glm::scale(model3, glm::vec3(0.4f));
 
-        model4 = glm::translate(model4, glm::vec3(10.0f, -10.8f, -4.8f)); //back right
+        model4 = glm::translate(model4, glm::vec3(10.0f, -10.8f, -4.8f)); // back right
         model4 = glm::scale(model4, glm::vec3(0.4f));
 
-        shader->set_mat4("model", model1);
-        column->draw(shader);
-
-        shader->set_mat4("model", model2);
-        column->draw(shader);
-
-        shader->set_mat4("model", model3);
-        column->draw(shader);
-
-        shader->set_mat4("model", model4);
-        column->draw(shader);
+        for (auto& model : {model1, model2, model3, model4}) {
+            shader->set_mat4("model", model);
+            column->draw(shader);
+        }
 
     }
-
 
     void MainController::begin_draw() {
         engine::graphics::OpenGL::clear_buffers();
@@ -172,10 +196,30 @@ namespace app {
         graphics->draw_skybox(shader, skybox);
     }
 
+    void MainController::draw_butterfly() {
+        auto resources                      = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                       = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *butterfly = resources->model("butterfly");
+        engine::resources::Shader *shader   = resources->shader("basic");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("model", glm::mat4(1.0f));
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(0.0f, -8.0f, 0.0f));
+        model           = glm::scale(model, glm::vec3(0.05f));
+        shader->set_mat4("model", model);
+
+        butterfly->draw(shader);
+    }
+
     void MainController::draw() {
-        draw_terrain();
-        draw_monument();
-        draw_columns();
+        //draw_terrain();
+        //draw_monument();
+        draw_gazebo();
+        //draw_columns();
+        //draw_butterfly();
         draw_skybox();
     }
 } // namespace app
