@@ -20,6 +20,9 @@ namespace app {
         void draw_columns();
         void draw_skybox();
         void draw_butterfly();
+        void draw_butterfly_instanced();
+        void draw_statue();
+        void draw_tree();
         void draw() override;
         void begin_draw() override;
         void end_draw() override;

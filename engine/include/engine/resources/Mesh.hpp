@@ -37,14 +37,14 @@ namespace engine::resources {
         * @param shader The shader to use for drawing.
         */
         void draw(const Shader *shader);
-        void draw_instanced(const Shader *shader, int amount);
 
         /**
          * @brief Destroys the mesh in the OpenGL context.
          */
         void destroy();
-
-    private:
+        uint32_t m_vao{0};
+        uint32_t m_num_indices{0};
+        std::vector<Texture *> m_textures;
         /**
         * @brief Constructs a Mesh object.
         * @param vertices The vertices in the mesh.
@@ -54,9 +54,9 @@ namespace engine::resources {
         Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
              std::vector<Texture *> textures);
 
-        uint32_t m_vao{0};
-        uint32_t m_num_indices{0};
-        std::vector<Texture *> m_textures;
+    private:
+
+
     };
 } // namespace engine
 

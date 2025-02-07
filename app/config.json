@@ -2,10 +2,7 @@
   "resources": {
     "models": {
       "terrain" : {
-        "path" : "terrain/Rock_terrain_retopo.obj"
-      },
-      "monument" : {
-        "path" : "monument/Monument_obj.obj"
+        "path" : "terrain/mesh_s.obj"
       },
       "column" : {
         "path" : "column/columns_001.obj"
@@ -15,6 +12,9 @@
       },
       "gazebo" : {
         "path" : "gazebo/Gazebo.obj"
+      },
+      "statue" : {
+        "path" : "statue/Apollo_Ashmolean_Museum.obj"
       }
     }
   },

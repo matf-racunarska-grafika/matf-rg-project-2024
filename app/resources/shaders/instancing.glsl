@@ -11,8 +11,8 @@ uniform mat4 view;
 
 void main()
 {
-    TexCoords = aTexCoords;
     gl_Position = projection * view * aInstanceMatrix * vec4(aPos, 1.0f);
+    TexCoords = aTexCoords;
 }
 
 //#shader fragment
@@ -26,5 +26,5 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
-    FragColor = texture(texture_diffuse1, TexCoords);
+    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
 }

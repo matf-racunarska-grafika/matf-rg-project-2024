@@ -51,8 +51,6 @@ void main(){
 
     vec3 result = (ambient + diffuse + specular) * objectColor;
 
-
-
     FragColor = vec4(result, 1.0);
     if (texture(texture_diffuse1, TexCoords).a < 0.5)
         discard;
