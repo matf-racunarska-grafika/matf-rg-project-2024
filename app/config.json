@@ -10,11 +10,20 @@
       "butterfly" : {
         "path" : "butterfly/Blue_butterfly.obj"
       },
+      "temple" : {
+        "path" : "temple/temple.obj"
+      },
+      "tree" : {
+        "path" : "tree/Prunus_Pendula.obj"
+      },
       "gazebo" : {
         "path" : "gazebo/Gazebo.obj"
       },
       "statue" : {
         "path" : "statue/Apollo_Ashmolean_Museum.obj"
+      },
+      "garden" : {
+        "path" : "garden/10450_Rectangular_Grass_Patch_v1_iterations-2.obj"
       }
     }
   },

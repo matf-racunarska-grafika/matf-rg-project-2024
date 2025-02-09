@@ -1,0 +1,8 @@
+newmtl Temple
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.0 0.0 0.0
+Ns 10.0
+map_Kd white.jpg
+map_Ka white.jpg
+map_Ks white.jpg
