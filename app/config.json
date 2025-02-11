@@ -26,7 +26,13 @@
         "path" : "tent/Tent.obj"
       },
       "island" : {
-        "path" : "island/Island02.obj"
+        "path" : "island2/littleisle.obj"
+      },
+      "nature" : {
+        "path" : "nature/scene.gltf"
+      },
+      "terrain" : {
+        "path" : "terrain/scene.gltf"
       }
     }
   },
