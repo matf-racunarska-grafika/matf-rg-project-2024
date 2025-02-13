@@ -45,38 +45,50 @@ namespace engine::core {
     class App {
     public:
         /**
-        * @brief The main entry point into the App.
-        * @code
-        * int App::run(int argc, char **argv) {
-        *    try {
-        *        engine_setup(argc, argv);
-        *        app_setup();
-        *        initialize();
-        *        while (loop()) {
-        *            poll_events();
-        *            update();
-        *            draw();
-        *        }
-        *        terminate();
-        *    } catch (const Error &e) {
-        *        handle_error(e);
-        *        terminate();
-        *    }
-        *    return on_exit();
-        * }
-        * @endcode
-        */
+         * @brief The main entry point into the App.
+         * @code
+         * int App::run(int argc, char **argv) {
+         *    try {
+         *        engine_setup(argc, argv);
+         *        app_setup();
+         *        initialize();
+         *        while (loop()) {
+         *            poll_events();
+         *            update();
+         *            draw();
+         *        }
+         *        terminate();
+         *    } catch (const Error &e) {
+         *        handle_error(e);
+         *        terminate();
+         *    }
+         *    return on_exit();
+         * }
+         * @endcode
+         */
         int run(int argc, char **argv);
+        unsigned int pingpongFBO[2];
+        unsigned int pingpongColorbuffers[2];
+        unsigned int quadVAO = 0;
+        unsigned int quadVBO;
+        unsigned int hdrFBO;
+        unsigned int colorBuffers[2];
+        float exposure = 1.0f;
+        bool bloom = true;
+        const unsigned int SCR_WIDTH = 1920;
+        const unsigned int SCR_HEIGHT = 1080;
+
 
     private:
         /**
         * @brief The first function that the engine calls to do its internal Controller classes `engine_setup`.
         */
         void engine_setup(int argc, char **argv);
+        void renderQuad();
 
         /**
-        * @brief Override to define your custom app setup that gets called after the `engine_setup`.
-        */
+         * @brief Override to define your custom app setup that gets called after the `engine_setup`.
+         */
         virtual void app_setup();
 
         /**
@@ -86,13 +98,15 @@ namespace engine::core {
         * by calling @ref engine::core::Controller::get<TController>()
         */
         void initialize();
+        void bloomset();
 
         /**
-        * @brief Processes all pending events. Calls @ref engine::core::Controller::poll_events for registered controllers.
-        *
-        * It handles input events, system events, and any other types of events
-        * that have been queued. This is where the platform events are processed.
-        */
+         * @brief Processes all pending events. Calls @ref engine::core::Controller::poll_events for registered
+         * controllers.
+         *
+         * It handles input events, system events, and any other types of events
+         * that have been queued. This is where the platform events are processed.
+         */
         void poll_events();
 
         /**
@@ -122,10 +136,11 @@ namespace engine::core {
         void draw();
 
         /**
-        * @brief Terminates the app. Calls @ref engine::core::Controller::terminate for registered controllers in the **reverse order**.
-        *
-        * Terminate is called always, regardless of whether the app closes successfully or an error occurs.
-        */
+         * @brief Terminates the app. Calls @ref engine::core::Controller::terminate for registered controllers in the
+         * **reverse order**.
+         *
+         * Terminate is called always, regardless of whether the app closes successfully or an error occurs.
+         */
         void terminate();
 
         /**

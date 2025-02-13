@@ -13,45 +13,64 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-void main(){
-    FragPos = vec3(model*vec4(aPos,1.0));
-    Normal = mat3(model) * aNormal;
+void main() {
+    FragPos = vec3(model * vec4(aPos, 1.0));
     TexCoords = aTexCoords;
+
+    mat3 normalMatrix = transpose(inverse(mat3(model)));
+    Normal = normalize(normalMatrix * aNormal);
+
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
 
 //#shader fragment
 #version 330 core
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
+
 uniform vec3 LightPos;
+uniform vec3 LightColor;
+
+uniform vec3 moonLightDir;
+uniform vec3 moonLightColor;
+
 uniform vec3 viewPos;
 
-void main(){
-    vec3 objectColor = vec3(texture(texture_diffuse1, TexCoords).rgb);
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * vec3(1.0f);
+void main() {
+    vec3 color = vec3(texture(texture_diffuse1, TexCoords).rgb);
+    vec3 normal = normalize(Normal);
 
-    vec3 norm = normalize(Normal);
-    vec3 LightDir = normalize(LightPos - FragPos);
-    float diff = max(dot(norm, LightDir), 0.0);
-    vec3 diffuse = diff * vec3(1.0f);
+    vec3 ambient = 0.1 * color;
 
-    float specularStrength = 0.5;
+    vec3 lighting = vec3(0.0);
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-LightDir, norm);
-    float spec = pow(max(dot(viewDir,reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * vec3(1.0f);
 
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 lightDir = normalize(LightPos - FragPos);
+    float lampDiffuse = max(dot(lightDir, normal), 0.0);
+    float distance = length(FragPos - LightPos);
+    vec3 lampResult = (LightColor * lampDiffuse * color)/(distance*distance);
 
-    FragColor = vec4(result, 1.0);
+    vec3 moonDir = normalize(-moonLightDir);
+    float moonDiffuse = max(dot(normal, moonDir), 0.0);
+    vec3 moonResult = moonLightColor * moonDiffuse * color;
+
+    vec3 res = ambient + lampResult + moonResult;
+
+    float brightness = dot(res, vec3(0.2126, 0.7152, 0.0722));
+    if (brightness > 1.0)
+    BrightColor = vec4(res, 1.0);
+    else
+    BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+    FragColor = vec4(res, 1.0);
+
     if (texture(texture_diffuse1, TexCoords).a < 0.5)
-        discard;
+    discard;
 }

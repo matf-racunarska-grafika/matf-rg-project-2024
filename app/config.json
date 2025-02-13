@@ -24,12 +24,15 @@
       },
       "garden" : {
         "path" : "garden/10450_Rectangular_Grass_Patch_v1_iterations-2.obj"
+      },
+      "light" : {
+        "path" : "light/Sculptural_Glass_3-Light_Ribbed_Chandelier_-_Champagne.obj"
       }
     }
   },
   "window": {
     "height": 1080,
-    "title": "Hello, window!",
+    "title": "statue",
     "width": 1920
   }
 }
