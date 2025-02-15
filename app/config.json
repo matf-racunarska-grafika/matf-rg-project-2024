@@ -4,9 +4,6 @@
       "backpack" : {
         "path" : "backpack/backpack.obj"
       },
-      "mushroom" : {
-        "path" : "mushroom/MushMaxv1.obj"
-      },
       "rock" : {
         "path" : "rock/rock.obj"
       },
@@ -24,12 +21,6 @@
       },
       "tent" : {
         "path" : "tent/Tent.obj"
-      },
-      "island" : {
-        "path" : "island2/littleisle.obj"
-      },
-      "nature" : {
-        "path" : "nature/scene.gltf"
       },
       "terrain" : {
         "path" : "terrain/scene.gltf"
