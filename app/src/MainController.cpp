@@ -8,9 +8,13 @@
 #include <MainController.hpp>
 #include <GUIController.hpp>
 
-#include "../../engine/libs/glad/include/glad/glad.h"
-
 namespace app {
+
+    float test_scale    = 1.0f;
+    float test_rotation = 0.0f;
+    float test_x        = 0.0f;
+    float test_y        = 0.0f;
+    float test_z        = 0.0f;
 
     bool mouse_enabled;
     bool is_day;
@@ -32,6 +36,7 @@ namespace app {
         mouse_enabled = false;
         platform->set_enable_cursor(mouse_enabled);
         is_day = true;
+        test_x = test_y = test_z = test_rotation = test_scale = 0.0f;
     }
 
     bool MainController::loop() {
@@ -51,13 +56,13 @@ namespace app {
     }
 
     void MainController::draw() {
-        // test();
-        draw_terrain();
+        // draw_terrain();
         draw_campfire();
         // draw_logs();
         // draw_tents();
         // draw_forest();
         // drawLightSource_day();
+        test();
         draw_skybox();
     }
 
@@ -68,7 +73,7 @@ namespace app {
         engine::resources::Model *campfire = resources->model("campfire");
         engine::resources::Shader *campfire_shader = resources->shader("campfire_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 20.0f, 6.0f);
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         if (is_day) {
             campfire_shader->use();
@@ -117,96 +122,79 @@ namespace app {
 
     void MainController::draw_terrain() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera = graphics->camera();
+        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera    = graphics->camera();
         engine::resources::Model *terrain = resources->model("terrain");
         engine::resources::Shader *terrain_shader = resources->shader("terrain_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 17.6f, 6.0f);
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+
+        terrain_shader->use();
+        terrain_shader->set_vec3("light.position", lightPos);
 
         if (is_day) {
-            terrain_shader->use();
-
-            terrain_shader->set_vec3("light.position", lightPos);
             terrain_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             terrain_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            terrain_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            terrain_shader->set_vec3("viewPos", camera->Position);
-
-            terrain_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f)); // specular highlights
-            terrain_shader->set_float("material.shininess", 2048);
-
-            terrain_shader->set_mat4("projection", graphics->projection_matrix());
-            terrain_shader->set_mat4("view", camera->view_matrix());
-
-            glm::mat4 model = glm::mat4(1.0f);
-            // model = glm::scale(model, glm::vec3());
-            // model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-            // model = glm::translate(model, glm::vec3(0.0f, 0.4f, 0.0f));
-            terrain_shader->set_mat4("model", model);
-
-            terrain->draw(terrain_shader);
         } else {
-            terrain_shader->use();
-
-            terrain_shader->set_vec3("light.position", lightPos);
-            terrain_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            terrain_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            terrain_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            terrain_shader->set_vec3("viewPos", camera->Position);
-
-            terrain_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f)); // specular highlights
-            terrain_shader->set_float("material.shininess", 4096);
-
-            terrain_shader->set_mat4("projection", graphics->projection_matrix());
-            terrain_shader->set_mat4("view", camera->view_matrix());
-
-            glm::mat4 model = glm::mat4(1.0f);
-            // model = glm::scale(model, glm::vec3(0.1));
-            // model = glm::translate(model, glm::vec3(0.0f, 0.4f, 0.0f));
-            terrain_shader->set_mat4("model", model);
-
-            terrain->draw(terrain_shader);
+            terrain_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            terrain_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
         }
+
+        // Set projection and view matrices.
+        terrain_shader->set_mat4("projection", graphics->projection_matrix());
+        terrain_shader->set_mat4("view", camera->view_matrix());
+
+        // Set model transform.
+        glm::mat4 model = glm::mat4(1.0f);
+        terrain_shader->set_mat4("model", model);
+
+        // Draw the terrain model.
+        terrain->draw(terrain_shader);
     }
+
 
     void MainController::test() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto gui = engine::core::Controller::get<GUIController>();
         auto camera = graphics->camera();
-        engine::resources::Model *campfire = resources->model("campfire");
-        engine::resources::Shader *campfire_shader = resources->shader("test");
+        engine::resources::Model *test_model = resources->model("test");
+        engine::resources::Shader *test_shader = resources->shader("campfire_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 17.6f, 6.0f);
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         // Activate the shader.
-        campfire_shader->use();
+        test_shader->use();
 
         // Set the light properties.
-        campfire_shader->set_vec3("light.position", lightPos);
+        test_shader->set_vec3("light.position", lightPos);
         if (is_day) {
-            campfire_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            campfire_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            campfire_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            campfire_shader->set_float("material.shininess", 32.0f);
+            test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            test_shader->set_float("material.shininess", 32.0f);
         } else {
-            campfire_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            campfire_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            campfire_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            campfire_shader->set_float("material.shininess", 128.0f);
+            test_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            test_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            test_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            test_shader->set_float("material.shininess", 128.0f);
         }
-        campfire_shader->set_vec3("viewPos", camera->Position);
+        test_shader->set_vec3("viewPos", camera->Position);
 
         // Set the projection and view matrices.
-        campfire_shader->set_mat4("projection", graphics->projection_matrix());
-        campfire_shader->set_mat4("view", camera->view_matrix());
+        test_shader->set_mat4("projection", graphics->projection_matrix());
+        test_shader->set_mat4("view", camera->view_matrix());
 
         // Set the model matrix.
         glm::mat4 model = glm::mat4(1.0f);
-        campfire_shader->set_mat4("model", model);
+        model = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model = glm::translate(model, glm::vec3(test_x, test_y, test_z));
+        model = glm::scale(model, glm::vec3(test_scale));
+
+        test_shader->set_mat4("model", model);
 
         // Draw the campfire model.
-        campfire->draw(campfire_shader);
+        test_model->draw(test_shader);
     }
 
     void MainController::draw_skybox() {
@@ -289,7 +277,7 @@ namespace app {
             else
                 camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
         }
-        if (platform->key(engine::platform::KeyId::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
+        if (platform->key(engine::platform::KeyId::KEY_P).state() == engine::platform::Key::State::JustPressed) {
             mouse_enabled = !mouse_enabled;
             platform->set_enable_cursor(mouse_enabled);
         }

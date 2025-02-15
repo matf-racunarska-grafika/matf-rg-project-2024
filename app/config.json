@@ -4,6 +4,12 @@
       "backpack" : {
         "path" : "backpack/backpack.obj"
       },
+      "log_seat" : {
+        "path" : "log_seat/scene.gltf"
+      },
+      "test" : {
+        "path" : "test/scene.gltf"
+      },
       "rock" : {
         "path" : "rock/rock.obj"
       },

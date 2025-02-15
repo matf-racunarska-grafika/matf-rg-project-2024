@@ -4,6 +4,12 @@
 #include <cstdlib>
 
 namespace app {
+
+    extern float test_x, test_y, test_z;
+    extern float test_rotation;
+    extern float test_scale;
+
+
 class MainController : public engine::core::Controller {
 
     void initialize() override;
@@ -24,10 +30,13 @@ class MainController : public engine::core::Controller {
     void drawLightSource_day();
     void drawLightSource_night();
 
+    void draw_water();
+
     void update() override;
     void update_camera();
 
 public:
+
     std::string_view name() const override {
         return "app::MainController";
     }
