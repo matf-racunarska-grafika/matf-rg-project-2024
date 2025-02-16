@@ -10,26 +10,18 @@
       "test" : {
         "path" : "test/scene.gltf"
       },
-      "rock" : {
-        "path" : "rock/rock.obj"
-      },
-      "tree2" : {
-        "path" : "tree2/untitled.obj"
-      },
       "campfire" : {
         "path" : "campfire/en_campfire_01.obj"
       },
-      "sun" : {
-        "path" : "sun/13913_Sun_v2_l3.obj"
-      },
-      "log" : {
-        "path" : "log/Log.obj"
-      },
-      "tent" : {
-        "path" : "tent/Tent.obj"
+
+      "stylized_tent" : {
+        "path" : "stylized_tent/scene.gltf"
       },
       "terrain" : {
         "path" : "terrain/scene.gltf"
+      },
+      "viking_tent" : {
+        "path" : "viking_tent/scene.gltf"
       }
     }
   },

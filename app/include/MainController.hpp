@@ -22,15 +22,15 @@ class MainController : public engine::core::Controller {
     void test();
 
     void draw_skybox();
-    void draw_island();
+    void draw_terrain();
+    void draw_water();
 
     void draw_campfire();
-    void draw_terrain();
+    void draw_logs();
+    void draw_tents();
 
     void drawLightSource_day();
     void drawLightSource_night();
-
-    void draw_water();
 
     void update() override;
     void update_camera();

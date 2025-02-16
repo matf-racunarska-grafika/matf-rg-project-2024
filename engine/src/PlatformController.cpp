@@ -194,6 +194,7 @@ namespace engine::platform {
     }
 
     void PlatformController::_platform_on_mouse(double x, double y) {
+
         double last_x       = g_mouse_position.x;
         double last_y       = g_mouse_position.y;
         g_mouse_position.dx = x - last_x;
