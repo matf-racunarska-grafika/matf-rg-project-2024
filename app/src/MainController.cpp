@@ -45,7 +45,7 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -34.0f));
+        model = glm::translate(model, glm::vec3(0.0f, 0.5f, -46.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader->set_mat4("model", model);
@@ -60,7 +60,40 @@ namespace app {
         shader->set_vec3("viewPosition", graphics->camera()->Position);
         shader->set_float("material.shininess", 32.0f);
 
+        // getting the possitions of the eyes
+        glm::vec3 eyePos1;
+        glm::vec3 eyePos2;
+        glm::mat4 modelEye1 = model;
+        glm::mat4 modelEye2 = model;
+
+        modelEye1 = glm::translate(modelEye1, glm::vec3(-4.4f, -9.8f, 14.0f));
+        modelEye1 = glm::scale(modelEye1, glm::vec3(0.25f, 0.25f, 0.25f));
+
+        modelEye2 = glm::translate(modelEye2, glm::vec3(4.4f, -9.8f, 14.0f));
+        modelEye2 = glm::scale(modelEye2, glm::vec3(0.25f, 0.25f, 0.25f));
+
+        glm::vec4 eye1Pos = modelEye1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 eye2Pos = modelEye2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+        shader->set_vec3("pointLights[1].position", glm::vec3(eye1Pos));
+        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.6f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[1].specular", glm::vec3(1.0f, 0.0f, 0.0f));
+        shader->set_float("pointLights[1].constant", 1.0f);
+        shader->set_float("pointLights[1].linear", 0.09f);
+        shader->set_float("pointLights[1].quadratic", 0.032f);
+
+        shader->set_vec3("pointLights[2].position", glm::vec3(eye2Pos));
+        shader->set_vec3("pointLights[2].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[2].diffuse", glm::vec3(0.6f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[2].specular", glm::vec3(1.0f, 0.0f, 0.0f));
+        shader->set_float("pointLights[2].constant", 1.0f);
+        shader->set_float("pointLights[2].linear", 0.09f);
+        shader->set_float("pointLights[2].quadratic", 0.032f);
+
         skullModel->draw(shader);
+
+        draw_eyes(modelEye1, modelEye2);
     }
 
     void MainController::draw_bridge() {
@@ -88,6 +121,27 @@ namespace app {
             bridgeModel->draw(shader);
         }
     }
+
+    void MainController::draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model) {
+        // Model
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model* eyeModel = resources->model("eyes");
+
+        // Shader
+        engine::resources::Shader* shader = resources->shader("eyeShader");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_vec3("lightColor", glm::vec3(10.0f, 0.0f, 0.0f));
+
+        shader->set_mat4("model", eye1Model);
+        eyeModel->draw(shader);
+        shader->set_mat4("model", eye2Model);
+        eyeModel->draw(shader);
+    }
+
 
     void MainController::draw_arena() {
         // Model
@@ -149,7 +203,6 @@ namespace app {
             camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
         }
     }
-
 
     void MainController::update() {
         update_camera();

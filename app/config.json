@@ -8,7 +8,10 @@
         "path" : "bridge/StoneBridge.obj"
       },
       "arena" : {
-        "path": "arena/colosseum.obj"
+        "path" : "arena/colosseum.obj"
+      },
+      "eyes" : {
+        "path" : "eyes/planet.obj"
       }
     }
   },
