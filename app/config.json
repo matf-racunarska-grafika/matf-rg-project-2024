@@ -1,11 +1,14 @@
 {
   "resources": {
     "models": {
+      "skull" : {
+        "path" : "skull/Skull.obj"
+      }
     }
   },
   "window": {
     "height": 600,
-    "title": "Hello, window!",
+    "title": "Skull Sneak",
     "width": 800
   }
 }
