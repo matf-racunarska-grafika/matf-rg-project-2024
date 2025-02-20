@@ -16,6 +16,8 @@ namespace app {
         void draw() override;
 
         void draw_skull();
+        void draw_bridge();
+        void draw_arena();
 
         void begin_draw() override;
 

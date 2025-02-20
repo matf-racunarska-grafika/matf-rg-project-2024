@@ -3,6 +3,12 @@
     "models": {
       "skull" : {
         "path" : "skull/Skull.obj"
+      },
+      "bridge" : {
+        "path" : "bridge/StoneBridge.obj"
+      },
+      "arena" : {
+        "path": "arena/colosseum.obj"
       }
     }
   },
