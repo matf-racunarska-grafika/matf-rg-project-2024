@@ -166,11 +166,19 @@ namespace app {
         arenaModel->draw(shader);
     }
 
+    void MainController::draw_skybox() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto skybox = resources->skybox("skybox");
+        auto shader = resources->shader("skybox");
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        graphics->draw_skybox(shader, skybox);
+    }
 
     void MainController::draw() {
         draw_arena();
         draw_skull();
         draw_bridge();
+        draw_skybox();
     }
 
     void MainController::begin_draw() {
