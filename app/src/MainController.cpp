@@ -50,7 +50,7 @@ namespace app {
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
         shader->set_mat4("model", model);
 
-        shader->set_vec3("pointLights[0].position", glm::vec3(0.0f, 3.0f, 3.0f));
+        shader->set_vec3("pointLights[0].position", glm::vec3(5.0f, 3.0f, -27.0f));
         shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
         shader->set_vec3("pointLights[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
         shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
