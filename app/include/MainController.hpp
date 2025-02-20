@@ -9,6 +9,10 @@ namespace app {
 
         bool loop() override;
 
+        void update_camera();
+
+        void update() override;
+
         void draw() override;
 
         void draw_skull();
