@@ -4,6 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include <MainController.hpp>
+#include <GuiController.hpp>
 
 
 namespace app {
@@ -13,8 +14,11 @@ namespace app {
     };
 
     void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
-        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-        camera->rotate_camera(position.dx, position.dy);
+        auto gui_controller = engine::core::Controller::get<GuiController>();
+        if (!gui_controller->is_enabled()) {
+            auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+            camera->rotate_camera(position.dx, position.dy);
+        }
     }
 
     void MainController::initialize() {
@@ -179,6 +183,10 @@ namespace app {
     }
 
     void MainController::update_camera() {
+        auto gui_controller = engine::core::Controller::get<GuiController>();
+        if (gui_controller->is_enabled()) {
+            return;
+        }
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera = graphics->camera();
