@@ -10,7 +10,7 @@ public:
         return instance;
     }
 
-    glm::vec3 lightColor = glm::vec3(10.0f, 0.0f, 0.0f);
+    glm::vec3 lightColor = glm::vec3(100.0f, 0.0f, 0.0f);
     unsigned int difficulty = 1;
     float skullSpeed = 160.0f;
 
