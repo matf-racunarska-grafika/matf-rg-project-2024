@@ -8,8 +8,6 @@
 #include <MainController.hpp>
 #include <ProgramState.hpp>
 
-#include "../../engine/libs/glad/include/glad/glad.h"
-
 namespace app {
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     public:

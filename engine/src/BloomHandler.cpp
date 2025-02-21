@@ -43,10 +43,10 @@ void BloomHandler::prepare_hdr_framebuffer() {
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
     }
     unsigned int rboDepth;
-    glGenRenderbuffers(1, &rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1200, 800);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+    CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
+    CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
+    CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
+    CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
     prepare_attachments();
 }
 void BloomHandler::prepare_attachments() {
@@ -54,17 +54,15 @@ void BloomHandler::prepare_attachments() {
     attachments[1] = GL_COLOR_ATTACHMENT1;
     CHECKED_GL_CALL(glDrawBuffers, 2, attachments);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "Framebuffer not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    unbind_framebuffer();
 }
 
 void BloomHandler::bind_framebuffer() {
-    glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
 }
 
 void BloomHandler::unbind_framebuffer() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 }
 
 void BloomHandler::prepare_blur_framebuffers() {
@@ -113,45 +111,45 @@ void BloomHandler::render_quad() {
              1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
              1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        CHECKED_GL_CALL(glGenVertexArrays, 1, &quadVAO);
+        CHECKED_GL_CALL(glGenBuffers, 1, &quadVBO);
+        CHECKED_GL_CALL(glBindVertexArray, quadVAO);
+        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, quadVBO);
+        CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
+        CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float) , (void*)0);
+        CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
+        CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
+    CHECKED_GL_CALL(glBindVertexArray, quadVAO);
+    CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
+    CHECKED_GL_CALL(glBindVertexArray, 0);
 }
 
 void BloomHandler::compose() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    unbind_framebuffer();
 
     bool horizontal = true, first_iteration = true;
     unsigned int amount = 10;
     blur->use();
     for (unsigned int i = 0; i < amount; i++)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         blur->set_int("horizontal", horizontal);
-        glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);  // bind texture of other framebuffer (or scene if first iteration)
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
         render_quad();
         horizontal = !horizontal;
         if (first_iteration)
             first_iteration = false;
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    unbind_framebuffer();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     bloom_final->use();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[0]);
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
     bloom_final->set_int("bloom", true);
     bloom_final->set_float("exposure", 0.1f);
     render_quad();

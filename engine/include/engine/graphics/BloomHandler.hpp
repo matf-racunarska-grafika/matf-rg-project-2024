@@ -1,7 +1,3 @@
-//
-// Created by viktor on 21.2.25..
-//
-
 #ifndef BLOOMHANDLER_HPP
 #define BLOOMHANDLER_HPP
 
