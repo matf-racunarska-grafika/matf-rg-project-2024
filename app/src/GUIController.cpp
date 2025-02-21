@@ -32,10 +32,12 @@ namespace app {
         auto model = engine::core::Controller::get<engine::resources::ResourcesController>()->model("test");
         ImGui::Begin(model->name().c_str());
         ImGui::DragFloat("Skaliranje:", &test_scale, 0.01, 0.01, 10);
-        ImGui::DragFloat("Rotacija:", &test_rotation, 1, -180, 180);
-        ImGui::DragFloat("X:", &test_x, 1, -50, 50);
-        ImGui::DragFloat("Y:", &test_y, 1, -50, 50);
-        ImGui::DragFloat("Z:", &test_z, 1, -50, 50);
+        ImGui::DragFloat("RotacijaX:", &test_rotation_x, 1, -180, 180);
+        ImGui::DragFloat("RotacijaY:", &test_rotation_y, 1, -180, 180);
+        ImGui::DragFloat("RotacijaZ:", &test_rotation_z, 1, -180, 180);
+        ImGui::DragFloat("X:", &test_x, 1, -100, 100);
+        ImGui::DragFloat("Y:", &test_y, 1, -100, 100);
+        ImGui::DragFloat("Z:", &test_z, 1, 100, 100);
         ImGui::End();
 
         // Draw camera info

@@ -6,7 +6,7 @@
 namespace app {
 
     extern float test_x, test_y, test_z;
-    extern float test_rotation;
+    extern float test_rotation_x, test_rotation_y, test_rotation_z;
     extern float test_scale;
 
 
@@ -24,10 +24,13 @@ class MainController : public engine::core::Controller {
     void draw_skybox();
     void draw_terrain();
     void draw_water();
+    void draw_forest();
 
     void draw_campfire();
     void draw_logs();
     void draw_tents();
+    void draw_old_tree();
+    void draw_bushes();
 
     void drawLightSource_day();
     void drawLightSource_night();

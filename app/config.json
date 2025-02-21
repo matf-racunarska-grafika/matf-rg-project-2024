@@ -8,12 +8,11 @@
         "path" : "log_seat/scene.gltf"
       },
       "test" : {
-        "path" : "test/scene.gltf"
+        "path" : "platano_tree/scene.gltf"
       },
       "campfire" : {
         "path" : "campfire/en_campfire_01.obj"
       },
-
       "stylized_tent" : {
         "path" : "stylized_tent/scene.gltf"
       },
@@ -22,12 +21,42 @@
       },
       "viking_tent" : {
         "path" : "viking_tent/scene.gltf"
+      },
+      "old_tree" : {
+        "path" : "old_tree/scene.gltf"
+      },
+      "yellow_tree" : {
+        "path" : "platano_tree/scene.gltf"
+      },
+      "urban_tree" : {
+        "path" : "urban_tree/scene.gltf"
+      },
+      "green_tree" : {
+        "path" : "bodhi_tree/scene.gltf"
+      },
+      "bush1" : {
+        "path" : "stylized_bush/scene.gltf"
+      },
+      "bush2" : {
+        "path" : "photorealistic_bush/scene.gltf"
+      },
+      "beech_tree" : {
+        "path" : "beech_tree/scene.gltf"
+      },
+      "oak_tree" : {
+        "path" : "mighty_oak_trees/scene.gltf"
+      },
+      "tree_gate" : {
+        "path" : "tree_gate/scene.gltf"
+      },
+      "roots" : {
+        "path" : "roots/scene.gltf"
       }
     }
   },
   "window": {
     "height": 800,
-    "title": "Hello, window!",
+    "title": "Starfall Shores",
     "width": 1000
   }
 }

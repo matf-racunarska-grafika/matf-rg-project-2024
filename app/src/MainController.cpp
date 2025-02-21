@@ -11,7 +11,9 @@
 namespace app {
 
     float test_scale    = 1.0f;
-    float test_rotation = 0.0f;
+    float test_rotation_x = 0.0f;
+    float test_rotation_y = 0.0f;
+    float test_rotation_z = 0.0f;
     float test_x        = 0.0f;
     float test_y        = 0.0f;
     float test_z        = 0.0f;
@@ -34,12 +36,17 @@ namespace app {
 
     void MainController::initialize() {
         engine::graphics::OpenGL::enable_depth_testing();
+        auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         mouse_enabled = false;
         platform->set_enable_cursor(mouse_enabled);
         is_day = true;
-        test_x = test_y = test_z = test_rotation = test_scale = 0.0f;
+        camera->Front = glm::vec3(0.77, -0.08, -0.6);
+        camera->Position = glm::vec3(5, 27, 17);
+        camera->Yaw = -38;
+        camera->Pitch = -5;
+
     }
 
     bool MainController::loop() {
@@ -63,10 +70,144 @@ namespace app {
         draw_campfire();
         draw_logs();
         draw_tents();
-        // draw_forest();
+        draw_old_tree();
+        draw_forest();
+        draw_bushes();
         // drawLightSource_day();
         test();
         draw_skybox();
+    }
+
+    void MainController::draw_forest() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto gui = engine::core::Controller::get<GUIController>();
+        auto camera = graphics->camera();
+        engine::resources::Model *yellow_tree = resources->model("yellow_tree");
+        engine::resources::Model *green_tree = resources->model("green_tree");
+        engine::resources::Model *tall_tree = resources->model("beech_tree");
+        engine::resources::Model *oak_tree = resources->model("oak_tree");
+        engine::resources::Model *tree_gate = resources->model("tree_gate");
+        engine::resources::Shader *tree_shader = resources->shader("tree_shader2");
+
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+
+        // Activate the shader.
+        tree_shader->use();
+
+        // Set the light properties.
+        tree_shader->set_vec3("light.position", lightPos);
+        if (is_day) {
+            tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            tree_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            tree_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            tree_shader->set_float("material.shininess", 32.0f);
+        } else {
+            tree_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            tree_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            tree_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            tree_shader->set_float("material.shininess", 128.0f);
+        }
+        tree_shader->set_vec3("viewPos", camera->Position);
+
+        // Set the projection and view matrices.
+        tree_shader->set_mat4("projection", graphics->projection_matrix());
+        tree_shader->set_mat4("view", camera->view_matrix());
+
+        glm::mat4 model = glm::mat4(1.0f);
+        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model           = glm::translate(model, glm::vec3(49, 17, 9));
+        model           = glm::scale(model, glm::vec3(0.04));
+        tree_shader->set_mat4("model", model);
+        yellow_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model           = glm::translate(model, glm::vec3(0, 17, -22));
+        model           = glm::scale(model, glm::vec3(0.04));
+        tree_shader->set_mat4("model", model);
+        yellow_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model           = glm::translate(model, glm::vec3(-25, 15, 5));
+        model           = glm::scale(model, glm::vec3(0.04));
+        tree_shader->set_mat4("model", model);
+        yellow_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model           = glm::translate(model, glm::vec3(4, 17, 25));
+        model           = glm::scale(model, glm::vec3(0.04));
+        tree_shader->set_mat4("model", model);
+        yellow_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+        model = glm::translate(model, glm::vec3(-10, 1, 17));
+        model = glm::scale(model, glm::vec3(0.22f));
+        tree_shader->set_mat4("model", model);
+        green_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+        model = glm::translate(model, glm::vec3(8, 11, 17));
+        model = glm::scale(model, glm::vec3(0.22f));
+        tree_shader->set_mat4("model", model);
+        green_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+        model = glm::translate(model, glm::vec3(33, 10, 17));
+        model = glm::scale(model, glm::vec3(0.22f));
+        tree_shader->set_mat4("model", model);
+        green_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+        model = glm::translate(model, glm::vec3(17, -24, 17));
+        model = glm::scale(model, glm::vec3(0.22f));
+        tree_shader->set_mat4("model", model);
+        green_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+        model = glm::translate(model, glm::vec3(39, -24, 17));
+        model = glm::scale(model, glm::vec3(0.22f));
+        tree_shader->set_mat4("model", model);
+        green_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-6, 14, -15));
+        model = glm::scale(model, glm::vec3(0.1f));
+        tree_shader->set_mat4("model", model);
+        tall_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-19, 14, -8));
+        model = glm::scale(model, glm::vec3(0.1f));
+        tree_shader->set_mat4("model", model);
+        tall_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(21, 14, 38));
+        model = glm::scale(model, glm::vec3(0.1f));
+        tree_shader->set_mat4("model", model);
+        tall_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1,0,0));
+        model = glm::translate(model, glm::vec3(-17,28,-17));
+        model = glm::scale(model, glm::vec3(0.210f));
+        tree_shader->set_mat4("model", model);
+        oak_tree->draw(tree_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(112.0f), glm::vec3(0,1,0));
+        model = glm::translate(model, glm::vec3(8,13,59));
+        model = glm::scale(model, glm::vec3(0.110f));
+        tree_shader->set_mat4("model", model);
+        tree_gate->draw(tree_shader);
     }
 
     void MainController::draw_campfire() {
@@ -197,45 +338,175 @@ namespace app {
         auto camera = graphics->camera();
         engine::resources::Model *viking_tent = resources->model("viking_tent");
         engine::resources::Model *stylized_tent = resources->model("stylized_tent");
-        engine::resources::Shader *test_shader = resources->shader("campfire_shader");
+        engine::resources::Shader *tent_shader = resources->shader("campfire_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         // Activate the shader.
-        test_shader->use();
+        tent_shader->use();
 
         // Set the light properties.
-        test_shader->set_vec3("light.position", lightPos);
+        tent_shader->set_vec3("light.position", lightPos);
         if (is_day) {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            test_shader->set_float("material.shininess", 32.0f);
+            tent_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            tent_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            tent_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            tent_shader->set_float("material.shininess", 32.0f);
         } else {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            test_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_float("material.shininess", 128.0f);
+            tent_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            tent_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            tent_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            tent_shader->set_float("material.shininess", 128.0f);
         }
-        test_shader->set_vec3("viewPos", camera->Position);
+        tent_shader->set_vec3("viewPos", camera->Position);
 
         // Set the projection and view matrices.
-        test_shader->set_mat4("projection", graphics->projection_matrix());
-        test_shader->set_mat4("view", camera->view_matrix());
+        tent_shader->set_mat4("projection", graphics->projection_matrix());
+        tent_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 1, 0));
         model           = glm::translate(model, glm::vec3(16, 17, -14));
         model           = glm::scale(model, glm::vec3(0.037));
-        test_shader->set_mat4("model", model);
-        viking_tent->draw(test_shader);
+        tent_shader->set_mat4("model", model);
+        viking_tent->draw(tent_shader);
 
         model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(-128.0f), glm::vec3(0, 1, 0));
         model           = glm::translate(model, glm::vec3(0, 20, -33));
         model           = glm::scale(model, glm::vec3(0.06));
-        test_shader->set_mat4("model", model);
-        stylized_tent->draw(test_shader);
+        tent_shader->set_mat4("model", model);
+        stylized_tent->draw(tent_shader);
+    }
+
+    void MainController::draw_old_tree() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto gui = engine::core::Controller::get<GUIController>();
+        auto camera = graphics->camera();
+        engine::resources::Model *old_tree = resources->model("old_tree");
+        engine::resources::Shader *old_tree_shader = resources->shader("tree_shader2");
+
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+
+        // Activate the shader.
+        old_tree_shader->use();
+
+        // Set the light properties.
+        old_tree_shader->set_vec3("light.position", lightPos);
+        if (is_day) {
+            old_tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            old_tree_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            old_tree_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            old_tree_shader->set_float("material.shininess", 32.0f);
+        } else {
+            old_tree_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            old_tree_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            old_tree_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            old_tree_shader->set_float("material.shininess", 128.0f);
+        }
+        old_tree_shader->set_vec3("viewPos", camera->Position);
+
+        // Set the projection and view matrices.
+        old_tree_shader->set_mat4("projection", graphics->projection_matrix());
+        old_tree_shader->set_mat4("view", camera->view_matrix());
+
+        // Set the model matrix.
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(3.0f), glm::vec3(0, 0, 1));
+        model           = glm::translate(model, glm::vec3(65, 40, -39));
+        model           = glm::scale(model, glm::vec3(0.04));
+
+        old_tree_shader->set_mat4("model", model);
+
+        // Draw the campfire model.
+        old_tree->draw(old_tree_shader);
+    }
+
+    void MainController::draw_bushes() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto gui = engine::core::Controller::get<GUIController>();
+        auto camera = graphics->camera();
+        engine::resources::Model *bush1 = resources->model("bush1");
+        engine::resources::Model *bush2 = resources->model("bush2");
+        engine::resources::Shader *bush_shader = resources->shader("tree_shader2");
+
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+
+        // Activate the shader.
+        bush_shader->use();
+
+        // Set the light properties.
+        bush_shader->set_vec3("light.position", lightPos);
+        if (is_day) {
+            bush_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            bush_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            bush_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            bush_shader->set_float("material.shininess", 32.0f);
+        } else {
+            bush_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            bush_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            bush_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            bush_shader->set_float("material.shininess", 128.0f);
+        }
+        bush_shader->set_vec3("viewPos", camera->Position);
+
+        bush_shader->set_mat4("projection", graphics->projection_matrix());
+        bush_shader->set_mat4("view", camera->view_matrix());
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::translate(model, glm::vec3(-19, -3, 16));
+        model           = glm::scale(model, glm::vec3(5.0f));
+        bush_shader->set_mat4("model", model);
+        bush1->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::translate(model, glm::vec3(15, 25, 16));
+        model           = glm::scale(model, glm::vec3(5.0f));
+        bush_shader->set_mat4("model", model);
+        bush1->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::translate(model, glm::vec3(52, -19, 17));
+        model           = glm::scale(model, glm::vec3(5.0f));
+        bush_shader->set_mat4("model", model);
+        bush1->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::translate(model, glm::vec3(31, -32, 17));
+        model           = glm::scale(model, glm::vec3(5.0f));
+        bush_shader->set_mat4("model", model);
+        bush1->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::translate(model, glm::vec3(12, -24, 17));
+        model           = glm::scale(model, glm::vec3(5.0f));
+        bush_shader->set_mat4("model", model);
+        bush1->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(4, 20, -13));
+        model           = glm::scale(model, glm::vec3(0.3f));
+        bush_shader->set_mat4("model", model);
+        bush2->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(32, 20, 4));
+        model           = glm::scale(model, glm::vec3(0.3f));
+        bush_shader->set_mat4("model", model);
+        bush2->draw(bush_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(30, 20, 12));
+        model           = glm::scale(model, glm::vec3(0.3f));
+        bush_shader->set_mat4("model", model);
+        bush2->draw(bush_shader);
     }
 
     void MainController::draw_terrain() {
@@ -275,8 +546,8 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto gui = engine::core::Controller::get<GUIController>();
         auto camera = graphics->camera();
-        engine::resources::Model *test_model = resources->model("test");
-        engine::resources::Shader *test_shader = resources->shader("campfire_shader");
+        engine::resources::Model *test_model = resources->model("roots");
+        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -304,7 +575,9 @@ namespace app {
 
         // Set the model matrix.
         glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
+        model           = glm::rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
+        model           = glm::rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
+        model           = glm::rotate(model, glm::radians(test_rotation_z), glm::vec3(0, 0, 1));
         model           = glm::translate(model, glm::vec3(test_x, test_y, test_z));
         model           = glm::scale(model, glm::vec3(test_scale));
 
