@@ -11,8 +11,6 @@ namespace app {
     }
 
     void GuiController::draw() {
-        bool imguiActive = false;
-        bool game = false;
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->begin_gui();
 
@@ -28,8 +26,6 @@ namespace app {
 
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.15f);
         if (ImGui::Button(" PLAY GAME ", ImVec2(ImGui::GetWindowWidth() * 0.7f, 60))) {
-            game = !game;
-            imguiActive = false;
             set_enable(false);
         }
 
