@@ -5,6 +5,7 @@
 
 #include <MainController.hpp>
 #include <GuiController.hpp>
+#include <ProgramState.hpp>
 
 
 namespace app {
@@ -37,6 +38,8 @@ namespace app {
     }
 
     void MainController::draw_skull() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        float time = platform->frame_time().current;
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -51,6 +54,10 @@ namespace app {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.5f, -46.0f));
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+
+        // Speed of the skull rotation
+        float skullSpeed = Settings::getInstance().skullSpeed;
+        model = glm::rotate(model, glm::radians(time * skullSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader->set_mat4("model", model);
 
@@ -138,7 +145,7 @@ namespace app {
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
-        shader->set_vec3("lightColor", glm::vec3(10.0f, 0.0f, 0.0f));
+        shader->set_vec3("lightColor", Settings::getInstance().lightColor);
 
         shader->set_mat4("model", eye1Model);
         eyeModel->draw(shader);

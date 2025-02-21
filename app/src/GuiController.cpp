@@ -4,17 +4,15 @@
 #include <engine/graphics/GraphicsController.hpp>
 #include <imgui.h>
 #include <GuiController.hpp>
+#include <ProgramState.hpp>
 
 namespace app {
     void GuiController::initialize() {
     }
 
     void GuiController::draw() {
-        int difficulty = 1;
         bool imguiActive = false;
         bool game = false;
-        float skullSpeed = 100;
-        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->begin_gui();
 
@@ -39,17 +37,21 @@ namespace app {
         ImGui::Separator();
         ImGui::Spacing();
 
+        unsigned int diff = Settings::getInstance().difficulty;
+        float skullSpeed = Settings::getInstance().skullSpeed;
         ImGui::Text("- Select Your Doom -");
-        if (ImGui::RadioButton("EASY", difficulty == 0)) { difficulty = 0; skullSpeed = 100; }
-        if (ImGui::RadioButton("NORMAL", difficulty == 1)) { difficulty = 1; skullSpeed = 160; }
-        if (ImGui::RadioButton("HARD", difficulty == 2)) { difficulty = 2; skullSpeed = 240; }
-        if (ImGui::RadioButton("IMPOSSIBLE", difficulty == 3)) { difficulty = 3; skullSpeed = 550; }
+        if (ImGui::RadioButton("EASY", diff == 0)) { diff = 0; skullSpeed = 100.0f; }
+        if (ImGui::RadioButton("NORMAL", diff == 1)) { diff = 1; skullSpeed = 160.0f; }
+        if (ImGui::RadioButton("HARD", diff == 2)) { diff = 2; skullSpeed = 240.0f; }
+        if (ImGui::RadioButton("IMPOSSIBLE", diff == 3)) { diff = 3; skullSpeed = 550.0f; }
+        Settings::getInstance().skullSpeed = skullSpeed;
+        Settings::getInstance().difficulty = diff;
 
         if (ImGui::CollapsingHeader("Light Settings")) {
             ImGui::Text("Adjust Light Color:");
-            ImGui::SliderFloat("Red", &lightColor.x, 0.0f, 10.0f);
-            ImGui::SliderFloat("Green", &lightColor.y, 0.0f, 10.0f);
-            ImGui::SliderFloat("Blue", &lightColor.z, 0.0f, 10.0f);
+            ImGui::SliderFloat("Red", &Settings::getInstance().lightColor.x, 0.0f, 10.0f);
+            ImGui::SliderFloat("Green", &Settings::getInstance().lightColor.y, 0.0f, 10.0f);
+            ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 10.0f);
         }
 
         ImGui::End();
