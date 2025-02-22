@@ -25,6 +25,13 @@ namespace engine::resources {
         void draw(const Shader *shader);
 
         /**
+        * @brief Draws the model using a given shader by drawing all the meshes in the model.
+        * @param shader The shader to use for drawing.
+        * @param number_of_instances Number of model instances to be drawn
+        */
+        void drawInstanced(const Shader *shader, unsigned int number_of_instances);
+
+        /**
         * @brief Destroys the model in the OpenGL context.
         */  
         void destroy();

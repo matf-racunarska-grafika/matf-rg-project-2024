@@ -31,6 +31,8 @@ class MainController : public engine::core::Controller {
     void draw_tents();
     void draw_old_tree();
     void draw_bushes();
+    void draw_flowers();
+    void draw_lighthouse();
 
     void drawLightSource_day();
     void drawLightSource_night();

@@ -30,13 +30,20 @@ namespace engine::resources {
     */
     class Mesh {
         friend class AssimpSceneProcessor;
-    public:
 
+    public:
         /**
         * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
         * @param shader The shader to use for drawing.
         */
         void draw(const Shader *shader);
+
+        /**
+        * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
+        * @param shader The shader to use for drawing.
+        * @param number_of_instances Number of instances that will be drawn
+        */
+        void drawInstanced(const Shader *shader, unsigned int number_of_instances);
 
         /**
         * @brief Destroys the mesh in the OpenGL context.
