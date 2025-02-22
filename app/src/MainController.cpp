@@ -90,16 +90,16 @@ namespace app {
         shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
         shader->set_vec3("pointLights[0].diffuse", lightColor);
         shader->set_vec3("pointLights[0].specular", lightColor);
-        shader->set_float("pointLights[0].constant", 1.0f);
-        shader->set_float("pointLights[0].linear", 0.009f);
+        shader->set_float("pointLights[0].constant", 10.0f);
+        shader->set_float("pointLights[0].linear", 0.09f);
         shader->set_float("pointLights[0].quadratic", 0.032f);
 
         shader->set_vec3("pointLights[1].position", glm::vec3(eye2Pos));
         shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
         shader->set_vec3("pointLights[1].diffuse", lightColor);
         shader->set_vec3("pointLights[1].specular", lightColor);
-        shader->set_float("pointLights[1].constant", 1.0f);
-        shader->set_float("pointLights[1].linear", 0.009f);
+        shader->set_float("pointLights[1].constant", 10.0f);
+        shader->set_float("pointLights[1].linear", 0.09f);
         shader->set_float("pointLights[1].quadratic", 0.032f);
 
         skullModel->draw(shader);
@@ -155,10 +155,14 @@ namespace app {
 
 
     void MainController::draw_arena() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        float time = platform->frame_time().current;
+
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model* arenaModel = resources->model("arena");
+
 
         // Shader
         engine::resources::Shader* shader = resources->shader("NearShader");
@@ -166,8 +170,8 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -20.0f, -5.0f));
-        model = glm::rotate(model, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -20.0f, -10.0f));
+        model = glm::rotate(model, glm::radians(time), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.008f));
         shader->set_mat4("model", model);

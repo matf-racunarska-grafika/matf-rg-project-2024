@@ -26,28 +26,30 @@ void BloomHandler::draw() {
 }
 
 void BloomHandler::prepare_hdr_framebuffer() {
-    CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
-    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
+    if (hdrFBO == 0) {
+        CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
 
-    CHECKED_GL_CALL(glGenTextures, 2, colorBuffers);
-    for (unsigned int i = 0; i < 2; i++) {
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[i]);
-        CHECKED_GL_CALL(glTexImage2D,
-            GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
-        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        CHECKED_GL_CALL(glGenTextures, 2, colorBuffers);
+        for (unsigned int i = 0; i < 2; i++) {
+            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[i]);
+            CHECKED_GL_CALL(glTexImage2D,
+                GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        CHECKED_GL_CALL(glFramebufferTexture2D,
-            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
+            CHECKED_GL_CALL(glFramebufferTexture2D,
+                GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
+        }
+        unsigned int rboDepth;
+        CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
+        CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
+        CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
+        CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+        prepare_attachments();
     }
-    unsigned int rboDepth;
-    CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
-    CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
-    CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
-    CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-    prepare_attachments();
 }
 void BloomHandler::prepare_attachments() {
     attachments[0] = GL_COLOR_ATTACHMENT0;
