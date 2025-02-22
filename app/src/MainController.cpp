@@ -65,10 +65,10 @@ namespace app {
         shader->set_vec3("viewPosition", graphics->camera()->Position);
         shader->set_float("material.shininess", 32.0f);
 
-        shader->set_vec3("dirlight.direction", glm::vec3(0.5f, -0.5f, 0.5f));
-        shader->set_vec3("dirlight.ambient", glm::vec3(0.4f, 0.05f, 0.05f));
-        shader->set_vec3("dirlight.diffuse", glm::vec3(0.7f, 0.1f, 0.1f));
-        shader->set_vec3("dirlight.specular", glm::vec3(1.0f, 0.0f, 0.0f));
+        shader->set_vec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -0.7f));
+        shader->set_vec3("dirLight.ambient", glm::vec3(0.05f, 0.01f, 0.01f));
+        shader->set_vec3("dirLight.diffuse", glm::vec3(0.05f, 0.01f, 0.01f));
+        shader->set_vec3("dirLight.specular", glm::vec3(0.05f, 0.01f, 0.01f));
 
         // getting the possitions of the eyes
         glm::vec3 eyePos1;
@@ -77,10 +77,10 @@ namespace app {
         glm::mat4 modelEye2 = model;
 
         modelEye1 = glm::translate(modelEye1, glm::vec3(-4.4f, -9.8f, 14.0f));
-        modelEye1 = glm::scale(modelEye1, glm::vec3(0.25f, 0.25f, 0.25f));
+        modelEye1 = glm::scale(modelEye1, glm::vec3(0.008f));
 
         modelEye2 = glm::translate(modelEye2, glm::vec3(4.4f, -9.8f, 14.0f));
-        modelEye2 = glm::scale(modelEye2, glm::vec3(0.25f, 0.25f, 0.25f));
+        modelEye2 = glm::scale(modelEye2, glm::vec3(0.008f));
 
         glm::vec4 eye1Pos = modelEye1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
         glm::vec4 eye2Pos = modelEye2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -123,10 +123,10 @@ namespace app {
         glm::mat4 model = glm::mat4(1.0f);
         for (int i = 0; i <= 7; i++) {
             model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(0.0f, -2.0f, -i*3.39f)); // translate it down so it's at the center of the scene
-            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
-            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));	// it's a bit too big for our scene, so scale it down
+            model = glm::translate(model, glm::vec3(0.0f, -2.0f, -i*3.39f));
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+            model = glm::scale(model, glm::vec3(0.5f));
             shader->set_mat4("model", model);
 
             bridgeModel->draw(shader);
@@ -161,24 +161,21 @@ namespace app {
         engine::resources::Model* arenaModel = resources->model("arena");
 
         // Shader
-        engine::resources::Shader* shader = resources->shader("FarShader");
+        engine::resources::Shader* shader = resources->shader("NearShader");
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -23.0f, -5.0f));
-        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -20.0f, -5.0f));
+        model = glm::rotate(model, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.008f));
         shader->set_mat4("model", model);
 
-        shader->set_vec3("pointLights[0].position", glm::vec3(120.0f, 100.0f, 100.0f));
-        shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-        shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.4f, 0.1f, 0.1f));
-        shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_float("pointLights[0].constant", 0.5f);
-        shader->set_float("pointLights[0].linear", 0.009f);
-        shader->set_float("pointLights[0].quadratic", 0.00032f);
-        shader->set_vec3("viewPosition", graphics->camera()->Position);
-        shader->set_float("material.shininess", 32.0f);
+        shader->set_vec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -0.7f));
+        shader->set_vec3("dirLight.ambient", glm::vec3(0.05f, 0.01f, 0.01f));
+        shader->set_vec3("dirLight.diffuse", glm::vec3(0.05f, 0.01f, 0.01f));
+        shader->set_vec3("dirLight.specular", glm::vec3(0.05f, 0.01f, 0.01f));
 
         arenaModel->draw(shader);
     }
@@ -192,8 +189,8 @@ namespace app {
     }
 
     void MainController::draw() {
-        draw_skull();
         draw_bridge();
+        draw_skull();
         draw_arena();
         draw_skybox();
 
