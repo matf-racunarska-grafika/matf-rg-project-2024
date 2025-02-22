@@ -62,15 +62,13 @@ namespace app {
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader->set_mat4("model", model);
 
-        shader->set_vec3("pointLights[0].position", glm::vec3(120.0f, 100.0f, 100.0f));
-        shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-        shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.4f, 0.1f, 0.1f));
-        shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_float("pointLights[0].constant", 1.0f);
-        shader->set_float("pointLights[0].linear", 0.009f);
-        shader->set_float("pointLights[0].quadratic", 0.00032f);
         shader->set_vec3("viewPosition", graphics->camera()->Position);
         shader->set_float("material.shininess", 32.0f);
+
+        shader->set_vec3("dirlight.direction", glm::vec3(0.5f, -0.5f, 0.5f));
+        shader->set_vec3("dirlight.ambient", glm::vec3(0.4f, 0.05f, 0.05f));
+        shader->set_vec3("dirlight.diffuse", glm::vec3(0.7f, 0.1f, 0.1f));
+        shader->set_vec3("dirlight.specular", glm::vec3(1.0f, 0.0f, 0.0f));
 
         // getting the possitions of the eyes
         glm::vec3 eyePos1;
@@ -88,21 +86,21 @@ namespace app {
         glm::vec4 eye2Pos = modelEye2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
         glm::vec3 lightColor = Settings::getInstance().lightColor;
-        shader->set_vec3("pointLights[1].position", glm::vec3(eye1Pos));
-        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[0].position", glm::vec3(eye1Pos));
+        shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[0].diffuse", lightColor);
+        shader->set_vec3("pointLights[0].specular", lightColor);
+        shader->set_float("pointLights[0].constant", 1.0f);
+        shader->set_float("pointLights[0].linear", 0.009f);
+        shader->set_float("pointLights[0].quadratic", 0.032f);
+
+        shader->set_vec3("pointLights[1].position", glm::vec3(eye2Pos));
+        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
         shader->set_vec3("pointLights[1].diffuse", lightColor);
         shader->set_vec3("pointLights[1].specular", lightColor);
         shader->set_float("pointLights[1].constant", 1.0f);
         shader->set_float("pointLights[1].linear", 0.009f);
         shader->set_float("pointLights[1].quadratic", 0.032f);
-
-        shader->set_vec3("pointLights[2].position", glm::vec3(eye2Pos));
-        shader->set_vec3("pointLights[2].ambient", glm::vec3(0.0f));
-        shader->set_vec3("pointLights[2].diffuse", lightColor);
-        shader->set_vec3("pointLights[2].specular", lightColor);
-        shader->set_float("pointLights[2].constant", 1.0f);
-        shader->set_float("pointLights[2].linear", 0.009f);
-        shader->set_float("pointLights[2].quadratic", 0.032f);
 
         skullModel->draw(shader);
 

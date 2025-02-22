@@ -16,7 +16,7 @@ public:
     bool skullFacingPlayer = true;
 
 private:
-    Settings() {} // Private constructor
+    Settings() {}
     ~Settings() {}
     Settings(const Settings&) = delete;
     Settings& operator=(const Settings&) = delete;
