@@ -176,7 +176,7 @@ namespace app {
         shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
         shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.4f, 0.1f, 0.1f));
         shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_float("pointLights[0].constant", 1.0f);
+        shader->set_float("pointLights[0].constant", 0.5f);
         shader->set_float("pointLights[0].linear", 0.009f);
         shader->set_float("pointLights[0].quadratic", 0.00032f);
         shader->set_vec3("viewPosition", graphics->camera()->Position);
@@ -223,9 +223,15 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera = graphics->camera();
         float dt = platform->dt();
+        bool skullFacing = Settings::getInstance().skullFacingPlayer;
 
         if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+            if (!skullFacing) {
+                camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+            } else {
+                // teleport player to start if he has been spotted
+                camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
+            }
         }
         if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
             camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
@@ -246,5 +252,33 @@ namespace app {
 
     void MainController::update() {
         update_camera();
+        update_skull_facing();
     }
+
+    glm::vec3 rotate_vector(const glm::vec3& vec, float angleDegrees) {
+        float angleRadians = glm::radians(angleDegrees);
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angleRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+        return glm::vec3(rotation * glm::vec4(vec, 0.0f));
+    }
+
+    void MainController::update_skull_facing() {
+        float skullSpeed = Settings::getInstance().skullSpeed;
+
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        float time = platform->frame_time().current;
+
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        bool skullFacing;
+
+        glm::vec3 skullFront = rotate_vector(glm::vec3(0.0f, 0.0f, 1.0f), skullSpeed * time);
+        float angle = glm::degrees(glm::acos(glm::dot(skullFront, -graphics->camera()->Front)));
+
+        if (angle <= 60.0f) {
+            skullFacing = true;
+        } else {
+            skullFacing = false;
+        }
+        Settings::getInstance().skullFacingPlayer = skullFacing;
+    }
+
 } // app

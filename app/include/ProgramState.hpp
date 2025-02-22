@@ -13,6 +13,7 @@ public:
     glm::vec3 lightColor = glm::vec3(12.0f, 0.0f, 0.0f);
     unsigned int difficulty = 1;
     float skullSpeed = 160.0f;
+    bool skullFacingPlayer = true;
 
 private:
     Settings() {} // Private constructor

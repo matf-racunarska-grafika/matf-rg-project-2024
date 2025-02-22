@@ -15,6 +15,8 @@ namespace app {
 
         void update() override;
 
+        void update_skull_facing();
+
         void draw() override;
 
         void draw_skull();

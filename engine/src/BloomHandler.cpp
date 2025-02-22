@@ -151,6 +151,6 @@ void BloomHandler::compose() {
     CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
     bloom_final->set_int("bloom", true);
-    bloom_final->set_float("exposure", 0.1f);
+    bloom_final->set_float("exposure", 0.18f);
     render_quad();
 }
