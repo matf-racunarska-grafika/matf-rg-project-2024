@@ -37,9 +37,8 @@ class MainController : public engine::core::Controller {
     void draw_path();
     void draw_mushrooms();
     void draw_lighthouse();
-
-    void drawLightSource_day();
-    void drawLightSource_night();
+    void draw_stones();
+    void draw_fire();
 
     void update() override;
     void update_camera();

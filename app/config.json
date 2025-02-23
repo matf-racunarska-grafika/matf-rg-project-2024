@@ -78,6 +78,15 @@
       },
       "laurel_bush" : {
         "path" : "laurel_bush/scene.gltf"
+      },
+      "frock" : {
+        "path" : "frock/scene.gltf"
+      },
+      "grave" : {
+        "path" : "grave/scene.gltf"
+      },
+      "fire" : {
+        "path" : "fire/scene.gltf"
       }
     }
   },

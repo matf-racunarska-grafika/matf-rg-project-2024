@@ -86,7 +86,10 @@ namespace app {
         draw_flowers();
         draw_path();
         draw_mushrooms();
-        test();
+        draw_stones();
+        if (!is_day)
+            draw_fire();
+        // test();
         draw_skybox();
     }
 
@@ -101,10 +104,8 @@ namespace app {
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        // Activate the shader.
         tree_shader->use();
 
-        // Set the light properties.
         tree_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -119,26 +120,22 @@ namespace app {
         }
         tree_shader->set_vec3("viewPos", camera->Position);
 
-        // Set the projection and view matrices.
         tree_shader->set_mat4("projection", graphics->projection_matrix());
         tree_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(49, 17, 9));
         model = glm::scale(model, glm::vec3(0.04));
         tree_shader->set_mat4("model", model);
         yellow_tree->draw(tree_shader);
 
         model = glm::mat4(1.0f);
-        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(0, 17, -22));
         model = glm::scale(model, glm::vec3(0.04));
         tree_shader->set_mat4("model", model);
         yellow_tree->draw(tree_shader);
 
         model = glm::mat4(1.0f);
-        // model           = glm::rotate(model, glm::radians(test_rotation), glm::vec3(0, 1, 0));
         model = glm::translate(model, glm::vec3(-25, 15, 5));
         model = glm::scale(model, glm::vec3(0.04));
         tree_shader->set_mat4("model", model);
@@ -355,7 +352,6 @@ namespace app {
             campfire_shader->set_mat4("view", camera->view_matrix());
 
             glm::mat4 model = glm::mat4(1.0f);
-            // model = glm::scale(model, glm::vec3(1));
             model = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
             campfire_shader->set_mat4("model", model);
 
@@ -376,7 +372,6 @@ namespace app {
             campfire_shader->set_mat4("view", camera->view_matrix());
 
             glm::mat4 model = glm::mat4(1.0f);
-            // model = glm::scale(model, glm::vec3(1));
             model = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
             campfire_shader->set_mat4("model", model);
 
@@ -390,10 +385,8 @@ namespace app {
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        // Activate the shader.
         log_seat_shader->use();
 
-        // Set the light properties.
         log_seat_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             log_seat_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -408,7 +401,6 @@ namespace app {
         }
         log_seat_shader->set_vec3("viewPos", camera->Position);
 
-        // Set the projection and view matrices.
         log_seat_shader->set_mat4("projection", graphics->projection_matrix());
         log_seat_shader->set_mat4("view", camera->view_matrix());
 
@@ -431,7 +423,6 @@ namespace app {
 
                 log_seat_shader->set_mat4("model", model);
 
-                // Draw the campfire model.
                 log_seat->draw(log_seat_shader);
             } else {
                 glm::mat4 model = glm::mat4(1.0f);
@@ -441,7 +432,6 @@ namespace app {
 
                 log_seat_shader->set_mat4("model", model);
 
-                // Draw the campfire model.
                 log_seat->draw(log_seat_shader);
             }
         }
@@ -497,10 +487,8 @@ namespace app {
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        // Activate the shader.
         old_tree_shader->use();
 
-        // Set the light properties.
         old_tree_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             old_tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -515,11 +503,9 @@ namespace app {
         }
         old_tree_shader->set_vec3("viewPos", camera->Position);
 
-        // Set the projection and view matrices.
         old_tree_shader->set_mat4("projection", graphics->projection_matrix());
         old_tree_shader->set_mat4("view", camera->view_matrix());
 
-        // Set the model matrix.
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(3.0f), glm::vec3(0, 0, 1));
         model           = glm::translate(model, glm::vec3(65, 40, -39));
@@ -527,7 +513,6 @@ namespace app {
 
         old_tree_shader->set_mat4("model", model);
 
-        // Draw the campfire model.
         old_tree->draw(old_tree_shader);
     }
 
@@ -538,7 +523,6 @@ namespace app {
         auto laurelBush = resources->model("laurel_bush");
         auto bushShader = resources->shader("tree_shader2");
 
-        // Set up light properties.
         glm::vec3 lightPos = is_day
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -559,13 +543,11 @@ namespace app {
         bushShader->set_mat4("projection", graphics->projection_matrix());
         bushShader->set_mat4("view", camera->view_matrix());
 
-        // Helper to set transformation and draw a model.
         auto drawModel = [bushShader](engine::resources::Model *model, const glm::mat4 &transform) {
             bushShader->set_mat4("model", transform);
             model->draw(bushShader);
         };
 
-        // Lambda for drawing bush1 models (with a fixed rotation).
         auto drawBush1 = [&](const glm::vec3 &translation, float scale) {
             glm::mat4 model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
@@ -574,7 +556,6 @@ namespace app {
             drawModel(bush1, model);
         };
 
-        // Lambda for drawing bush2 and laurel bush models.
         auto drawSimple = [&](engine::resources::Model *model, const glm::vec3 &translation, float scale) {
             glm::mat4 m = glm::mat4(1.0f);
             m           = glm::translate(m, translation);
@@ -582,19 +563,16 @@ namespace app {
             drawModel(model, m);
         };
 
-        // Draw bush1 instances.
         drawBush1(glm::vec3(-19, -3, 16), 5.0f);
         drawBush1(glm::vec3(15, 25, 16), 5.0f);
         drawBush1(glm::vec3(52, -19, 17), 5.0f);
         drawBush1(glm::vec3(31, -32, 17), 5.0f);
         drawBush1(glm::vec3(12, -24, 17), 5.0f);
 
-        // Draw bush2 instances.
         drawSimple(bush2, glm::vec3(4, 20, -13), 0.3f);
         drawSimple(bush2, glm::vec3(32, 20, 4), 0.3f);
         drawSimple(bush2, glm::vec3(30, 20, 12), 0.3f);
 
-        // Draw laurel bush instances.
         drawSimple(laurelBush, glm::vec3(-25, 16, 0), 0.680f);
         drawSimple(laurelBush, glm::vec3(-25, 16, 12), 0.680f);
         drawSimple(laurelBush, glm::vec3(-20, 16, 23), 0.680f);
@@ -607,22 +585,13 @@ namespace app {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
         engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        // Define three rows with 10 columns each.
         unsigned int rowCount    = 2;
         unsigned int colCount    = 10;
         unsigned int amount      = rowCount * colCount + 13;
-        glm::mat4 *modelMatrices = new glm::mat4[amount];
+        auto *modelMatrices = new glm::mat4[amount];
 
-        // Loop over each row and column.
         for (unsigned int row = 0; row < rowCount; row++) {
-            // Choose the x coordinate based on the row.
-            float x = 0.0f;
-            if (row == 0)
-                x = 40.0f;
-            else if (row == 1)
-                x = 44.0f;
-            else if (row == 2)
-                x = 48.0f;
+            float x = row==0? 40.0f : 44.0f;
 
             for (unsigned int col = 0; col < colCount; col++) {
                 unsigned int index   = row * colCount + col;
@@ -657,15 +626,13 @@ namespace app {
             modelMatrices[i] = model;
         }
 
-        // Create and fill the instance VBO.
         unsigned int buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
 
-        // For each mesh in the model, bind the instance matrix buffer to its VAO.
-        for (unsigned int i = 0; i < white_flowers->meshes().size(); i++) {
-            unsigned int VAO = white_flowers->meshes()[i].m_vao;
+        for (const auto & mesh : white_flowers->meshes()) {
+            unsigned int VAO = mesh.m_vao;
             glBindVertexArray(VAO);
 
             std::size_t vec4Size = sizeof(glm::vec4);
@@ -687,7 +654,6 @@ namespace app {
             glBindVertexArray(0);
         }
 
-        // Set shader uniforms...
         glm::vec3 lightPos = is_day
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -708,7 +674,6 @@ namespace app {
         flower_shader->set_mat4("projection", graphics->projection_matrix());
         flower_shader->set_mat4("view", camera->view_matrix());
 
-        // Draw using instancing.
         white_flowers->drawInstanced(flower_shader, amount);
 
         delete[] modelMatrices;
@@ -720,126 +685,90 @@ namespace app {
     }
 
     void MainController::draw_path() {
-        engine::resources::Model *path          = resources->model("path");
-        engine::resources::Shader *stone_shader = resources->shader("campfire_shader");
+        auto path        = resources->model("path");
+        auto stoneShader = resources->shader("campfire_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+        glm::vec3 lightPos = is_day
+                                 ? glm::vec3(0.0f, 60.0f, 0.0f)
+                                 : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        stone_shader->use();
+        stoneShader->use();
+        stoneShader->set_vec3("light.position", lightPos);
 
-        stone_shader->set_vec3("light.position", lightPos);
         if (is_day) {
-            stone_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            stone_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            stone_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            stone_shader->set_float("material.shininess", 32.0f);
+            stoneShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            stoneShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            stoneShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            stoneShader->set_float("material.shininess", 32.0f);
         } else {
-            stone_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            stone_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            stone_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            stone_shader->set_float("material.shininess", 128.0f);
+            stoneShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            stoneShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            stoneShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            stoneShader->set_float("material.shininess", 128.0f);
         }
-        stone_shader->set_vec3("viewPos", camera->Position);
-        stone_shader->set_mat4("projection", graphics->projection_matrix());
-        stone_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model           = glm::rotate(model, glm::radians(10.0f), glm::vec3(0, 1, 0));
-        model           = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
-        model           = glm::translate(model, glm::vec3(-13, 22, -20));
-        model           = glm::scale(model, glm::vec3(0.19f));
-        stone_shader->set_mat4("model", model);
-        path->draw(stone_shader);
+        stoneShader->set_vec3("viewPos", camera->Position);
+        stoneShader->set_mat4("projection", graphics->projection_matrix());
+        stoneShader->set_mat4("view", camera->view_matrix());
 
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model = glm::rotate(model, glm::radians(-1.0f), glm::vec3(0, 1, 0));
-        model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
-        model = glm::translate(model, glm::vec3(-11, 19, -17));
-        model = glm::scale(model, glm::vec3(0.19f));
-        stone_shader->set_mat4("model", model);
-        path->draw(stone_shader);
+        // Helper lambda to draw a path segment.
+        auto drawPathSegment = [&](const glm::vec3 &translation, float yRotation, float scale) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));     // Fix orientation
+            model           = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0)); // Y-axis rotation
+            model           = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));     // Tilt
+            model           = glm::translate(model, translation);
+            model           = glm::scale(model, glm::vec3(scale));
+            stoneShader->set_mat4("model", model);
+            path->draw(stoneShader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0, 1, 0));
-        model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
-        model = glm::translate(model, glm::vec3(-6.5, 15, -17.5));
-        model = glm::scale(model, glm::vec3(0.19f));
-        stone_shader->set_mat4("model", model);
-        path->draw(stone_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0, 1, 0));
-        model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
-        model = glm::translate(model, glm::vec3(-1, 12, -17.5));
-        model = glm::scale(model, glm::vec3(0.19f));
-        stone_shader->set_mat4("model", model);
-        path->draw(stone_shader);
+        drawPathSegment(glm::vec3(-13, 22, -20), 10.0f, 0.19f);
+        drawPathSegment(glm::vec3(-11, 19, -17), -1.0f, 0.19f);
+        drawPathSegment(glm::vec3(-6.5, 15, -17.5), 0.0f, 0.19f);
+        drawPathSegment(glm::vec3(-1, 12, -17.5), 0.0f, 0.19f);
     }
 
     void MainController::draw_mushrooms() {
-        engine::resources::Model *mushroom       = resources->model("shrooms");
-        engine::resources::Shader *shroom_shader = resources->shader("campfire_shader");
+        auto mushroom     = resources->model("shrooms");
+        auto shroomShader = resources->shader("campfire_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        shroom_shader->use();
+        shroomShader->use();
+        shroomShader->set_vec3("light.position", lightPos);
 
-        shroom_shader->set_vec3("light.position", lightPos);
         if (is_day) {
-            shroom_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            shroom_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            shroom_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            shroom_shader->set_float("material.shininess", 32.0f);
+            shroomShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            shroomShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            shroomShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            shroomShader->set_float("material.shininess", 32.0f);
         } else {
-            shroom_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            shroom_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            shroom_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            shroom_shader->set_float("material.shininess", 128.0f);
+            shroomShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            shroomShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            shroomShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            shroomShader->set_float("material.shininess", 128.0f);
         }
-        shroom_shader->set_vec3("viewPos", camera->Position);
-        shroom_shader->set_mat4("projection", graphics->projection_matrix());
-        shroom_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model           = glm::rotate(model, glm::radians(-19.0f), glm::vec3(0, 1, 0));
-        model           = glm::rotate(model, glm::radians(0.0f), glm::vec3(0, 0, 1));
-        model           = glm::translate(model, glm::vec3(6, 0, 16));
-        model           = glm::scale(model, glm::vec3(0.19f));
-        shroom_shader->set_mat4("model", model);
-        mushroom->draw(shroom_shader);
+        shroomShader->set_vec3("viewPos", camera->Position);
+        shroomShader->set_mat4("projection", graphics->projection_matrix());
+        shroomShader->set_mat4("view", camera->view_matrix());
 
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(3, 8, 17));
-        model = glm::scale(model, glm::vec3(0.19f));
-        shroom_shader->set_mat4("model", model);
-        mushroom->draw(shroom_shader);
+        auto drawMushroom = [&](const glm::vec3 &translation, float scale, float yRotation = 0.0f) {
+            auto model = glm::mat4(1.0f);
+            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model      = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+            model      = glm::translate(model, translation);
+            model      = glm::scale(model, glm::vec3(scale));
+            shroomShader->set_mat4("model", model);
+            mushroom->draw(shroomShader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(12, 19, 17));
-        model = glm::scale(model, glm::vec3(0.19f));
-        shroom_shader->set_mat4("model", model);
-        mushroom->draw(shroom_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(30, 1, 17));
-        model = glm::scale(model, glm::vec3(0.19f));
-        shroom_shader->set_mat4("model", model);
-        mushroom->draw(shroom_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(30, -10, 17));
-        model = glm::scale(model, glm::vec3(0.19f));
-        shroom_shader->set_mat4("model", model);
-        mushroom->draw(shroom_shader);
+        drawMushroom(glm::vec3(6, 0, 16), 0.19f, -19.0f);
+        drawMushroom(glm::vec3(3, 8, 17), 0.19f);
+        drawMushroom(glm::vec3(12, 19, 17), 0.19f);
+        drawMushroom(glm::vec3(30, 1, 17), 0.19f);
+        drawMushroom(glm::vec3(30, -10, 17), 0.19f);
     }
 
     void MainController::draw_red_flowers() {
@@ -848,7 +777,7 @@ namespace app {
         engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         unsigned int amount                 = 21;
-        glm::mat4 *modelMatrices            = new glm::mat4[amount];
+        auto *modelMatrices                 = new glm::mat4[amount];
         std::vector<glm::vec3> translations = {
                 glm::vec3(-10, 0, 17),
                 glm::vec3(-4, 9, 17),
@@ -881,15 +810,13 @@ namespace app {
             modelMatrices[i] = model;
         }
 
-        // Create and fill the instance VBO.
         unsigned int buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
 
-        // For each mesh in the model, bind the instance matrix buffer to its VAO.
-        for (unsigned int i = 0; i < roses->meshes().size(); i++) {
-            unsigned int VAO = roses->meshes()[i].m_vao;
+        for (const auto &mesh: roses->meshes()) {
+            unsigned int VAO = mesh.m_vao;
             glBindVertexArray(VAO);
 
             std::size_t vec4Size = sizeof(glm::vec4);
@@ -902,7 +829,6 @@ namespace app {
             glEnableVertexAttribArray(6);
             glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (3 * vec4Size));
 
-            // Mark these attributes as instanced.
             glVertexAttribDivisor(3, 1);
             glVertexAttribDivisor(4, 1);
             glVertexAttribDivisor(5, 1);
@@ -911,10 +837,7 @@ namespace app {
             glBindVertexArray(0);
         }
 
-        // Set shader uniforms...
-        glm::vec3 lightPos = is_day
-                                 ? glm::vec3(0.0f, 60.0f, 0.0f)
-                                 : glm::vec3(12.0f, 25.0f, 6.0f);
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         flower_shader->use();
         flower_shader->set_vec3("light.position", lightPos);
         if (is_day) {
@@ -932,7 +855,6 @@ namespace app {
         flower_shader->set_mat4("projection", graphics->projection_matrix());
         flower_shader->set_mat4("view", camera->view_matrix());
 
-        // Draw using instancing.
         roses->drawInstanced(flower_shader, amount);
 
         delete[] modelMatrices;
@@ -954,21 +876,15 @@ namespace app {
             terrain_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             terrain_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
         }
-
-        // Set projection and view matrices.
         terrain_shader->set_mat4("projection", graphics->projection_matrix());
         terrain_shader->set_mat4("view", camera->view_matrix());
-
-        // Set model transform.
         glm::mat4 model = glm::mat4(1.0f);
         terrain_shader->set_mat4("model", model);
-
-        // Draw the terrain model.
         terrain->draw(terrain_shader);
     }
 
     void MainController::test() {
-        engine::resources::Model *test_model   = resources->model("pine_tree");
+        engine::resources::Model *test_model   = resources->model("fire");
         engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -1020,23 +936,68 @@ namespace app {
         engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 
-    void MainController::drawLightSource_day() {
-        if (!is_day)
-            return;
+    void MainController::draw_stones() {
+        engine::resources::Model *fantasy_rock   = resources->model("frock");
+        engine::resources::Model *grave   = resources->model("grave");
+        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
-        auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics                     = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *sun     = resources->model("sun");
-        engine::resources::Shader *shader = resources->shader("daylight_shader");
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
+        test_shader->use();
+
+        test_shader->set_vec3("light.position", lightPos);
+        if (is_day) {
+            test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+            test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+            test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+            test_shader->set_float("material.shininess", 32.0f);
+        } else {
+            test_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            test_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
+            test_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            test_shader->set_float("material.shininess", 128.0f);
+        }
+        test_shader->set_vec3("viewPos", camera->Position);
+
+        test_shader->set_mat4("projection", graphics->projection_matrix());
+        test_shader->set_mat4("view", camera->view_matrix());
+
+        auto model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(66, 14, -16));
+        model           = glm::scale(model, glm::vec3(1.65));
+        test_shader->set_mat4("model", model);
+        fantasy_rock->draw(test_shader);
+
+        model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(57, 14, -22));
+        model           = glm::scale(model, glm::vec3(1.65));
+        test_shader->set_mat4("model", model);
+        fantasy_rock->draw(test_shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1,0,0));
+        model = glm::rotate(model, glm::radians(-48.0f), glm::vec3(0,0,1));
+        model           = glm::translate(model, glm::vec3(29, 71, 12));
+        model           = glm::scale(model, glm::vec3(1.35));
+        test_shader->set_mat4("model", model);
+        grave->draw(test_shader);
+
+    }
+
+    void MainController::draw_fire() {
+        engine::resources::Model *fire   = resources->model("fire");
+        engine::resources::Shader *fire_shader = resources->shader("basic");
+        fire_shader->use();
+        fire_shader->set_vec3("viewPos", camera->Position);
+
+        fire_shader->set_mat4("projection", graphics->projection_matrix());
+        fire_shader->set_mat4("view", camera->view_matrix());
+
         glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(0.0f, -20.0f, 0.0f));
-        model           = glm::scale(model, glm::vec3(1.0f));
-        shader->set_mat4("model", model);
-        sun->draw(shader);
+        model           = glm::translate(model, glm::vec3(12, 21, 7));
+        model           = glm::scale(model, glm::vec3(3.08));
+        fire_shader->set_mat4("model", model);
+        fire->draw(fire_shader);
     }
 
     void MainController::update() {
@@ -1097,7 +1058,7 @@ namespace app {
             is_day = !is_day;
         }
         if (platform->key(engine::platform::KeyId::KEY_Q).is_down()) {
-            camera->rotate_camera(5, 0);
+            camera->rotate_camera(-5, 0);
         }
         if (platform->key(engine::platform::KeyId::KEY_E).is_down()) {
             camera->rotate_camera(5, 0);
