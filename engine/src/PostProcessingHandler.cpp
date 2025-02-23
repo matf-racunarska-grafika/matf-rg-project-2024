@@ -21,7 +21,7 @@ engine::resources::Shader* PostProcessingHandler::bloom = nullptr;
 engine::resources::Shader* PostProcessingHandler::blur = nullptr;
 engine::resources::Shader* PostProcessingHandler::bloom_final = nullptr;
 engine::resources::Shader* PostProcessingHandler::negative = nullptr;
-engine::resources::Shader* PostProcessingHandler::grayScale = nullptr;
+engine::resources::Shader* PostProcessingHandler::grayscale = nullptr;
 
 void PostProcessingHandler::initialise() {
     prepare_post_processing_framebuffer();
@@ -122,6 +122,7 @@ void PostProcessingHandler::prepare_shaders() {
     blur = resources->shader("blur");
     bloom_final = resources->shader("bloom_final");
     negative = resources->shader("negative");
+    grayscale = resources->shader("grayscale");
 
     bloom->use();
     bloom->set_int("diffuseTexture", 0);
@@ -178,7 +179,7 @@ void PostProcessingHandler::apply_filters() {
         negative->set_int("screenTexture", 0);
         break;
     case Filter::GRAYSCALE :
-        grayScale->use();
+        grayscale->use();
         break;
     default:
         break;
