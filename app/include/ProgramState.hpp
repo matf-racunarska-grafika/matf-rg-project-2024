@@ -8,6 +8,8 @@ enum Filter {
     NEGATIVE,
     GRAYSCALE,
     DEEPFRIED,
+    OUTLINE,
+    BLACKWHITE
 };
 
 class Settings {
@@ -22,6 +24,7 @@ public:
     float skullSpeed = 160.0f;
     bool skullFacingPlayer = true;
     Filter filter = Filter::NONE;
+    int health = 3;
 
 private:
     Settings() {}

@@ -1,6 +1,3 @@
-//
-// Created by viktor on 21.2.25..
-//
 #include <engine/graphics/GraphicsController.hpp>
 #include <imgui.h>
 #include <GuiController.hpp>
@@ -57,6 +54,8 @@ namespace app {
             if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { filter = Filter::NEGATIVE; }
             if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { filter = Filter::GRAYSCALE; }
             if (ImGui::RadioButton("FRIED", filter == Filter::DEEPFRIED)) { filter = Filter::DEEPFRIED; }
+            if (ImGui::RadioButton("LINE", filter == Filter::OUTLINE)) { filter = Filter::OUTLINE; }
+            if (ImGui::RadioButton("B&W", filter == Filter::BLACKWHITE)) { filter = Filter::BLACKWHITE; }
         }
         Settings::getInstance().filter = filter;
 

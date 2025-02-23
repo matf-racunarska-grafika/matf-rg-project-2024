@@ -19,7 +19,9 @@ private:
     static unsigned int screenTexture;
 
     static engine::resources::Shader* bloom, *blur, *bloom_final;
-    static engine::resources::Shader* negative, *grayscale, *deepfried, *none;
+    static engine::resources::Shader* negative, *grayscale, *deepfried, *none, *outline, *blackWhite, *heartShader;
+
+    static engine::resources::Texture* heartTex;
 public:
     static void initialise();
     static void draw();
@@ -34,6 +36,7 @@ public:
     static void unbind_framebuffer();
     static void prepare_screen_framebuffer();
     static void apply_filters();
+    static void render_health();
 };
 
 #endif //POSTPROCESSINGHANDLER_HPP

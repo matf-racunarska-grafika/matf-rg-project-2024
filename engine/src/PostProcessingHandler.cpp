@@ -24,6 +24,10 @@ engine::resources::Shader* PostProcessingHandler::negative = nullptr;
 engine::resources::Shader* PostProcessingHandler::grayscale = nullptr;
 engine::resources::Shader* PostProcessingHandler::deepfried = nullptr;
 engine::resources::Shader* PostProcessingHandler::none = nullptr;
+engine::resources::Shader* PostProcessingHandler::outline = nullptr;
+engine::resources::Shader* PostProcessingHandler::blackWhite = nullptr;
+engine::resources::Texture* PostProcessingHandler::heartTex = nullptr;
+engine::resources::Shader* PostProcessingHandler::heartShader = nullptr;
 
 void PostProcessingHandler::initialise() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -131,6 +135,11 @@ void PostProcessingHandler::prepare_shaders() {
     grayscale = resources->shader("grayscale");
     deepfried = resources->shader("deepfried");
     none = resources->shader("none");
+    outline = resources->shader("outline");
+    blackWhite = resources->shader("blackWhite");
+
+    heartTex = resources->texture("heart", "textures/heart.png", engine::resources::TextureType::Regular, true);
+    heartShader = resources->shader("heart");
 
     bloom->use();
     bloom->set_int("diffuseTexture", 0);
@@ -172,6 +181,7 @@ void PostProcessingHandler::compose() {
     unbind_framebuffer();
 
     apply_filters();
+    render_health();
 }
 
 void PostProcessingHandler::apply_filters() {
@@ -194,6 +204,14 @@ void PostProcessingHandler::apply_filters() {
         deepfried->use();
         deepfried->set_int("screenTexture", 0);
         break;
+    case Filter::OUTLINE :
+        outline->use();
+        outline->set_int("screenTexture", 0);
+        break;
+    case Filter::BLACKWHITE :
+        blackWhite->use();
+        blackWhite->set_int("screenTexture", 0);
+        break;
     case Filter::NONE :
         none->use();
         none->set_int("screenTexture", 0);
@@ -201,6 +219,50 @@ void PostProcessingHandler::apply_filters() {
     }
 
     render_quad();
+}
+
+void PostProcessingHandler::render_health() {
+    CHECKED_GL_CALL(glDisable, GL_DEPTH_TEST);
+    CHECKED_GL_CALL(glEnable, GL_BLEND);
+    CHECKED_GL_CALL(glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    heartShader->use();
+    heartShader->set_int("heartTexture", 0);
+
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, heartTex->id());
+
+    auto window = engine::core::Controller::get<engine::platform::PlatformController>()->window();
+    float screenWidth = window->width();
+    float screenHeight = window->height();
+
+    const float heartSize = 50.0f;
+    const float padding = 10.0f;
+    const float startX = screenWidth - heartSize - padding;
+    const float startY = padding + 25.0f;
+
+    int health = Settings::getInstance().health;
+    for (int i = 0; i < health; ++i) {
+        float x = startX - i * (heartSize + padding);
+        float y = startY;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(
+            (x / screenWidth) * 2.0f - 1.0f,
+            1.0f - (y / screenHeight) * 2.0f,
+            0.0f
+        ));
+        model = glm::scale(model, glm::vec3(
+            heartSize / screenWidth,
+            heartSize / screenHeight,
+            1.0f
+        ));
+
+        heartShader->set_mat4("model", model);
+        render_quad();
+    }
+    CHECKED_GL_CALL(glDisable, GL_BLEND);
+    CHECKED_GL_CALL(glEnable, GL_DEPTH_TEST);
 }
 
 void PostProcessingHandler::render_quad() {
