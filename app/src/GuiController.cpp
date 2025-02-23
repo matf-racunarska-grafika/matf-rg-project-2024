@@ -56,6 +56,7 @@ namespace app {
             if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { filter = Filter::NONE; }
             if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { filter = Filter::NEGATIVE; }
             if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { filter = Filter::GRAYSCALE; }
+            if (ImGui::RadioButton("FRIED", filter == Filter::DEEPFRIED)) { filter = Filter::DEEPFRIED; }
         }
         Settings::getInstance().filter = filter;
 

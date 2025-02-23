@@ -19,7 +19,7 @@ private:
     static unsigned int screenTexture;
 
     static engine::resources::Shader* bloom, *blur, *bloom_final;
-    static engine::resources::Shader* negative, *grayscale;
+    static engine::resources::Shader* negative, *grayscale, *deepfried, *none;
 public:
     static void initialise();
     static void draw();

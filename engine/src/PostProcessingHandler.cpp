@@ -22,6 +22,8 @@ engine::resources::Shader* PostProcessingHandler::blur = nullptr;
 engine::resources::Shader* PostProcessingHandler::bloom_final = nullptr;
 engine::resources::Shader* PostProcessingHandler::negative = nullptr;
 engine::resources::Shader* PostProcessingHandler::grayscale = nullptr;
+engine::resources::Shader* PostProcessingHandler::deepfried = nullptr;
+engine::resources::Shader* PostProcessingHandler::none = nullptr;
 
 void PostProcessingHandler::initialise() {
     prepare_post_processing_framebuffer();
@@ -123,6 +125,8 @@ void PostProcessingHandler::prepare_shaders() {
     bloom_final = resources->shader("bloom_final");
     negative = resources->shader("negative");
     grayscale = resources->shader("grayscale");
+    deepfried = resources->shader("deepfried");
+    none = resources->shader("none");
 
     bloom->use();
     bloom->set_int("diffuseTexture", 0);
@@ -159,7 +163,7 @@ void PostProcessingHandler::compose() {
     CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
     bloom_final->set_int("bloom", true);
-    bloom_final->set_float("exposure", 0.18f);
+    bloom_final->set_float("exposure", 0.2f);
     render_quad();
     unbind_framebuffer();
 
@@ -180,8 +184,15 @@ void PostProcessingHandler::apply_filters() {
         break;
     case Filter::GRAYSCALE :
         grayscale->use();
+        grayscale->set_int("screenTexture", 0);
         break;
-    default:
+    case Filter::DEEPFRIED :
+        deepfried->use();
+        deepfried->set_int("screenTexture", 0);
+        break;
+    case Filter::NONE :
+        none->use();
+        none->set_int("screenTexture", 0);
         break;
     }
 

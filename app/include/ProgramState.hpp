@@ -6,7 +6,8 @@
 enum Filter {
     NONE,
     NEGATIVE,
-    GRAYSCALE
+    GRAYSCALE,
+    DEEPFRIED,
 };
 
 class Settings {

@@ -87,7 +87,7 @@ namespace app {
 
         glm::vec3 lightColor = Settings::getInstance().lightColor;
         shader->set_vec3("pointLights[0].position", glm::vec3(eye1Pos));
-        shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2f, 0.0f, 0.0f));
+        shader->set_vec3("pointLights[0].ambient", glm::vec3(0.0f));
         shader->set_vec3("pointLights[0].diffuse", lightColor);
         shader->set_vec3("pointLights[0].specular", lightColor);
         shader->set_float("pointLights[0].constant", 10.0f);
