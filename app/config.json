@@ -60,12 +60,30 @@
       },
       "plants" : {
         "path" : "plants/scene.gltf"
+      },
+      "flowers2" : {
+        "path" : "flowers/scene.gltf"
+      },
+      "roses" : {
+        "path" : "roses/scene.gltf"
+      },
+      "pine_tree" : {
+        "path" : "pine_tree/scene.gltf"
+      },
+      "path" : {
+        "path" : "way_path_blocks/scene.gltf"
+      },
+      "shrooms" : {
+        "path" : "mushrooms/scene.gltf"
+      },
+      "laurel_bush" : {
+        "path" : "laurel_bush/scene.gltf"
       }
     }
   },
   "window": {
-    "height": 800,
+    "height": 1000,
     "title": "Starfall Shores",
-    "width": 1000
+    "width": 1400
   }
 }

@@ -60,6 +60,7 @@ namespace engine::resources {
         Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
              std::vector<Texture *> textures);
 
+    public:
         uint32_t m_vao{0};
         uint32_t m_num_indices{0};
         std::vector<Texture *> m_textures;
