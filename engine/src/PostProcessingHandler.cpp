@@ -16,6 +16,8 @@ unsigned int PostProcessingHandler::pingpongFBO[2] = {0, 0};
 unsigned int PostProcessingHandler::pingpongBuffer[2] = {0, 0};
 unsigned int PostProcessingHandler::screenFBO = 0;
 unsigned int PostProcessingHandler::screenTexture = 0;
+unsigned int PostProcessingHandler::quadVAO = 0;
+unsigned int PostProcessingHandler::quadVBO = 0;
 
 engine::resources::Shader* PostProcessingHandler::bloom = nullptr;
 engine::resources::Shader* PostProcessingHandler::blur = nullptr;
@@ -37,6 +39,7 @@ void PostProcessingHandler::initialise() {
     prepare_post_processing_framebuffer(wHeight, wWidth);
     prepare_hdr_framebuffer(wHeight, wWidth);
     prepare_blur_framebuffers(wHeight, wWidth);
+    prepare_quad();
 }
 
 void PostProcessingHandler::draw() {
@@ -265,9 +268,7 @@ void PostProcessingHandler::render_health() {
     CHECKED_GL_CALL(glEnable, GL_DEPTH_TEST);
 }
 
-void PostProcessingHandler::render_quad() {
-    unsigned int quadVAO = 0;
-    unsigned int quadVBO;
+void PostProcessingHandler::prepare_quad() {
     if (quadVAO == 0)
     {
         float quadVertices[] = {
@@ -286,6 +287,9 @@ void PostProcessingHandler::render_quad() {
         CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
         CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
+}
+
+void PostProcessingHandler::render_quad() {
     CHECKED_GL_CALL(glBindVertexArray, quadVAO);
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
     CHECKED_GL_CALL(glBindVertexArray, 0);

@@ -15,6 +15,8 @@ private:
     static unsigned int attachments[2];
     static unsigned int pingpongFBO[2];
     static unsigned int pingpongBuffer[2];
+    static unsigned int quadVAO;
+    static unsigned int quadVBO;
     static unsigned int screenFBO;
     static unsigned int screenTexture;
 
@@ -26,6 +28,7 @@ public:
     static void initialise();
     static void draw();
     static void render_quad();
+    static void prepare_quad();
     static void prepare_post_processing_framebuffer(unsigned int wHeight, unsigned int wWidth);
     static void prepare_hdr_framebuffer(unsigned int wHeight, unsigned int wWidth);
     static void prepare_attachments();
