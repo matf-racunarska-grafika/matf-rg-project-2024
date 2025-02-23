@@ -16,6 +16,7 @@ namespace app {
         void update() override;
 
         void update_skull_facing();
+        void update_game_state();
 
         void draw() override;
 

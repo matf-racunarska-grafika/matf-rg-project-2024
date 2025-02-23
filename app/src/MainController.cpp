@@ -253,6 +253,19 @@ namespace app {
     void MainController::update() {
         update_camera();
         update_skull_facing();
+        update_game_state();
+    }
+
+    void MainController::update_game_state() {
+        int health = Settings::getInstance().health;
+        if (health <= 0) {
+            auto gui_controller = engine::core::Controller::get<GuiController>();
+            auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+            auto camera = graphics->camera();
+            gui_controller->set_enable(true);
+            Settings::getInstance().health = Settings::getInstance().maxHealth;
+            camera->Position = glm::vec3(0.0f);
+        }
     }
 
     glm::vec3 rotate_vector(const glm::vec3& vec, float angleDegrees) {

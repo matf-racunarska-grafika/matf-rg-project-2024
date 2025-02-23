@@ -25,6 +25,7 @@ public:
     bool skullFacingPlayer = true;
     Filter filter = Filter::NONE;
     int health = 3;
+    int maxHealth = 3;
 
 private:
     Settings() {}

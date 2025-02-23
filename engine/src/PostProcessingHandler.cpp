@@ -239,7 +239,7 @@ void PostProcessingHandler::render_health() {
     const float heartSize = 50.0f;
     const float padding = 10.0f;
     const float startX = screenWidth - heartSize - padding;
-    const float startY = padding + 25.0f;
+    const float startY = padding + 35.0f;
 
     int health = Settings::getInstance().health;
     for (int i = 0; i < health; ++i) {
