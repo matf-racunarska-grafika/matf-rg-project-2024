@@ -3,6 +3,12 @@
 
 #include <glm/glm.hpp>
 
+enum Filter {
+    NONE,
+    NEGATIVE,
+    GRAYSCALE
+};
+
 class Settings {
 public:
     static Settings& getInstance() {
@@ -14,6 +20,7 @@ public:
     unsigned int difficulty = 1;
     float skullSpeed = 160.0f;
     bool skullFacingPlayer = true;
+    Filter filter = Filter::NEGATIVE;
 
 private:
     Settings() {}
