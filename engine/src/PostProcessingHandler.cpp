@@ -294,3 +294,41 @@ void PostProcessingHandler::render_quad() {
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
     CHECKED_GL_CALL(glBindVertexArray, 0);
 }
+
+void PostProcessingHandler::cleanup() {
+    if (hdrFBO != 0) {
+        CHECKED_GL_CALL(glDeleteFramebuffers, 1, &hdrFBO);
+        hdrFBO = 0;
+    }
+    if (screenFBO != 0) {
+        CHECKED_GL_CALL(glDeleteFramebuffers, 1, &screenFBO);
+        screenFBO = 0;
+    }
+    for (unsigned int i = 0; i < 2; i++) {
+        if (pingpongFBO[i] != 0) {
+            CHECKED_GL_CALL(glDeleteFramebuffers, 1, &pingpongFBO[i]);
+            pingpongFBO[i] = 0;
+        }
+    }
+    if (colorBuffers[0] != 0 || colorBuffers[1] != 0) {
+        CHECKED_GL_CALL(glDeleteTextures, 2, colorBuffers);
+        colorBuffers[0] = colorBuffers[1] = 0;
+    }
+    if (pingpongBuffer[0] != 0 || pingpongBuffer[1] != 0) {
+        CHECKED_GL_CALL(glDeleteTextures, 2, pingpongBuffer);
+        pingpongBuffer[0] = pingpongBuffer[1] = 0;
+    }
+    if (screenTexture != 0) {
+        CHECKED_GL_CALL(glDeleteTextures, 1, &screenTexture);
+        screenTexture = 0;
+    }
+
+    if (quadVAO != 0) {
+        CHECKED_GL_CALL(glDeleteVertexArrays, 1, &quadVAO);
+        quadVAO = 0;
+    }
+    if (quadVBO != 0) {
+        CHECKED_GL_CALL(glDeleteBuffers, 1, &quadVBO);
+        quadVBO = 0;
+    }
+}
