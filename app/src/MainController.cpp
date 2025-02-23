@@ -223,30 +223,39 @@ namespace app {
         float dt = platform->dt();
         bool skullFacing = Settings::getInstance().skullFacingPlayer;
 
-        if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-            if (!skullFacing) {
-                camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
-            } else {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-                Settings::getInstance().health--;
-                // teleport player to start if he has been spotted
-                camera->Position = glm::vec3(0.0f, 0.0f, 0.0f);
+        if (Settings::getInstance().spectatorMode) {
+            float speed = 10.0f;
+            if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt*speed);
             }
-        }
-        if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
-        }
-        if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
-        }
-        if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
-        }
-        if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt);
-        }
-        if (platform->key(engine::platform::KeyId::KEY_SPACE).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
+            if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt*speed);
+            }
+            if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt*speed);
+            }
+            if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt*speed);
+            }
+            if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt*speed);
+            }
+            if (platform->key(engine::platform::KeyId::KEY_SPACE).is_down()) {
+                camera->move_camera(engine::graphics::Camera::Movement::UP, dt*speed);
+            }
+        } else {
+            if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+                if (!skullFacing) {
+                    camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+                } else {
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    Settings::getInstance().health--;
+                    // teleport player to start if he has been spotted
+                    camera->Position = glm::vec3(0.0f);
+                    camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
+                    camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+                }
+            }
         }
     }
 
@@ -258,13 +267,29 @@ namespace app {
 
     void MainController::update_game_state() {
         int health = Settings::getInstance().health;
-        if (health <= 0) {
+        if (health <= 0 && !Settings::getInstance().spectatorMode) {
             auto gui_controller = engine::core::Controller::get<GuiController>();
             auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
             auto camera = graphics->camera();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
             camera->Position = glm::vec3(0.0f);
+            camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
+            camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+        }
+
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        if (Settings::getInstance().spectatorMode
+            && platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) {
+            Settings::getInstance().spectatorMode = false;
+            auto gui_controller = engine::core::Controller::get<GuiController>();
+            auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+            auto camera = graphics->camera();
+            gui_controller->set_enable(true);
+            Settings::getInstance().health = Settings::getInstance().maxHealth;
+            camera->Position = glm::vec3(0.0f);
+            camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
+            camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
         }
     }
 

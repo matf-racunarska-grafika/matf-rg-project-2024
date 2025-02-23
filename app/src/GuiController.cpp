@@ -59,6 +59,16 @@ namespace app {
         }
         Settings::getInstance().filter = filter;
 
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        ImGui::Text("Spectator mode ignores game \nelements and allows free movement.\n(exit on F)");
+        if (ImGui::Button("SPECTATOR MODE", ImVec2(ImGui::GetWindowWidth() * 0.5f, 30))) {
+            set_enable(false);
+            Settings::getInstance().spectatorMode = true;
+        }
+
         ImGui::End();
         ImGui::PopStyleColor(5);
 
