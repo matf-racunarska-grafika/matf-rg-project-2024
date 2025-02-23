@@ -32,6 +32,7 @@ void PostProcessingHandler::initialise() {
 }
 
 void PostProcessingHandler::draw() {
+    unbind_framebuffer();
     compose();
 }
 

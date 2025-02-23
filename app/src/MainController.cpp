@@ -198,7 +198,6 @@ namespace app {
         draw_arena();
         draw_skybox();
 
-        PostProcessingHandler::unbind_framebuffer();
         PostProcessingHandler::draw();
     }
 
