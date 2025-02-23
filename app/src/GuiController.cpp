@@ -45,10 +45,19 @@ namespace app {
 
         if (ImGui::CollapsingHeader("Light Settings")) {
             ImGui::Text("Adjust Light Color:");
-            ImGui::SliderFloat("Red", &Settings::getInstance().lightColor.x, 0.0f, 10.0f);
-            ImGui::SliderFloat("Green", &Settings::getInstance().lightColor.y, 0.0f, 10.0f);
-            ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 10.0f);
+            ImGui::SliderFloat("Red", &Settings::getInstance().lightColor.x, 0.0f, 12.0f);
+            ImGui::SliderFloat("Green", &Settings::getInstance().lightColor.y, 0.0f, 12.0f);
+            ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 12.0f);
         }
+
+        Filter filter = Settings::getInstance().filter;
+        if (ImGui::CollapsingHeader("Cool Filters")) {
+            ImGui::Text("Choose your filter:");
+            if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { filter = Filter::NONE; }
+            if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { filter = Filter::NEGATIVE; }
+            if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { filter = Filter::GRAYSCALE; }
+        }
+        Settings::getInstance().filter = filter;
 
         ImGui::End();
         ImGui::PopStyleColor(5);
