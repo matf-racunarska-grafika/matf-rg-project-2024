@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <engine/core/Engine.hpp>
+#include <engine/core/Controller.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/graphics/PostProcessingHandler.hpp>
 #include <engine/util/Configuration.hpp>
@@ -16,7 +17,6 @@ unsigned int PostProcessingHandler::pingpongBuffer[2] = {0, 0};
 unsigned int PostProcessingHandler::screenFBO = 0;
 unsigned int PostProcessingHandler::screenTexture = 0;
 
-
 engine::resources::Shader* PostProcessingHandler::bloom = nullptr;
 engine::resources::Shader* PostProcessingHandler::blur = nullptr;
 engine::resources::Shader* PostProcessingHandler::bloom_final = nullptr;
@@ -26,17 +26,20 @@ engine::resources::Shader* PostProcessingHandler::deepfried = nullptr;
 engine::resources::Shader* PostProcessingHandler::none = nullptr;
 
 void PostProcessingHandler::initialise() {
-    prepare_post_processing_framebuffer();
-    prepare_hdr_framebuffer();
-    prepare_blur_framebuffers();
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto window = platform->window();
+    unsigned int wHeight = window->height();
+    unsigned int wWidth = window->width();
+    prepare_post_processing_framebuffer(wHeight, wWidth);
+    prepare_hdr_framebuffer(wHeight, wWidth);
+    prepare_blur_framebuffers(wHeight, wWidth);
 }
 
 void PostProcessingHandler::draw() {
-    unbind_framebuffer();
     compose();
 }
 
-void PostProcessingHandler::prepare_hdr_framebuffer() {
+void PostProcessingHandler::prepare_hdr_framebuffer(unsigned int wHeight, unsigned int wWidth) {
     if (hdrFBO == 0) {
         CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
@@ -45,7 +48,7 @@ void PostProcessingHandler::prepare_hdr_framebuffer() {
         for (unsigned int i = 0; i < 2; i++) {
             CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[i]);
             CHECKED_GL_CALL(glTexImage2D,
-                GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
+                GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -57,12 +60,12 @@ void PostProcessingHandler::prepare_hdr_framebuffer() {
         unsigned int rboDepth;
         CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
         CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
-        CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1200, 800);
+        CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wWidth, wHeight);
         CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
         prepare_attachments();
     }
 }
-void PostProcessingHandler::prepare_post_processing_framebuffer() {
+void PostProcessingHandler::prepare_post_processing_framebuffer(unsigned int wHeight, unsigned int wWidth) {
     if (screenFBO == 0) {
         CHECKED_GL_CALL(glGenFramebuffers, 1, &screenFBO);
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, screenFBO);
@@ -70,7 +73,7 @@ void PostProcessingHandler::prepare_post_processing_framebuffer() {
         CHECKED_GL_CALL(glGenTextures, 1, &screenTexture);
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, screenTexture);
         CHECKED_GL_CALL(glTexImage2D,
-            GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
+            GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -98,14 +101,14 @@ void PostProcessingHandler::unbind_framebuffer() {
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 }
 
-void PostProcessingHandler::prepare_blur_framebuffers() {
+void PostProcessingHandler::prepare_blur_framebuffers(unsigned int wHeight, unsigned int wWidth) {
     CHECKED_GL_CALL(glGenFramebuffers, 2, pingpongFBO);
     CHECKED_GL_CALL(glGenTextures, 2, pingpongBuffer);
     for (unsigned int i = 0; i < 2; i++) {
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[i]);
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[i]);
         CHECKED_GL_CALL(glTexImage2D,
-            GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
+            GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

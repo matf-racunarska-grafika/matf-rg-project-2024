@@ -24,10 +24,10 @@ public:
     static void initialise();
     static void draw();
     static void render_quad();
-    static void prepare_post_processing_framebuffer();
-    static void prepare_hdr_framebuffer();
+    static void prepare_post_processing_framebuffer(unsigned int wHeight, unsigned int wWidth);
+    static void prepare_hdr_framebuffer(unsigned int wHeight, unsigned int wWidth);
     static void prepare_attachments();
-    static void prepare_blur_framebuffers();
+    static void prepare_blur_framebuffers(unsigned int wHeight, unsigned int wWidth);
     static void prepare_shaders();
     static void compose();
     static void bind_hdr_framebuffer();
