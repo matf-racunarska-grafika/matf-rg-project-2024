@@ -1,7 +1,7 @@
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/platform/PlatformController.hpp>
-#include <engine/graphics/BloomHandler.hpp>
+#include <engine/graphics/PostProcessingHandler.hpp>
 #include <spdlog/spdlog.h>
 
 #include <GuiController.hpp>
@@ -27,7 +27,7 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         engine::graphics::OpenGL::enable_depth_testing();
-        BloomHandler::initialise();
+        PostProcessingHandler::initialise();
     }
 
     bool MainController::loop() {
@@ -198,17 +198,17 @@ namespace app {
         draw_arena();
         draw_skybox();
 
-        BloomHandler::unbind_framebuffer();
-        BloomHandler::draw();
+        PostProcessingHandler::unbind_framebuffer();
+        PostProcessingHandler::draw();
     }
 
     void MainController::begin_draw() {
-        BloomHandler::bind_framebuffer();
+        PostProcessingHandler::bind_hdr_framebuffer();
         engine::graphics::OpenGL::clear_buffers();
     }
 
     void MainController::end_draw() {
-        BloomHandler::unbind_framebuffer();
+        PostProcessingHandler::unbind_framebuffer();
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->swap_buffers();
     }

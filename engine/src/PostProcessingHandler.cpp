@@ -1,31 +1,39 @@
 #include <glad/glad.h>
-#include <engine/graphics/BloomHandler.hpp>
-#include <engine/graphics/OpenGL.hpp>
-#include <engine/util/Configuration.hpp>
 #include <engine/core/Engine.hpp>
-#include <spdlog/spdlog.h>
+#include <engine/graphics/OpenGL.hpp>
+#include <engine/graphics/PostProcessingHandler.hpp>
+#include <engine/util/Configuration.hpp>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
-unsigned int BloomHandler::hdrFBO = 0;
-unsigned int BloomHandler::colorBuffers[2] = {0, 0};
-unsigned int BloomHandler::attachments[2] = {0, 0};
-unsigned int BloomHandler::pingpongFBO[2] = {0, 0};
-unsigned int BloomHandler::pingpongBuffer[2] = {0, 0};
+#include "../../app/include/ProgramState.hpp"
 
-engine::resources::Shader* BloomHandler::bloom = nullptr;
-engine::resources::Shader* BloomHandler::blur = nullptr;
-engine::resources::Shader* BloomHandler::bloom_final = nullptr;
+unsigned int PostProcessingHandler::hdrFBO = 0;
+unsigned int PostProcessingHandler::colorBuffers[2] = {0, 0};
+unsigned int PostProcessingHandler::attachments[2] = {0, 0};
+unsigned int PostProcessingHandler::pingpongFBO[2] = {0, 0};
+unsigned int PostProcessingHandler::pingpongBuffer[2] = {0, 0};
+unsigned int PostProcessingHandler::screenFBO = 0;
+unsigned int PostProcessingHandler::screenTexture = 0;
 
-void BloomHandler::initialise() {
+
+engine::resources::Shader* PostProcessingHandler::bloom = nullptr;
+engine::resources::Shader* PostProcessingHandler::blur = nullptr;
+engine::resources::Shader* PostProcessingHandler::bloom_final = nullptr;
+engine::resources::Shader* PostProcessingHandler::negative = nullptr;
+engine::resources::Shader* PostProcessingHandler::grayScale = nullptr;
+
+void PostProcessingHandler::initialise() {
+    prepare_post_processing_framebuffer();
     prepare_hdr_framebuffer();
     prepare_blur_framebuffers();
 }
 
-void BloomHandler::draw() {
+void PostProcessingHandler::draw() {
     compose();
 }
 
-void BloomHandler::prepare_hdr_framebuffer() {
+void PostProcessingHandler::prepare_hdr_framebuffer() {
     if (hdrFBO == 0) {
         CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
@@ -51,7 +59,27 @@ void BloomHandler::prepare_hdr_framebuffer() {
         prepare_attachments();
     }
 }
-void BloomHandler::prepare_attachments() {
+void PostProcessingHandler::prepare_post_processing_framebuffer() {
+    if (screenFBO == 0) {
+        CHECKED_GL_CALL(glGenFramebuffers, 1, &screenFBO);
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, screenFBO);
+
+        CHECKED_GL_CALL(glGenTextures, 1, &screenTexture);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, screenTexture);
+        CHECKED_GL_CALL(glTexImage2D,
+            GL_TEXTURE_2D, 0, GL_RGBA16F, 1200, 800, 0, GL_RGBA, GL_FLOAT, nullptr);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        CHECKED_GL_CALL(glFramebufferTexture2D,
+            GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
+
+        unbind_framebuffer();
+    }
+}
+void PostProcessingHandler::prepare_attachments() {
     attachments[0] = GL_COLOR_ATTACHMENT0;
     attachments[1] = GL_COLOR_ATTACHMENT1;
     CHECKED_GL_CALL(glDrawBuffers, 2, attachments);
@@ -59,15 +87,15 @@ void BloomHandler::prepare_attachments() {
     unbind_framebuffer();
 }
 
-void BloomHandler::bind_framebuffer() {
+void PostProcessingHandler::bind_hdr_framebuffer() {
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
 }
 
-void BloomHandler::unbind_framebuffer() {
+void PostProcessingHandler::unbind_framebuffer() {
     CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 }
 
-void BloomHandler::prepare_blur_framebuffers() {
+void PostProcessingHandler::prepare_blur_framebuffers() {
     CHECKED_GL_CALL(glGenFramebuffers, 2, pingpongFBO);
     CHECKED_GL_CALL(glGenTextures, 2, pingpongBuffer);
     for (unsigned int i = 0; i < 2; i++) {
@@ -83,15 +111,17 @@ void BloomHandler::prepare_blur_framebuffers() {
         CHECKED_GL_CALL(glFramebufferTexture2D,
             GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0);
     }
+
     prepare_shaders();
 }
 
-void BloomHandler::prepare_shaders() {
+void PostProcessingHandler::prepare_shaders() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
     bloom = resources->shader("bloom");
     blur = resources->shader("blur");
     bloom_final = resources->shader("bloom_final");
+    negative = resources->shader("negative");
 
     bloom->use();
     bloom->set_int("diffuseTexture", 0);
@@ -102,7 +132,62 @@ void BloomHandler::prepare_shaders() {
     bloom_final->set_int("bloomBlur", 1);
 }
 
-void BloomHandler::render_quad() {
+void PostProcessingHandler::compose() {
+    unbind_framebuffer();
+
+    bool horizontal = true, first_iteration = true;
+    unsigned int amount = 10;
+    blur->use();
+    for (unsigned int i = 0; i < amount; i++)
+    {
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+        blur->set_int("horizontal", horizontal);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
+        render_quad();
+        horizontal = !horizontal;
+        if (first_iteration)
+            first_iteration = false;
+    }
+    unbind_framebuffer();
+
+    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, screenFBO);
+    CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    bloom_final->use();
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[0]);
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+    bloom_final->set_int("bloom", true);
+    bloom_final->set_float("exposure", 0.18f);
+    render_quad();
+    unbind_framebuffer();
+
+    apply_filters();
+}
+
+void PostProcessingHandler::apply_filters() {
+    CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+    CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, screenTexture);
+
+    switch (Settings::getInstance().filter) {
+    case Filter::NEGATIVE :
+        negative->use();
+        negative->set_int("screenTexture", 0);
+        break;
+    case Filter::GRAYSCALE :
+        grayScale->use();
+        break;
+    default:
+        break;
+    }
+
+    render_quad();
+}
+
+void PostProcessingHandler::render_quad() {
     unsigned int quadVAO = 0;
     unsigned int quadVBO;
     if (quadVAO == 0)
@@ -126,33 +211,4 @@ void BloomHandler::render_quad() {
     CHECKED_GL_CALL(glBindVertexArray, quadVAO);
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
     CHECKED_GL_CALL(glBindVertexArray, 0);
-}
-
-void BloomHandler::compose() {
-    unbind_framebuffer();
-
-    bool horizontal = true, first_iteration = true;
-    unsigned int amount = 10;
-    blur->use();
-    for (unsigned int i = 0; i < amount; i++)
-    {
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
-        blur->set_int("horizontal", horizontal);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
-        render_quad();
-        horizontal = !horizontal;
-        if (first_iteration)
-            first_iteration = false;
-    }
-    unbind_framebuffer();
-
-    CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    bloom_final->use();
-    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
-    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[0]);
-    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
-    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
-    bloom_final->set_int("bloom", true);
-    bloom_final->set_float("exposure", 0.18f);
-    render_quad();
 }
