@@ -16,146 +16,146 @@
 struct GLFWwindow;
 
 namespace engine::platform {
+/**
+* @struct FrameTime
+* @brief Stores elapsed time for frames in seconds.
+*/
+struct FrameTime {
     /**
-    * @struct FrameTime
-    * @brief Stores elapsed time for frames in seconds.
+    * @brief Elapsed seconds for the previous frame.
     */
-    struct FrameTime {
-        /**
-        * @brief Elapsed seconds for the previous frame.
-        */
-        float dt;
-
-        /**
-        * @brief Time from the initialization of the Platform to the moment when the previous frame began.
-        */
-        float previous;
-
-        /**
-        * @brief Time from the initialization of the Platform to the moment when the current frame began.
-        */
-        float current;
-    };
+    float dt;
 
     /**
-    * @class PlatformController
-    * @brief Registers Platform events such as mouse movement, key press, window events...
+    * @brief Time from the initialization of the Platform to the moment when the previous frame began.
+    */
+    float previous;
+
+    /**
+    * @brief Time from the initialization of the Platform to the moment when the current frame began.
+    */
+    float current;
+};
+
+/**
+* @class PlatformController
+* @brief Registers Platform events such as mouse movement, key press, window events...
+*
+*/
+class PlatformController final : public core::Controller {
+public:
+    /**
+    * @brief Get the state of the @ref Key in the current frame
+    * @param key An @ref KeyId for the key
+    * @returns The state of the key in the current frame
+    */
+    const Key &key(KeyId key) const;
+
+    /**
+    * @brief Get the state of the @ref MousePosition in the current frame
+    * @returns @ref MousePosition for the current frame.
+    */
+    const MousePosition &mouse() const;
+
+    /**
+    * @brief Get the name of the Controller
+    * @returns "PlatformController"
+    */
+    std::string_view name() const override;
+
+    /**
+    * @brief Get the window
+    * @returns @ref Window
+    */
+    const Window *window() const {
+        return &m_window;
+    }
+
+    /**
+    * @brief Register a @ref PlatformEventObserver callback for platform events.
+    * By default, the @ref PlatformController registers a @ref PlatformEventObserver that does nothing.
+    */
+    void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
+
+    /**
+    * @brief Get @ref FrameTime for the previous frame. Updated in during @ref core::App::loop
+    * @returns @ref FrameTime
+    */
+    const FrameTime &frame_time() const {
+        return m_frame_time;
+    }
+
+    /**
+    * @brief Get elapsed time for the previous frame.
     *
     */
-    class PlatformController final : public core::Controller {
-    public:
-        /**
-        * @brief Get the state of the @ref Key in the current frame
-        * @param key An @ref KeyId for the key
-        * @returns The state of the key in the current frame
-        */
-        const Key &key(KeyId key) const;
+    float dt() const {
+        return m_frame_time.dt;
+    }
 
-        /**
-        * @brief Get the state of the @ref MousePosition in the current frame
-        * @returns @ref MousePosition for the current frame.
-        */
-        const MousePosition &mouse() const;
+    /**
+    *  @brief Enables/disabled the visibility of the cursor on screen.
+    */
+    void set_enable_cursor(bool enabled);
 
-        /**
-        * @brief Get the name of the Controller
-        * @returns "PlatformController"
-        */
-        std::string_view name() const override;
+    /**
+    * @brief Swaps the current draw buffer for the main window. Should be called at the end of the frame.
+    */
+    void swap_buffers();
 
-        /**
-        * @brief Get the window
-        * @returns @ref Window
-        */
-        const Window *window() const {
-            return &m_window;
-        }
+    /**
+    * @brief Called from the platform-specific callback. You shouldn't call this function directly.
+    */
+    void _platform_on_mouse(double x, double y);
 
-        /**
-        * @brief Register a @ref PlatformEventObserver callback for platform events.
-        * By default, the @ref PlatformController registers a @ref PlatformEventObserver that does nothing.
-        */
-        void register_platform_event_observer(std::unique_ptr<PlatformEventObserver> observer);
+    /**
+    * @brief Called from the platform-specific callback. You shouldn't call this function directly.
+    */
+    void _platform_on_keyboard(int key, int action);
 
-        /**
-        * @brief Get @ref FrameTime for the previous frame. Updated in during @ref core::App::loop
-        * @returns @ref FrameTime
-        */
-        const FrameTime &frame_time() const {
-            return m_frame_time;
-        }
+    /**
+    * @brief Called from the platform-specific callback. You shouldn't call this function directly.
+    */
+    void _platform_on_scroll(double x, double y);
 
-        /**
-        * @brief Get elapsed time for the previous frame.
-        *
-        */
-        float dt() const {
-            return m_frame_time.dt;
-        }
+    /**
+    * @brief Called from the platform-specific callback. You shouldn't call this function directly.
+    */
+    void _platform_on_framebuffer_resize(int width, int height);
 
-        /**
-        *  @brief Enables/disabled the visibility of the cursor on screen.
-        */
-        void set_enable_cursor(bool enabled);
+    /**
+    * @brief Called from the platform-specific callback. You shouldn't call this function directly.
+    */
+    void _platform_on_window_close(GLFWwindow *window);
 
-        /**
-        * @brief Swaps the current draw buffer for the main window. Should be called at the end of the frame.
-        */
-        void swap_buffers();
+    void _platform_on_mouse_button(int button, int action);
 
-        /**
-        * @brief Called from the platform-specific callback. You shouldn't call this function directly.
-        */
-        void _platform_on_mouse(double x, double y);
+private:
+    Key &key_ref(KeyId key);
 
-        /**
-        * @brief Called from the platform-specific callback. You shouldn't call this function directly.
-        */
-        void _platform_on_keyboard(int key, int action);
+    /**
+    * @brief Initializes the platform layer and registers platform-specific event callbacks.
+    */
+    void initialize() override;
 
-        /**
-        * @brief Called from the platform-specific callback. You shouldn't call this function directly.
-        */
-        void _platform_on_scroll(double x, double y);
+    /**
+    * @brief Terminate the platform layer.
+    */
+    void terminate() override;
 
-        /**
-        * @brief Called from the platform-specific callback. You shouldn't call this function directly.
-        */
-        void _platform_on_framebuffer_resize(int width, int height);
+    bool loop() override;
 
-        /**
-        * @brief Called from the platform-specific callback. You shouldn't call this function directly.
-        */
-        void _platform_on_window_close(GLFWwindow *window);
+    void poll_events() override;
 
-        void _platform_on_mouse_button(int button, int action);
+    void update_mouse();
 
-    private:
-        Key &key_ref(KeyId key);
+    void update_key(Key &key_data) const;
 
-        /**
-        * @brief Initializes the platform layer and registers platform-specific event callbacks.
-        */
-        void initialize() override;
-
-        /**
-        * @brief Terminate the platform layer.
-        */
-        void terminate() override;
-
-        bool loop() override;
-
-        void poll_events() override;
-
-        void update_mouse();
-
-        void update_key(Key &key_data) const;
-
-        FrameTime m_frame_time;
-        Window m_window;
-        std::vector<Key> m_keys;
-        std::vector<std::unique_ptr<PlatformEventObserver> > m_platform_event_observers;
-    };
+    FrameTime m_frame_time;
+    Window m_window;
+    std::vector<Key> m_keys;
+    std::vector<std::unique_ptr<PlatformEventObserver> > m_platform_event_observers;
+};
 } // namespace engine
 
 #endif//MATF_RG_PROJECT_PLATFORM_H
