@@ -2,13 +2,15 @@
   "resources": {
     "models": {
       "skull" : {
-        "path" : "skull/Skull.obj"
+        "path" : "skull/Skull.obj",
+        "flip_uvs" : true
       },
       "bridge" : {
         "path" : "bridge/StoneBridge.obj"
       },
       "arena" : {
-        "path" : "arena/arena.obj"
+        "path" : "arena/arena.obj",
+        "flip_uvs" : true
       },
       "eyes" : {
         "path" : "eyes/eye.obj"

@@ -191,7 +191,6 @@ namespace app {
             noFilter->use();
             break;
         }
-
         render_quad();
     }
 

@@ -45,7 +45,7 @@ namespace engine::resources {
         Texture *texture(const std::string &name,
                          const std::filesystem::path &path = "",
                          TextureType texture_type          = TextureType::Regular,
-                         bool flip_uvs                     = true);
+                         bool flip_uvs                     = false);
 
         /**
         * @brief Retrieves the @ref Skybox with a given name. You are not supposed to call `delete` on this pointer.
