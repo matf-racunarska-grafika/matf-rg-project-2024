@@ -303,8 +303,5 @@ namespace app {
         Settings::getInstance().skullFacingPlayer = skullFacing;
     }
 
-    void MainController::terminate() {
-        PostProcessingHandler::cleanup();
-    }
 
 } // app

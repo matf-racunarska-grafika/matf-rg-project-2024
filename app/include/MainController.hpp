@@ -25,12 +25,6 @@ namespace app {
         void draw_arena();
         void draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model);
         void draw_skybox();
-
-        void begin_draw() override;
-
-        void end_draw() override;
-
-        void terminate() override;
     public:
         std::string_view name() const override { return "app::MainController"; }
     };
