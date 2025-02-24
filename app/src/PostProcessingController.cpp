@@ -2,7 +2,7 @@
 #include <engine/core/Controller.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/OpenGL.hpp>
-#include <../../engine/libs/glad/include/glad/glad.h>
+#include <../glad/include/glad/glad.h>
 #include <spdlog/spdlog.h>
 
 #include <ProgramState.hpp>
@@ -163,7 +163,7 @@ namespace app {
         engine::resources::Shader* deepfried = resources->shader("deepfried");
         engine::resources::Shader* grayscale = resources->shader("grayscale");
         engine::resources::Shader* blackWhite = resources->shader("blackWhite");
-        engine::resources::Shader* noEffect = resources->shader("none");
+        engine::resources::Shader* noFilter = resources->shader("noFilter");
 
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
         CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -188,7 +188,7 @@ namespace app {
             blackWhite->use();
             break;
         case Filter::NONE :
-            noEffect->use();
+            noFilter->use();
             break;
         }
 
