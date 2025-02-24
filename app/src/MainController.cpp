@@ -232,7 +232,6 @@ namespace app {
                 if (!skullFacing) {
                     camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
                 } else {
-                    std::this_thread::sleep_for(std::chrono::seconds(1));
                     Settings::getInstance().health--;
                     // teleport player to start if he has been spotted
                     camera->Position = glm::vec3(0.0f);
