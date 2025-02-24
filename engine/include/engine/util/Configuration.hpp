@@ -5,7 +5,9 @@
 
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
+
 #include <json.hpp>
+
 namespace engine::util {
     /**
     * @class Configuration

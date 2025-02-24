@@ -25,7 +25,8 @@ namespace engine::test::app {
 
     bool MainController::loop() {
         const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        if (platform->key(engine::platform::KeyId::KEY_ESCAPE).state() == engine::platform::Key::State::JustPressed) {
+        if (platform->key(engine::platform::KeyId::KEY_ESCAPE)
+                    .state() == engine::platform::Key::State::JustPressed) {
             return false;
         }
         return true;
@@ -33,7 +34,8 @@ namespace engine::test::app {
 
     void MainController::poll_events() {
         const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
+        if (platform->key(engine::platform::KEY_F1)
+                    .state() == engine::platform::Key::State::JustPressed) {
             m_cursor_enabled = !m_cursor_enabled;
             platform->set_enable_cursor(m_cursor_enabled);
         }
@@ -58,17 +60,18 @@ namespace engine::test::app {
 
     void MainController::draw_backpack() {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto shader   = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+        auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
         auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("view", graphics->camera()
+                                         ->view_matrix());
         shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
         backpack->draw(shader);
     }
 
     void MainController::draw_skybox() {
-        auto shader      = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+        auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
         auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
         engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
@@ -79,18 +82,22 @@ namespace engine::test::app {
             return;
         }
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-        float dt      = platform->dt();
-        if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) {
+        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        float dt = platform->dt();
+        if (platform->key(engine::platform::KEY_W)
+                    .state() == engine::platform::Key::State::Pressed) {
             camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
         }
-        if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) {
+        if (platform->key(engine::platform::KEY_S)
+                    .state() == engine::platform::Key::State::Pressed) {
             camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
         }
-        if (platform->key(engine::platform::KEY_A).state() == engine::platform::Key::State::Pressed) {
+        if (platform->key(engine::platform::KEY_A)
+                    .state() == engine::platform::Key::State::Pressed) {
             camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
         }
-        if (platform->key(engine::platform::KEY_D).state() == engine::platform::Key::State::Pressed) {
+        if (platform->key(engine::platform::KEY_D)
+                    .state() == engine::platform::Key::State::Pressed) {
             camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
         }
         auto mouse = platform->mouse();

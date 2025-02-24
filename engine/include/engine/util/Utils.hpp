@@ -17,7 +17,7 @@
 
 /// @cond
 template<class... Ts>
-struct overloaded : Ts... {
+struct overloaded : Ts ... {
     using Ts::operator()...;
 };
 
@@ -43,6 +43,7 @@ template<typename Func>
 DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
     return DeferImpl(f);
 }
+
 #define STR(a) #a
 #define CONCAT_IMPL(a, b) a##b
 #define CONCAT(a, b) CONCAT_IMPL(a, b)
@@ -69,7 +70,7 @@ DeferImpl<Func> operator<<(MakeDeferImpl, Func f) {
 
 /**
 * @brief Shorthand for std::cbegin(container), std::cend(container).
- */ 
+ */
 #define crange(container) std::cbegin(container), std::cend(container)
 
 namespace engine::util {
@@ -151,7 +152,7 @@ namespace engine::util {
             std::unordered_set<ElementType> visited;
             std::vector<ElementType> stack;
 
-            auto visit = [&](auto& self, ElementType &current) mutable -> void {
+            auto visit = [&](auto &self, ElementType &current) mutable -> void {
                 visited.emplace(current);
                 for (auto next: adjacent(current)) {
                     if (!visited.contains(next)) {
@@ -185,7 +186,7 @@ namespace engine::util {
             using ElementType = std::remove_reference_t<decltype(*first)>;
             std::unordered_set<ElementType> visited;
             std::unordered_set<ElementType> path;
-            auto visit = [&](auto& self, ElementType &current) mutable -> bool {
+            auto visit = [&](auto &self, ElementType &current) mutable -> bool {
                 visited.emplace(current);
                 path.emplace(current);
                 for (ElementType &next: adjacent(current)) {

@@ -74,7 +74,8 @@ namespace engine::core {
         * before the member functions of the controller `next`.
         */
         void before(Controller *next) {
-            this->m_next.push_back(next);
+            this->m_next
+                .push_back(next);
         }
 
         /**

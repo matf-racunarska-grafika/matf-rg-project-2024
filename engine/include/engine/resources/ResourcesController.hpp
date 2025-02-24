@@ -44,8 +44,8 @@ namespace engine::resources {
         */
         Texture *texture(const std::string &name,
                          const std::filesystem::path &path = "",
-                         TextureType texture_type          = TextureType::Regular,
-                         bool flip_uvs                     = false);
+                         TextureType texture_type = TextureType::Regular,
+                         bool flip_uvs = false);
 
         /**
         * @brief Retrieves the @ref Skybox with a given name. You are not supposed to call `delete` on this pointer.
@@ -59,8 +59,7 @@ namespace engine::resources {
         * @returns The pointer to the @ref Skybox associated with the `name`.
         */
         Skybox *skybox(const std::string &name,
-                       const std::filesystem::path &path = ""
-                     , bool flip_uvs                     = false);
+                       const std::filesystem::path &path = "", bool flip_uvs = false);
 
         /**
         * @brief Retrieves the @ref Shader with a given name. You are not supposed to call `delete` on this pointer.
@@ -113,9 +112,9 @@ namespace engine::resources {
         */
         std::unordered_map<std::string, std::unique_ptr<Shader> > m_shaders;
 
-        const std::filesystem::path m_models_path   = "resources/models";
+        const std::filesystem::path m_models_path = "resources/models";
         const std::filesystem::path m_textures_path = "resources/textures";
-        const std::filesystem::path m_shaders_path  = "resources/shaders";
+        const std::filesystem::path m_shaders_path = "resources/shaders";
         const std::filesystem::path m_skyboxes_path = "resources/skyboxes";
     };
 } // namespace engine

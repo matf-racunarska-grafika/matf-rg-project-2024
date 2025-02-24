@@ -13,15 +13,15 @@ namespace engine::resources {
     Shader ShaderCompiler::compile_from_source(std::string shader_name, std::string shader_source) {
         spdlog::info("ShaderCompiler::Compiling: {}", shader_name);
         ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
-        ShaderParsingResult parsing_result     = compiler.parse_source();
+        ShaderParsingResult parsing_result = compiler.parse_source();
         OpenGL::ShaderProgramId shader_program = compiler.compile(parsing_result);
         Shader result(shader_program, shader_name, shader_source, "");
         return result;
     }
 
     OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
-        uint32_t shader_program_id  = glCreateProgram();
-        uint32_t vertex_shader_id   = 0;
+        uint32_t shader_program_id = glCreateProgram();
+        uint32_t vertex_shader_id = 0;
         uint32_t fragment_shader_id = 0;
         uint32_t geometry_shader_id = 0;
         defer {
@@ -35,7 +35,8 @@ namespace engine::resources {
         fragment_shader_id = compile(shader_sources.fragment_shader, ShaderType::Fragment);
         glAttachShader(shader_program_id, fragment_shader_id);
 
-        if (!shader_sources.geometry_shader.empty()) {
+        if (!shader_sources.geometry_shader
+                           .empty()) {
             geometry_shader_id = compile(shader_sources.geometry_shader, ShaderType::Geometry);
             glAttachShader(shader_program_id, geometry_shader_id);
         }
@@ -47,9 +48,9 @@ namespace engine::resources {
         uint32_t shader_id = OpenGL::compile_shader(shader_source, type);
         if (!OpenGL::shader_compiled_successfully(shader_id)) {
             throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                                            "{} shader compilation {} failed:\n{}", to_string(type),
-                                            m_shader_name,
-                                            OpenGL::get_compilation_error_message(shader_id)));
+                    "{} shader compilation {} failed:\n{}", to_string(type),
+                    m_shader_name,
+                    OpenGL::get_compilation_error_message(shader_id)));
         }
         return shader_id;
     }
@@ -67,10 +68,12 @@ namespace engine::resources {
                 current_shader->push_back('\n');
             }
         }
-        if (parsing_result.vertex_shader.empty() || parsing_result.fragment_shader.empty()) {
+        if (parsing_result.vertex_shader
+                          .empty() || parsing_result.fragment_shader
+                                                    .empty()) {
             throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                                            "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
-                                            m_shader_name));
+                    "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
+                    m_shader_name));
         }
         return parsing_result;
     }
@@ -85,7 +88,7 @@ namespace engine::resources {
         }
         std::string shader_source = util::read_text_file(shader_path);
         ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
-        ShaderParsingResult parsing_result     = compiler.parse_source();
+        ShaderParsingResult parsing_result = compiler.parse_source();
         OpenGL::ShaderProgramId shader_program = compiler.compile(parsing_result);
         Shader result(shader_program, shader_name, shader_source, shader_path);
         return result;
@@ -108,10 +111,10 @@ namespace engine::resources {
 
     std::string_view to_string(ShaderType type) {
         switch (type) {
-        case ShaderType::Vertex: return "vertex";
-        case ShaderType::Fragment: return "fragment";
-        case ShaderType::Geometry: return "geometry";
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled shader type");
+            case ShaderType::Vertex: return "vertex";
+            case ShaderType::Fragment: return "fragment";
+            case ShaderType::Geometry: return "geometry";
+            default: RG_SHOULD_NOT_REACH_HERE("Unhandled shader type");
         }
     }
 

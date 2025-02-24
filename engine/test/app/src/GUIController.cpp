@@ -10,14 +10,15 @@ namespace engine::test::app {
 
     void GUIController::poll_events() {
         const auto platform = engine::core::Controller::get<platform::PlatformController>();
-        if (platform->key(platform::KeyId::KEY_F2).state() == platform::Key::State::JustPressed) {
+        if (platform->key(platform::KeyId::KEY_F2)
+                    .state() == platform::Key::State::JustPressed) {
             set_enable(!is_enabled());
         }
     }
 
     void GUIController::draw() {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         graphics->begin_gui();
         // Draw backpack scale slider window
         // auto backpack  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
@@ -30,9 +31,15 @@ namespace engine::test::app {
         // Draw camera info
         ImGui::Begin("Camera info");
         const auto &c = *camera;
-        ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
+        ImGui::Text("Camera position: (%f, %f, %f)", c.Position
+                                                      .x, c.Position
+                                                           .y, c.Position
+                                                                .z);
         ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-        ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
+        ImGui::Text("Camera front: (%f, %f, %f)", c.Front
+                                                   .x, c.Front
+                                                        .y, c.Front
+                                                             .z);
         ImGui::End();
         graphics->end_gui();
     }

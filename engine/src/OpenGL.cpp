@@ -12,10 +12,10 @@
 namespace engine::graphics {
     int32_t OpenGL::shader_type_to_opengl_type(resources::ShaderType type) {
         switch (type) {
-        case resources::ShaderType::Vertex: return GL_VERTEX_SHADER;
-        case resources::ShaderType::Fragment: return GL_FRAGMENT_SHADER;
-        case resources::ShaderType::Geometry: return GL_GEOMETRY_SHADER;
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled ShaderType");
+            case resources::ShaderType::Vertex: return GL_VERTEX_SHADER;
+            case resources::ShaderType::Fragment: return GL_FRAGMENT_SHADER;
+            case resources::ShaderType::Geometry: return GL_GEOMETRY_SHADER;
+            default: RG_SHOULD_NOT_REACH_HERE("Unhandled ShaderType");
         }
     }
 
@@ -49,10 +49,10 @@ namespace engine::graphics {
 
     int32_t OpenGL::texture_format(int32_t number_of_channels) {
         switch (number_of_channels) {
-        case 1: return GL_RED;
-        case 3: return GL_RGB;
-        case 4: return GL_RGBA;
-        default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
+            case 1: return GL_RED;
+            case 3: return GL_RGB;
+            case 4: return GL_RGBA;
+            default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
         }
     }
 
@@ -62,9 +62,9 @@ namespace engine::graphics {
             return skybox_vao;
         }
         float vertices[] = {
-            // formatter: off
-            #include <skybox_vertices.include>
-            // formatter: on
+                // formatter: off
+#include <skybox_vertices.include>
+                // formatter: on
         };
         uint32_t skybox_vbo = 0;
         CHECKED_GL_CALL(glGenVertexArrays, 1, &skybox_vao);
@@ -85,7 +85,7 @@ namespace engine::graphics {
 
     uint32_t OpenGL::compile_shader(const std::string &shader_source,
                                     resources::ShaderType shader_type) {
-        uint32_t shader_id             = CHECKED_GL_CALL(glCreateShader, shader_type_to_opengl_type(shader_type));
+        uint32_t shader_id = CHECKED_GL_CALL(glCreateShader, shader_type_to_opengl_type(shader_type));
         const char *shader_source_cstr = shader_source.c_str();
         CHECKED_GL_CALL(glShaderSource, shader_id, 1, &shader_source_cstr, nullptr);
         CHECKED_GL_CALL(glCompileShader, shader_id);
@@ -100,20 +100,26 @@ namespace engine::graphics {
 
     std::string_view gl_call_error_description(GLenum error) {
         switch (error) {
-        case GL_NO_ERROR: return
-                    "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0. ";
-        case GL_INVALID_ENUM: return
-                    "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.  ";
-        case GL_INVALID_VALUE: return
-                    "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.  ";
-        case GL_INVALID_OPERATION: return
-                    "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.  ";
-        case GL_INVALID_FRAMEBUFFER_OPERATION: return
-                    "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete."
-                    "The offending command is ignored and has no other side effect than to set the error flag.";
-        case GL_OUT_OF_MEMORY: return
-                    "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded. . ";
-        default: return "No Description";
+            case GL_NO_ERROR:
+                return
+                        "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0. ";
+            case GL_INVALID_ENUM:
+                return
+                        "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            case GL_INVALID_VALUE:
+                return
+                        "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            case GL_INVALID_OPERATION:
+                return
+                        "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                return
+                        "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete."
+                        "The offending command is ignored and has no other side effect than to set the error flag.";
+            case GL_OUT_OF_MEMORY:
+                return
+                        "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded. . ";
+            default: return "No Description";
         }
     }
 
@@ -130,8 +136,7 @@ namespace engine::graphics {
     uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool flip_uvs) {
         RG_GUARANTEE(std::filesystem::is_directory(path),
                      "Directory '{}' doesn't exist. Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap.",
-                     path.string())
-        ;
+                     path.string());
         uint32_t texture_id;
         CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, texture_id);
@@ -144,7 +149,9 @@ namespace engine::graphics {
                 stbi_image_free(data);
             };
             if (data) {
-                uint32_t i = face_index(file.path().stem().c_str());
+                uint32_t i = face_index(file.path()
+                                            .stem()
+                                            .c_str());
                 CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB,
                                 GL_UNSIGNED_BYTE,
                                 data);
@@ -196,10 +203,10 @@ namespace engine::graphics {
 
     int32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels) {
         switch (number_of_channels) {
-        case 1: return GL_RED;
-        case 3: return GL_RGB;
-        case 4: return GL_RGBA;
-        default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
+            case 1: return GL_RED;
+            case 3: return GL_RGB;
+            case 4: return GL_RGBA;
+            default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
         }
     }
 

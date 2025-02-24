@@ -5,6 +5,7 @@
 
 #ifndef INPUT_HPP
 #define INPUT_HPP
+
 #include <string_view>
 
 namespace engine::platform {
@@ -226,7 +227,7 @@ namespace engine::platform {
         }
 
     private:
-        KeyId m_key   = KEY_COUNT;
+        KeyId m_key = KEY_COUNT;
         State m_state = State::Released;
     };
 

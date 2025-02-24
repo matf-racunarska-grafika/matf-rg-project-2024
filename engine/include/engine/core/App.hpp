@@ -14,6 +14,7 @@ namespace engine::util {
 
 namespace engine::core {
     class Controller;
+
     /**
     * @class App
     * @brief Defines the base App class that serves as the application core structure and the entry point.

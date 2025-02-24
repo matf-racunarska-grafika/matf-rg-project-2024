@@ -5,6 +5,7 @@
 
 #ifndef PLATFORMEVENTOBSERVER_HPP
 #define PLATFORMEVENTOBSERVER_HPP
+
 #include <engine/platform/Input.hpp>
 
 namespace engine::platform {
@@ -19,7 +20,7 @@ namespace engine::platform {
         /**
         * @brief Called by @ref engine::platform::PlatformController for every frame in which the mouse moved.
         */
-        virtual void on_mouse_move(MousePosition position) { }
+        virtual void on_mouse_move(MousePosition position) {}
 
         /**
          * @brief Called by @ref engine::platform::PlatformController for every frame in which the scroll button is moved.
@@ -29,12 +30,12 @@ namespace engine::platform {
         /**
         * @brief Called by @ref engine::platform::PlatformController for every frame in an event occurred on the keyboard or mouse key.
         */
-        virtual void on_key(Key key) { }
+        virtual void on_key(Key key) {}
 
         /**
         * @brief Called by @ref engine::platform::PlatformController when the window is resized.
         */
-        virtual void on_window_resize(int width, int height) { }
+        virtual void on_window_resize(int width, int height) {}
 
         virtual ~PlatformEventObserver() = default;
     };

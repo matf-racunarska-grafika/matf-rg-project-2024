@@ -5,6 +5,7 @@
 
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
+
 #include <string>
 
 struct GLFWwindow;
@@ -56,9 +57,9 @@ namespace engine::platform {
         Window() = default;
 
         Window(GLFWwindow *handle, int width, int height, std::string title) : m_handle(handle)
-                                                                           , m_width(width)
-                                                                           , m_height(height)
-                                                                           , m_title(std::move(title)) {
+                                                                               , m_width(width)
+                                                                               , m_height(height)
+                                                                               , m_title(std::move(title)) {
         }
     };
 }

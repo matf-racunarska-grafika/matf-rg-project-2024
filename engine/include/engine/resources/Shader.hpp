@@ -5,6 +5,7 @@
 
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
+
 #include <engine/util/Utils.hpp>
 #include <string>
 #include <glm/glm.hpp>
@@ -16,7 +17,9 @@ namespace engine::resources {
     * @enum ShaderType
     * @brief The type of the shader.
     */
-    enum class ShaderType { Vertex, Fragment, Geometry };
+    enum class ShaderType {
+        Vertex, Fragment, Geometry
+    };
 
     /**
     * @brief Converts a @ref ShaderType to a string.

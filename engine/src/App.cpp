@@ -33,11 +33,11 @@ namespace engine::core {
         util::Configuration::instance()->initialize();
 
         // register engine controllers
-        auto begin     = register_controller<EngineControllersBegin>();
-        auto platform  = register_controller<platform::PlatformController>();
-        auto graphics  = register_controller<graphics::GraphicsController>();
+        auto begin = register_controller<EngineControllersBegin>();
+        auto platform = register_controller<platform::PlatformController>();
+        auto graphics = register_controller<graphics::GraphicsController>();
         auto resources = register_controller<resources::ResourcesController>();
-        auto end       = register_controller<EngineControllersEnd>();
+        auto end = register_controller<EngineControllersEnd>();
         begin->before(platform);
         platform->before(graphics);
         graphics->before(resources);

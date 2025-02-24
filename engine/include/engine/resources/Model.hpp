@@ -5,6 +5,7 @@
 
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
+
 #include <engine/resources/Mesh.hpp>
 #include <algorithm>
 #include <utility>
@@ -21,18 +22,18 @@ namespace engine::resources {
         /**
         * @brief Draws the model using a given shader by drawing all the meshes in the model.
         * @param shader The shader to use for drawing.
-        */  
+        */
         void draw(const Shader *shader);
 
         /**
         * @brief Destroys the model in the OpenGL context.
-        */  
+        */
         void destroy();
 
         /**
         * @brief Returns the meshes in the model.
         * @returns The meshes in the model.
-        */  
+        */
         const std::vector<Mesh> &meshes() const {
             return m_meshes;
         }
@@ -40,7 +41,7 @@ namespace engine::resources {
         /**
         * @brief Returns the path to the model file from which the model was loaded.
         * @returns The path to the model.
-        */  
+        */
         const std::filesystem::path &path() const {
             return m_path;
         }
@@ -48,7 +49,7 @@ namespace engine::resources {
         /**
         * @brief Returns the name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
         * @returns The name of the model.
-        */  
+        */
         const std::string &name() const {
             return m_name;
         }
@@ -56,15 +57,15 @@ namespace engine::resources {
     private:
         /**
         * @brief The meshes in the model.
-        */                      
+        */
         std::vector<Mesh> m_meshes;
         /**
         * @brief The path to the model file from which the model was loaded.
-        */  
+        */
         std::filesystem::path m_path;
         /**
         * @brief The name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
-        */  
+        */
         std::string m_name;
 
         Model() = default;
@@ -74,11 +75,11 @@ namespace engine::resources {
         * @param meshes The meshes in the model.
         * @param path The path to the model file from which the model was loaded.
         * @param name The name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
-        */  
+        */
         Model(std::vector<Mesh> meshes, std::filesystem::path path,
               std::string name) : m_meshes(std::move(meshes))
-                              , m_path(std::move(path))
-                              , m_name(std::move(name)) {
+                                  , m_path(std::move(path))
+                                  , m_name(std::move(name)) {
         }
     };
 } // namespace engine

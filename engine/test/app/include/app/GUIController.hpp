@@ -1,6 +1,7 @@
 
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
+
 #include <engine/core/Engine.hpp>
 
 namespace engine::test::app {

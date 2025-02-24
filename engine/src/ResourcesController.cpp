@@ -25,7 +25,9 @@ namespace engine::resources {
             return;
         }
         for (const auto &shader_path: std::filesystem::directory_iterator(m_shaders_path)) {
-            const auto name = shader_path.path().stem().string();
+            const auto name = shader_path.path()
+                                         .stem()
+                                         .string();
             shader(name, shader_path);
         }
     }
@@ -51,7 +53,9 @@ namespace engine::resources {
             return;
         }
         for (const auto &texture_entry: std::filesystem::directory_iterator(m_textures_path)) {
-            texture(texture_entry.path().stem().string(), texture_entry.path());
+            texture(texture_entry.path()
+                                 .stem()
+                                 .string(), texture_entry.path());
         }
     }
 
@@ -61,7 +65,9 @@ namespace engine::resources {
             return;
         }
         for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
-            skybox(sky_boxes_entry.path().stem().string(), sky_boxes_entry.path());
+            skybox(sky_boxes_entry.path()
+                                  .stem()
+                                  .string(), sky_boxes_entry.path());
         }
     }
 
@@ -79,7 +85,7 @@ namespace engine::resources {
 
         explicit AssimpSceneProcessor(ResourcesController *resources_controller, const aiScene *scene,
                                       std::filesystem::path model_path) :
-        m_scene(scene), m_model_path(std::move(model_path)), m_resources_controller(resources_controller) {
+                m_scene(scene), m_model_path(std::move(model_path)), m_resources_controller(resources_controller) {
         }
 
     private:
@@ -106,13 +112,13 @@ namespace engine::resources {
             auto &config = util::Configuration::config();
             if (!config["resources"]["models"].contains(name)) {
                 throw util::EngineError(util::EngineError::Type::ConfigurationError, std::format(
-                                                "No model ({}) specify in config.json. Please add the model to the config.json.",
-                                                name));
+                        "No model ({}) specify in config.json. Please add the model to the config.json.",
+                        name));
             }
             std::filesystem::path model_path = m_models_path /
                                                std::filesystem::path(
                                                        config["resources"]["models"][name]["path"].get<
-                                                           std::string>());
+                                                               std::string>());
             Assimp::Importer importer;
             int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                         aiProcess_CalcTangentSpace;
@@ -131,7 +137,7 @@ namespace engine::resources {
             }
             AssimpSceneProcessor scene_processor(this, scene, model_path);
             std::vector<Mesh> meshes = scene_processor.process_meshes();
-            result                   = std::make_unique<Model>(Model(std::move(meshes), model_path,
+            result = std::make_unique<Model>(Model(std::move(meshes), model_path,
                                                    name));
         }
         return result.get();
@@ -192,27 +198,41 @@ namespace engine::resources {
         vertices.reserve(mesh->mNumVertices);
         for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
             Vertex vertex{};
-            vertex.Position.x = mesh->mVertices[i].x;
-            vertex.Position.y = mesh->mVertices[i].y;
-            vertex.Position.z = mesh->mVertices[i].z;
+            vertex.Position
+                  .x = mesh->mVertices[i].x;
+            vertex.Position
+                  .y = mesh->mVertices[i].y;
+            vertex.Position
+                  .z = mesh->mVertices[i].z;
 
             if (mesh->HasNormals()) {
-                vertex.Normal.x = mesh->mNormals[i].x;
-                vertex.Normal.y = mesh->mNormals[i].y;
-                vertex.Normal.z = mesh->mNormals[i].z;
+                vertex.Normal
+                      .x = mesh->mNormals[i].x;
+                vertex.Normal
+                      .y = mesh->mNormals[i].y;
+                vertex.Normal
+                      .z = mesh->mNormals[i].z;
             }
 
             if (mesh->mTextureCoords[0]) {
-                vertex.TexCoords.x = mesh->mTextureCoords[0][i].x;
-                vertex.TexCoords.y = mesh->mTextureCoords[0][i].y;
+                vertex.TexCoords
+                      .x = mesh->mTextureCoords[0][i].x;
+                vertex.TexCoords
+                      .y = mesh->mTextureCoords[0][i].y;
 
-                vertex.Tangent.x = mesh->mTangents[i].x;
-                vertex.Tangent.y = mesh->mTangents[i].y;
-                vertex.Tangent.z = mesh->mTangents[i].z;
+                vertex.Tangent
+                      .x = mesh->mTangents[i].x;
+                vertex.Tangent
+                      .y = mesh->mTangents[i].y;
+                vertex.Tangent
+                      .z = mesh->mTangents[i].z;
 
-                vertex.Bitangent.x = mesh->mBitangents[i].x;
-                vertex.Bitangent.y = mesh->mBitangents[i].y;
-                vertex.Bitangent.z = mesh->mBitangents[i].z;
+                vertex.Bitangent
+                      .x = mesh->mBitangents[i].x;
+                vertex.Bitangent
+                      .y = mesh->mBitangents[i].y;
+                vertex.Bitangent
+                      .z = mesh->mBitangents[i].z;
             }
             vertices.push_back(vertex);
         }
@@ -226,7 +246,7 @@ namespace engine::resources {
             }
         }
 
-        auto material                   = m_scene->mMaterials[mesh->mMaterialIndex];
+        auto material = m_scene->mMaterials[mesh->mMaterialIndex];
         std::vector<Texture *> textures = process_materials(material);
         m_meshes.emplace_back(Mesh(vertices, indices, std::move(textures)));
     }
@@ -253,7 +273,7 @@ namespace engine::resources {
             aiString ai_texture_path_string;
             material->GetTexture(type, i, &ai_texture_path_string);
             std::filesystem::path texture_path = m_model_path.parent_path() / ai_texture_path_string.C_Str();
-            Texture *texture                   = m_resources_controller->texture(texture_path.string(), texture_path,
+            Texture *texture = m_resources_controller->texture(texture_path.string(), texture_path,
                                                                assimp_texture_type_to_engine(type));
             textures.emplace_back(texture);
         }
@@ -261,12 +281,12 @@ namespace engine::resources {
 
     TextureType AssimpSceneProcessor::assimp_texture_type_to_engine(aiTextureType type) {
         switch (type) {
-        case aiTextureType_DIFFUSE: return TextureType::Diffuse;
-        case aiTextureType_SPECULAR: return TextureType::Specular;
-        case aiTextureType_HEIGHT: return TextureType::Height;
-        case aiTextureType_NORMALS: return TextureType::Normal;
-        default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}",
-                                          static_cast<int>(type));
+            case aiTextureType_DIFFUSE: return TextureType::Diffuse;
+            case aiTextureType_SPECULAR: return TextureType::Specular;
+            case aiTextureType_HEIGHT: return TextureType::Height;
+            case aiTextureType_NORMALS: return TextureType::Normal;
+            default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}",
+                                              static_cast<int>(type));
         }
     }
 

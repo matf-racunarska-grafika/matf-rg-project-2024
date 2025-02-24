@@ -30,6 +30,7 @@ namespace engine::resources {
     */
     class Mesh {
         friend class AssimpSceneProcessor;
+
     public:
 
         /**

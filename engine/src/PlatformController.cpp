@@ -85,8 +85,8 @@ namespace engine::platform {
 
     bool PlatformController::loop() {
         m_frame_time.previous = m_frame_time.current;
-        m_frame_time.current  = glfwGetTime();
-        m_frame_time.dt       = m_frame_time.current - m_frame_time.previous;
+        m_frame_time.current = glfwGetTime();
+        m_frame_time.dt = m_frame_time.current - m_frame_time.previous;
 
         return !glfwWindowShouldClose(m_window.handle_());
     }
@@ -123,37 +123,37 @@ namespace engine::platform {
      */
     void PlatformController::update_key(Key &key_data) const {
         int engine_key_code = key_data.id();
-        int glfw_key_code   = g_engine_to_glfw_key.at(engine_key_code);
-        int action          = glfw_platform_action(m_window.handle_(), glfw_key_code);
+        int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
+        int action = glfw_platform_action(m_window.handle_(), glfw_key_code);
         switch (key_data.state()) {
-        case Key::State::Released: {
-            if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::JustPressed;
+            case Key::State::Released: {
+                if (action == GLFW_PRESS) {
+                    key_data.m_state = Key::State::JustPressed;
+                }
+                break;
             }
-            break;
-        }
-        case Key::State::JustReleased: {
-            if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::JustPressed;
-            } else if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::Released;
+            case Key::State::JustReleased: {
+                if (action == GLFW_PRESS) {
+                    key_data.m_state = Key::State::JustPressed;
+                } else if (action == GLFW_RELEASE) {
+                    key_data.m_state = Key::State::Released;
+                }
+                break;
             }
-            break;
-        }
-        case Key::State::JustPressed: {
-            if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::JustReleased;
-            } else if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::Pressed;
+            case Key::State::JustPressed: {
+                if (action == GLFW_RELEASE) {
+                    key_data.m_state = Key::State::JustReleased;
+                } else if (action == GLFW_PRESS) {
+                    key_data.m_state = Key::State::Pressed;
+                }
+                break;
             }
-            break;
-        }
-        case Key::State::Pressed: {
-            if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::JustReleased;
+            case Key::State::Pressed: {
+                if (action == GLFW_RELEASE) {
+                    key_data.m_state = Key::State::JustReleased;
+                }
+                break;
             }
-            break;
-        }
         }
     }
 
@@ -163,11 +163,11 @@ namespace engine::platform {
 
     std::string_view Key::state_str() const {
         switch (m_state) {
-        case Key::State::Released: return "Released";
-        case Key::State::JustPressed: return "JustPressed";
-        case Key::State::Pressed: return "Pressed";
-        case Key::State::JustReleased: return "JustReleased";
-        default: return "UNIMPLEMENTED";
+            case Key::State::Released: return "Released";
+            case Key::State::JustPressed: return "JustPressed";
+            case Key::State::Pressed: return "Pressed";
+            case Key::State::JustReleased: return "JustReleased";
+            default: return "UNIMPLEMENTED";
         }
     }
 
@@ -194,12 +194,12 @@ namespace engine::platform {
     }
 
     void PlatformController::_platform_on_mouse(double x, double y) {
-        double last_x       = g_mouse_position.x;
-        double last_y       = g_mouse_position.y;
+        double last_x = g_mouse_position.x;
+        double last_y = g_mouse_position.y;
         g_mouse_position.dx = x - last_x;
         g_mouse_position.dy = last_y - y; // because in glfw the top left corner is the (0,0)
-        g_mouse_position.x  = x;
-        g_mouse_position.y  = y;
+        g_mouse_position.x = x;
+        g_mouse_position.y = y;
         for (auto &observer: m_platform_event_observers) {
             observer->on_mouse_move(g_mouse_position);
         }
@@ -220,7 +220,7 @@ namespace engine::platform {
     }
 
     void PlatformController::_platform_on_framebuffer_resize(int width, int height) {
-        m_window.m_width  = width;
+        m_window.m_width = width;
         m_window.m_height = height;
         for (auto &observer: m_platform_event_observers) {
             observer->on_window_resize(width, height);
@@ -250,8 +250,8 @@ namespace engine::platform {
 
     void initialize_key_maps() {
         // formatter: off
-        #include "glfw_key_mapping.include"
-        #include "engine_key_to_string.include"
+#include "glfw_key_mapping.include"
+#include "engine_key_to_string.include"
         // formatter: on
     }
 

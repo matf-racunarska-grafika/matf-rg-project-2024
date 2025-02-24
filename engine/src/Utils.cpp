@@ -36,9 +36,9 @@ namespace engine::util {
         } catch (const std::exception &e) {
             std::string message(e.what());
             throw EngineError(EngineError::Type::ConfigurationError, std::format(
-                                      "Error \"{}\" occurred while parsing the configuration file. "
-                                      "Please make sure that the file is in the correct json format.",
-                                      message));
+                    "Error \"{}\" occurred while parsing the configuration file. "
+                    "Please make sure that the file is in the correct json format.",
+                    message));
         }
         spdlog::info("Configuration initialized.");
     }
@@ -60,9 +60,9 @@ namespace engine::util {
 
     nlohmann::json Configuration::create_default() {
         json default_config;
-        default_config["window"]["width"]  = 800;
+        default_config["window"]["width"] = 800;
         default_config["window"]["height"] = 600;
-        default_config["window"]["title"]  = "Hello, window!";
+        default_config["window"]["title"] = "Hello, window!";
         return default_config;
     }
 

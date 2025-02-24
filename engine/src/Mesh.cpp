@@ -39,9 +39,9 @@ namespace engine::resources {
 
         glBindVertexArray(0);
         // NOLINTEND
-        m_vao         = VAO;
+        m_vao = VAO;
         m_num_indices = indices.size();
-        m_textures    = std::move(textures);
+        m_textures = std::move(textures);
     }
 
     void Mesh::draw(const Shader *shader) {

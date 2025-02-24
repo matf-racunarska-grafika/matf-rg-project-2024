@@ -5,6 +5,7 @@
 
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
+
 #include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
@@ -13,6 +14,7 @@ struct ImGuiContext;
 
 namespace engine::resources {
     class Skybox;
+
     class Shader;
 }
 
@@ -110,9 +112,9 @@ namespace engine::graphics {
         */
         glm::mat4 projection_matrix(ProjectionType type = Perspective) const {
             switch (type) {
-            case Perspective: return projection_matrix<Perspective>();
-            case Orthographic: return projection_matrix<Orthographic>();
-            default: RG_SHOULD_NOT_REACH_HERE("Unsupported type");
+                case Perspective: return projection_matrix<Perspective>();
+                case Orthographic: return projection_matrix<Orthographic>();
+                default: RG_SHOULD_NOT_REACH_HERE("Unsupported type");
             }
         }
 

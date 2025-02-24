@@ -27,8 +27,8 @@ namespace engine::util {
         * @param location The location of the error. This is used to get the file, line and function name where the error occurred.
         */
         explicit Error(std::string message, std::source_location location = std::source_location::current())
-        : m_message(std::move(message))
-      , m_location(location) {
+                : m_message(std::move(message))
+                  , m_location(location) {
         }
 
         /**
@@ -112,7 +112,7 @@ namespace engine::util {
         * @brief Get the string representation of the engine error type.
         * @param error The engine error type.
         * @returns The string representation of the engine error type.
-        */  
+        */
         static std::string_view type_string(Type error);
 
         /**
@@ -123,8 +123,8 @@ namespace engine::util {
         */
         EngineError(Type error_type, std::string message,
                     std::source_location location = std::source_location::current())
-        : Error(std::move(message), std::move(location))
-      , m_error(error_type) {
+                : Error(std::move(message), std::move(location))
+                  , m_error(error_type) {
         }
 
         /**
@@ -168,32 +168,32 @@ namespace engine::util {
         }                                                                                                              \
     } while (0)
 
-    /**
-    * @brief Guarantees that a path should not be reached. If it is reached, an @ref engine::util::EngineError is thrown.
-    * @param msg The error message.
-    * @param ... The arguments to the error message.
-    */
+/**
+* @brief Guarantees that a path should not be reached. If it is reached, an @ref engine::util::EngineError is thrown.
+* @param msg The error message.
+* @param ... The arguments to the error message.
+*/
 #define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
     do {                                                                                                               \
         throw engine::util::EngineError(engine::util::EngineError::Type::ShouldNotReachHere, std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
     } while (0)
 
-    /**
-    * @brief Path is not implemented. If it is implemented, an @ref engine::util::EngineError is thrown.
-    * @param msg The error message.
-    * @param ... The arguments to the error message.
-    */
+/**
+* @brief Path is not implemented. If it is implemented, an @ref engine::util::EngineError is thrown.
+* @param msg The error message.
+* @param ... The arguments to the error message.
+*/
 #define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
     do {                                                                                                               \
         throw engine::util::EngineError(engine::util::EngineError::Type::Unimplemented, std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
     } while (0)
 
-    /**
-    * @brief Throws an @ref engine::util::EngineError.
-    * @param type The type of the engine error.
-    * @param msg The error message.
-    * @param ... The arguments to the error message.
-    */
+/**
+* @brief Throws an @ref engine::util::EngineError.
+* @param type The type of the engine error.
+* @param msg The error message.
+* @param ... The arguments to the error message.
+*/
 #define RG_ENGINE_ERROR(type, msg, ...)                                                                               \
     do {                                                                                                               \
         throw engine::util::EngineError(type, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
