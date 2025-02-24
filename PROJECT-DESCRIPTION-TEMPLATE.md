@@ -1,7 +1,7 @@
-# {SKULL SNEAK}
+# SKULL SNEAK
 
-{mi22091} - {Viktor Šević}  
-{PROJECT DESCRIPTION}
+mi22091 - Viktor Šević  
+Igra gde je cilj preci most, a da vas lobanja koja se okrece ne vidi.
 
 ## Controls
 
@@ -16,9 +16,9 @@
 
 ### Fundamental:
 
-[X] Model with lighting
-[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[X] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[X] Skull model, eyes that are inside the skull, arena, bridge
+[X] 2 eyes that can change color through GUI and a directional light that mimics the sun
+[X] {moving while skull is looking} -> {teleported to the start} -> {1 less heart}
 
 ### Group A:
 
@@ -39,13 +39,6 @@
 
 ## Models:
 
-[https://free3d.com/3d-model/skull-v3--785914.html]   
-[https://www.cgtrader.com/free-3d-models/exterior/street-exterior/stone-bridge-64c81922-4456-400c-ab98-83fdbbd01b4f]
-[https://www.cgtrader.com/items/4040060/download-page]
-[https://free3d.com/3d-model/colosseum-v1--937409.html]
-
 ## Textures
-
-[https://opengameart.org/content/heart-pixel-art]
 
 {OTHER-RESOURCES}
