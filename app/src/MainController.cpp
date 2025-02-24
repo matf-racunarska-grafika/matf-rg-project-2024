@@ -276,7 +276,7 @@ namespace app {
         }
     }
 
-    glm::vec3 rotate_vector(const glm::vec3& vec, float angleDegrees) {
+    glm::vec3 rotate_vector_Y(const glm::vec3& vec, float angleDegrees) {
         float angleRadians = glm::radians(angleDegrees);
         glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angleRadians, glm::vec3(0.0f, 1.0f, 0.0f));
         return glm::vec3(rotation * glm::vec4(vec, 0.0f));
@@ -291,9 +291,11 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         bool skullFacing;
 
-        glm::vec3 skullFront = rotate_vector(glm::vec3(0.0f, 0.0f, 1.0f), skullSpeed * time);
-        float angle = glm::degrees(glm::acos(glm::dot(skullFront, -graphics->camera()->Front)));
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(time * skullSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::vec3 skullFront(0.0f, 0.0f, 1.0f);
+        skullFront = glm::vec3(rotation * glm::vec4(skullFront, 0.0f));
 
+        float angle = glm::degrees(glm::acos(glm::dot(skullFront, -graphics->camera()->Front)));
         if (angle <= 60.0f) {
             skullFacing = true;
         } else {
