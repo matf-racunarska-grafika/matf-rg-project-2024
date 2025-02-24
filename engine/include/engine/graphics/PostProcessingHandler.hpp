@@ -40,6 +40,7 @@ public:
     static void prepare_screen_framebuffer();
     static void apply_filters();
     static void render_health();
+    static void cleanup();
 };
 
 #endif //POSTPROCESSINGHANDLER_HPP

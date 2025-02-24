@@ -1,7 +1,7 @@
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/platform/PlatformController.hpp>
-#include <engine/graphics/PostProcessingHandler.hpp>
+#include <engine/graphics/OpenGL.hpp>
 #include <spdlog/spdlog.h>
 
 #include <GuiController.hpp>
@@ -27,7 +27,6 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         engine::graphics::OpenGL::enable_depth_testing();
-        PostProcessingHandler::initialise();
     }
 
     bool MainController::loop() {
@@ -71,8 +70,6 @@ namespace app {
         shader->set_vec3("dirLight.specular", glm::vec3(0.05f, 0.01f, 0.01f));
 
         // getting the possitions of the eyes
-        glm::vec3 eyePos1;
-        glm::vec3 eyePos2;
         glm::mat4 modelEye1 = model;
         glm::mat4 modelEye2 = model;
 
@@ -197,19 +194,6 @@ namespace app {
         draw_skull();
         draw_arena();
         draw_skybox();
-
-        PostProcessingHandler::draw();
-    }
-
-    void MainController::begin_draw() {
-        PostProcessingHandler::bind_hdr_framebuffer();
-        engine::graphics::OpenGL::clear_buffers();
-    }
-
-    void MainController::end_draw() {
-        PostProcessingHandler::unbind_framebuffer();
-        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        platform->swap_buffers();
     }
 
     void MainController::update_camera() {
@@ -317,6 +301,10 @@ namespace app {
             skullFacing = false;
         }
         Settings::getInstance().skullFacingPlayer = skullFacing;
+    }
+
+    void MainController::terminate() {
+        PostProcessingHandler::cleanup();
     }
 
 } // app
