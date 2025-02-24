@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-enum Filter {
+enum class Filter {
     NONE,
     NEGATIVE,
     GRAYSCALE,
