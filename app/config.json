@@ -87,6 +87,9 @@
       },
       "fire" : {
         "path" : "fire/scene.gltf"
+      },
+      "water" : {
+        "path" : "water/scene.gltf"
       }
     }
   },

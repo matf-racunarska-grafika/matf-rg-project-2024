@@ -9,6 +9,7 @@
 #include <GUIController.hpp>
 
 #include "../../engine/libs/glad/include/glad/glad.h"
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
 namespace app {
 
@@ -76,6 +77,7 @@ namespace app {
     }
 
     void MainController::draw() {
+        draw_water();
         draw_terrain();
         draw_campfire();
         draw_logs();
@@ -883,9 +885,42 @@ namespace app {
         terrain->draw(terrain_shader);
     }
 
+    void MainController::draw_water() {
+        engine::resources::Model *water_model = resources->model("water");
+        engine::resources::Shader *water_shader = resources->shader("water_shader");
+
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+
+        water_shader->use();
+
+        float currentTime = static_cast<float>(glfwGetTime());
+        water_shader->set_float("time", currentTime);
+
+        // Set water color based on day/night cycle
+        glm::vec3 waterColor = is_day ?
+            glm::vec3(0.0f, 0.4f, 0.6f) :  // Daytime blue
+            glm::vec3(0.0f, 0.1f, 0.3f);   // Nighttime darker blue
+        water_shader->set_vec3("waterColor", waterColor);
+        water_shader->set_vec3("lightPos", lightPos);
+        water_shader->set_vec3("viewPos", camera->Position);
+        water_shader->set_mat4("projection", graphics->projection_matrix());
+        water_shader->set_mat4("view", camera->view_matrix());
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(30, 1, 30));
+        model = glm::translate(model, glm::vec3(0, 7, 0));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        water_shader->set_mat4("model", model);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        water_model->draw(water_shader);
+        glDisable(GL_BLEND);
+    }
+
     void MainController::test() {
-        engine::resources::Model *test_model   = resources->model("fire");
-        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
+        engine::resources::Model *test_model   = resources->model("water");
+        engine::resources::Shader *test_shader = resources->shader("campfire_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -929,7 +964,7 @@ namespace app {
         auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
         if (is_day)
-            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_day");
+            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("newSkyBox");
         else
             skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(
                     "skybox_night");

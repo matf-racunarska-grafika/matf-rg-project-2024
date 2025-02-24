@@ -39,20 +39,15 @@ uniform Light light;
 
 void main()
 {
-    // Normalize the input normal vector.
     vec3 norm = normalize(Normal);
 
-    // Calculate the light direction.
     vec3 lightDir = normalize(light.position - FragPos);
 
-    // Ambient lighting.
     vec3 ambient = light.ambient * texture(texture_diffuse1, TexCoords).rgb;
 
-    // Diffuse lighting.
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texture(texture_diffuse1, TexCoords).rgb;
 
-    // Combine the lighting contributions.
     vec3 result = ambient + diffuse;
     FragColor = vec4(result, 1.0);
 }
