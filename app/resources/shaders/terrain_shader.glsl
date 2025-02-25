@@ -49,6 +49,11 @@ uniform float shininess = 32.0;
 uniform float ambientStrength = 0.1;
 uniform float specularStrength = 0.5;
 
+// Light attenuation coefficients
+uniform float constant = 1.0;    // Prevents division by zero when distance is very small
+uniform float linear = 0.09;     // Linear attenuation factor
+uniform float quadratic = 0.032; // Quadratic attenuation factor
+
 void main()
 {
     // Sample textures
@@ -60,7 +65,18 @@ void main()
     normalMap = normalMap * 2.0 - 1.0;  // Transform from [0,1] to [-1,1]
     vec3 normal = normalize(TBN * normalMap);
 
-    // Ambient
+    // Calculate distance to light
+    float distance = length(lightPos - FragPos);
+
+    // Calculate attenuation - FIXED: limit minimum distance and cap attenuation
+    // Prevent excessive darkening at large distances
+    distance = max(distance, 0.1); // Prevent zero distance
+    float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+
+    // Clamp attenuation to prevent it from becoming too small
+    attenuation = max(attenuation, 0.01);
+
+    // Ambient (not affected by attenuation)
     vec3 ambient = ambientStrength * lightColor;
 
     // Diffuse
@@ -74,7 +90,10 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
     vec3 specular = specularStrength * spec * specularMap * lightColor;
 
-    // Final result
+    diffuse *= attenuation;
+    specular *= attenuation;
+
     vec3 result = (ambient + diffuse) * diffuseColor + specular;
+
     FragColor = vec4(result, 1.0);
 }

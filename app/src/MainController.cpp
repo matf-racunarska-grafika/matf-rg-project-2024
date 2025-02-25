@@ -877,10 +877,25 @@ namespace app {
 
         terrain_shader->set_vec3("viewPos", camera->Position);
         terrain_shader->set_vec3("lightPos", is_day ? glm::vec3(100.0f, 100.0f, 100.0f) : glm::vec3(12, 25, 6));
-        terrain_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.6, 0.2));
+        terrain_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
         terrain_shader->set_float("shininess", 2048.0f);
         terrain_shader->set_float("ambientStrength", 0.1f);
         terrain_shader->set_float("specularStrength", 0.0f);
+
+        // Add attenuation parameters
+        // For day lighting (distant sun), use weaker attenuation
+        if (is_day) {
+            terrain_shader->set_float("constant", 1.0f);
+            terrain_shader->set_float("linear", 0.0003f);     // Reduced from 0.0009
+            terrain_shader->set_float("quadratic", 0.00001f);  // Much lower for sunlight
+        }
+        // For night lighting (closer light source), use stronger attenuation
+        else {
+            terrain_shader->set_float("constant", 1.0f);
+            terrain_shader->set_float("linear", 0.014f);     // Reduced from 0.09
+            terrain_shader->set_float("quadratic", 0.0007f);
+        }
+
         terrain->draw(terrain_shader);
     }
 
@@ -960,7 +975,7 @@ namespace app {
         auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
         if (is_day)
-            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("newSkyBox");
+            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_day");
         else
             skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(
                     "skybox_night");
