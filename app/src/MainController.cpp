@@ -863,25 +863,24 @@ namespace app {
     }
 
     void MainController::draw_terrain() {
-        engine::resources::Model *terrain         = resources->model("terrain");
+        engine::resources::Model *terrain = resources->model("terrain");
         engine::resources::Shader *terrain_shader = resources->shader("terrain_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-
         terrain_shader->use();
-        terrain_shader->set_vec3("light.position", lightPos);
 
-        if (is_day) {
-            terrain_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            terrain_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        } else {
-            terrain_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            terrain_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-        }
         terrain_shader->set_mat4("projection", graphics->projection_matrix());
         terrain_shader->set_mat4("view", camera->view_matrix());
+
         glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         terrain_shader->set_mat4("model", model);
+
+        terrain_shader->set_vec3("viewPos", camera->Position);
+        terrain_shader->set_vec3("lightPos", is_day ? glm::vec3(100.0f, 100.0f, 100.0f) : glm::vec3(12, 25, 6));
+        terrain_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.6, 0.2));
+        terrain_shader->set_float("shininess", 2048.0f);
+        terrain_shader->set_float("ambientStrength", 0.1f);
+        terrain_shader->set_float("specularStrength", 0.0f);
         terrain->draw(terrain_shader);
     }
 

@@ -1,12 +1,15 @@
 //#shader vertex
 #version 330 core
+
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in vec3 aTangent;
+layout (location = 4) in vec3 aBitangent;
 
-out vec3 FragPos;
-out vec3 Normal;
 out vec2 TexCoords;
+out vec3 FragPos;
+out mat3 TBN;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -15,39 +18,63 @@ uniform mat4 projection;
 void main()
 {
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * aNormal;
     TexCoords = aTexCoords;
+
+    // Calculate TBN matrix for normal mapping
+    vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
+    vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+    vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
+    TBN = mat3(T, B, N);
+
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
 //#shader fragment
 #version 330 core
+
 out vec4 FragColor;
 
-struct Light {
-    vec3 position;
-    vec3 ambient;
-    vec3 diffuse;
-};
-
-in vec3 FragPos;
-in vec3 Normal;
 in vec2 TexCoords;
+in vec3 FragPos;
+in mat3 TBN;
 
 uniform sampler2D texture_diffuse1;
-uniform Light light;
+uniform sampler2D texture_normal1;
+uniform sampler2D texture_specular1;
+
+uniform vec3 viewPos;
+uniform vec3 lightPos;
+uniform vec3 lightColor = vec3(1.0, 1.0, 1.0);
+uniform float shininess = 32.0;
+uniform float ambientStrength = 0.1;
+uniform float specularStrength = 0.5;
 
 void main()
 {
-    vec3 norm = normalize(Normal);
+    // Sample textures
+    vec3 diffuseColor = texture(texture_diffuse1, TexCoords).rgb;
+    vec3 specularMap = texture(texture_specular1, TexCoords).rgb;
 
-    vec3 lightDir = normalize(light.position - FragPos);
+    // Process normal map
+    vec3 normalMap = texture(texture_normal1, TexCoords).rgb;
+    normalMap = normalMap * 2.0 - 1.0;  // Transform from [0,1] to [-1,1]
+    vec3 normal = normalize(TBN * normalMap);
 
-    vec3 ambient = light.ambient * texture(texture_diffuse1, TexCoords).rgb;
+    // Ambient
+    vec3 ambient = ambientStrength * lightColor;
 
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * texture(texture_diffuse1, TexCoords).rgb;
+    // Diffuse
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
 
-    vec3 result = ambient + diffuse;
+    // Specular
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = specularStrength * spec * specularMap * lightColor;
+
+    // Final result
+    vec3 result = (ambient + diffuse) * diffuseColor + specular;
     FragColor = vec4(result, 1.0);
 }
