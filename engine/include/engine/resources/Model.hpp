@@ -24,6 +24,8 @@ namespace engine::resources {
         */  
         void draw(const Shader *shader);
 
+        void drawBlended(const Shader *shader);
+
         /**
         * @brief Draws the model using a given shader by drawing all the meshes in the model.
         * @param shader The shader to use for drawing.

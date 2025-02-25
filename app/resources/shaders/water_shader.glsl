@@ -15,13 +15,11 @@ uniform float time;
 
 void main()
 {
-    // Create a simple wave effect
     vec3 modifiedPos = aPos;
-    float waveX = sin(aPos.x * 2.0 + time * 0.5) * 0.05;
-    float waveZ = cos(aPos.z * 2.0 + time * 0.5) * 0.05;
+    float waveX = sin(aPos.x * 2.0 + time * 0.5) * 0.3;
+    float waveZ = cos(aPos.z * 2.0 + time * 0.5) * 0.3;
     modifiedPos.y += waveX + waveZ;
 
-    // Basic normal adjustment for the waves
     vec3 modifiedNormal = aNormal;
     modifiedNormal.x = aNormal.x - 0.1 * cos(aPos.x * 2.0 + time * 0.5);
     modifiedNormal.z = aNormal.z - 0.1 * sin(aPos.z * 2.0 + time * 0.5);

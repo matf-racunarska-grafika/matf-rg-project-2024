@@ -912,10 +912,7 @@ namespace app {
         model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
         water_shader->set_mat4("model", model);
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        water_model->draw(water_shader);
-        glDisable(GL_BLEND);
+        water_model->drawBlended(water_shader);
     }
 
     void MainController::test() {
@@ -1020,8 +1017,8 @@ namespace app {
     }
 
     void MainController::draw_fire() {
-        engine::resources::Model *fire   = resources->model("fire");
-        engine::resources::Shader *fire_shader = resources->shader("basic");
+        engine::resources::Model *fire = resources->model("fire");
+        engine::resources::Shader *fire_shader = resources->shader("fire_shader");
         fire_shader->use();
         fire_shader->set_vec3("viewPos", camera->Position);
 
@@ -1029,10 +1026,21 @@ namespace app {
         fire_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(12, 21, 7));
-        model           = glm::scale(model, glm::vec3(3.08));
+        model = glm::translate(model, glm::vec3(12, 21, 7));
+        model = glm::scale(model, glm::vec3(3.08));
         fire_shader->set_mat4("model", model);
-        fire->draw(fire_shader);
+
+        static float startTime = glfwGetTime();
+        float currentTime = glfwGetTime() - startTime;
+
+        fire_shader->set_float("time", currentTime);
+        fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));
+        fire_shader->set_vec3("glowColor", glm::vec3(1.0f, 0.3f, 0.0f));
+        fire_shader->set_float("intensity", 1.5f);
+        fire_shader->set_float("flickerSpeed", 5.0f);
+        fire_shader->set_float("distortionAmount", 0.05f);
+
+        fire->drawBlended(fire_shader);
     }
 
     void MainController::update() {

@@ -1,4 +1,5 @@
 
+#include <glad/glad.h>
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Shader.hpp>
 
@@ -9,6 +10,13 @@ namespace engine::resources {
         for (auto &mesh: m_meshes) {
             mesh.draw(shader);
         }
+    }
+
+    void Model::drawBlended(const Shader *shader) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        draw(shader);
+        glDisable(GL_BLEND);
     }
 
     void Model::drawInstanced(const Shader *shader, unsigned int number_of_instances) {
