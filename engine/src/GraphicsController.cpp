@@ -1,13 +1,13 @@
 
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 namespace engine::graphics {
 
@@ -29,8 +29,7 @@ namespace engine::graphics {
         m_ortho_params.Right  = static_cast<float>(platform->window()->width());
         m_ortho_params.Near   = 0.1f;
         m_ortho_params.Far    = 100.0f;
-        platform->register_platform_event_observer(
-                std::make_unique<GraphicsPlatformEventObserver>(this));
+        platform->register_platform_event_observer(std::make_unique<GraphicsPlatformEventObserver>(this));
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
@@ -84,4 +83,4 @@ namespace engine::graphics {
         CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
     }
-}
+} // namespace engine::graphics

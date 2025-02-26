@@ -12,6 +12,10 @@
 #include <engine/util/Configuration.hpp>
 #include <engine/util/Utils.hpp>
 
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <iostream>
 
 namespace engine::core {
@@ -22,6 +26,7 @@ namespace engine::core {
             initialize();
             while (loop()) {
                 poll_events();
+
                 update();
                 glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
                 glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
@@ -29,9 +34,14 @@ namespace engine::core {
                 draw();
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 bloomset();
+
                 auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
                 platform->swap_buffers();
             }
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext();
+
             terminate();
         } catch (const util::Error &e) {
             handle_error(e);
@@ -93,6 +103,9 @@ namespace engine::core {
             controller->initialize();
         }
 
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        platform->set_enable_cursor(false);
+
         // bloom
         glGenFramebuffers(1, &hdrFBO);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
@@ -149,7 +162,7 @@ namespace engine::core {
         shader->use();
         shader->set_int("texture_diffuse1", 0);
         blur_shader->use();
-        blur_shader->set_int("image",0);
+        blur_shader->set_int("image", 0);
         bloom_final->use();
         bloom_final->set_int("scene", 0);
         bloom_final->set_int("bloomBlur", 1);
@@ -161,7 +174,6 @@ namespace engine::core {
         engine::resources::Shader *blur_shader = resources->shader("blur");
         engine::resources::Shader *bloom_final = resources->shader("bloom_final");
         engine::resources::Shader *light       = resources->shader("light");
-
 
         bool horizontal      = true;
         bool first_iteration = true;

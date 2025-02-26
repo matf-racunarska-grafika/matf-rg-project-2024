@@ -7,7 +7,7 @@ out vec3 TexCoords;
 uniform mat4 projection;
 uniform mat4 view;
 
-void main(){
+void main() {
     TexCoords = aPos;
     vec4 pos = vec4(projection * view * vec4(aPos, 1.0f));
     gl_Position = pos.xyww;
@@ -21,6 +21,6 @@ in vec3 TexCoords;
 
 uniform samplerCube skybox;
 
-void main(){
+void main() {
     FragColor = texture(skybox, TexCoords);
 }

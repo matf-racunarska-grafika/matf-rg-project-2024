@@ -22,6 +22,10 @@ namespace engine::test::app {
     class GUIController;
 }
 namespace app {
+
+    float radius       = 15.0f;
+    float light_gazebo = 80.0f;
+
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     public:
         void on_mouse_move(engine::platform::MousePosition position) override;
@@ -55,9 +59,12 @@ namespace app {
             return;
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        platform->set_enable_cursor(false);
-        auto camera = graphics->camera();
-        float dt    = platform->dt();
+        auto camera   = graphics->camera();
+        float dt      = platform->dt();
+        if (platform->key(engine::platform::KeyId::KEY_C).state() == engine::platform::Key::State::JustPressed) {
+            enabled = !enabled;
+            platform->set_enable_cursor(enabled);
+        }
         if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
             camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
         }
@@ -90,7 +97,8 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
+
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -115,7 +123,7 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -145,7 +153,7 @@ namespace app {
         shader->use();
         shader->set_vec3("viewPos", camera->Position);
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -199,11 +207,10 @@ namespace app {
         engine::resources::Shader *shader   = resources->shader("instancing");
         auto camera                         = graphics->camera();
 
-        unsigned int amount = 100;
+        unsigned int amount = 200;
         glm::mat4 *modelMatrices;
         modelMatrices = new glm::mat4[amount];
         srand(glfwGetTime());
-        float radius        = 15.0;
         float offset        = 1.5f;
         glm::vec3 gazeboPos = glm::vec3(20.0f, -3.0f, 0.0f);
 
@@ -254,6 +261,11 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(7.0f, 30.0f, -1.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
+
+        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
         shader->set_vec3("viewPos", camera->Position);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -278,7 +290,7 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -306,7 +318,7 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -335,7 +347,7 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -360,7 +372,7 @@ namespace app {
 
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
         shader->set_vec3("moonLightDir", glm::vec3(-30.0f, 30.0f, 25.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -383,7 +395,7 @@ namespace app {
         engine::resources::Shader *shader = resources->shader("light");
 
         shader->use();
-        shader->set_vec3("LightColor", glm::vec3(10.0f,10.0f,10.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
@@ -394,6 +406,34 @@ namespace app {
         light->draw(shader);
     }
 
+    void MainController::draw_flower() {
+        auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                     = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera                       = graphics->camera();
+        engine::resources::Model *flower  = resources->model("flower");
+        engine::resources::Shader *shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
+        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
+
+        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        shader->set_vec3("viewPos", camera->Position);
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        //float angle     = glm::radians(270.0);
+        //float angle2    = glm::radians(90.0);
+        model           = glm::translate(model, glm::vec3(0.0f, -14.0f, 0.0f));
+        //model           = glm::rotate(model, angle, glm::vec3(0, 1, 0));
+        //model           = glm::rotate(model, angle, glm::vec3(1, 0, 0));
+        model           = glm::scale(model, glm::vec3(0.3f));
+        shader->set_mat4("model", model);
+
+        flower->draw(shader);
+    }
 
     void MainController::draw() {
         draw_terrain();
@@ -405,6 +445,7 @@ namespace app {
         draw_temple();
         draw_garden();
         draw_light();
+        draw_flower();
         draw_skybox();
     }
 } // namespace app

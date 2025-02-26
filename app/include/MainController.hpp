@@ -8,6 +8,10 @@
 
 namespace app {
 
+    extern float radius;
+    extern float light_gazebo;
+
+
     class MainController : public engine::core::Controller {
 
         void initialize() override;
@@ -24,13 +28,16 @@ namespace app {
         void draw_temple();
         void draw_tree();
         void draw_light();
+        void draw_flower();
         void draw() override;
         void begin_draw() override;
         void end_draw() override;
+
     public:
         std::string_view name() const override {
             return "app::MainController";
         }
+        bool enabled = false;
     };
 
 } // namespace app

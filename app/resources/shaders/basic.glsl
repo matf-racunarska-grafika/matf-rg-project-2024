@@ -44,24 +44,31 @@ uniform vec3 moonLightColor;
 uniform vec3 viewPos;
 
 void main() {
+    float specularStrength = 0.0;
     vec3 color = vec3(texture(texture_diffuse1, TexCoords).rgb);
     vec3 normal = normalize(Normal);
 
-    vec3 ambient = 0.1 * color;
+    vec3 ambient = 0.05 * color;
 
     vec3 lighting = vec3(0.0);
     vec3 viewDir = normalize(viewPos - FragPos);
 
     vec3 lightDir = normalize(LightPos - FragPos);
     float lampDiffuse = max(dot(lightDir, normal), 0.0);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * LightColor;
     float distance = length(FragPos - LightPos);
-    vec3 lampResult = (LightColor * lampDiffuse * color)/(distance*distance);
+    vec3 lampResult = (LightColor * lampDiffuse * color) / (distance * distance);
 
     vec3 moonDir = normalize(-moonLightDir);
     float moonDiffuse = max(dot(normal, moonDir), 0.0);
-    vec3 moonResult = moonLightColor * moonDiffuse * color;
+    vec3 moonReflectDir = reflect(-moonDir, normal);
+    float moonSpecular = pow(max(dot(viewDir, moonReflectDir), 0.0), 8);
+    vec3 moonSpecularComponent = specularStrength * moonSpecular * moonLightColor;
+    vec3 moonResult = moonLightColor * moonDiffuse * color + moonSpecularComponent;
 
-    vec3 res = ambient + lampResult + moonResult;
+    vec3 res = ambient + specular + lampResult + moonResult;
 
     float brightness = dot(res, vec3(0.2126, 0.7152, 0.0722));
     if (brightness > 1.0)
