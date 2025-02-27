@@ -24,8 +24,7 @@ namespace app {
 
     void begin_draw() override;
     void end_draw() override;
-
-    void render_quad();
+      
     void draw_filters();
     void draw_health_bar();
     void draw_bloom();

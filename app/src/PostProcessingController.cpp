@@ -2,8 +2,8 @@
 #include <engine/core/Controller.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/OpenGL.hpp>
+#include <engine/graphics/Framebuffer.hpp>
 #include <spdlog/spdlog.h>
-
 #include <ProgramState.hpp>
 
 namespace app {
@@ -15,7 +15,7 @@ namespace app {
 
         prepare_bloom_effect(wHeight, wWidth);
         prepare_filter_effect(wHeight, wWidth);
-        quadVAO = engine::graphics::OpenGL::set_up_quad();
+        quadVAO = engine::graphics::Framebuffer::set_up_quad();
     }
 
     void PostProcessingController::draw() {
@@ -26,45 +26,45 @@ namespace app {
 
     void PostProcessingController::prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth) {
         if (hdrFBO == 0) {
-            hdrFBO = engine::graphics::OpenGL::generate_framebuffer();
-            engine::graphics::OpenGL::bind_framebuffer(hdrFBO);
+            hdrFBO = engine::graphics::Framebuffer::generate_framebuffer();
+            engine::graphics::Framebuffer::bind_framebuffer(hdrFBO);
 
-            std::tie(colorBuffers[0], colorBuffers[1]) = engine::graphics::OpenGL::generate_two_framebuffer_textures();
+            std::tie(colorBuffers[0], colorBuffers[1]) = engine::graphics::Framebuffer::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
-                engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, colorBuffers[i], i);
+                engine::graphics::Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, colorBuffers[i], i);
             }
-            engine::graphics::OpenGL::generate_depth_buffer(wWidth, wHeight);
-            engine::graphics::OpenGL::set_up_attachments();
-            engine::graphics::OpenGL::bind_framebuffer(0);
+            engine::graphics::Framebuffer::generate_depth_buffer(wWidth, wHeight);
+            engine::graphics::Framebuffer::set_up_attachments();
+            engine::graphics::Framebuffer::bind_framebuffer(0);
 
-            std::tie(pingpongFBO[0], pingpongFBO[1]) = engine::graphics::OpenGL::generate_two_framebuffers();
-            std::tie(pingpongBuffer[0], pingpongBuffer[1]) = engine::graphics::OpenGL::generate_two_framebuffer_textures();
+            std::tie(pingpongFBO[0], pingpongFBO[1]) = engine::graphics::Framebuffer::generate_two_framebuffers();
+            std::tie(pingpongBuffer[0], pingpongBuffer[1]) = engine::graphics::Framebuffer::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
-                engine::graphics::OpenGL::bind_framebuffer(pingpongFBO[i]);
-                engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, pingpongBuffer[i], 0);
+                engine::graphics::Framebuffer::bind_framebuffer(pingpongFBO[i]);
+                engine::graphics::Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, pingpongBuffer[i], 0);
             }
             prepare_bloom_shaders();
         }
     }
     void PostProcessingController::prepare_filter_effect(unsigned int wHeight, unsigned int wWidth) {
         if (screenFBO == 0) {
-            screenFBO = engine::graphics::OpenGL::generate_framebuffer();
-            engine::graphics::OpenGL::bind_framebuffer(screenFBO);
+            screenFBO = engine::graphics::Framebuffer::generate_framebuffer();
+            engine::graphics::Framebuffer::bind_framebuffer(screenFBO);
 
-            screenTexture = engine::graphics::OpenGL::generate_framebuffer_texture();
-            engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, screenTexture, 0);
+            screenTexture = engine::graphics::Framebuffer::generate_framebuffer_texture();
+            engine::graphics::Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, screenTexture, 0);
 
-            engine::graphics::OpenGL::bind_framebuffer(0);
+            engine::graphics::Framebuffer::bind_framebuffer(0);
         }
     }
 
     void PostProcessingController::begin_draw() {
-        engine::graphics::OpenGL::bind_framebuffer(hdrFBO);
+        engine::graphics::Framebuffer::bind_framebuffer(hdrFBO);
         engine::graphics::OpenGL::clear_buffers();
     }
 
     void PostProcessingController::end_draw() {
-        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::Framebuffer::bind_framebuffer(0);
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->swap_buffers();
     }
@@ -89,33 +89,33 @@ namespace app {
         engine::resources::Shader* bloom_final = resources->shader("bloom_final");
         engine::resources::Shader* blur = resources->shader("blur");
 
-        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::Framebuffer::bind_framebuffer(0);
 
         bool horizontal = true, first_iteration = true;
         unsigned int amount = 10;
         blur->use();
         for (unsigned int i = 0; i < amount; i++)
         {
-            engine::graphics::OpenGL::bind_framebuffer(pingpongFBO[horizontal]);
+            engine::graphics::Framebuffer::bind_framebuffer(pingpongFBO[horizontal]);
             blur->set_int("horizontal", horizontal);
-            engine::graphics::OpenGL::bind_texture(first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
-            engine::graphics::OpenGL::render_quad(quadVAO);
+            engine::graphics::Framebuffer::bind_texture(first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
+            engine::graphics::Framebuffer::render_quad(quadVAO);
             horizontal = !horizontal;
             if (first_iteration)
                 first_iteration = false;
         }
-        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::Framebuffer::bind_framebuffer(0);
 
-        engine::graphics::OpenGL::bind_framebuffer(screenFBO);
+        engine::graphics::Framebuffer::bind_framebuffer(screenFBO);
         engine::graphics::OpenGL::clear_buffers(false);
         bloom_final->use();
-        engine::graphics::OpenGL::activate_texture(colorBuffers[0], 0);
-        engine::graphics::OpenGL::activate_texture(pingpongBuffer[!horizontal], 1);
+        engine::graphics::Framebuffer::activate_texture(colorBuffers[0], 0);
+        engine::graphics::Framebuffer::activate_texture(pingpongBuffer[!horizontal], 1);
         bloom_final->set_int("bloom", true);
         bloom_final->set_float("exposure", 0.2f);
-        engine::graphics::OpenGL::render_quad(quadVAO);
+        engine::graphics::Framebuffer::render_quad(quadVAO);
 
-        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::Framebuffer::bind_framebuffer(0);
     }
 
     void PostProcessingController::draw_filters() {
@@ -127,9 +127,9 @@ namespace app {
         engine::resources::Shader* blackWhite = resources->shader("blackWhite");
         engine::resources::Shader* noFilter = resources->shader("noFilter");
 
-        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::Framebuffer::bind_framebuffer(0);
         engine::graphics::OpenGL::clear_buffers(false);
-        engine::graphics::OpenGL::activate_texture(screenTexture, 0);
+        engine::graphics::Framebuffer::activate_texture(screenTexture, 0);
 
         switch (Settings::getInstance().filter) {
         case Filter::NEGATIVE :
@@ -151,7 +151,7 @@ namespace app {
             noFilter->use();
             break;
         }
-        engine::graphics::OpenGL::render_quad(quadVAO);
+        engine::graphics::Framebuffer::render_quad(quadVAO);
     }
 
     void PostProcessingController::draw_health_bar() {
@@ -164,7 +164,7 @@ namespace app {
         engine::graphics::OpenGL::gl_blend_func();
 
         heartShader->use();
-        engine::graphics::OpenGL::activate_texture(heartTex->id(), 0);
+        engine::graphics::Framebuffer::activate_texture(heartTex->id(), 0);
 
         auto window = engine::core::Controller::get<engine::platform::PlatformController>()->window();
         float screenWidth = window->width();
@@ -193,7 +193,7 @@ namespace app {
             ));
 
             heartShader->set_mat4("model", model);
-            engine::graphics::OpenGL::render_quad(quadVAO);
+            engine::graphics::Framebuffer::render_quad(quadVAO);
         }
         engine::graphics::OpenGL::disable_blend();
         engine::graphics::OpenGL::enable_depth_testing();
@@ -201,16 +201,16 @@ namespace app {
 
     void PostProcessingController::terminate() {
         if (hdrFBO != 0) {
-            engine::graphics::OpenGL::delete_framebuffer(hdrFBO);
+            engine::graphics::Framebuffer::delete_framebuffer(hdrFBO);
             hdrFBO = 0;
         }
         if (screenFBO != 0) {
-            engine::graphics::OpenGL::delete_framebuffer(screenFBO);
+            engine::graphics::Framebuffer::delete_framebuffer(screenFBO);
             screenFBO = 0;
         }
         for (unsigned int i = 0; i < 2; i++) {
             if (pingpongFBO[i] != 0) {
-                engine::graphics::OpenGL::delete_framebuffer(pingpongFBO[i]);
+                engine::graphics::Framebuffer::delete_framebuffer(pingpongFBO[i]);
                 pingpongFBO[i] = 0;
             }
         }
@@ -229,7 +229,7 @@ namespace app {
         }
 
         if (quadVAO != 0) {
-            engine::graphics::OpenGL::delete_vertex_array(quadVAO);
+            engine::graphics::Framebuffer::delete_vertex_array(quadVAO);
             quadVAO = 0;
         }
     }

@@ -156,31 +156,12 @@ namespace engine::graphics {
         */
         static std::string get_compilation_error_message(uint32_t shader_id);
 
-        static unsigned int generate_framebuffer();
-        static std::pair<unsigned int, unsigned int> generate_two_framebuffers();
-
-        static void bind_framebuffer(unsigned int FBO);
-
-        static unsigned int generate_framebuffer_texture();
-        static std::pair<unsigned int, unsigned int> generate_two_framebuffer_textures();
-
-        static void set_up_framebuffer_texture(unsigned int window_width, unsigned int window_height, unsigned int texture, int attachment_pos);
-
-        static void bind_texture(unsigned int texture);
-
-        static void generate_depth_buffer(unsigned int window_width, unsigned int window_height);
-
-        static void set_up_attachments();
-
-        static void activate_texture(unsigned int texture, int pos);
-
-        static unsigned int set_up_quad();
-
-        static void render_quad(unsigned int VAO);
-
+        /**
+        * @brief deletes a texture
+        * @param texture the texture id of the texture that should be deleted
+        */
         static void delete_texture(unsigned int texture);
-        static void delete_framebuffer(unsigned int FBO);
-        static void delete_vertex_array(unsigned int VAO);
+
     private:
         /**
         * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.
