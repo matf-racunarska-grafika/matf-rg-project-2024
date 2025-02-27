@@ -196,6 +196,14 @@ namespace app {
         draw_skybox();
     }
 
+    void set_camera_to_starting_position() {
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+        camera->Position = glm::vec3(0.0f);
+        camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
+        camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+    }
+
     void MainController::update_camera() {
         auto gui_controller = engine::core::Controller::get<GuiController>();
         if (gui_controller->is_enabled()) {
@@ -228,15 +236,16 @@ namespace app {
                 camera->move_camera(engine::graphics::Camera::Movement::UP, dt*speed);
             }
         } else {
+            if (platform->frame_time().current < Settings::getInstance().teleport_cooldown)
+                return;
             if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
                 if (!skullFacing) {
                     camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
                 } else {
                     Settings::getInstance().health--;
                     // teleport player to start if he has been spotted
-                    camera->Position = glm::vec3(0.0f);
-                    camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-                    camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+                    set_camera_to_starting_position();
+                    Settings::getInstance().teleport_cooldown = platform->frame_time().current + 0.5f;
                 }
             }
         }
@@ -256,9 +265,7 @@ namespace app {
             auto camera = graphics->camera();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
-            camera->Position = glm::vec3(0.0f);
-            camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-            camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+            set_camera_to_starting_position();
         }
 
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -267,19 +274,9 @@ namespace app {
             Settings::getInstance().spectatorMode = false;
             auto gui_controller = engine::core::Controller::get<GuiController>();
             auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-            auto camera = graphics->camera();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
-            camera->Position = glm::vec3(0.0f);
-            camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-            camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
         }
-    }
-
-    glm::vec3 rotate_vector_Y(const glm::vec3& vec, float angleDegrees) {
-        float angleRadians = glm::radians(angleDegrees);
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angleRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-        return glm::vec3(rotation * glm::vec4(vec, 0.0f));
     }
 
     void MainController::update_skull_facing() {

@@ -70,7 +70,7 @@ namespace engine::graphics {
         /**
          * @brief activates a texture for a given position
          * @param texture the texture id of the texture that should be activated
-         * @param to which position should the texture be activated
+         * @param pos to which position should the texture be activated
          */
         static void activate_texture(unsigned int texture, int pos);
 
