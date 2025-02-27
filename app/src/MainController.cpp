@@ -273,9 +273,9 @@ namespace app {
             && platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) {
             Settings::getInstance().spectatorMode = false;
             auto gui_controller = engine::core::Controller::get<GuiController>();
-            auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
+            set_camera_to_starting_position();
         }
     }
 
