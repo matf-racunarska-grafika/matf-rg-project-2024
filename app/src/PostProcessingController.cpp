@@ -2,7 +2,6 @@
 #include <engine/core/Controller.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/OpenGL.hpp>
-#include <../glad/include/glad/glad.h>
 #include <spdlog/spdlog.h>
 
 #include <ProgramState.hpp>
@@ -13,9 +12,10 @@ namespace app {
         auto window = platform->window();
         unsigned int wHeight = window->height();
         unsigned int wWidth = window->width();
+
         prepare_bloom_effect(wHeight, wWidth);
         prepare_filter_effect(wHeight, wWidth);
-        prepare_quad();
+        quadVAO = engine::graphics::OpenGL::set_up_quad();
     }
 
     void PostProcessingController::draw() {
@@ -26,81 +26,45 @@ namespace app {
 
     void PostProcessingController::prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth) {
         if (hdrFBO == 0) {
-            CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
+            hdrFBO = engine::graphics::OpenGL::generate_framebuffer();
+            engine::graphics::OpenGL::bind_framebuffer(hdrFBO);
 
-            CHECKED_GL_CALL(glGenTextures, 2, colorBuffers);
+            std::tie(colorBuffers[0], colorBuffers[1]) = engine::graphics::OpenGL::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
-                CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[i]);
-                CHECKED_GL_CALL(glTexImage2D,
-                    GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                CHECKED_GL_CALL(glFramebufferTexture2D,
-                    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
+                engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, colorBuffers[i], i);
             }
-            unsigned int rboDepth;
-            CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
-            CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
-            CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wWidth, wHeight);
-            CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+            engine::graphics::OpenGL::generate_depth_buffer(wWidth, wHeight);
+            engine::graphics::OpenGL::set_up_attachments();
+            engine::graphics::OpenGL::bind_framebuffer(0);
 
-            attachments[0] = GL_COLOR_ATTACHMENT0;
-            attachments[1] = GL_COLOR_ATTACHMENT1;
-            CHECKED_GL_CALL(glDrawBuffers, 2, attachments);
-
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
-
-            CHECKED_GL_CALL(glGenFramebuffers, 2, pingpongFBO);
-            CHECKED_GL_CALL(glGenTextures, 2, pingpongBuffer);
+            std::tie(pingpongFBO[0], pingpongFBO[1]) = engine::graphics::OpenGL::generate_two_framebuffers();
+            std::tie(pingpongBuffer[0], pingpongBuffer[1]) = engine::graphics::OpenGL::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
-                CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[i]);
-                CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[i]);
-                CHECKED_GL_CALL(glTexImage2D,
-                    GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                CHECKED_GL_CALL(glFramebufferTexture2D,
-                    GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pingpongBuffer[i], 0);
+                engine::graphics::OpenGL::bind_framebuffer(pingpongFBO[i]);
+                engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, pingpongBuffer[i], 0);
             }
-
             prepare_bloom_shaders();
         }
     }
     void PostProcessingController::prepare_filter_effect(unsigned int wHeight, unsigned int wWidth) {
         if (screenFBO == 0) {
-            CHECKED_GL_CALL(glGenFramebuffers, 1, &screenFBO);
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, screenFBO);
+            screenFBO = engine::graphics::OpenGL::generate_framebuffer();
+            engine::graphics::OpenGL::bind_framebuffer(screenFBO);
 
-            CHECKED_GL_CALL(glGenTextures, 1, &screenTexture);
-            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, screenTexture);
-            CHECKED_GL_CALL(glTexImage2D,
-                GL_TEXTURE_2D, 0, GL_RGBA16F, wWidth, wHeight, 0, GL_RGBA, GL_FLOAT, nullptr);
-            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            screenTexture = engine::graphics::OpenGL::generate_framebuffer_texture();
+            engine::graphics::OpenGL::set_up_framebuffer_texture(wWidth, wHeight, screenTexture, 0);
 
-            CHECKED_GL_CALL(glFramebufferTexture2D,
-                GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
-
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+            engine::graphics::OpenGL::bind_framebuffer(0);
         }
     }
 
     void PostProcessingController::begin_draw() {
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
+        engine::graphics::OpenGL::bind_framebuffer(hdrFBO);
         engine::graphics::OpenGL::clear_buffers();
     }
 
     void PostProcessingController::end_draw() {
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+        engine::graphics::OpenGL::bind_framebuffer(0);
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->swap_buffers();
     }
@@ -125,35 +89,33 @@ namespace app {
         engine::resources::Shader* bloom_final = resources->shader("bloom_final");
         engine::resources::Shader* blur = resources->shader("blur");
 
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+        engine::graphics::OpenGL::bind_framebuffer(0);
 
         bool horizontal = true, first_iteration = true;
         unsigned int amount = 10;
         blur->use();
         for (unsigned int i = 0; i < amount; i++)
         {
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+            engine::graphics::OpenGL::bind_framebuffer(pingpongFBO[horizontal]);
             blur->set_int("horizontal", horizontal);
-            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
-            render_quad();
+            engine::graphics::OpenGL::bind_texture(first_iteration ? colorBuffers[1] : pingpongBuffer[!horizontal]);
+            engine::graphics::OpenGL::render_quad(quadVAO);
             horizontal = !horizontal;
             if (first_iteration)
                 first_iteration = false;
         }
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+        engine::graphics::OpenGL::bind_framebuffer(0);
 
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, screenFBO);
-        CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        engine::graphics::OpenGL::bind_framebuffer(screenFBO);
+        engine::graphics::OpenGL::clear_buffers(false);
         bloom_final->use();
-        CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[0]);
-        CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongBuffer[!horizontal]);
+        engine::graphics::OpenGL::activate_texture(colorBuffers[0], 0);
+        engine::graphics::OpenGL::activate_texture(pingpongBuffer[!horizontal], 1);
         bloom_final->set_int("bloom", true);
         bloom_final->set_float("exposure", 0.2f);
-        render_quad();
+        engine::graphics::OpenGL::render_quad(quadVAO);
 
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
+        engine::graphics::OpenGL::bind_framebuffer(0);
     }
 
     void PostProcessingController::draw_filters() {
@@ -165,11 +127,9 @@ namespace app {
         engine::resources::Shader* blackWhite = resources->shader("blackWhite");
         engine::resources::Shader* noFilter = resources->shader("noFilter");
 
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
-        CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, screenTexture);
+        engine::graphics::OpenGL::bind_framebuffer(0);
+        engine::graphics::OpenGL::clear_buffers(false);
+        engine::graphics::OpenGL::activate_texture(screenTexture, 0);
 
         switch (Settings::getInstance().filter) {
         case Filter::NEGATIVE :
@@ -191,7 +151,7 @@ namespace app {
             noFilter->use();
             break;
         }
-        render_quad();
+        engine::graphics::OpenGL::render_quad(quadVAO);
     }
 
     void PostProcessingController::draw_health_bar() {
@@ -199,14 +159,12 @@ namespace app {
         engine::resources::Shader* heartShader = resources->shader("heart");
         engine::resources::Texture* heartTex = resources->texture("heart");
 
-        CHECKED_GL_CALL(glDisable, GL_DEPTH_TEST);
-        CHECKED_GL_CALL(glEnable, GL_BLEND);
-        CHECKED_GL_CALL(glBlendFunc, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        engine::graphics::OpenGL::disable_depth_testing();
+        engine::graphics::OpenGL::enable_blend();
+        engine::graphics::OpenGL::gl_blend_func();
 
         heartShader->use();
-
-        CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, heartTex->id());
+        engine::graphics::OpenGL::activate_texture(heartTex->id(), 0);
 
         auto window = engine::core::Controller::get<engine::platform::PlatformController>()->window();
         float screenWidth = window->width();
@@ -235,74 +193,44 @@ namespace app {
             ));
 
             heartShader->set_mat4("model", model);
-            render_quad();
+            engine::graphics::OpenGL::render_quad(quadVAO);
         }
-        CHECKED_GL_CALL(glDisable, GL_BLEND);
-        CHECKED_GL_CALL(glEnable, GL_DEPTH_TEST);
-    }
-
-    void PostProcessingController::prepare_quad() {
-        if (quadVAO == 0)
-        {
-            float quadVertices[] = {
-                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-                 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            };
-            CHECKED_GL_CALL(glGenVertexArrays, 1, &quadVAO);
-            CHECKED_GL_CALL(glGenBuffers, 1, &quadVBO);
-            CHECKED_GL_CALL(glBindVertexArray, quadVAO);
-            CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, quadVBO);
-            CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-            CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
-            CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float) , (void*)0);
-            CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
-            CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        }
-    }
-
-    void PostProcessingController::render_quad() {
-        CHECKED_GL_CALL(glBindVertexArray, quadVAO);
-        CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
-        CHECKED_GL_CALL(glBindVertexArray, 0);
+        engine::graphics::OpenGL::disable_blend();
+        engine::graphics::OpenGL::enable_depth_testing();
     }
 
     void PostProcessingController::terminate() {
         if (hdrFBO != 0) {
-            CHECKED_GL_CALL(glDeleteFramebuffers, 1, &hdrFBO);
+            engine::graphics::OpenGL::delete_framebuffer(hdrFBO);
             hdrFBO = 0;
         }
         if (screenFBO != 0) {
-            CHECKED_GL_CALL(glDeleteFramebuffers, 1, &screenFBO);
+            engine::graphics::OpenGL::delete_framebuffer(screenFBO);
             screenFBO = 0;
         }
         for (unsigned int i = 0; i < 2; i++) {
             if (pingpongFBO[i] != 0) {
-                CHECKED_GL_CALL(glDeleteFramebuffers, 1, &pingpongFBO[i]);
+                engine::graphics::OpenGL::delete_framebuffer(pingpongFBO[i]);
                 pingpongFBO[i] = 0;
             }
         }
         if (colorBuffers[0] != 0 || colorBuffers[1] != 0) {
-            CHECKED_GL_CALL(glDeleteTextures, 2, colorBuffers);
+            engine::graphics::OpenGL::delete_texture(colorBuffers[0]);
             colorBuffers[0] = colorBuffers[1] = 0;
         }
         if (pingpongBuffer[0] != 0 || pingpongBuffer[1] != 0) {
-            CHECKED_GL_CALL(glDeleteTextures, 2, pingpongBuffer);
+            engine::graphics::OpenGL::delete_texture(pingpongBuffer[0]);
+            engine::graphics::OpenGL::delete_texture(pingpongBuffer[1]);
             pingpongBuffer[0] = pingpongBuffer[1] = 0;
         }
         if (screenTexture != 0) {
-            CHECKED_GL_CALL(glDeleteTextures, 1, &screenTexture);
+            engine::graphics::OpenGL::delete_texture(screenTexture);
             screenTexture = 0;
         }
 
         if (quadVAO != 0) {
-            CHECKED_GL_CALL(glDeleteVertexArrays, 1, &quadVAO);
+            engine::graphics::OpenGL::delete_vertex_array(quadVAO);
             quadVAO = 0;
-        }
-        if (quadVBO != 0) {
-            CHECKED_GL_CALL(glDeleteBuffers, 1, &quadVBO);
-            quadVBO = 0;
         }
     }
 }

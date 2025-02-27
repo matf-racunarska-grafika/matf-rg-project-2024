@@ -129,9 +129,25 @@ namespace engine::graphics {
         static void disable_depth_testing();
 
         /**
-        * @brief Clears GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, and GL_STENCIL_BUFFER_BIT.
+        * @brief Enables blend.
         */
-        static void clear_buffers();
+        static void enable_blend();
+
+        /**
+        * @brief Disables blend.
+        */
+        static void disable_blend();
+
+        /**
+         * @brief sets up the blend function in OpenGL
+         */
+        static void gl_blend_func();
+
+        /**
+        * @brief Clears GL_DEPTH_BUFFER_BIT, GL_COLOR_BUFFER_BIT, and GL_STENCIL_BUFFER_BIT.
+        * @param should_clear_stencil if true will clear stencil buffer, if false wont
+        */
+        static void clear_buffers(bool should_clear_stencil = true);
 
         /**
         * @brief Retrieve the shader compilation error log message.
@@ -140,6 +156,31 @@ namespace engine::graphics {
         */
         static std::string get_compilation_error_message(uint32_t shader_id);
 
+        static unsigned int generate_framebuffer();
+        static std::pair<unsigned int, unsigned int> generate_two_framebuffers();
+
+        static void bind_framebuffer(unsigned int FBO);
+
+        static unsigned int generate_framebuffer_texture();
+        static std::pair<unsigned int, unsigned int> generate_two_framebuffer_textures();
+
+        static void set_up_framebuffer_texture(unsigned int window_width, unsigned int window_height, unsigned int texture, int attachment_pos);
+
+        static void bind_texture(unsigned int texture);
+
+        static void generate_depth_buffer(unsigned int window_width, unsigned int window_height);
+
+        static void set_up_attachments();
+
+        static void activate_texture(unsigned int texture, int pos);
+
+        static unsigned int set_up_quad();
+
+        static void render_quad(unsigned int VAO);
+
+        static void delete_texture(unsigned int texture);
+        static void delete_framebuffer(unsigned int FBO);
+        static void delete_vertex_array(unsigned int VAO);
     private:
         /**
         * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.
