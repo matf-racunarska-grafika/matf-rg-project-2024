@@ -50,15 +50,15 @@ namespace app {
         }
 
         auto ppc = engine::core::Controller::get<engine::graphics::PostProcessingController>();
-        Filter filter = ppc->get_active_filter();
+        std::string filter = ppc->get_active_filter();
         if (ImGui::CollapsingHeader("Cool Filters")) {
             ImGui::Text("Choose your filter:");
-            if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { ppc->set_active_filter(Filter::NONE); }
-            if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { ppc->set_active_filter(Filter::NEGATIVE); }
-            if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { ppc->set_active_filter(Filter::GRAYSCALE); }
-            if (ImGui::RadioButton("FRIED", filter == Filter::DEEPFRIED)) { ppc->set_active_filter(Filter::DEEPFRIED); }
-            if (ImGui::RadioButton("LINE", filter == Filter::OUTLINE)) { ppc->set_active_filter(Filter::OUTLINE); }
-            if (ImGui::RadioButton("B&W", filter == Filter::BLACKWHITE)) { ppc->set_active_filter(Filter::BLACKWHITE); }
+            if (ImGui::RadioButton("NONE", filter == "noFilter")) { ppc->set_active_filter("noFilter"); }
+            if (ImGui::RadioButton("VOID", filter == "negative")) { ppc->set_active_filter("negative"); }
+            if (ImGui::RadioButton("NOIR", filter == "grayscale")) { ppc->set_active_filter("grayscale"); }
+            if (ImGui::RadioButton("FRIED", filter == "deepfried")) { ppc->set_active_filter("deepfried"); }
+            if (ImGui::RadioButton("LINE", filter == "outline")) { ppc->set_active_filter("outline"); }
+            if (ImGui::RadioButton("B&W", filter == "blackWhite")) { ppc->set_active_filter("blackWhite"); }
         }
 
         ImGui::Spacing();

@@ -120,9 +120,8 @@ namespace engine::graphics {
 
     void PostProcessingController::draw_filter() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader* post_processing_shader = resources->shader("postProcessing");
+        engine::resources::Shader* post_processing_shader = resources->shader(m_active_filter);
         post_processing_shader->use();
-        post_processing_shader->set_int("effectType", static_cast<int>(m_active_filter));
 
         engine::graphics::Framebuffer::bind_framebuffer(0);
         engine::graphics::OpenGL::clear_buffers(false);
@@ -162,11 +161,11 @@ namespace engine::graphics {
         engine::graphics::Framebuffer::delete_quad();
     }
 
-    Filter PostProcessingController::get_active_filter() const {
+    std::string PostProcessingController::get_active_filter() const {
         return m_active_filter;
     }
 
-    void PostProcessingController::set_active_filter(Filter filter) {
-        m_active_filter = filter;
+    void PostProcessingController::set_active_filter(std::string filterShader) {
+        m_active_filter = filterShader;
     }
 }

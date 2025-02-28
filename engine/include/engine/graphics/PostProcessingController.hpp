@@ -3,15 +3,6 @@
 
 #include <engine/core/Controller.hpp>
 
-enum class Filter : int {
-  NONE = 0,
-  GRAYSCALE = 1,
-  NEGATIVE = 2,
-  BLACKWHITE = 3,
-  DEEPFRIED = 4,
-  OUTLINE = 5
-};
-
 namespace engine::graphics {
   class PostProcessingController : public engine::core::Controller {
     unsigned int m_hdrFBO = 0;
@@ -21,7 +12,7 @@ namespace engine::graphics {
     unsigned int m_screenFBO = 0;
     unsigned int m_screenTexture = 0;
 
-    Filter m_active_filter = Filter::NONE;
+    std::string m_active_filter = "noFilter";
 
   public:
     std::string_view name() const override {
@@ -33,8 +24,8 @@ namespace engine::graphics {
     void prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth);
     void prepare_bloom_shaders();
 
-    Filter get_active_filter() const;
-    void set_active_filter(Filter filter);
+    std::string get_active_filter() const;
+    void set_active_filter(std::string filterShader);
 
     void draw() override;
 
