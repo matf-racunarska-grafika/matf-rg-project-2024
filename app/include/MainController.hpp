@@ -23,7 +23,6 @@ namespace app {
         void draw_bridge();
         void draw_arena();
         void draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model);
-        void draw_filters();
         void draw_skybox();
         void draw_health_bar();
 

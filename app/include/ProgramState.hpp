@@ -3,15 +3,6 @@
 
 #include <glm/glm.hpp>
 
-enum class Filter : int {
-    NONE = 0,
-    GRAYSCALE = 1,
-    NEGATIVE = 2,
-    BLACKWHITE = 3,
-    DEEPFRIED = 4,
-    OUTLINE = 5
-};
-
 class Settings {
 public:
     static Settings& getInstance() {
@@ -24,7 +15,6 @@ public:
     unsigned int difficulty = 1;
     float skullSpeed = 160.0f;
     bool skullFacingPlayer = true;
-    Filter filter = Filter::NONE;
     int health = 3;
     int maxHealth = 3;
     float teleport_cooldown = 0.0f;

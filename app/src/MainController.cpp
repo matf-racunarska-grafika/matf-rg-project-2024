@@ -236,26 +236,11 @@ namespace app {
         engine::graphics::OpenGL::enable_depth_testing();
     }
 
-    void MainController::draw_filters() {
-        auto ppc = engine::core::Controller::get<engine::graphics::PostProcessingController>();
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader* post_processing_shader = resources->shader("postProcessing");
-        post_processing_shader->use();
-        post_processing_shader->set_int("effectType", static_cast<int>(Settings::getInstance().filter));
-
-        engine::graphics::Framebuffer::bind_framebuffer(0);
-        engine::graphics::OpenGL::clear_buffers(false);
-        engine::graphics::Framebuffer::activate_texture(ppc->get_screen_texture(), 0);
-
-        engine::graphics::Framebuffer::render_quad();
-    }
-
     void MainController::draw() {
         draw_bridge();
         draw_skull();
         draw_arena();
         draw_skybox();
-        draw_filters();
 
         draw_health_bar();
     }

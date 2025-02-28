@@ -1,4 +1,5 @@
 #include <engine/graphics/GraphicsController.hpp>
+#include <engine/graphics/PostProcessingController.hpp>
 
 #include <GuiController.hpp>
 #include <ProgramState.hpp>
@@ -48,17 +49,17 @@ namespace app {
             ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 12.0f);
         }
 
-        Filter filter = Settings::getInstance().filter;
+        auto ppc = engine::core::Controller::get<engine::graphics::PostProcessingController>();
+        Filter filter = ppc->get_active_filter();
         if (ImGui::CollapsingHeader("Cool Filters")) {
             ImGui::Text("Choose your filter:");
-            if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { filter = Filter::NONE; }
-            if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { filter = Filter::NEGATIVE; }
-            if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { filter = Filter::GRAYSCALE; }
-            if (ImGui::RadioButton("FRIED", filter == Filter::DEEPFRIED)) { filter = Filter::DEEPFRIED; }
-            if (ImGui::RadioButton("LINE", filter == Filter::OUTLINE)) { filter = Filter::OUTLINE; }
-            if (ImGui::RadioButton("B&W", filter == Filter::BLACKWHITE)) { filter = Filter::BLACKWHITE; }
+            if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { ppc->set_active_filter(Filter::NONE); }
+            if (ImGui::RadioButton("VOID", filter == Filter::NEGATIVE)) { ppc->set_active_filter(Filter::NEGATIVE); }
+            if (ImGui::RadioButton("NOIR", filter == Filter::GRAYSCALE)) { ppc->set_active_filter(Filter::GRAYSCALE); }
+            if (ImGui::RadioButton("FRIED", filter == Filter::DEEPFRIED)) { ppc->set_active_filter(Filter::DEEPFRIED); }
+            if (ImGui::RadioButton("LINE", filter == Filter::OUTLINE)) { ppc->set_active_filter(Filter::OUTLINE); }
+            if (ImGui::RadioButton("B&W", filter == Filter::BLACKWHITE)) { ppc->set_active_filter(Filter::BLACKWHITE); }
         }
-        Settings::getInstance().filter = filter;
 
         ImGui::Spacing();
         ImGui::Separator();
