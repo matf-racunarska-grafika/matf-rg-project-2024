@@ -4,7 +4,6 @@
 #include <engine/core/Controller.hpp>
 #include <engine/core/Engine.hpp>
 
-
 namespace app {
     class MainController final : public engine::core::Controller {
         void initialize() override;
@@ -24,6 +23,7 @@ namespace app {
         void draw_bridge();
         void draw_arena();
         void draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model);
+        void draw_filters();
         void draw_skybox();
         void draw_health_bar();
 

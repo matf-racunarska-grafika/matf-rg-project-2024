@@ -13,7 +13,7 @@ namespace app {
         auto gui_controller = register_controller<app::GuiController>();
         auto ppc = engine::core::Controller::get<engine::graphics::PostProcessingController>();
         main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
-        main_controller->before(gui_controller);
         ppc->after(main_controller);
+        gui_controller->after(ppc);
     }
 } // app

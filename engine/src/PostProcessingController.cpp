@@ -1,8 +1,10 @@
-#include <engine/graphics/PostProcessingController.hpp>
 #include <engine/core/Controller.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 #include <engine/graphics/OpenGL.hpp>
+#include <engine/graphics/PostProcessingController.hpp>
+
+#include <minizip/unzip.h>
 #include <spdlog/spdlog.h>
 
 namespace engine::graphics {
@@ -18,8 +20,8 @@ namespace engine::graphics {
     }
 
     void PostProcessingController::draw() {
+        // I know it's a passthrough but that's on purpose so that if any other effects are added it's easier to implement
         draw_bloom();
-        draw_filters();
     }
 
     void PostProcessingController::prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth) {
@@ -116,19 +118,6 @@ namespace engine::graphics {
         engine::graphics::Framebuffer::bind_framebuffer(0);
     }
 
-    void PostProcessingController::draw_filters() {
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader* post_processing_shader = resources->shader("postProcessing");
-        post_processing_shader->use();
-        post_processing_shader->set_int("effectType", static_cast<int>(m_active_filter));
-
-        engine::graphics::Framebuffer::bind_framebuffer(0);
-        engine::graphics::OpenGL::clear_buffers(false);
-        engine::graphics::Framebuffer::activate_texture(m_screenTexture, 0);
-
-        engine::graphics::Framebuffer::render_quad();
-    }
-
     void PostProcessingController::terminate() {
         if (m_hdrFBO != 0) {
             engine::graphics::Framebuffer::delete_framebuffer(m_hdrFBO);
@@ -160,11 +149,7 @@ namespace engine::graphics {
         engine::graphics::Framebuffer::delete_quad();
     }
 
-    void PostProcessingController::set_active_filter(Filter filter) {
-        m_active_filter = filter;
-    }
-
-    Filter PostProcessingController::get_active_filter() {
-        return m_active_filter;
+    unsigned int PostProcessingController::get_screen_texture() {
+        return m_screenTexture;
     }
 }

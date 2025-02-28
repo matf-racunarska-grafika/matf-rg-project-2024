@@ -3,6 +3,15 @@
 
 #include <glm/glm.hpp>
 
+enum class Filter : int {
+    NONE = 0,
+    GRAYSCALE = 1,
+    NEGATIVE = 2,
+    BLACKWHITE = 3,
+    DEEPFRIED = 4,
+    OUTLINE = 5
+};
+
 class Settings {
 public:
     static Settings& getInstance() {

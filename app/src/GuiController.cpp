@@ -1,5 +1,4 @@
 #include <engine/graphics/GraphicsController.hpp>
-#include <engine/graphics/PostProcessingController.hpp>
 
 #include <GuiController.hpp>
 #include <ProgramState.hpp>
@@ -48,8 +47,8 @@ namespace app {
             ImGui::SliderFloat("Green", &Settings::getInstance().lightColor.y, 0.0f, 12.0f);
             ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 12.0f);
         }
-        auto ppc = engine::core::Controller::get<engine::graphics::PostProcessingController>();
-        Filter filter = ppc->get_active_filter();
+
+        Filter filter = Settings::getInstance().filter;
         if (ImGui::CollapsingHeader("Cool Filters")) {
             ImGui::Text("Choose your filter:");
             if (ImGui::RadioButton("NONE", filter == Filter::NONE)) { filter = Filter::NONE; }
@@ -59,7 +58,7 @@ namespace app {
             if (ImGui::RadioButton("LINE", filter == Filter::OUTLINE)) { filter = Filter::OUTLINE; }
             if (ImGui::RadioButton("B&W", filter == Filter::BLACKWHITE)) { filter = Filter::BLACKWHITE; }
         }
-        ppc->set_active_filter(filter);
+        Settings::getInstance().filter = filter;
 
         ImGui::Spacing();
         ImGui::Separator();
