@@ -37,7 +37,7 @@ void main()
     } else if (effectType == 3) {
         // Black & White
         float gray = dot(color, vec3(0.299, 0.587, 0.114));
-        float bw = step(0.125, gray);
+        float bw = step(0.2f, gray);
         FragColor = vec4(vec3(bw), 1.0);
     } else if (effectType == 4) {
         // Deepfried
@@ -69,6 +69,7 @@ void main()
 
         FragColor = vec4(col, 1.0);
     } else if (effectType == 5) {
+        // Outline
         vec2 offset[9] = vec2[](
             vec2(-offset, offset),
             vec2(0.0f, offset),
