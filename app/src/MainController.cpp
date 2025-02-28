@@ -1,12 +1,15 @@
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/platform/PlatformController.hpp>
+#include <engine/graphics/PostProcessingController.hpp>
+#include <engine/graphics/Framebuffer.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <spdlog/spdlog.h>
 
 #include <GuiController.hpp>
 #include <MainController.hpp>
 #include <ProgramState.hpp>
+
 
 namespace app {
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -189,11 +192,58 @@ namespace app {
         graphics->draw_skybox(shader, skybox);
     }
 
+    void MainController::draw_health_bar() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        engine::resources::Shader* heartShader = resources->shader("heart");
+        engine::resources::Texture* heartTex = resources->texture("heart");
+
+        engine::graphics::OpenGL::disable_depth_testing();
+        engine::graphics::OpenGL::enable_blend();
+        engine::graphics::OpenGL::gl_blend_func();
+
+        heartShader->use();
+        engine::graphics::Framebuffer::activate_texture(heartTex->id(), 0);
+
+        auto window = engine::core::Controller::get<engine::platform::PlatformController>()->window();
+        float screenWidth = window->width();
+        float screenHeight = window->height();
+
+        const float heartSize = 50.0f;
+        const float padding = 10.0f;
+        const float startX = screenWidth - heartSize - padding;
+        const float startY = padding + 35.0f;
+
+        int currentHealth = Settings::getInstance().health;
+        for (int i = 0; i < currentHealth; ++i) {
+            float x = startX - i * (heartSize + padding);
+            float y = startY;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(
+                (x / screenWidth) * 2.0f - 1.0f,
+                1.0f - (y / screenHeight) * 2.0f,
+                0.0f
+            ));
+            model = glm::scale(model, glm::vec3(
+                heartSize / screenWidth,
+                heartSize / screenHeight,
+                1.0f
+            ));
+
+            heartShader->set_mat4("model", model);
+            engine::graphics::Framebuffer::render_quad();
+        }
+        engine::graphics::OpenGL::disable_blend();
+        engine::graphics::OpenGL::enable_depth_testing();
+    }
+
     void MainController::draw() {
         draw_bridge();
         draw_skull();
         draw_arena();
         draw_skybox();
+
+        draw_health_bar();
     }
 
     void set_camera_to_starting_position() {
@@ -300,6 +350,5 @@ namespace app {
         }
         Settings::getInstance().skullFacingPlayer = skullFacing;
     }
-
 
 } // app

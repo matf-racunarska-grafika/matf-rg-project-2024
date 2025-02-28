@@ -9,6 +9,8 @@
 
 namespace engine::graphics {
     class Framebuffer {
+    private:
+        static unsigned int VAO;
     public:
         /**
         * @brief generates a framebuffer
@@ -77,13 +79,12 @@ namespace engine::graphics {
         /**
          * @brief sets up the VAO and VBO for rendering a quad
          */
-        static unsigned int set_up_quad();
+        static void set_up_quad();
 
         /**
          * @renders a standard quad over screen
-         * @param VAO vertex array object of the quad that needs to be rendered
          */
-        static void render_quad(unsigned int VAO);
+        static void render_quad();
 
         /**
          * @brief deletes a given framebuffer
@@ -93,9 +94,8 @@ namespace engine::graphics {
 
         /**
          * @brief deleted a given vertex array
-         * @param VAO vertex array object that needs to be deleted
          */
-        static void delete_vertex_array(unsigned int VAO);
+        static void delete_quad();
     };
 }
 

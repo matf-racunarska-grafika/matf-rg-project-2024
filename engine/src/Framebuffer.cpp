@@ -3,6 +3,9 @@
 #include <glad/glad.h>
 
 namespace engine::graphics {
+
+    unsigned int Framebuffer::VAO;
+
     unsigned int Framebuffer::generate_framebuffer() {
         unsigned int FBO;
         CHECKED_GL_CALL(glGenFramebuffers, 1, &FBO);
@@ -14,7 +17,6 @@ namespace engine::graphics {
         CHECKED_GL_CALL(glGenFramebuffers, 2, pingpongFBO);
         return {pingpongFBO[0], pingpongFBO[1]};
     }
-
 
     void Framebuffer::bind_framebuffer(unsigned int FBO) {
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, FBO);
@@ -67,8 +69,7 @@ namespace engine::graphics {
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, texture);
     }
 
-    unsigned int Framebuffer::set_up_quad() {
-        unsigned int quadVAO;
+    void Framebuffer::set_up_quad() {
         unsigned int quadVBO;
         float quadVertices[] = {
             -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -76,19 +77,18 @@ namespace engine::graphics {
              1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
              1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
-        CHECKED_GL_CALL(glGenVertexArrays, 1, &quadVAO);
+        CHECKED_GL_CALL(glGenVertexArrays, 1, &VAO);
         CHECKED_GL_CALL(glGenBuffers, 1, &quadVBO);
-        CHECKED_GL_CALL(glBindVertexArray, quadVAO);
+        CHECKED_GL_CALL(glBindVertexArray, VAO);
         CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, quadVBO);
         CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
         CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
         CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float) , (void*)0);
         CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
         CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        return quadVAO;
     }
 
-    void Framebuffer::render_quad(unsigned int VAO) {
+    void Framebuffer::render_quad() {
         CHECKED_GL_CALL(glBindVertexArray, VAO);
         CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
         CHECKED_GL_CALL(glBindVertexArray, 0);
@@ -98,7 +98,7 @@ namespace engine::graphics {
         CHECKED_GL_CALL(glDeleteFramebuffers, 1, &FBO);
     }
 
-    void Framebuffer::delete_vertex_array(unsigned int VAO) {
+    void Framebuffer::delete_quad() {
         CHECKED_GL_CALL(glDeleteVertexArrays, 1, &VAO);
     }
 }

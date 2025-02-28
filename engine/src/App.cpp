@@ -4,9 +4,10 @@
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
 
+#include <engine/graphics/GraphicsController.hpp>
+#include <engine/graphics/PostProcessingController.hpp>
 #include <engine/util/ArgParser.hpp>
 #include <engine/util/Configuration.hpp>
-#include <engine/graphics/GraphicsController.hpp>
 #include <engine/util/Utils.hpp>
 
 namespace engine::core {
@@ -36,6 +37,7 @@ namespace engine::core {
         auto begin     = register_controller<EngineControllersBegin>();
         auto platform  = register_controller<platform::PlatformController>();
         auto graphics  = register_controller<graphics::GraphicsController>();
+        auto postproc  = register_controller<graphics::PostProcessingController>();
         auto resources = register_controller<resources::ResourcesController>();
         auto end       = register_controller<EngineControllersEnd>();
         begin->before(platform);

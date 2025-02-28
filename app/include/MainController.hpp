@@ -25,6 +25,8 @@ namespace app {
         void draw_arena();
         void draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model);
         void draw_skybox();
+        void draw_health_bar();
+
     public:
         std::string_view name() const override { return "app::MainController"; }
     };

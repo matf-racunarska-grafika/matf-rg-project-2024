@@ -3,22 +3,38 @@
 
 #include <engine/core/Controller.hpp>
 
-namespace app {
+enum class Filter {
+    NONE,
+    NEGATIVE,
+    GRAYSCALE,
+    DEEPFRIED,
+    OUTLINE,
+    BLACKWHITE
+};
+
+namespace engine::graphics {
   class PostProcessingController : public engine::core::Controller {
-    unsigned int hdrFBO = 0;
-    unsigned int colorBuffers[2] = { 0, 0 };
-    unsigned int pingpongFBO[2] = { 0, 0 };
-    unsigned int pingpongBuffer[2] = { 0, 0 };
-    unsigned int quadVAO = 0;
-    unsigned int screenFBO = 0;
-    unsigned int screenTexture = 0;
+    unsigned int m_hdrFBO = 0;
+    unsigned int m_colorBuffers[2] = { 0, 0 };
+    unsigned int m_pingpongFBO[2] = { 0, 0 };
+    unsigned int m_pingpongBuffer[2] = { 0, 0 };
+    unsigned int m_screenFBO = 0;
+    unsigned int m_screenTexture = 0;
+
+    Filter m_active_filter = Filter::NONE;
 
   public:
+    std::string_view name() const override {
+      return "PostProcessingController";
+    }
     void initialize() override;
 
     void prepare_filter_effect(unsigned int wHeight, unsigned int wWidth);
     void prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth);
     void prepare_bloom_shaders();
+
+    void set_active_filter(Filter filter);
+    Filter get_active_filter();
 
     void draw() override;
 
@@ -26,7 +42,6 @@ namespace app {
     void end_draw() override;
       
     void draw_filters();
-    void draw_health_bar();
     void draw_bloom();
 
     void terminate() override;
