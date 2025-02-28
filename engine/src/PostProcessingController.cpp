@@ -118,37 +118,14 @@ namespace engine::graphics {
 
     void PostProcessingController::draw_filters() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader* negative = resources->shader("negative");
-        engine::resources::Shader* outline = resources->shader("outline");
-        engine::resources::Shader* deepfried = resources->shader("deepfried");
-        engine::resources::Shader* grayscale = resources->shader("grayscale");
-        engine::resources::Shader* blackWhite = resources->shader("blackWhite");
-        engine::resources::Shader* noFilter = resources->shader("noFilter");
+        engine::resources::Shader* post_processing_shader = resources->shader("postProcessing");
+        post_processing_shader->use();
+        post_processing_shader->set_int("effectType", static_cast<int>(m_active_filter));
 
         engine::graphics::Framebuffer::bind_framebuffer(0);
         engine::graphics::OpenGL::clear_buffers(false);
         engine::graphics::Framebuffer::activate_texture(m_screenTexture, 0);
 
-        switch (m_active_filter) {
-        case Filter::NEGATIVE :
-            negative->use();
-            break;
-        case Filter::GRAYSCALE :
-            grayscale->use();
-            break;
-        case Filter::DEEPFRIED :
-            deepfried->use();
-            break;
-        case Filter::OUTLINE :
-            outline->use();
-            break;
-        case Filter::BLACKWHITE :
-            blackWhite->use();
-            break;
-        case Filter::NONE :
-            noFilter->use();
-            break;
-        }
         engine::graphics::Framebuffer::render_quad();
     }
 

@@ -3,13 +3,13 @@
 
 #include <engine/core/Controller.hpp>
 
-enum class Filter {
-    NONE,
-    NEGATIVE,
-    GRAYSCALE,
-    DEEPFRIED,
-    OUTLINE,
-    BLACKWHITE
+enum class Filter : int {
+    NONE = 0,
+    GRAYSCALE = 1,
+    NEGATIVE = 2,
+    BLACKWHITE = 3,
+    DEEPFRIED = 4,
+    OUTLINE = 5
 };
 
 namespace engine::graphics {
