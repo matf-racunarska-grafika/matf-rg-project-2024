@@ -22,13 +22,7 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         graphics->begin_gui();
-        // Draw backpack scale slider window
-        // auto backpack  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
-        // static float f = 0.0f;
-        // ImGui::Begin(backpack->name().c_str());
-        // ImGui::Text("Loaded from: %s", backpack->path().c_str());
-        // ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
-        // ImGui::End();
+
         auto model = engine::core::Controller::get<engine::resources::ResourcesController>()->model("test");
         ImGui::Begin(model->name().c_str());
         ImGui::DragFloat("Skaliranje:", &test_scale, 0.01, 0.01, 10);
@@ -38,6 +32,10 @@ namespace app {
         ImGui::DragFloat("X:", &test_x, 1, -100, 100);
         ImGui::DragFloat("Y:", &test_y, 1, -100, 100);
         ImGui::DragFloat("Z:", &test_z, 1, 100, 100);
+        ImGui::End();
+
+        ImGui::Begin("Wind speed");
+        ImGui::DragFloat("Wind speed:", &wind_speed, 0.01, 0, 10);
         ImGui::End();
 
         // Draw camera info

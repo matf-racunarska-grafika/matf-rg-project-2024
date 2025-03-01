@@ -20,6 +20,7 @@ namespace app {
     float test_x          = 0.0f;
     float test_y          = 0.0f;
     float test_z          = 0.0f;
+    float wind_speed      = 0.05;
 
     bool mouse_enabled;
     bool is_day;
@@ -91,245 +92,113 @@ namespace app {
         draw_stones();
         if (!is_day)
             draw_fire();
-        // test();
+        test();
         draw_skybox();
     }
 
     void MainController::draw_forest() {
-        engine::resources::Model *yellow_tree  = resources->model("yellow_tree");
-        engine::resources::Model *green_tree   = resources->model("green_tree");
-        engine::resources::Model *tall_tree    = resources->model("beech_tree");
-        engine::resources::Model *oak_tree     = resources->model("oak_tree");
-        engine::resources::Model *tree_gate    = resources->model("tree_gate");
-        engine::resources::Model *pine_tree    = resources->model("pine_tree");
-        engine::resources::Shader *tree_shader = resources->shader("tree_shader2");
+        auto *yellow_tree = resources->model("yellow_tree");
+        auto *green_tree  = resources->model("green_tree");
+        auto *tall_tree   = resources->model("beech_tree");
+        auto *oak_tree    = resources->model("oak_tree");
+        auto *tree_gate   = resources->model("tree_gate");
+        auto *pine_tree   = resources->model("pine_tree");
+        auto *tree_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-
         tree_shader->use();
-
         tree_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            tree_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            tree_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            tree_shader->set_float("material.shininess", 32.0f);
-        } else {
-            tree_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            tree_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            tree_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            tree_shader->set_float("material.shininess", 128.0f);
-        }
+        tree_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.1f));
+        tree_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.3f));
+        tree_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f) : glm::vec3(0.5f));
+        tree_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
         tree_shader->set_vec3("viewPos", camera->Position);
-
         tree_shader->set_mat4("projection", graphics->projection_matrix());
         tree_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(49, 17, 9));
-        model           = glm::scale(model, glm::vec3(0.04));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        auto draw_yellow_tree = [&](float x, float y, float z, float scale) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::translate(model, glm::vec3(x, y, z));
+            model           = glm::scale(model, glm::vec3(scale));
+            tree_shader->set_mat4("model", model);
+            yellow_tree->draw(tree_shader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0, 17, -22));
-        model = glm::scale(model, glm::vec3(0.04));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        auto draw_green_tree = [&](float x, float y, float z, float scale) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+            model           = glm::translate(model, glm::vec3(x, y, z));
+            model           = glm::scale(model, glm::vec3(scale));
+            tree_shader->set_mat4("model", model);
+            green_tree->draw(tree_shader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-25, 15, 5));
-        model = glm::scale(model, glm::vec3(0.04));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        auto draw_tall_tree = [&](float x, float y, float z, float scale) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::translate(model, glm::vec3(x, y, z));
+            model           = glm::scale(model, glm::vec3(scale));
+            tree_shader->set_mat4("model", model);
+            tall_tree->draw(tree_shader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(4, 17, 25));
-        model = glm::scale(model, glm::vec3(0.04));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        auto draw_pine_tree = [&](float x, float y, float z) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model           = glm::translate(model, glm::vec3(x, y, z));
+            model           = glm::scale(model, glm::vec3(11.0f));
+            tree_shader->set_mat4("model", model);
+            pine_tree->draw(tree_shader);
+        };
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(39, 17, -5));
-        model = glm::scale(model, glm::vec3(0.06));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        draw_yellow_tree(49, 17, 9, 0.04);
+        draw_yellow_tree(0, 17, -22, 0.04);
+        draw_yellow_tree(-25, 15, 5, 0.04);
+        draw_yellow_tree(4, 17, 25, 0.04);
+        draw_yellow_tree(39, 17, -5, 0.06);
+        draw_yellow_tree(45, 17, 12, 0.06);
+        draw_yellow_tree(37, 17, 32, 0.06);
+        draw_yellow_tree(11, 17, 32, 0.06);
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(45, 17, 12));
-        model = glm::scale(model, glm::vec3(0.06));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        draw_green_tree(-10, 1, 17, 0.22f);
+        draw_green_tree(-2, 6, 16, 0.29f);
+        draw_green_tree(45, 1, 16, 0.29f);
+        draw_green_tree(-1, -39, 16, 0.29f);
+        draw_green_tree(8, 11, 17, 0.22f);
+        draw_green_tree(33, 10, 17, 0.22f);
+        draw_green_tree(17, -24, 17, 0.22f);
+        draw_green_tree(39, -24, 17, 0.22f);
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(37, 17, 32));
-        model = glm::scale(model, glm::vec3(0.06));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
+        draw_tall_tree(-6, 14, -15, 0.1f);
+        draw_tall_tree(-19, 14, -8, 0.1f);
+        draw_tall_tree(21, 14, 38, 0.1f); {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+            model           = glm::translate(model, glm::vec3(-17, 28, -17));
+            model           = glm::scale(model, glm::vec3(0.210f));
+            tree_shader->set_mat4("model", model);
+            oak_tree->draw(tree_shader);
+        } {
+            glm::mat4 model = glm::mat4(1.0f);
+            model           = glm::rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
+            model           = glm::translate(model, glm::vec3(8, 13, 59));
+            model           = glm::scale(model, glm::vec3(0.110f));
+            tree_shader->set_mat4("model", model);
+            tree_gate->draw(tree_shader);
+        }
 
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(11, 17, 32));
-        model = glm::scale(model, glm::vec3(0.06));
-        tree_shader->set_mat4("model", model);
-        yellow_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(-10, 1, 17));
-        model = glm::scale(model, glm::vec3(0.22f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(-2, 6, 16));
-        model = glm::scale(model, glm::vec3(0.29f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(45, 1, 16));
-        model = glm::scale(model, glm::vec3(0.29f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(-1, -39, 16));
-        model = glm::scale(model, glm::vec3(0.29f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(8, 11, 17));
-        model = glm::scale(model, glm::vec3(0.22f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(33, 10, 17));
-        model = glm::scale(model, glm::vec3(0.22f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(17, -24, 17));
-        model = glm::scale(model, glm::vec3(0.22f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-        model = glm::translate(model, glm::vec3(39, -24, 17));
-        model = glm::scale(model, glm::vec3(0.22f));
-        tree_shader->set_mat4("model", model);
-        green_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-6, 14, -15));
-        model = glm::scale(model, glm::vec3(0.1f));
-        tree_shader->set_mat4("model", model);
-        tall_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-19, 14, -8));
-        model = glm::scale(model, glm::vec3(0.1f));
-        tree_shader->set_mat4("model", model);
-        tall_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(21, 14, 38));
-        model = glm::scale(model, glm::vec3(0.1f));
-        tree_shader->set_mat4("model", model);
-        tall_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(-17, 28, -17));
-        model = glm::scale(model, glm::vec3(0.210f));
-        tree_shader->set_mat4("model", model);
-        oak_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
-        model = glm::translate(model, glm::vec3(8, 13, 59));
-        model = glm::scale(model, glm::vec3(0.110f));
-        tree_shader->set_mat4("model", model);
-        tree_gate->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(32, 0, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(36, 22, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(12, 20, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(49, -9, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(23, -30, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(-5, -26, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(-11, 1, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(-26, 0, 13));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(-12, 10, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
-
-        model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::translate(model, glm::vec3(26, 29, 17));
-        model = glm::scale(model, glm::vec3(11.0f));
-        tree_shader->set_mat4("model", model);
-        pine_tree->draw(tree_shader);
+        draw_pine_tree(32, 0, 17);
+        draw_pine_tree(36, 22, 17);
+        draw_pine_tree(12, 20, 17);
+        draw_pine_tree(49, -9, 17);
+        draw_pine_tree(23, -30, 17);
+        draw_pine_tree(-5, -26, 17);
+        draw_pine_tree(-11, 1, 17);
+        draw_pine_tree(-26, 0, 13);
+        draw_pine_tree(-12, 10, 17);
+        draw_pine_tree(26, 29, 17);
+        draw_pine_tree(-11, 10, 17);
+        draw_pine_tree(-11, -30, 17);
+        draw_pine_tree(3, 28, 17);
     }
 
     void MainController::draw_campfire() {
@@ -337,48 +206,25 @@ namespace app {
         engine::resources::Shader *campfire_shader = resources->shader("campfire_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+        glm::vec3 ambient  = is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
+        glm::vec3 diffuse  = is_day ? glm::vec3(0.5f) : glm::vec3(0.3f);
+        glm::vec3 specular(0.1f);
+        float shininess = is_day ? 2048.0f : 4096.0f;
 
-        if (is_day) {
-            campfire_shader->use();
+        campfire_shader->use();
+        campfire_shader->set_vec3("light.position", lightPos);
+        campfire_shader->set_vec3("light.ambient", ambient);
+        campfire_shader->set_vec3("light.diffuse", diffuse);
+        campfire_shader->set_vec3("light.specular", specular);
+        campfire_shader->set_vec3("viewPos", camera->Position);
+        campfire_shader->set_vec3("material.specular", glm::vec3(0.5f));
+        campfire_shader->set_float("material.shininess", shininess);
+        campfire_shader->set_mat4("projection", graphics->projection_matrix());
+        campfire_shader->set_mat4("view", camera->view_matrix());
 
-            campfire_shader->set_vec3("light.position", lightPos);
-            campfire_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            campfire_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            campfire_shader->set_vec3("light.specular", glm::vec3(0.1f, 0.1f, 0.1f));
-            campfire_shader->set_vec3("viewPos", camera->Position);
-
-            campfire_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f)); // specular highlights
-            campfire_shader->set_float("material.shininess", 2048.0f);
-
-            campfire_shader->set_mat4("projection", graphics->projection_matrix());
-            campfire_shader->set_mat4("view", camera->view_matrix());
-
-            glm::mat4 model = glm::mat4(1.0f);
-            model           = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
-            campfire_shader->set_mat4("model", model);
-
-            campfire->draw(campfire_shader);
-        } else {
-            campfire_shader->use();
-
-            campfire_shader->set_vec3("light.position", lightPos);
-            campfire_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            campfire_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            campfire_shader->set_vec3("light.specular", glm::vec3(0.1f, 0.1f, 0.1f));
-            campfire_shader->set_vec3("viewPos", camera->Position);
-
-            campfire_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f)); // specular highlights
-            campfire_shader->set_float("material.shininess", 4096.0f);
-
-            campfire_shader->set_mat4("projection", graphics->projection_matrix());
-            campfire_shader->set_mat4("view", camera->view_matrix());
-
-            glm::mat4 model = glm::mat4(1.0f);
-            model           = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
-            campfire_shader->set_mat4("model", model);
-
-            campfire->draw(campfire_shader);
-        }
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(12.0f, 17.3f, 6.0f));
+        campfire_shader->set_mat4("model", model);
+        campfire->draw(campfire_shader);
     }
 
     void MainController::draw_logs() {
@@ -415,7 +261,6 @@ namespace app {
 
                 log_seat_shader->set_mat4("model", model);
 
-                // Draw the campfire model.
                 log_seat->draw(log_seat_shader);
             } else if (i == 1) {
                 glm::mat4 model = glm::mat4(1.0f);
@@ -446,10 +291,8 @@ namespace app {
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        // Activate the shader.
         tent_shader->use();
 
-        // Set the light properties.
         tent_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             tent_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -464,7 +307,6 @@ namespace app {
         }
         tent_shader->set_vec3("viewPos", camera->Position);
 
-        // Set the projection and view matrices.
         tent_shader->set_mat4("projection", graphics->projection_matrix());
         tent_shader->set_mat4("view", camera->view_matrix());
 
@@ -519,31 +361,52 @@ namespace app {
     }
 
     void MainController::draw_bushes() {
-        // Retrieve models and shader.
         auto bush1      = resources->model("bush1");
         auto bush2      = resources->model("bush2");
         auto laurelBush = resources->model("laurel_bush");
-        auto bushShader = resources->shader("tree_shader2");
+        auto bushShader = resources->shader("bush_shader");
+
+        double currentTime = glfwGetTime();
 
         glm::vec3 lightPos = is_day
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
         bushShader->use();
+
         bushShader->set_vec3("light.position", lightPos);
+        bushShader->set_vec3("viewPos", camera->Position);
+        bushShader->set_mat4("projection", graphics->projection_matrix());
+        bushShader->set_mat4("view", camera->view_matrix());
+
+        bushShader->set_float("time", currentTime);
+
+        glm::vec3 windDir = glm::normalize(glm::vec3(0.8f, 0.0f, 0.6f));
+
+        bushShader->set_vec3("windDirection", windDir);
+        bushShader->set_float("windStrength", wind_speed);
+
+        bushShader->set_bool("useSubsurfaceScattering", true);
+
         if (is_day) {
             bushShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             bushShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
             bushShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
             bushShader->set_float("material.shininess", 32.0f);
+            bushShader->set_vec3("subsurfaceColor", glm::vec3(0.2f, 0.5f, 0.1f));
         } else {
             bushShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
             bushShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
             bushShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
             bushShader->set_float("material.shininess", 128.0f);
+            bushShader->set_vec3("subsurfaceColor", glm::vec3(0.1f, 0.3f, 0.05f));
         }
-        bushShader->set_vec3("viewPos", camera->Position);
-        bushShader->set_mat4("projection", graphics->projection_matrix());
-        bushShader->set_mat4("view", camera->view_matrix());
+
+        bushShader->set_float("alphaThreshold", 0.5f);
+
+        bushShader->set_vec3("material.specular", glm::vec3(0.2f, 0.2f, 0.2f));
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         auto drawModel = [bushShader](engine::resources::Model *model, const glm::mat4 &transform) {
             bushShader->set_mat4("model", transform);
@@ -565,22 +428,29 @@ namespace app {
             drawModel(model, m);
         };
 
+        bushShader->set_float("windStrength", wind_speed * 1.2f);
         drawBush1(glm::vec3(-19, -3, 16), 5.0f);
         drawBush1(glm::vec3(15, 25, 16), 5.0f);
         drawBush1(glm::vec3(52, -19, 17), 5.0f);
         drawBush1(glm::vec3(31, -32, 17), 5.0f);
         drawBush1(glm::vec3(12, -24, 17), 5.0f);
 
+        bushShader->set_float("windStrength", wind_speed * 0.8f);
+        bushShader->set_vec3("subsurfaceColor", glm::vec3(0.15f, 0.4f, 0.1f));
         drawSimple(bush2, glm::vec3(4, 20, -13), 0.3f);
         drawSimple(bush2, glm::vec3(32, 20, 4), 0.3f);
         drawSimple(bush2, glm::vec3(30, 20, 12), 0.3f);
 
+        bushShader->set_float("windStrength", wind_speed * 0.6f);
+        bushShader->set_vec3("subsurfaceColor", glm::vec3(0.1f, 0.4f, 0.2f));
         drawSimple(laurelBush, glm::vec3(-25, 16, 0), 0.680f);
         drawSimple(laurelBush, glm::vec3(-25, 16, 12), 0.680f);
         drawSimple(laurelBush, glm::vec3(-20, 16, 23), 0.680f);
         drawSimple(laurelBush, glm::vec3(-5, 16, 23), 0.680f);
         drawSimple(laurelBush, glm::vec3(6, 17, 20), 0.680f);
         drawSimple(laurelBush, glm::vec3(33, 17, -6), 0.680f);
+
+        glDisable(GL_BLEND);
     }
 
     void MainController::draw_white_flowers() {
@@ -647,7 +517,6 @@ namespace app {
             glEnableVertexAttribArray(6);
             glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (3 * vec4Size));
 
-            // Mark these attributes as instanced.
             glVertexAttribDivisor(3, 1);
             glVertexAttribDivisor(4, 1);
             glVertexAttribDivisor(5, 1);
@@ -661,7 +530,6 @@ namespace app {
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
         flower_shader->use();
 
-        // Set standard lighting parameters
         flower_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -669,35 +537,30 @@ namespace app {
             flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
             flower_shader->set_float("material.shininess", 32.0f);
 
-            // Day-specific enhanced parameters
-            flower_shader->set_float("brightnessVariation", 0.12f); // Slightly more variation in daylight
-            flower_shader->set_float("petalTranslucency", 0.2f);    // More visible translucency in daylight
-            flower_shader->set_float("saturationBoost", 0.15f);     // Subtle saturation in daylight
-            flower_shader->set_float("windStrength", 0.04f);        // Gentler wind during day
+            flower_shader->set_float("brightnessVariation", 0.12f);
+            flower_shader->set_float("petalTranslucency", 0.2f);
+            flower_shader->set_float("saturationBoost", 0.15f);
+            flower_shader->set_float("windStrength", wind_speed);
         } else {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
             flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_float("material.shininess", 128.0f);
 
-            // Night-specific enhanced parameters
-            flower_shader->set_float("brightnessVariation", 0.08f); // Less variation at night
-            flower_shader->set_float("petalTranslucency", 0.1f);    // Less translucency at night
-            flower_shader->set_float("saturationBoost", 0.25f);     // More saturation at night for visibility
-            flower_shader->set_float("windStrength", 0.06f);        // Stronger wind at night
+            flower_shader->set_float("brightnessVariation", 0.08f);
+            flower_shader->set_float("petalTranslucency", 0.1f);
+            flower_shader->set_float("saturationBoost", 0.25f);
+            flower_shader->set_float("windStrength", wind_speed * 1.5);
         }
 
-        // Set wind parameters
-        flower_shader->set_float("time", glfwGetTime());                       // Current time for animation
-        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f)); // Wind direction
-        flower_shader->set_float("windSpeed", 0.8f);                           // Wind speed
+        flower_shader->set_float("time", glfwGetTime());
+        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
+        flower_shader->set_float("windSpeed", 0.8);
 
-        // Standard view parameters
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
         flower_shader->set_mat4("view", camera->view_matrix());
 
-        // Material specular properties
         flower_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 
         white_flowers->drawInstanced(flower_shader, amount);
@@ -714,12 +577,13 @@ namespace app {
         auto path        = resources->model("path");
         auto stoneShader = resources->shader("campfire_shader");
 
-        glm::vec3 lightPos = is_day
-                                 ? glm::vec3(0.0f, 60.0f, 0.0f)
-                                 : glm::vec3(12.0f, 25.0f, 6.0f);
+        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         stoneShader->use();
         stoneShader->set_vec3("light.position", lightPos);
+        stoneShader->set_vec3("viewPos", camera->Position);
+        stoneShader->set_mat4("projection", graphics->projection_matrix());
+        stoneShader->set_mat4("view", camera->view_matrix());
 
         if (is_day) {
             stoneShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -733,16 +597,11 @@ namespace app {
             stoneShader->set_float("material.shininess", 128.0f);
         }
 
-        stoneShader->set_vec3("viewPos", camera->Position);
-        stoneShader->set_mat4("projection", graphics->projection_matrix());
-        stoneShader->set_mat4("view", camera->view_matrix());
-
-        // Helper lambda to draw a path segment.
         auto drawPathSegment = [&](const glm::vec3 &translation, float yRotation, float scale) {
             glm::mat4 model = glm::mat4(1.0f);
-            model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));     // Fix orientation
-            model           = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0)); // Y-axis rotation
-            model           = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));     // Tilt
+            model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+            model           = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+            model           = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
             model           = glm::translate(model, translation);
             model           = glm::scale(model, glm::vec3(scale));
             stoneShader->set_mat4("model", model);
@@ -765,7 +624,6 @@ namespace app {
         shroomShader->set_vec3("light.position", lightPos);
         shroomShader->set_vec3("viewPos", camera->Position);
 
-        // Set the base material and light properties - keeping original light properties
         if (is_day) {
             shroomShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             shroomShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -778,7 +636,6 @@ namespace app {
             shroomShader->set_float("material.shininess", 128.0f);
         }
 
-        // Set the new shader parameters
         shroomShader->set_float("wetness", 0.6f);
         shroomShader->set_float("capTranslucency", 0.3f);
         shroomShader->set_float("rimLight", 0.2f);
@@ -786,18 +643,16 @@ namespace app {
         shroomShader->set_mat4("projection", graphics->projection_matrix());
         shroomShader->set_mat4("view", camera->view_matrix());
 
-        // Keep original drawMushroom lambda functionality
         auto drawMushroom = [&](const glm::vec3 &translation, float scale, float yRotation = 0.0f) {
             auto model = glm::mat4(1.0f);
-            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0)); // Maintain original rotation axis
-            model = glm::translate(model, translation);
-            model = glm::scale(model, glm::vec3(scale));
+            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model      = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+            model      = glm::translate(model, translation);
+            model      = glm::scale(model, glm::vec3(scale));
             shroomShader->set_mat4("model", model);
             mushroom->draw(shroomShader);
         };
 
-        // Draw mushrooms at their original positions with original parameters
         drawMushroom(glm::vec3(6, 0, 16), 0.19f, -19.0f);
         drawMushroom(glm::vec3(3, 8, 17), 0.19f);
         drawMushroom(glm::vec3(12, 19, 17), 0.19f);
@@ -879,27 +734,25 @@ namespace app {
             flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
             flower_shader->set_float("material.shininess", 32.0f);
 
-            // Day-specific enhanced parameters
-            flower_shader->set_float("brightnessVariation", 0.12f);  // Slightly more variation in daylight
-            flower_shader->set_float("petalTranslucency", 0.2f);     // More visible translucency in daylight
-            flower_shader->set_float("saturationBoost", 0.15f);      // Subtle saturation in daylight
-            flower_shader->set_float("windStrength", 0.04f);
+            flower_shader->set_float("brightnessVariation", 0.12f);
+            flower_shader->set_float("petalTranslucency", 0.2f);
+            flower_shader->set_float("saturationBoost", 0.15f);
+            flower_shader->set_float("windStrength", wind_speed);
         } else {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
             flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_float("material.shininess", 128.0f);
 
-            // Night-specific enhanced parameters
-            flower_shader->set_float("brightnessVariation", 0.08f);  // Less variation at night
-            flower_shader->set_float("petalTranslucency", 0.1f);     // Less translucency at night
-            flower_shader->set_float("saturationBoost", 0.25f);      // More saturation at night for visibility
-            flower_shader->set_float("windStrength", 0.06f);         // Stronger wind at night
+            flower_shader->set_float("brightnessVariation", 0.08f);
+            flower_shader->set_float("petalTranslucency", 0.1f);
+            flower_shader->set_float("saturationBoost", 0.25f);
+            flower_shader->set_float("windStrength", wind_speed * 1.5);
         }
 
-        flower_shader->set_float("time", glfwGetTime());             // Current time for animation
-        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f)); // Wind direction
-        flower_shader->set_float("windSpeed", 0.8f);
+        flower_shader->set_float("time", glfwGetTime());
+        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
+        flower_shader->set_float("windSpeed", 0.8);
 
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
@@ -931,17 +784,13 @@ namespace app {
         terrain_shader->set_float("ambientStrength", 0.1f);
         terrain_shader->set_float("specularStrength", 0.0f);
 
-        // Add attenuation parameters
-        // For day lighting (distant sun), use weaker attenuation
         if (is_day) {
             terrain_shader->set_float("constant", 1.0f);
-            terrain_shader->set_float("linear", 0.0003f);     // Reduced from 0.0009
-            terrain_shader->set_float("quadratic", 0.00001f); // Much lower for sunlight
-        }
-        // For night lighting (closer light source), use stronger attenuation
-        else {
+            terrain_shader->set_float("linear", 0.0003f);
+            terrain_shader->set_float("quadratic", 0.00001f);
+        } else {
             terrain_shader->set_float("constant", 1.0f);
-            terrain_shader->set_float("linear", 0.014f); // Reduced from 0.09
+            terrain_shader->set_float("linear", 0.014f);
             terrain_shader->set_float("quadratic", 0.0007f);
         }
 
@@ -959,11 +808,9 @@ namespace app {
         float currentTime = static_cast<float>(glfwGetTime());
         water_shader->set_float("time", currentTime);
 
-        // Set water color based on day/night cycle
         glm::vec3 waterColor = is_day
                                    ? glm::vec3(0.0f, 0.4f, 0.6f)
-                                   :                            // Daytime blue
-                                   glm::vec3(0.0f, 0.1f, 0.3f); // Nighttime darker blue
+                                   : glm::vec3(0.0f, 0.1f, 0.3f);
         water_shader->set_vec3("waterColor", waterColor);
         water_shader->set_vec3("lightPos", lightPos);
         water_shader->set_vec3("viewPos", camera->Position);
@@ -980,15 +827,13 @@ namespace app {
     }
 
     void MainController::test() {
-        engine::resources::Model *test_model   = resources->model("water");
-        engine::resources::Shader *test_shader = resources->shader("campfire_shader");
+        engine::resources::Model *test_model   = resources->model("pine_tree");
+        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
-        // Activate the shader.
         test_shader->use();
 
-        // Set the light properties.
         test_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
@@ -1003,11 +848,9 @@ namespace app {
         }
         test_shader->set_vec3("viewPos", camera->Position);
 
-        // Set the projection and view matrices.
         test_shader->set_mat4("projection", graphics->projection_matrix());
         test_shader->set_mat4("view", camera->view_matrix());
 
-        // Set the model matrix.
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
         model           = glm::rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
@@ -1017,7 +860,6 @@ namespace app {
 
         test_shader->set_mat4("model", model);
 
-        // Draw the campfire model.
         test_model->draw(test_shader);
     }
 
@@ -1077,7 +919,6 @@ namespace app {
         model = glm::scale(model, glm::vec3(1.35));
         test_shader->set_mat4("model", model);
         grave->draw(test_shader);
-
     }
 
     void MainController::draw_fire() {
@@ -1102,7 +943,7 @@ namespace app {
         fire_shader->set_vec3("glowColor", glm::vec3(1.0f, 0.3f, 0.0f));
         fire_shader->set_float("intensity", 1.5f);
         fire_shader->set_float("flickerSpeed", 5.0f);
-        fire_shader->set_float("distortionAmount", 0.05f);
+        fire_shader->set_float("distortionAmount", 0.1f);
 
         fire->drawBlended(fire_shader);
     }

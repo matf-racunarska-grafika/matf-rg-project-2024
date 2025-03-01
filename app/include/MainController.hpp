@@ -8,6 +8,7 @@ namespace app {
     extern float test_x, test_y, test_z;
     extern float test_rotation_x, test_rotation_y, test_rotation_z;
     extern float test_scale;
+    extern float wind_speed;
 
 
 class MainController : public engine::core::Controller {
@@ -18,7 +19,6 @@ class MainController : public engine::core::Controller {
     void end_draw() override;
     void draw() override;
 
-    void draw_backpack();
     void test();
 
     void draw_skybox();
