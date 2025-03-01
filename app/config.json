@@ -28,8 +28,8 @@
       "light" : {
         "path" : "light/Sculptural_Glass_3-Light_Ribbed_Chandelier_-_Champagne.obj"
       },
-      "flower" : {
-        "path" : "flower/Pink_cosmos_flower_SF.obj"
+      "street_lamp" : {
+        "path" : "street_lamp/City StreetLight 2.obj"
       }
     }
   },

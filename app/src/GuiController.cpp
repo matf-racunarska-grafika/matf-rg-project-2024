@@ -21,6 +21,8 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         if (platform->key(engine::platform::KeyId::KEY_H).state() == engine::platform::Key::State::JustPressed) {
             set_enable(!is_enabled());
+            enabled = !enabled;
+            platform->set_enable_cursor(enabled);
         }
     }
 
@@ -28,12 +30,26 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->begin_gui();
 
-
         ImGui::Begin("ImGui");
-        ImGui::DragFloat("radius of butterflies", &radius, 1, 1.0f, 50.0f, "%f", ImGuiSliderFlags_AlwaysClamp);
+
+        ImGuiStyle &style = ImGui::GetStyle();
+        ImVec4 *colors    = style.Colors;
+
+        colors[ImGuiCol_WindowBg] = ImVec4(0.245f, 0.173f, 0.210f, 1.0f);
+
+        style.FrameRounding = 4.0f;
+        style.FramePadding  = ImVec2(8, 4);
+
+        ImGui::Text("Change the intensity of the light in gazebo and see what happens!!!");
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::DragFloat("gazebo light", &light_gazebo, 1, 1.0f, 150.0f, "%f", ImGuiSliderFlags_AlwaysClamp);
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        if (light_gazebo > 50.0f)
+            ImGui::DragFloat("radius of butterflies", &radius, 1, 1.0f, 50.0f, "%f", ImGuiSliderFlags_AlwaysClamp);
+
         ImGui::End();
 
         graphics->end_gui();

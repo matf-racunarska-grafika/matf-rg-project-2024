@@ -24,7 +24,19 @@ namespace engine::test::app {
 namespace app {
 
     float radius       = 15.0f;
-    float light_gazebo = 80.0f;
+    float light_gazebo = 20.0f;
+
+    glm::vec3 lampPositions[5] = {glm::vec3(20.0f, -2.0f, -23.0f), glm::vec3(90.0f, 2.0f, -20.0f),
+                                  glm::vec3(55.0f, 2.0f, -20.0f), glm::vec3(90.0f, 2.0f, -40.5f),
+                                  glm::vec3(55.0f, 2.0f, -40.5f)};
+
+    glm::vec3 lampColors[5] = {
+            glm::vec3(30.0f, 5.0f, 25.0f), // pink
+            glm::vec3(30.0f, 30.0f, 5.0f), // yellow
+            glm::vec3(5.0f, 5.0f, 30.0f),  // blue
+            glm::vec3(5.0f, 30.0f, 5.0f),  // green
+            glm::vec3(20.0f, 10.0f, 10.0f) // red
+    };
 
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     public:
@@ -61,10 +73,7 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera   = graphics->camera();
         float dt      = platform->dt();
-        if (platform->key(engine::platform::KeyId::KEY_C).state() == engine::platform::Key::State::JustPressed) {
-            enabled = !enabled;
-            platform->set_enable_cursor(enabled);
-        }
+
         if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
             camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
         }
@@ -99,7 +108,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -125,7 +139,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -155,7 +174,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_mat4("projection", graphics->projection_matrix());
@@ -166,16 +190,12 @@ namespace app {
         glm::mat4 model4 = glm::mat4(1.0f);
 
         model1 = glm::translate(model1, glm::vec3(6.5f, -15.0f, 13.0f)); // front left
-        model1 = glm::scale(model1, glm::vec3(1.0f));
 
         model2 = glm::translate(model2, glm::vec3(34.5f, -15.0f, 13.0f)); // back left
-        model2 = glm::scale(model2, glm::vec3(1.0f));
 
         model3 = glm::translate(model3, glm::vec3(6.5f, -15.0f, -12.5f)); // front right
-        model3 = glm::scale(model3, glm::vec3(1.0f));
 
         model4 = glm::translate(model4, glm::vec3(34.5f, -15.0f, -12.5f)); // back right
-        model4 = glm::scale(model4, glm::vec3(1.0f));
 
         for (auto &model: {model1, model2, model3, model4}) {
             shader->set_mat4("model", model);
@@ -263,7 +283,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(7.0f, 30.0f, -1.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -292,7 +317,20 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        glm::vec3 lampPositions[5] = {glm::vec3(20.0f, -7.0f, -23.0f), glm::vec3(90.0f, -7.0f, -20.0f),
+                                      glm::vec3(50.0f, -7.0f, -20.0f), glm::vec3(90.0f, -7.0f, -40.5f),
+                                      glm::vec3(50.0f, -7.0f, -40.5f)};
+
+        glm::vec3 lampColors[5] = {glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(10.0f, 10.0f, 10.0f),
+                                   glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(10.0f, 10.0f, 10.0f),
+                                   glm::vec3(10.0f, 10.0f, 10.0f)};
+
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         shader->set_vec3("viewPos", camera->Position);
 
@@ -320,7 +358,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -349,7 +392,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -374,7 +422,12 @@ namespace app {
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
 
-        shader->set_vec3("moonLightDir", glm::vec3(-30.0f, 30.0f, 25.0f));
+        for (int i = 0; i < 5; i++) {
+            shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
+            shader->set_vec3("LampColor[" + std::to_string(i) + "]", lampColors[i]);
+        }
+
+        shader->set_vec3("moonLightDir", glm::vec3(-25.0f, 30.0f, 0.0f));
         shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
         shader->set_vec3("viewPos", camera->Position);
@@ -406,46 +459,78 @@ namespace app {
         light->draw(shader);
     }
 
-    void MainController::draw_flower() {
+    void MainController::draw_street_lamp() {
         auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics                     = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera                       = graphics->camera();
-        engine::resources::Model *flower  = resources->model("flower");
-        engine::resources::Shader *shader = resources->shader("basic");
+        engine::resources::Model *lamp    = resources->model("street_lamp");
+        engine::resources::Shader *shader = resources->shader("light");
 
         shader->use();
-        shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
-        shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
-
-        shader->set_vec3("moonLightDir", glm::vec3(0.0f, 30.0f, 25.0f));
-        shader->set_vec3("moonLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        shader->set_vec3("viewPos", camera->Position);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
-        glm::mat4 model = glm::mat4(1.0f);
-        //float angle     = glm::radians(270.0);
-        //float angle2    = glm::radians(90.0);
-        model           = glm::translate(model, glm::vec3(0.0f, -14.0f, 0.0f));
-        //model           = glm::rotate(model, angle, glm::vec3(0, 1, 0));
-        //model           = glm::rotate(model, angle, glm::vec3(1, 0, 0));
-        model           = glm::scale(model, glm::vec3(0.3f));
-        shader->set_mat4("model", model);
 
-        flower->draw(shader);
+        glm::mat4 model5 = glm::mat4(1.0f);
+        glm::mat4 model2 = glm::mat4(1.0f);
+        glm::mat4 model3 = glm::mat4(1.0f);
+        glm::mat4 model4 = glm::mat4(1.0f);
+
+        model2 = glm::translate(model2, glm::vec3(90.0f, -10.0f, -20.0f)); // front left
+        model2 = glm::scale(model2, glm::vec3(2.5f));
+
+        model3 = glm::translate(model3, glm::vec3(50.0f, -10.0f, -20.0f)); // back left
+        model3 = glm::scale(model3, glm::vec3(2.5f));
+
+        model4 = glm::translate(model4, glm::vec3(90.0f, -10.0f, -40.5f)); // front right
+        model4 = glm::scale(model4, glm::vec3(2.5f));
+
+        model5 = glm::translate(model5, glm::vec3(50.0f, -10.0f, -40.5f)); // back right
+        model5 = glm::scale(model5, glm::vec3(2.5f));
+
+        glm::mat4 model1 = glm::mat4(1.0f);
+        model1           = glm::translate(model1, glm::vec3(20.0f, -15.0f, -23.0f));
+        model1           = glm::scale(model1, glm::vec3(2.5f));
+        shader->set_mat4("model", model1);
+
+        std::vector<glm::vec3> lampColors = {
+                glm::vec3(30.0f, 5.0f, 25.0f), // pink
+                glm::vec3(30.0f, 30.0f, 5.0f), // yellow
+                glm::vec3(5.0f, 5.0f, 30.0f),  // blue
+                glm::vec3(5.0f, 30.0f, 5.0f),  // green
+                glm::vec3(20.0f, 10.0f, 10.0f) // red
+        };
+
+        int i = 0;
+        for (auto &model: {model1, model2, model3, model4, model5}) {
+            shader->set_vec3("LightColor", lampColors[i]);
+            shader->set_mat4("model", model);
+            lamp->draw(shader);
+            i++;
+        }
     }
 
     void MainController::draw() {
         draw_terrain();
+        draw_temple();
         draw_gazebo();
         draw_columns();
-        draw_butterfly_instanced();
         draw_tree();
-        draw_statue();
-        draw_temple();
+
+        static double butterflyDelay = -1.0;
+        double delay                 = 3.0;
+        if (light_gazebo > 50.0f) {
+            draw_statue();
+            if (butterflyDelay < 0)
+                butterflyDelay = glfwGetTime();
+
+            if (glfwGetTime() - butterflyDelay >= delay)
+                draw_butterfly_instanced();
+        } else
+            butterflyDelay = -1.0;
+
         draw_garden();
         draw_light();
-        draw_flower();
+        draw_street_lamp();
         draw_skybox();
     }
 } // namespace app

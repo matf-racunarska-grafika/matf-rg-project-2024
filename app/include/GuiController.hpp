@@ -17,6 +17,7 @@ private:
     void initialize() override;
     void draw() override;
     void poll_events() override;
+    bool enabled = false;
 };
 
 } // app

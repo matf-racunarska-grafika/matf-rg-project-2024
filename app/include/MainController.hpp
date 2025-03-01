@@ -28,6 +28,8 @@ namespace app {
         void draw_temple();
         void draw_tree();
         void draw_light();
+        void draw_street_lamp();
+        void draw_flower_instanced();
         void draw_flower();
         void draw() override;
         void begin_draw() override;
@@ -37,7 +39,6 @@ namespace app {
         std::string_view name() const override {
             return "app::MainController";
         }
-        bool enabled = false;
     };
 
 } // namespace app

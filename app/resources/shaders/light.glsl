@@ -40,9 +40,9 @@ void main()
     vec4 textureColor = texture(texture_diffuse1, TexCoords);
 
     if (textureColor.r > 0.7 && textureColor.g > 0.7 && textureColor.b > 0.7) {
-        FragColor = vec4(LightColor, 1.0); // Svetleće
+        FragColor = vec4(LightColor, 1.0);
     } else {
-        FragColor = textureColor; // Ostali materijali ostaju isti
+        FragColor = textureColor;
     }
 
     float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));

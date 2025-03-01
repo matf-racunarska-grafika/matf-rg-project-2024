@@ -70,11 +70,9 @@ namespace engine::core {
 
         if (quadVAO == 0) {
             float quadVertices[] = {
-                    // positions        // texture Coords
                     -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
                     1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,
             };
-            // setup plane VAO
             glGenVertexArrays(1, &quadVAO);
             glGenBuffers(1, &quadVBO);
             glBindVertexArray(quadVAO);
@@ -106,7 +104,6 @@ namespace engine::core {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->set_enable_cursor(false);
 
-        // bloom
         glGenFramebuffers(1, &hdrFBO);
         glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
