@@ -1,14 +1,8 @@
 {
   "resources": {
     "models": {
-      "backpack" : {
-        "path" : "backpack/backpack.obj"
-      },
       "log_seat" : {
         "path" : "log_seat/scene.gltf"
-      },
-      "test" : {
-        "path" : "platano_tree/scene.gltf"
       },
       "campfire" : {
         "path" : "campfire/en_campfire_01.obj"
