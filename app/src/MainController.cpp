@@ -126,8 +126,8 @@ namespace app {
         tree_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(49, 17, 9));
-        model = glm::scale(model, glm::vec3(0.04));
+        model           = glm::translate(model, glm::vec3(49, 17, 9));
+        model           = glm::scale(model, glm::vec3(0.04));
         tree_shader->set_mat4("model", model);
         yellow_tree->draw(tree_shader);
 
@@ -354,7 +354,7 @@ namespace app {
             campfire_shader->set_mat4("view", camera->view_matrix());
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
+            model           = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
             campfire_shader->set_mat4("model", model);
 
             campfire->draw(campfire_shader);
@@ -374,7 +374,7 @@ namespace app {
             campfire_shader->set_mat4("view", camera->view_matrix());
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
+            model           = glm::translate(model, glm::vec3(12.0f, 17.3f, 6.0f));
             campfire_shader->set_mat4("model", model);
 
             campfire->draw(campfire_shader);
@@ -587,13 +587,13 @@ namespace app {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
         engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        unsigned int rowCount    = 2;
-        unsigned int colCount    = 10;
-        unsigned int amount      = rowCount * colCount + 13;
-        auto *modelMatrices = new glm::mat4[amount];
+        unsigned int rowCount = 2;
+        unsigned int colCount = 10;
+        unsigned int amount   = rowCount * colCount + 13;
+        auto *modelMatrices   = new glm::mat4[amount];
 
         for (unsigned int row = 0; row < rowCount; row++) {
-            float x = row==0? 40.0f : 44.0f;
+            float x = row == 0 ? 40.0f : 44.0f;
 
             for (unsigned int col = 0; col < colCount; col++) {
                 unsigned int index   = row * colCount + col;
@@ -633,7 +633,7 @@ namespace app {
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
 
-        for (const auto & mesh : white_flowers->meshes()) {
+        for (const auto &mesh: white_flowers->meshes()) {
             unsigned int VAO = mesh.m_vao;
             glBindVertexArray(VAO);
 
@@ -660,21 +660,45 @@ namespace app {
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
         flower_shader->use();
+
+        // Set standard lighting parameters
         flower_shader->set_vec3("light.position", lightPos);
         if (is_day) {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
             flower_shader->set_float("material.shininess", 32.0f);
+
+            // Day-specific enhanced parameters
+            flower_shader->set_float("brightnessVariation", 0.12f); // Slightly more variation in daylight
+            flower_shader->set_float("petalTranslucency", 0.2f);    // More visible translucency in daylight
+            flower_shader->set_float("saturationBoost", 0.15f);     // Subtle saturation in daylight
+            flower_shader->set_float("windStrength", 0.04f);        // Gentler wind during day
         } else {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
             flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_float("material.shininess", 128.0f);
+
+            // Night-specific enhanced parameters
+            flower_shader->set_float("brightnessVariation", 0.08f); // Less variation at night
+            flower_shader->set_float("petalTranslucency", 0.1f);    // Less translucency at night
+            flower_shader->set_float("saturationBoost", 0.25f);     // More saturation at night for visibility
+            flower_shader->set_float("windStrength", 0.06f);        // Stronger wind at night
         }
+
+        // Set wind parameters
+        flower_shader->set_float("time", glfwGetTime());                       // Current time for animation
+        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f)); // Wind direction
+        flower_shader->set_float("windSpeed", 0.8f);                           // Wind speed
+
+        // Standard view parameters
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
         flower_shader->set_mat4("view", camera->view_matrix());
+
+        // Material specular properties
+        flower_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 
         white_flowers->drawInstanced(flower_shader, amount);
 
@@ -739,7 +763,9 @@ namespace app {
 
         shroomShader->use();
         shroomShader->set_vec3("light.position", lightPos);
+        shroomShader->set_vec3("viewPos", camera->Position);
 
+        // Set the base material and light properties - keeping original light properties
         if (is_day) {
             shroomShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             shroomShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
@@ -752,20 +778,26 @@ namespace app {
             shroomShader->set_float("material.shininess", 128.0f);
         }
 
-        shroomShader->set_vec3("viewPos", camera->Position);
+        // Set the new shader parameters
+        shroomShader->set_float("wetness", 0.6f);
+        shroomShader->set_float("capTranslucency", 0.3f);
+        shroomShader->set_float("rimLight", 0.2f);
+
         shroomShader->set_mat4("projection", graphics->projection_matrix());
         shroomShader->set_mat4("view", camera->view_matrix());
 
+        // Keep original drawMushroom lambda functionality
         auto drawMushroom = [&](const glm::vec3 &translation, float scale, float yRotation = 0.0f) {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model      = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
-            model      = glm::translate(model, translation);
-            model      = glm::scale(model, glm::vec3(scale));
+            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0)); // Maintain original rotation axis
+            model = glm::translate(model, translation);
+            model = glm::scale(model, glm::vec3(scale));
             shroomShader->set_mat4("model", model);
             mushroom->draw(shroomShader);
         };
 
+        // Draw mushrooms at their original positions with original parameters
         drawMushroom(glm::vec3(6, 0, 16), 0.19f, -19.0f);
         drawMushroom(glm::vec3(3, 8, 17), 0.19f);
         drawMushroom(glm::vec3(12, 19, 17), 0.19f);
@@ -774,7 +806,6 @@ namespace app {
     }
 
     void MainController::draw_red_flowers() {
-        engine::resources::Model *orange_flower  = resources->model("orange_flower");
         engine::resources::Model *roses          = resources->model("roses");
         engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
@@ -847,23 +878,41 @@ namespace app {
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
             flower_shader->set_float("material.shininess", 32.0f);
+
+            // Day-specific enhanced parameters
+            flower_shader->set_float("brightnessVariation", 0.12f);  // Slightly more variation in daylight
+            flower_shader->set_float("petalTranslucency", 0.2f);     // More visible translucency in daylight
+            flower_shader->set_float("saturationBoost", 0.15f);      // Subtle saturation in daylight
+            flower_shader->set_float("windStrength", 0.04f);
         } else {
             flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
             flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
             flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
             flower_shader->set_float("material.shininess", 128.0f);
+
+            // Night-specific enhanced parameters
+            flower_shader->set_float("brightnessVariation", 0.08f);  // Less variation at night
+            flower_shader->set_float("petalTranslucency", 0.1f);     // Less translucency at night
+            flower_shader->set_float("saturationBoost", 0.25f);      // More saturation at night for visibility
+            flower_shader->set_float("windStrength", 0.06f);         // Stronger wind at night
         }
+
+        flower_shader->set_float("time", glfwGetTime());             // Current time for animation
+        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f)); // Wind direction
+        flower_shader->set_float("windSpeed", 0.8f);
+
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
         flower_shader->set_mat4("view", camera->view_matrix());
 
+        flower_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
         roses->drawInstanced(flower_shader, amount);
 
         delete[] modelMatrices;
     }
 
     void MainController::draw_terrain() {
-        engine::resources::Model *terrain = resources->model("terrain");
+        engine::resources::Model *terrain         = resources->model("terrain");
         engine::resources::Shader *terrain_shader = resources->shader("terrain_shader");
 
         terrain_shader->use();
@@ -872,7 +921,7 @@ namespace app {
         terrain_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model           = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         terrain_shader->set_mat4("model", model);
 
         terrain_shader->set_vec3("viewPos", camera->Position);
@@ -887,12 +936,12 @@ namespace app {
         if (is_day) {
             terrain_shader->set_float("constant", 1.0f);
             terrain_shader->set_float("linear", 0.0003f);     // Reduced from 0.0009
-            terrain_shader->set_float("quadratic", 0.00001f);  // Much lower for sunlight
+            terrain_shader->set_float("quadratic", 0.00001f); // Much lower for sunlight
         }
         // For night lighting (closer light source), use stronger attenuation
         else {
             terrain_shader->set_float("constant", 1.0f);
-            terrain_shader->set_float("linear", 0.014f);     // Reduced from 0.09
+            terrain_shader->set_float("linear", 0.014f); // Reduced from 0.09
             terrain_shader->set_float("quadratic", 0.0007f);
         }
 
@@ -900,7 +949,7 @@ namespace app {
     }
 
     void MainController::draw_water() {
-        engine::resources::Model *water_model = resources->model("water");
+        engine::resources::Model *water_model   = resources->model("water");
         engine::resources::Shader *water_shader = resources->shader("water_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -911,9 +960,10 @@ namespace app {
         water_shader->set_float("time", currentTime);
 
         // Set water color based on day/night cycle
-        glm::vec3 waterColor = is_day ?
-            glm::vec3(0.0f, 0.4f, 0.6f) :  // Daytime blue
-            glm::vec3(0.0f, 0.1f, 0.3f);   // Nighttime darker blue
+        glm::vec3 waterColor = is_day
+                                   ? glm::vec3(0.0f, 0.4f, 0.6f)
+                                   :                            // Daytime blue
+                                   glm::vec3(0.0f, 0.1f, 0.3f); // Nighttime darker blue
         water_shader->set_vec3("waterColor", waterColor);
         water_shader->set_vec3("lightPos", lightPos);
         water_shader->set_vec3("viewPos", camera->Position);
@@ -921,9 +971,9 @@ namespace app {
         water_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(30, 1, 30));
-        model = glm::translate(model, glm::vec3(0, 7, 0));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model           = glm::scale(model, glm::vec3(30, 1, 30));
+        model           = glm::translate(model, glm::vec3(0, 7, 0));
+        model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
         water_shader->set_mat4("model", model);
 
         water_model->drawBlended(water_shader);
@@ -983,8 +1033,8 @@ namespace app {
     }
 
     void MainController::draw_stones() {
-        engine::resources::Model *fantasy_rock   = resources->model("frock");
-        engine::resources::Model *grave   = resources->model("grave");
+        engine::resources::Model *fantasy_rock = resources->model("frock");
+        engine::resources::Model *grave        = resources->model("grave");
         engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -1009,29 +1059,29 @@ namespace app {
         test_shader->set_mat4("view", camera->view_matrix());
 
         auto model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(66, 14, -16));
-        model           = glm::scale(model, glm::vec3(1.65));
+        model      = glm::translate(model, glm::vec3(66, 14, -16));
+        model      = glm::scale(model, glm::vec3(1.65));
         test_shader->set_mat4("model", model);
         fantasy_rock->draw(test_shader);
 
         model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(57, 14, -22));
-        model           = glm::scale(model, glm::vec3(1.65));
+        model = glm::translate(model, glm::vec3(57, 14, -22));
+        model = glm::scale(model, glm::vec3(1.65));
         test_shader->set_mat4("model", model);
         fantasy_rock->draw(test_shader);
 
         model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1,0,0));
-        model = glm::rotate(model, glm::radians(-48.0f), glm::vec3(0,0,1));
-        model           = glm::translate(model, glm::vec3(29, 71, 12));
-        model           = glm::scale(model, glm::vec3(1.35));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model = glm::rotate(model, glm::radians(-48.0f), glm::vec3(0, 0, 1));
+        model = glm::translate(model, glm::vec3(29, 71, 12));
+        model = glm::scale(model, glm::vec3(1.35));
         test_shader->set_mat4("model", model);
         grave->draw(test_shader);
 
     }
 
     void MainController::draw_fire() {
-        engine::resources::Model *fire = resources->model("fire");
+        engine::resources::Model *fire         = resources->model("fire");
         engine::resources::Shader *fire_shader = resources->shader("fire_shader");
         fire_shader->use();
         fire_shader->set_vec3("viewPos", camera->Position);
@@ -1040,12 +1090,12 @@ namespace app {
         fire_shader->set_mat4("view", camera->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(12, 21, 7));
-        model = glm::scale(model, glm::vec3(3.08));
+        model           = glm::translate(model, glm::vec3(12, 21, 7));
+        model           = glm::scale(model, glm::vec3(3.08));
         fire_shader->set_mat4("model", model);
 
         static float startTime = glfwGetTime();
-        float currentTime = glfwGetTime() - startTime;
+        float currentTime      = glfwGetTime() - startTime;
 
         fire_shader->set_float("time", currentTime);
         fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));

@@ -68,12 +68,9 @@ void main()
     // Calculate distance to light
     float distance = length(lightPos - FragPos);
 
-    // Calculate attenuation - FIXED: limit minimum distance and cap attenuation
-    // Prevent excessive darkening at large distances
-    distance = max(distance, 0.1); // Prevent zero distance
+    distance = max(distance, 0.1); //
     float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
 
-    // Clamp attenuation to prevent it from becoming too small
     attenuation = max(attenuation, 0.01);
 
     // Ambient (not affected by attenuation)
