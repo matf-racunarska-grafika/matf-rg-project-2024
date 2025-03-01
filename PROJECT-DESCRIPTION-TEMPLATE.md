@@ -19,7 +19,7 @@ H -> IMGUI MENU<br>
 [x] Model with lighting - Statue, gazebo, temple, tree,...<br>
 [x] Two types of lighting with customizable colors and movement through GUI or ACTIONS - Directional light(moon), light in the gazebo (intensity change with imgui), lamp posts (color and brightness change with imgui).<br>
 [x] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}<br>
-/- increase the intensity of light in the gazebo (at least over 50.0) -> statue appears -> after 3 seconds -> butterflies appear<br>
+- increase the intensity of light in the gazebo (at least over 50.0) -> statue appears -> after 3 seconds -> butterflies appear<br>
 
 ### Group A:
 
