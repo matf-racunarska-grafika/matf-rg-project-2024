@@ -4,7 +4,7 @@
 namespace engine::graphics {
     // constructor with vectors
     Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
-    Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+        Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
         Position = position;
         WorldUp  = up;
         Yaw      = yaw;
@@ -14,7 +14,7 @@ namespace engine::graphics {
 
     // constructor with scalar values
     Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
-    Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+        Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
         Position = glm::vec3(posX, posY, posZ);
         WorldUp  = glm::vec3(upX, upY, upZ);
         Yaw      = yaw;
@@ -27,7 +27,8 @@ namespace engine::graphics {
         return glm::lookAt(Position, Position + Front, Up);
     }
 
-    // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
+    // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera
+    // defined ENUM (to abstract it from windowing systems)
     void Camera::move_camera(Movement direction, float deltaTime) {
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
@@ -58,7 +59,6 @@ namespace engine::graphics {
                 Pitch = 89.0f;
             if (Pitch < -89.0f)
                 Pitch = -89.0f;
-
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles
@@ -84,7 +84,8 @@ namespace engine::graphics {
         Front   = glm::normalize(front);
         // also re-calculate the Right and Up vector
         Right = glm::normalize(glm::cross(Front, WorldUp));
-        // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+        // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in
+        // slower movement.
         Up = glm::normalize(glm::cross(Right, Front));
     }
-}
+} // namespace engine::graphics

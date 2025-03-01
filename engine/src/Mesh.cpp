@@ -39,8 +39,8 @@ namespace engine::resources {
 
         glBindVertexArray(0);
         // NOLINTEND
-        m_vao         = VAO;
-        m_num_indices = indices.size();
+        vao         = VAO;
+        num_indices = indices.size();
         m_textures    = std::move(textures);
     }
 
@@ -58,14 +58,14 @@ namespace engine::resources {
             glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
             uniform_name.clear();
         }
-        glBindVertexArray(m_vao);
-        glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
 
 
     void Mesh::destroy() {
-        glDeleteVertexArrays(1, &m_vao);
+        glDeleteVertexArrays(1, &vao);
     }
 
 }

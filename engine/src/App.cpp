@@ -166,11 +166,9 @@ namespace engine::core {
     }
 
     void App::bloomset() {
-        auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader *shader = resources->shader("basic");
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         engine::resources::Shader *blur_shader = resources->shader("blur");
         engine::resources::Shader *bloom_final = resources->shader("bloom_final");
-        engine::resources::Shader *light       = resources->shader("light");
 
         bool horizontal      = true;
         bool first_iteration = true;

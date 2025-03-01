@@ -259,7 +259,7 @@ namespace app {
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
         for (unsigned int i = 0; i < butterfly->meshes().size(); i++) {
-            unsigned int VAO = butterfly->meshes()[i].m_vao;
+            unsigned int VAO = butterfly->meshes()[i].vao;
             glBindVertexArray(VAO);
             std::size_t vec4Size = sizeof(glm::vec4);
             glEnableVertexAttribArray(3);
@@ -295,14 +295,14 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         for (unsigned int i = 0; i < butterfly->meshes().size(); i++) {
-            glBindVertexArray(butterfly->meshes()[i].m_vao);
+            glBindVertexArray(butterfly->meshes()[i].vao);
 
             for (unsigned int j = 0; j < butterfly->meshes()[i].m_textures.size(); j++) {
                 glActiveTexture(GL_TEXTURE0 + j);
                 glBindTexture(GL_TEXTURE_2D, butterfly->meshes()[i].m_textures[j]->id());
             }
 
-            glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(butterfly->meshes()[i].m_num_indices),
+            glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(butterfly->meshes()[i].num_indices),
                                     GL_UNSIGNED_INT, 0, amount);
         }
     }
@@ -316,14 +316,6 @@ namespace app {
         shader->use();
         shader->set_vec3("LightPos", glm::vec3(21.0f, -5.0f, 2.0f));
         shader->set_vec3("LightColor", glm::vec3(light_gazebo, light_gazebo, light_gazebo));
-
-        glm::vec3 lampPositions[5] = {glm::vec3(20.0f, -7.0f, -23.0f), glm::vec3(90.0f, -7.0f, -20.0f),
-                                      glm::vec3(50.0f, -7.0f, -20.0f), glm::vec3(90.0f, -7.0f, -40.5f),
-                                      glm::vec3(50.0f, -7.0f, -40.5f)};
-
-        glm::vec3 lampColors[5] = {glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(10.0f, 10.0f, 10.0f),
-                                   glm::vec3(10.0f, 10.0f, 10.0f), glm::vec3(10.0f, 10.0f, 10.0f),
-                                   glm::vec3(10.0f, 10.0f, 10.0f)};
 
         for (int i = 0; i < 5; i++) {
             shader->set_vec3("LampPos[" + std::to_string(i) + "]", lampPositions[i]);
@@ -470,35 +462,27 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
 
-        glm::mat4 model5 = glm::mat4(1.0f);
         glm::mat4 model2 = glm::mat4(1.0f);
         glm::mat4 model3 = glm::mat4(1.0f);
         glm::mat4 model4 = glm::mat4(1.0f);
+        glm::mat4 model5 = glm::mat4(1.0f);
 
-        model2 = glm::translate(model2, glm::vec3(90.0f, -10.0f, -20.0f)); // front left
+        model2 = glm::translate(model2, glm::vec3(90.0f, -10.0f, -20.0f));
         model2 = glm::scale(model2, glm::vec3(2.5f));
 
-        model3 = glm::translate(model3, glm::vec3(50.0f, -10.0f, -20.0f)); // back left
+        model3 = glm::translate(model3, glm::vec3(55.0f, -10.0f, -20.0f));
         model3 = glm::scale(model3, glm::vec3(2.5f));
 
-        model4 = glm::translate(model4, glm::vec3(90.0f, -10.0f, -40.5f)); // front right
+        model4 = glm::translate(model4, glm::vec3(90.0f, -10.0f, -40.5f));
         model4 = glm::scale(model4, glm::vec3(2.5f));
 
-        model5 = glm::translate(model5, glm::vec3(50.0f, -10.0f, -40.5f)); // back right
+        model5 = glm::translate(model5, glm::vec3(55.0f, -10.0f, -40.5f));
         model5 = glm::scale(model5, glm::vec3(2.5f));
 
         glm::mat4 model1 = glm::mat4(1.0f);
         model1           = glm::translate(model1, glm::vec3(20.0f, -15.0f, -23.0f));
         model1           = glm::scale(model1, glm::vec3(2.5f));
         shader->set_mat4("model", model1);
-
-        std::vector<glm::vec3> lampColors = {
-                glm::vec3(30.0f, 5.0f, 25.0f), // pink
-                glm::vec3(30.0f, 30.0f, 5.0f), // yellow
-                glm::vec3(5.0f, 5.0f, 30.0f),  // blue
-                glm::vec3(5.0f, 30.0f, 5.0f),  // green
-                glm::vec3(20.0f, 10.0f, 10.0f) // red
-        };
 
         int i = 0;
         for (auto &model: {model1, model2, model3, model4, model5}) {

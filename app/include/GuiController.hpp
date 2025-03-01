@@ -5,6 +5,8 @@
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <glm/glm.hpp>
+
 
 namespace app {
 
@@ -13,11 +15,15 @@ public:
     std::string_view name() const override {
         return "app::GUIController";
     }
+    glm::vec3 baseColors[5];
+    float brightness[5];
 private:
     void initialize() override;
     void draw() override;
     void poll_events() override;
-    bool enabled = false;
+    void updateLampColors();
+    bool m_enabled = false;
+
 };
 
 } // app

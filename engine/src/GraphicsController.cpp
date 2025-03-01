@@ -34,7 +34,7 @@ namespace engine::graphics {
         ImGui::CreateContext();
         ImGuiIO &io = ImGui::GetIO();
 
-        io.FontGlobalScale = 1.5f;
+        io.FontGlobalScale = 1.2f;
 
         RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
         RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");

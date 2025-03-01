@@ -5,12 +5,13 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <glm/glm.hpp>
 
 namespace app {
 
     extern float radius;
     extern float light_gazebo;
-
+    extern glm::vec3 lampColors[5];
 
     class MainController : public engine::core::Controller {
 

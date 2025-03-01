@@ -42,8 +42,8 @@ namespace engine::resources {
          * @brief Destroys the mesh in the OpenGL context.
          */
         void destroy();
-        uint32_t m_vao{0};
-        uint32_t m_num_indices{0};
+        uint32_t vao{0};
+        uint32_t num_indices{0};
         std::vector<Texture *> m_textures;
         /**
         * @brief Constructs a Mesh object.
