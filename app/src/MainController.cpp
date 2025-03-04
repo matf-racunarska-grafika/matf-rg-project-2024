@@ -67,9 +67,9 @@ namespace app {
         shader->set_float("material.shininess", 32.0f);
 
         shader->set_vec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -0.7f));
-        shader->set_vec3("dirLight.ambient", glm::vec3(0.05f, 0.01f, 0.01f));
-        shader->set_vec3("dirLight.diffuse", glm::vec3(0.05f, 0.01f, 0.01f));
-        shader->set_vec3("dirLight.specular", glm::vec3(0.05f, 0.01f, 0.01f));
+        shader->set_vec3("dirLight.ambient", glm::vec3(0.025f, 0.005f, 0.005f));
+        shader->set_vec3("dirLight.diffuse", glm::vec3(0.025f, 0.005f, 0.005f));
+        shader->set_vec3("dirLight.specular", glm::vec3(0.025f, 0.005f, 0.005f));
 
         // getting the possitions of the eyes
         glm::mat4 modelEye1 = model;
@@ -89,17 +89,17 @@ namespace app {
         shader->set_vec3("pointLights[0].ambient", glm::vec3(0.0f));
         shader->set_vec3("pointLights[0].diffuse", lightColor);
         shader->set_vec3("pointLights[0].specular", lightColor);
-        shader->set_float("pointLights[0].constant", 10.0f);
-        shader->set_float("pointLights[0].linear", 0.09f);
-        shader->set_float("pointLights[0].quadratic", 0.032f);
+        shader->set_float("pointLights[0].constant", 1.0f);
+        shader->set_float("pointLights[0].linear", 0.9f);
+        shader->set_float("pointLights[0].quadratic", 0.92f);
 
         shader->set_vec3("pointLights[1].position", glm::vec3(eye2Pos));
         shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
         shader->set_vec3("pointLights[1].diffuse", lightColor);
         shader->set_vec3("pointLights[1].specular", lightColor);
-        shader->set_float("pointLights[1].constant", 10.0f);
-        shader->set_float("pointLights[1].linear", 0.09f);
-        shader->set_float("pointLights[1].quadratic", 0.032f);
+        shader->set_float("pointLights[1].constant", 1.0f);
+        shader->set_float("pointLights[1].linear", 0.9f);
+        shader->set_float("pointLights[1].quadratic", 0.92f);
 
         skullModel->draw(shader);
 
@@ -162,7 +162,6 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model* arenaModel = resources->model("arena");
 
-
         // Shader
         engine::resources::Shader* shader = resources->shader("NearShader");
         shader->use();
@@ -174,11 +173,6 @@ namespace app {
         model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.008f));
         shader->set_mat4("model", model);
-
-        shader->set_vec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, -0.7f));
-        shader->set_vec3("dirLight.ambient", glm::vec3(0.05f, 0.01f, 0.01f));
-        shader->set_vec3("dirLight.diffuse", glm::vec3(0.05f, 0.01f, 0.01f));
-        shader->set_vec3("dirLight.specular", glm::vec3(0.05f, 0.01f, 0.01f));
 
         arenaModel->draw(shader);
     }
