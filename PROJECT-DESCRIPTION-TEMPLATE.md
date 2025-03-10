@@ -5,12 +5,12 @@ The goal of the game is to cross the bridge without being spotted by the rotatin
 
 ## Controls
 
-{W} -> {FORWARD}  
-{S} -> {BACKWARD (spectator mode only)}  
-{D} -> {RIGHT (spectator mode only)}
-{A} -> {LEFT (spectator mode only)}
-{SPACE} -> {UP (spectator mode only)}  
-{L_SHIFT} -> {DOWN (spectator mode only)}
+W -> FORWARD    
+S -> BACKWARD (spectator mode only)     
+D -> RIGHT (spectator mode only)        
+A -> LEFT (spectator mode only)      
+SPACE -> UP (spectator mode only)        
+L_SHIFT -> DOWN (spectator mode only)
 
 ## Features
 
