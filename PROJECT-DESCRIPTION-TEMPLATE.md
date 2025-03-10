@@ -1,7 +1,7 @@
 # SKULL SNEAK
 
 mi22091 - Viktor Šević  
-Igra gde je cilj preci most, a da vas lobanja koja se okrece ne vidi.
+The goal of the game is to cross the bridge without being spotted by the rotating skull.
 
 ## Controls
 
@@ -18,7 +18,7 @@ Igra gde je cilj preci most, a da vas lobanja koja se okrece ne vidi.
 
 [X] Skull model, eyes that are inside the skull, arena, bridge
 [X] 2 eyes that can change color through GUI and a directional light that mimics the sun
-[X] {moving while skull is looking} -> {teleported to the start} -> {1 less heart}
+[X] moving while skull is looking -> teleported to the start -> 1 less heart
 
 ### Group A:
 
@@ -28,6 +28,7 @@ Igra gde je cilj preci most, a da vas lobanja koja se okrece ne vidi.
 [ ] Parallax Mapping
 
 ### Group B:
+
 [X] Bloom with the use of HDR  
 [ ] Deferred Shading  
 [ ] Point Shadows  
@@ -38,6 +39,11 @@ Igra gde je cilj preci most, a da vas lobanja koja se okrece ne vidi.
 [X] Added a post-processing handler to process bloom, filters and health bar rendering
 
 ## Models:
+
+[https://free3d.com/3d-model/skull-v3--785914.html]     
+[https://www.cgtrader.com/free-3d-models/exterior/street-exterior/stone-bridge-64c81922-4456-400c-ab98-83fdbbd01b4f]    
+[https://www.cgtrader.com/items/4040060/download-page]      
+[https://free3d.com/3d-model/colosseum-v1--937409.html] 
 
 ## Textures
 
