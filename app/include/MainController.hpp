@@ -15,19 +15,29 @@ namespace app {
         void update() override;
 
         void update_skull_facing();
+
         void update_game_state();
 
         void draw() override;
 
+        void end_draw() override;
+
         void draw_skull();
+
         void draw_bridge();
+
         void draw_arena();
+
         void draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model);
+
         void draw_skybox();
+
         void draw_health_bar();
 
     public:
-        std::string_view name() const override { return "app::MainController"; }
+        std::string_view name() const override {
+            return "app::MainController";
+        }
     };
 }
 #endif //MAINCONTROLLER_HPP

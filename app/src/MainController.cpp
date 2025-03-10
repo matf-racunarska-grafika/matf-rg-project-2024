@@ -41,26 +41,26 @@ namespace app {
 
     void MainController::draw_skull() {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        float time = platform->frame_time().current;
+        float time    = platform->frame_time().current;
         // Model
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* skullModel = resources->model("skull");
+        auto resources                       = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                        = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *skullModel = resources->model("skull");
 
         // Shader
-        engine::resources::Shader* shader = resources->shader("NearShader");
+        engine::resources::Shader *shader = resources->shader("NearShader");
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.5f, -46.0f));
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+        model           = glm::translate(model, glm::vec3(0.0f, 0.5f, -46.0f));
+        model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
         // Speed of the skull rotation
         float skullSpeed = Settings::getInstance().skullSpeed;
-        model = glm::rotate(model, glm::radians(time * skullSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        model            = glm::rotate(model, glm::radians(time * skullSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
+        model            = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader->set_mat4("model", model);
 
         shader->set_vec3("viewPosition", graphics->camera()->Position);
@@ -108,12 +108,12 @@ namespace app {
 
     void MainController::draw_bridge() {
         // Model
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* bridgeModel = resources->model("bridge");
+        auto resources                        = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                         = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *bridgeModel = resources->model("bridge");
 
         // Shader
-        engine::resources::Shader* shader = resources->shader("NearShader");
+        engine::resources::Shader *shader = resources->shader("NearShader");
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
@@ -122,7 +122,7 @@ namespace app {
         glm::mat4 model = glm::mat4(1.0f);
         for (int i = 0; i <= 7; i++) {
             model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(0.0f, -2.0f, -i*3.39f));
+            model = glm::translate(model, glm::vec3(0.0f, -2.0f, -i * 3.39f));
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
             model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             model = glm::scale(model, glm::vec3(0.5f));
@@ -134,12 +134,12 @@ namespace app {
 
     void MainController::draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model) {
         // Model
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* eyeModel = resources->model("eyes");
+        auto resources                     = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                      = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *eyeModel = resources->model("eyes");
 
         // Shader
-        engine::resources::Shader* shader = resources->shader("eyeShader");
+        engine::resources::Shader *shader = resources->shader("eyeShader");
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
@@ -152,26 +152,25 @@ namespace app {
         eyeModel->draw(shader);
     }
 
-
     void MainController::draw_arena() {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        float time = platform->frame_time().current;
+        float time    = platform->frame_time().current;
 
         // Model
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* arenaModel = resources->model("arena");
+        auto resources                       = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                        = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *arenaModel = resources->model("arena");
 
         // Shader
-        engine::resources::Shader* shader = resources->shader("NearShader");
+        engine::resources::Shader *shader = resources->shader("NearShader");
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -20.0f, -10.0f));
-        model = glm::rotate(model, glm::radians(time), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.008f));
+        model           = glm::translate(model, glm::vec3(0.0f, -20.0f, -10.0f));
+        model           = glm::rotate(model, glm::radians(time), glm::vec3(0.0f, 1.0f, 0.0f));
+        model           = glm::rotate(model, glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model           = glm::scale(model, glm::vec3(0.008f));
         shader->set_mat4("model", model);
 
         arenaModel->draw(shader);
@@ -179,16 +178,16 @@ namespace app {
 
     void MainController::draw_skybox() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto skybox = resources->skybox("skybox");
-        auto shader = resources->shader("skybox");
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto skybox    = resources->skybox("skybox");
+        auto shader    = resources->shader("skybox");
+        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->draw_skybox(shader, skybox);
     }
 
     void MainController::draw_health_bar() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader* heartShader = resources->shader("heart");
-        engine::resources::Texture* heartTex = resources->texture("heart");
+        engine::resources::Shader *heartShader = resources->shader("heart");
+        engine::resources::Texture *heartTex = resources->texture("heart");
 
         engine::graphics::OpenGL::disable_depth_testing();
         engine::graphics::OpenGL::enable_blend();
@@ -197,14 +196,14 @@ namespace app {
         heartShader->use();
         engine::graphics::Framebuffer::activate_texture(heartTex->id(), 0);
 
-        auto window = engine::core::Controller::get<engine::platform::PlatformController>()->window();
-        float screenWidth = window->width();
+        auto window        = engine::core::Controller::get<engine::platform::PlatformController>()->window();
+        float screenWidth  = window->width();
         float screenHeight = window->height();
 
         const float heartSize = 50.0f;
-        const float padding = 10.0f;
-        const float startX = screenWidth - heartSize - padding;
-        const float startY = padding + 35.0f;
+        const float padding   = 10.0f;
+        const float startX    = screenWidth - heartSize - padding;
+        const float startY    = padding + 35.0f;
 
         int currentHealth = Settings::getInstance().health;
         for (int i = 0; i < currentHealth; ++i) {
@@ -212,16 +211,16 @@ namespace app {
             float y = startY;
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(
-                (x / screenWidth) * 2.0f - 1.0f,
-                1.0f - (y / screenHeight) * 2.0f,
-                0.0f
-            ));
+            model           = glm::translate(model, glm::vec3(
+                                           (x / screenWidth) * 2.0f - 1.0f,
+                                           1.0f - (y / screenHeight) * 2.0f,
+                                           0.0f
+                                           ));
             model = glm::scale(model, glm::vec3(
-                heartSize / screenWidth,
-                heartSize / screenHeight,
-                1.0f
-            ));
+                                       heartSize / screenWidth,
+                                       heartSize / screenHeight,
+                                       1.0f
+                                       ));
 
             heartShader->set_mat4("model", model);
             engine::graphics::Framebuffer::render_quad();
@@ -239,12 +238,18 @@ namespace app {
         draw_health_bar();
     }
 
+    void MainController::end_draw() {
+        engine::graphics::Framebuffer::bind_framebuffer(0);
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        platform->swap_buffers();
+    }
+
     void set_camera_to_starting_position() {
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera = graphics->camera();
+        auto graphics    = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera      = graphics->camera();
         camera->Position = glm::vec3(0.0f);
-        camera->Front = glm::vec3(0.0f, 0.0f, -1.0f);
-        camera->Up = glm::vec3(0.0f, 1.0f, 0.0f);
+        camera->Front    = glm::vec3(0.0f, 0.0f, -1.0f);
+        camera->Up       = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     void MainController::update_camera() {
@@ -252,31 +257,31 @@ namespace app {
         if (gui_controller->is_enabled()) {
             return;
         }
-        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera = graphics->camera();
-        float dt = platform->dt();
+        auto platform    = engine::core::Controller::get<engine::platform::PlatformController>();
+        auto graphics    = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera      = graphics->camera();
+        float dt         = platform->dt();
         bool skullFacing = Settings::getInstance().skullFacingPlayer;
 
         if (Settings::getInstance().spectatorMode) {
             float speed = 10.0f;
             if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt * speed);
             }
             if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt * speed);
             }
             if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt * speed);
             }
             if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt * speed);
             }
             if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt * speed);
             }
             if (platform->key(engine::platform::KeyId::KEY_SPACE).is_down()) {
-                camera->move_camera(engine::graphics::Camera::Movement::UP, dt*speed);
+                camera->move_camera(engine::graphics::Camera::Movement::UP, dt * speed);
             }
         } else {
             if (platform->frame_time().current < Settings::getInstance().teleport_cooldown)
@@ -304,8 +309,8 @@ namespace app {
         int health = Settings::getInstance().health;
         if (health <= 0 && !Settings::getInstance().spectatorMode) {
             auto gui_controller = engine::core::Controller::get<GuiController>();
-            auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-            auto camera = graphics->camera();
+            auto graphics       = engine::core::Controller::get<engine::graphics::GraphicsController>();
+            auto camera         = graphics->camera();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
             set_camera_to_starting_position();
@@ -315,7 +320,7 @@ namespace app {
         if (Settings::getInstance().spectatorMode
             && platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) {
             Settings::getInstance().spectatorMode = false;
-            auto gui_controller = engine::core::Controller::get<GuiController>();
+            auto gui_controller                   = engine::core::Controller::get<GuiController>();
             gui_controller->set_enable(true);
             Settings::getInstance().health = Settings::getInstance().maxHealth;
             set_camera_to_starting_position();
@@ -326,7 +331,7 @@ namespace app {
         float skullSpeed = Settings::getInstance().skullSpeed;
 
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        float time = platform->frame_time().current;
+        float time    = platform->frame_time().current;
 
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         bool skullFacing;

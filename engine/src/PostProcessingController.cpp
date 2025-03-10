@@ -3,16 +3,14 @@
 #include <engine/graphics/Framebuffer.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/graphics/PostProcessingController.hpp>
-
-#include <minizip/unzip.h>
 #include <spdlog/spdlog.h>
 
 namespace engine::graphics {
     void PostProcessingController::initialize() {
-        auto platform = get<platform::PlatformController>();
-        auto window = platform->window();
+        auto platform        = get<platform::PlatformController>();
+        auto window          = platform->window();
         unsigned int wHeight = window->height();
-        unsigned int wWidth = window->width();
+        unsigned int wWidth  = window->width();
 
         prepare_bloom_effect(wHeight, wWidth);
         prepare_filter_effect(wHeight, wWidth);
@@ -37,7 +35,7 @@ namespace engine::graphics {
             Framebuffer::set_up_attachments();
             Framebuffer::bind_framebuffer(0);
 
-            std::tie(m_pingpongFBO[0], m_pingpongFBO[1]) = Framebuffer::generate_two_framebuffers();
+            std::tie(m_pingpongFBO[0], m_pingpongFBO[1])       = Framebuffer::generate_two_framebuffers();
             std::tie(m_pingpongBuffer[0], m_pingpongBuffer[1]) = Framebuffer::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
                 Framebuffer::bind_framebuffer(m_pingpongFBO[i]);
@@ -46,6 +44,7 @@ namespace engine::graphics {
             prepare_bloom_shaders();
         }
     }
+
     void PostProcessingController::prepare_filter_effect(unsigned int wHeight, unsigned int wWidth) {
         if (m_screenFBO == 0) {
             m_screenFBO = Framebuffer::generate_framebuffer();
@@ -59,10 +58,10 @@ namespace engine::graphics {
     }
 
     void PostProcessingController::prepare_bloom_shaders() {
-        auto resources = get<resources::ResourcesController>();
-        resources::Shader* bloom = resources->shader("bloom");
-        resources::Shader* blur = resources->shader("blur");
-        resources::Shader* bloom_final = resources->shader("bloom_final");
+        auto resources                 = get<resources::ResourcesController>();
+        resources::Shader *bloom       = resources->shader("bloom");
+        resources::Shader *blur        = resources->shader("blur");
+        resources::Shader *bloom_final = resources->shader("bloom_final");
 
         bloom->use();
         bloom->set_int("diffuseTexture", 0);
@@ -78,24 +77,17 @@ namespace engine::graphics {
         OpenGL::clear_buffers();
     }
 
-    void PostProcessingController::end_draw() {
-        Framebuffer::bind_framebuffer(0);
-        auto platform = get<platform::PlatformController>();
-        platform->swap_buffers();
-    }
-
     void PostProcessingController::draw_bloom() {
-        auto resources = get<resources::ResourcesController>();
-        resources::Shader* bloom_final = resources->shader("bloom_final");
-        resources::Shader* blur = resources->shader("blur");
+        auto resources                 = get<resources::ResourcesController>();
+        resources::Shader *bloom_final = resources->shader("bloom_final");
+        resources::Shader *blur        = resources->shader("blur");
 
         Framebuffer::bind_framebuffer(0);
 
-        bool horizontal = true, first_iteration = true;
+        bool horizontal     = true, first_iteration = true;
         unsigned int amount = 10;
         blur->use();
-        for (unsigned int i = 0; i < amount; i++)
-        {
+        for (unsigned int i = 0; i < amount; i++) {
             Framebuffer::bind_framebuffer(m_pingpongFBO[horizontal]);
             blur->set_int("horizontal", horizontal);
             Framebuffer::bind_texture(first_iteration ? m_colorBuffers[1] : m_pingpongBuffer[!horizontal]);
@@ -119,8 +111,8 @@ namespace engine::graphics {
     }
 
     void PostProcessingController::draw_filter() {
-        auto resources = get<resources::ResourcesController>();
-        resources::Shader* post_processing_shader = resources->shader(m_active_filter);
+        auto resources                            = get<resources::ResourcesController>();
+        resources::Shader *post_processing_shader = resources->shader(m_active_filter);
         post_processing_shader->use();
 
         Framebuffer::bind_framebuffer(0);

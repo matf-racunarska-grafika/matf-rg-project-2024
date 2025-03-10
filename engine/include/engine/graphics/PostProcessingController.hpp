@@ -9,12 +9,12 @@
 
 namespace engine::graphics {
   class PostProcessingController : public engine::core::Controller {
-    unsigned int m_hdrFBO = 0;
-    unsigned int m_colorBuffers[2] = { 0, 0 };
-    unsigned int m_pingpongFBO[2] = { 0, 0 };
-    unsigned int m_pingpongBuffer[2] = { 0, 0 };
-    unsigned int m_screenFBO = 0;
-    unsigned int m_screenTexture = 0;
+    unsigned int m_hdrFBO            = 0;
+    unsigned int m_colorBuffers[2]   = {0, 0};
+    unsigned int m_pingpongFBO[2]    = {0, 0};
+    unsigned int m_pingpongBuffer[2] = {0, 0};
+    unsigned int m_screenFBO         = 0;
+    unsigned int m_screenTexture     = 0;
 
     std::string m_active_filter = "noFilter";
 
@@ -64,11 +64,6 @@ namespace engine::graphics {
      * @brief binds the appropriate framebuffer and clears buffers
      */
     void begin_draw() override;
-
-    /**
-     * @brief unbinds the framebuffer and swaps buffers
-     */
-    void end_draw() override;
 
     /**
      * @brief applies the bloom effect
