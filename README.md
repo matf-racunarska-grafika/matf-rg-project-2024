@@ -122,11 +122,11 @@ For a basic app setup, you need to:
 4. Compile and run the program.
 
 ```cpp
-#include <engine/Engne.hpp>
+#include <engine/Engine.hpp>
 class MyApp : public engine::core::App {
 
 public:
-  void setup() override;
+  void app_setup() override;
 };
 
 void MyApp::app_setup() {
