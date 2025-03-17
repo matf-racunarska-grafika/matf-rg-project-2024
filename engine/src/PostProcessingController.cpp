@@ -11,13 +11,13 @@ namespace engine::graphics {
     void initialize_filter_name_key_map();
 
     void PostProcessingController::initialize() {
-        auto platform        = get<platform::PlatformController>();
-        auto window          = platform->window();
-        unsigned int wHeight = window->height();
-        unsigned int wWidth  = window->width();
+        auto platform              = get<platform::PlatformController>();
+        auto window                = platform->window();
+        unsigned int window_height = window->height();
+        unsigned int window_width  = window->width();
 
-        prepare_bloom_effect(wHeight, wWidth);
-        prepare_filter_effect(wHeight, wWidth);
+        prepare_bloom_effect(window_height, window_width);
+        prepare_filter_effect(window_height, window_width);
         Framebuffer::set_up_quad();
 
         initialize_filter_name_key_map();
@@ -28,36 +28,36 @@ namespace engine::graphics {
         draw_filter();
     }
 
-    void PostProcessingController::prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth) {
+    void PostProcessingController::prepare_bloom_effect(unsigned int window_height, unsigned int window_width) {
         if (m_hdrFBO == 0) {
             m_hdrFBO = Framebuffer::generate_framebuffer();
             Framebuffer::bind_framebuffer(m_hdrFBO);
 
-            std::tie(m_colorBuffers[0], m_colorBuffers[1]) = Framebuffer::generate_two_framebuffer_textures();
+            std::tie(m_color_buffers[0], m_color_buffers[1]) = Framebuffer::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
-                Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, m_colorBuffers[i], i);
+                Framebuffer::set_up_framebuffer_texture(window_width, window_height, m_color_buffers[i], i);
             }
-            Framebuffer::generate_depth_buffer(wWidth, wHeight);
+            Framebuffer::generate_depth_buffer(window_width, window_height);
             Framebuffer::set_up_attachments();
             Framebuffer::bind_framebuffer(0);
 
-            std::tie(m_pingpongFBO[0], m_pingpongFBO[1])       = Framebuffer::generate_two_framebuffers();
-            std::tie(m_pingpongBuffer[0], m_pingpongBuffer[1]) = Framebuffer::generate_two_framebuffer_textures();
+            std::tie(m_pingpongFBO[0], m_pingpongFBO[1])         = Framebuffer::generate_two_framebuffers();
+            std::tie(m_pingpong_buffer[0], m_pingpong_buffer[1]) = Framebuffer::generate_two_framebuffer_textures();
             for (unsigned int i = 0; i < 2; i++) {
                 Framebuffer::bind_framebuffer(m_pingpongFBO[i]);
-                Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, m_pingpongBuffer[i], 0);
+                Framebuffer::set_up_framebuffer_texture(window_width, window_height, m_pingpong_buffer[i], 0);
             }
             prepare_bloom_shaders();
         }
     }
 
-    void PostProcessingController::prepare_filter_effect(unsigned int wHeight, unsigned int wWidth) {
+    void PostProcessingController::prepare_filter_effect(unsigned int window_height, unsigned int window_width) {
         if (m_screenFBO == 0) {
             m_screenFBO = Framebuffer::generate_framebuffer();
             Framebuffer::bind_framebuffer(m_screenFBO);
 
-            m_screenTexture = Framebuffer::generate_framebuffer_texture();
-            Framebuffer::set_up_framebuffer_texture(wWidth, wHeight, m_screenTexture, 0);
+            m_screen_texture = Framebuffer::generate_framebuffer_texture();
+            Framebuffer::set_up_framebuffer_texture(window_width, window_height, m_screen_texture, 0);
 
             Framebuffer::bind_framebuffer(0);
         }
@@ -96,7 +96,7 @@ namespace engine::graphics {
         for (unsigned int i = 0; i < amount; i++) {
             Framebuffer::bind_framebuffer(m_pingpongFBO[horizontal]);
             blur->set_int("horizontal", horizontal);
-            Framebuffer::bind_texture(first_iteration ? m_colorBuffers[1] : m_pingpongBuffer[!horizontal]);
+            Framebuffer::bind_texture(first_iteration ? m_color_buffers[1] : m_pingpong_buffer[!horizontal]);
             Framebuffer::render_quad();
             horizontal = !horizontal;
             if (first_iteration)
@@ -107,8 +107,8 @@ namespace engine::graphics {
         Framebuffer::bind_framebuffer(m_screenFBO);
         OpenGL::clear_buffers(false);
         bloom_final->use();
-        Framebuffer::activate_texture(m_colorBuffers[0], 0);
-        Framebuffer::activate_texture(m_pingpongBuffer[!horizontal], 1);
+        Framebuffer::activate_texture(m_color_buffers[0], 0);
+        Framebuffer::activate_texture(m_pingpong_buffer[!horizontal], 1);
         bloom_final->set_int("bloom", true);
         bloom_final->set_float("exposure", 1.0f);
         Framebuffer::render_quad();
@@ -124,7 +124,7 @@ namespace engine::graphics {
 
         Framebuffer::bind_framebuffer(0);
         OpenGL::clear_buffers(false);
-        Framebuffer::activate_texture(m_screenTexture, 0);
+        Framebuffer::activate_texture(m_screen_texture, 0);
 
         Framebuffer::render_quad();
     }
@@ -144,18 +144,18 @@ namespace engine::graphics {
                 m_pingpongFBO[i] = 0;
             }
         }
-        if (m_colorBuffers[0] != 0 || m_colorBuffers[1] != 0) {
-            OpenGL::delete_texture(m_colorBuffers[0]);
-            m_colorBuffers[0] = m_colorBuffers[1] = 0;
+        if (m_color_buffers[0] != 0 || m_color_buffers[1] != 0) {
+            OpenGL::delete_texture(m_color_buffers[0]);
+            m_color_buffers[0] = m_color_buffers[1] = 0;
         }
-        if (m_pingpongBuffer[0] != 0 || m_pingpongBuffer[1] != 0) {
-            OpenGL::delete_texture(m_pingpongBuffer[0]);
-            OpenGL::delete_texture(m_pingpongBuffer[1]);
-            m_pingpongBuffer[0] = m_pingpongBuffer[1] = 0;
+        if (m_pingpong_buffer[0] != 0 || m_pingpong_buffer[1] != 0) {
+            OpenGL::delete_texture(m_pingpong_buffer[0]);
+            OpenGL::delete_texture(m_pingpong_buffer[1]);
+            m_pingpong_buffer[0] = m_pingpong_buffer[1] = 0;
         }
-        if (m_screenTexture != 0) {
-            OpenGL::delete_texture(m_screenTexture);
-            m_screenTexture = 0;
+        if (m_screen_texture != 0) {
+            OpenGL::delete_texture(m_screen_texture);
+            m_screen_texture = 0;
         }
         Framebuffer::delete_quad();
     }

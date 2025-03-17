@@ -33,33 +33,33 @@ namespace app {
         ImGui::Separator();
         ImGui::Spacing();
 
-        unsigned int diff = Settings::getInstance().difficulty;
-        float skullSpeed  = Settings::getInstance().skullSpeed;
+        unsigned int diff = Settings::get_instance().difficulty;
+        float skull_speed = Settings::get_instance().skull_speed;
         ImGui::Text("- Select Your Doom -");
         if (ImGui::RadioButton("EASY", diff == 0)) {
-            diff       = 0;
-            skullSpeed = 100.0f;
+            diff        = 0;
+            skull_speed = 100.0f;
         }
         if (ImGui::RadioButton("NORMAL", diff == 1)) {
-            diff       = 1;
-            skullSpeed = 160.0f;
+            diff        = 1;
+            skull_speed = 160.0f;
         }
         if (ImGui::RadioButton("HARD", diff == 2)) {
-            diff       = 2;
-            skullSpeed = 240.0f;
+            diff        = 2;
+            skull_speed = 240.0f;
         }
         if (ImGui::RadioButton("IMPOSSIBLE", diff == 3)) {
-            diff       = 3;
-            skullSpeed = 550.0f;
+            diff        = 3;
+            skull_speed = 550.0f;
         }
-        Settings::getInstance().skullSpeed = skullSpeed;
-        Settings::getInstance().difficulty = diff;
+        Settings::get_instance().skull_speed = skull_speed;
+        Settings::get_instance().difficulty  = diff;
 
         if (ImGui::CollapsingHeader("Light Settings")) {
             ImGui::Text("Adjust Light Color:");
-            ImGui::SliderFloat("Red", &Settings::getInstance().lightColor.x, 0.0f, 12.0f);
-            ImGui::SliderFloat("Green", &Settings::getInstance().lightColor.y, 0.0f, 12.0f);
-            ImGui::SliderFloat("Blue", &Settings::getInstance().lightColor.z, 0.0f, 12.0f);
+            ImGui::SliderFloat("Red", &Settings::get_instance().light_color.x, 0.0f, 12.0f);
+            ImGui::SliderFloat("Green", &Settings::get_instance().light_color.y, 0.0f, 12.0f);
+            ImGui::SliderFloat("Blue", &Settings::get_instance().light_color.z, 0.0f, 12.0f);
         }
 
         auto ppc                        = engine::core::Controller::get<engine::graphics::PostProcessingController>();
@@ -93,7 +93,7 @@ namespace app {
         ImGui::Text("Spectator mode ignores game \nelements and allows free movement.\n(exit on F)");
         if (ImGui::Button("SPECTATOR MODE", ImVec2(ImGui::GetWindowWidth() * 0.5f, 30))) {
             set_enable(false);
-            Settings::getInstance().spectatorMode = true;
+            Settings::get_instance().spectator_mode = true;
         }
 
         ImGui::End();

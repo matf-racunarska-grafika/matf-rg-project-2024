@@ -19,12 +19,12 @@ namespace engine::graphics {
   };
 
   class PostProcessingController : public engine::core::Controller {
-    unsigned int m_hdrFBO            = 0;
-    unsigned int m_colorBuffers[2]   = {0, 0};
-    unsigned int m_pingpongFBO[2]    = {0, 0};
-    unsigned int m_pingpongBuffer[2] = {0, 0};
-    unsigned int m_screenFBO         = 0;
-    unsigned int m_screenTexture     = 0;
+    unsigned int m_hdrFBO             = 0;
+    unsigned int m_color_buffers[2]   = {0, 0};
+    unsigned int m_pingpongFBO[2]     = {0, 0};
+    unsigned int m_pingpong_buffer[2] = {0, 0};
+    unsigned int m_screenFBO          = 0;
+    unsigned int m_screen_texture     = 0;
 
     Filter m_active_filter = Filter::NOFILTER;
 
@@ -36,17 +36,17 @@ namespace engine::graphics {
 
     /**
      * @brief prepares the final framebuffer that will be rendered to the screen
-     * @param wHeight height of the screen
-     * @param wWidth width of the screen
+     * @param window_height height of the screen
+     * @param window_width width of the screen
      */
-    void prepare_filter_effect(unsigned int wHeight, unsigned int wWidth);
+    void prepare_filter_effect(unsigned int window_height, unsigned int window_width);
 
     /**
      * @brief sets up the hdr framebuffer and color and pingpong buffers for bloom
-     * @param wHeight height of the screen
-     * @param wWidth width of the screen
+     * @param window_height height of the screen
+     * @param window_width width of the screen
      */
-    void prepare_bloom_effect(unsigned int wHeight, unsigned int wWidth);
+    void prepare_bloom_effect(unsigned int window_height, unsigned int window_width);
 
     /**
      * @brief sets up uniforms for default bloom shaders

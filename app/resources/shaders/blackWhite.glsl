@@ -23,7 +23,7 @@ void main()
 {
     float gray = dot(texture(screenTexture, TexCoords).rgb, vec3(0.299, 0.587, 0.114));
 
-    float bw = step(0.2f, gray);
+    float bw = step(0.11f, gray);
 
     FragColor = vec4(vec3(bw), 1.0);
 }

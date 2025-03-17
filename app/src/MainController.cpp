@@ -43,9 +43,9 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         float time    = platform->frame_time().current;
         // Model
-        auto resources                       = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics                        = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *skullModel = resources->model("skull");
+        auto resources                        = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                         = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *skull_model = resources->model("skull");
 
         // Shader
         engine::resources::Shader *shader = resources->shader("NearShader");
@@ -58,9 +58,9 @@ namespace app {
         model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 
         // Speed of the skull rotation
-        float skullSpeed = Settings::getInstance().skullSpeed;
-        model            = glm::rotate(model, glm::radians(time * skullSpeed), glm::vec3(0.0f, 0.0f, 1.0f));
-        model            = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+        float skull_speed = Settings::get_instance().skull_speed;
+        model             = glm::rotate(model, glm::radians(time * skull_speed), glm::vec3(0.0f, 0.0f, 1.0f));
+        model             = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader->set_mat4("model", model);
 
         shader->set_vec3("viewPosition", graphics->camera()->Position);
@@ -72,45 +72,45 @@ namespace app {
         shader->set_vec3("dirLight.specular", glm::vec3(0.025f, 0.005f, 0.005f));
 
         // getting the possitions of the eyes
-        glm::mat4 modelEye1 = model;
-        glm::mat4 modelEye2 = model;
+        glm::mat4 skull_eye_1 = model;
+        glm::mat4 skull_eye_2 = model;
 
-        modelEye1 = glm::translate(modelEye1, glm::vec3(-4.4f, -9.8f, 14.0f));
-        modelEye1 = glm::scale(modelEye1, glm::vec3(0.008f));
+        skull_eye_1 = glm::translate(skull_eye_1, glm::vec3(-4.4f, -9.8f, 14.0f));
+        skull_eye_1 = glm::scale(skull_eye_1, glm::vec3(0.008f));
 
-        modelEye2 = glm::translate(modelEye2, glm::vec3(4.4f, -9.8f, 14.0f));
-        modelEye2 = glm::scale(modelEye2, glm::vec3(0.008f));
+        skull_eye_2 = glm::translate(skull_eye_2, glm::vec3(4.4f, -9.8f, 14.0f));
+        skull_eye_2 = glm::scale(skull_eye_2, glm::vec3(0.008f));
 
-        glm::vec4 eye1Pos = modelEye1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-        glm::vec4 eye2Pos = modelEye2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 eye_1_pos = skull_eye_1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        glm::vec4 eye_2_pos = skull_eye_2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-        glm::vec3 lightColor = Settings::getInstance().lightColor;
-        shader->set_vec3("pointLights[0].position", glm::vec3(eye1Pos));
+        glm::vec3 light_color = Settings::get_instance().light_color;
+        shader->set_vec3("pointLights[0].position", glm::vec3(eye_1_pos));
         shader->set_vec3("pointLights[0].ambient", glm::vec3(0.0f));
-        shader->set_vec3("pointLights[0].diffuse", lightColor);
-        shader->set_vec3("pointLights[0].specular", lightColor);
+        shader->set_vec3("pointLights[0].diffuse", light_color);
+        shader->set_vec3("pointLights[0].specular", light_color);
         shader->set_float("pointLights[0].constant", 1.0f);
         shader->set_float("pointLights[0].linear", 0.9f);
         shader->set_float("pointLights[0].quadratic", 0.92f);
 
-        shader->set_vec3("pointLights[1].position", glm::vec3(eye2Pos));
+        shader->set_vec3("pointLights[1].position", glm::vec3(eye_2_pos));
         shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
-        shader->set_vec3("pointLights[1].diffuse", lightColor);
-        shader->set_vec3("pointLights[1].specular", lightColor);
+        shader->set_vec3("pointLights[1].diffuse", light_color);
+        shader->set_vec3("pointLights[1].specular", light_color);
         shader->set_float("pointLights[1].constant", 1.0f);
         shader->set_float("pointLights[1].linear", 0.9f);
         shader->set_float("pointLights[1].quadratic", 0.92f);
 
-        skullModel->draw(shader);
+        skull_model->draw(shader);
 
-        draw_eyes(modelEye1, modelEye2);
+        draw_eyes(skull_eye_1, skull_eye_2);
     }
 
     void MainController::draw_bridge() {
         // Model
-        auto resources                        = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics                         = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *bridgeModel = resources->model("bridge");
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *bridge_model = resources->model("bridge");
 
         // Shader
         engine::resources::Shader *shader = resources->shader("NearShader");
@@ -128,15 +128,15 @@ namespace app {
             model = glm::scale(model, glm::vec3(0.5f));
             shader->set_mat4("model", model);
 
-            bridgeModel->draw(shader);
+            bridge_model->draw(shader);
         }
     }
 
-    void MainController::draw_eyes(glm::mat4 eye1Model, glm::mat4 eye2Model) {
+    void MainController::draw_eyes(glm::mat4 eye_1_model, glm::mat4 eye_2_model) {
         // Model
-        auto resources                     = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics                      = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *eyeModel = resources->model("eyes");
+        auto resources                      = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                       = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *eye_model = resources->model("eyes");
 
         // Shader
         engine::resources::Shader *shader = resources->shader("eyeShader");
@@ -144,12 +144,12 @@ namespace app {
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
-        shader->set_vec3("lightColor", Settings::getInstance().lightColor);
+        shader->set_vec3("lightColor", Settings::get_instance().light_color);
 
-        shader->set_mat4("model", eye1Model);
-        eyeModel->draw(shader);
-        shader->set_mat4("model", eye2Model);
-        eyeModel->draw(shader);
+        shader->set_mat4("model", eye_1_model);
+        eye_model->draw(shader);
+        shader->set_mat4("model", eye_2_model);
+        eye_model->draw(shader);
     }
 
     void MainController::draw_arena() {
@@ -157,9 +157,9 @@ namespace app {
         float time    = platform->frame_time().current;
 
         // Model
-        auto resources                       = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics                        = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model *arenaModel = resources->model("arena");
+        auto resources                        = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics                         = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *arena_model = resources->model("arena");
 
         // Shader
         engine::resources::Shader *shader = resources->shader("NearShader");
@@ -173,7 +173,7 @@ namespace app {
         model           = glm::scale(model, glm::vec3(0.008f));
         shader->set_mat4("model", model);
 
-        arenaModel->draw(shader);
+        arena_model->draw(shader);
     }
 
     void MainController::draw_skybox() {
@@ -186,43 +186,43 @@ namespace app {
 
     void MainController::draw_health_bar() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader *heartShader = resources->shader("heart");
-        engine::resources::Texture *heartTex = resources->texture("heart");
+        engine::resources::Shader *heart_shader = resources->shader("heart");
+        engine::resources::Texture *heart_texture = resources->texture("heart");
 
         engine::graphics::OpenGL::disable_depth_testing();
         engine::graphics::OpenGL::enable_blend();
         engine::graphics::OpenGL::gl_blend_func();
 
-        heartShader->use();
-        engine::graphics::Framebuffer::activate_texture(heartTex->id(), 0);
+        heart_shader->use();
+        engine::graphics::Framebuffer::activate_texture(heart_texture->id(), 0);
 
-        auto window        = engine::core::Controller::get<engine::platform::PlatformController>()->window();
-        float screenWidth  = window->width();
-        float screenHeight = window->height();
+        auto window         = engine::core::Controller::get<engine::platform::PlatformController>()->window();
+        float screen_width  = window->width();
+        float screen_height = window->height();
 
-        const float heartSize = 50.0f;
-        const float padding   = 10.0f;
-        const float startX    = screenWidth - heartSize - padding;
-        const float startY    = padding + 35.0f;
+        const float heart_size = 50.0f;
+        const float padding    = 10.0f;
+        const float startX     = screen_width - heart_size - padding;
+        const float startY     = padding + 35.0f;
 
-        int currentHealth = Settings::getInstance().health;
-        for (int i = 0; i < currentHealth; ++i) {
-            float x = startX - i * (heartSize + padding);
+        int current_health = Settings::get_instance().health;
+        for (int i = 0; i < current_health; ++i) {
+            float x = startX - i * (heart_size + padding);
             float y = startY;
 
             glm::mat4 model = glm::mat4(1.0f);
             model           = glm::translate(model, glm::vec3(
-                                           (x / screenWidth) * 2.0f - 1.0f,
-                                           1.0f - (y / screenHeight) * 2.0f,
+                                           (x / screen_width) * 2.0f - 1.0f,
+                                           1.0f - (y / screen_height) * 2.0f,
                                            0.0f
                                            ));
             model = glm::scale(model, glm::vec3(
-                                       heartSize / screenWidth,
-                                       heartSize / screenHeight,
+                                       heart_size / screen_width,
+                                       heart_size / screen_height,
                                        1.0f
                                        ));
 
-            heartShader->set_mat4("model", model);
+            heart_shader->set_mat4("model", model);
             engine::graphics::Framebuffer::render_quad();
         }
         engine::graphics::OpenGL::disable_blend();
@@ -261,9 +261,9 @@ namespace app {
         auto graphics    = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera      = graphics->camera();
         float dt         = platform->dt();
-        bool skullFacing = Settings::getInstance().skullFacingPlayer;
+        bool skullFacing = Settings::get_instance().skull_facing_player;
 
-        if (Settings::getInstance().spectatorMode) {
+        if (Settings::get_instance().spectator_mode) {
             float speed = 10.0f;
             if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
                 camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt * speed);
@@ -284,16 +284,16 @@ namespace app {
                 camera->move_camera(engine::graphics::Camera::Movement::UP, dt * speed);
             }
         } else {
-            if (platform->frame_time().current < Settings::getInstance().teleport_cooldown)
+            if (platform->frame_time().current < Settings::get_instance().teleport_cooldown)
                 return;
             if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
                 if (!skullFacing) {
                     camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
                 } else {
-                    Settings::getInstance().health--;
+                    Settings::get_instance().health--;
                     // teleport player to start if he has been spotted
                     set_camera_to_starting_position();
-                    Settings::getInstance().teleport_cooldown = platform->frame_time().current + 0.5f;
+                    Settings::get_instance().teleport_cooldown = platform->frame_time().current + 0.5f;
                 }
             }
         }
@@ -306,47 +306,48 @@ namespace app {
     }
 
     void MainController::update_game_state() {
-        int health = Settings::getInstance().health;
-        if (health <= 0 && !Settings::getInstance().spectatorMode) {
+        int health = Settings::get_instance().health;
+        if (health <= 0 && !Settings::get_instance().spectator_mode) {
             auto gui_controller = engine::core::Controller::get<GuiController>();
             auto graphics       = engine::core::Controller::get<engine::graphics::GraphicsController>();
             auto camera         = graphics->camera();
             gui_controller->set_enable(true);
-            Settings::getInstance().health = Settings::getInstance().maxHealth;
+            Settings::get_instance().health = Settings::get_instance().max_health;
             set_camera_to_starting_position();
         }
 
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        if (Settings::getInstance().spectatorMode
+        if (Settings::get_instance().spectator_mode
             && platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) {
-            Settings::getInstance().spectatorMode = false;
-            auto gui_controller                   = engine::core::Controller::get<GuiController>();
+            Settings::get_instance().spectator_mode = false;
+            auto gui_controller                     = engine::core::Controller::get<GuiController>();
             gui_controller->set_enable(true);
-            Settings::getInstance().health = Settings::getInstance().maxHealth;
+            Settings::get_instance().health = Settings::get_instance().max_health;
             set_camera_to_starting_position();
         }
     }
 
     void MainController::update_skull_facing() {
-        float skullSpeed = Settings::getInstance().skullSpeed;
+        float skull_speed = Settings::get_instance().skull_speed;
 
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         float time    = platform->frame_time().current;
 
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        bool skullFacing;
+        bool skull_facing;
 
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(time * skullSpeed), glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::vec3 skullFront(0.0f, 0.0f, 1.0f);
-        skullFront = glm::vec3(rotation * glm::vec4(skullFront, 0.0f));
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(time * skull_speed),
+                                         glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::vec3 skull_front(0.0f, 0.0f, 1.0f);
+        skull_front = glm::vec3(rotation * glm::vec4(skull_front, 0.0f));
 
-        float angle = glm::degrees(glm::acos(glm::dot(skullFront, -graphics->camera()->Front)));
+        float angle = glm::degrees(glm::acos(glm::dot(skull_front, -graphics->camera()->Front)));
         if (angle <= 60.0f) {
-            skullFacing = true;
+            skull_facing = true;
         } else {
-            skullFacing = false;
+            skull_facing = false;
         }
-        Settings::getInstance().skullFacingPlayer = skullFacing;
+        Settings::get_instance().skull_facing_player = skull_facing;
     }
 
 } // app
