@@ -1,0 +1,6 @@
+m_filter_name_key_map[static_cast<int>(Filter::NOFILTER)] = "noFilter";
+m_filter_name_key_map[static_cast<int>(Filter::BLACKWHITE)] = "blackWhite";
+m_filter_name_key_map[static_cast<int>(Filter::GRAYSCALE)] = "grayscale";
+m_filter_name_key_map[static_cast<int>(Filter::NEGATIVE)] = "negative";
+m_filter_name_key_map[static_cast<int>(Filter::OUTLINE)] = "outline";
+m_filter_name_key_map[static_cast<int>(Filter::DEEPFRIED)] = "deepfried";

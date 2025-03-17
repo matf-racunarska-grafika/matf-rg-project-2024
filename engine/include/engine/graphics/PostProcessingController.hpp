@@ -6,8 +6,18 @@
 #define POSTPROCESSINGCONTROLLER_HPP
 
 #include <engine/core/Controller.hpp>
+#define FILTER_COUNT 6
 
 namespace engine::graphics {
+  enum class Filter : int {
+    NOFILTER   = 0,
+    BLACKWHITE = 1,
+    GRAYSCALE  = 2,
+    NEGATIVE   = 3,
+    OUTLINE    = 4,
+    DEEPFRIED  = 5
+  };
+
   class PostProcessingController : public engine::core::Controller {
     unsigned int m_hdrFBO            = 0;
     unsigned int m_colorBuffers[2]   = {0, 0};
@@ -16,7 +26,7 @@ namespace engine::graphics {
     unsigned int m_screenFBO         = 0;
     unsigned int m_screenTexture     = 0;
 
-    std::string m_active_filter = "noFilter";
+    Filter m_active_filter = Filter::NOFILTER;
 
   public:
     /**
@@ -44,16 +54,16 @@ namespace engine::graphics {
     void prepare_bloom_shaders();
 
     /**
-     * @brief a getter for the name of the active filter
-     * @return the name of the active filter shader
+     * @brief a getter for the active filter
+     * @return the currently active filter
      */
-    std::string get_active_filter() const;
+    Filter get_active_filter() const;
 
     /**
-     * @brief a setter for the name of the active filter
-     * @param filterShader the name of the filter shader that should be activated
+     * @brief a setter for the active filter
+     * @param filter filter that should be activated from Filter enum class
      */
-    void set_active_filter(std::string filterShader);
+    void set_active_filter(Filter filter);
 
     /**
      * @brief draws all post-processing effects into framebuffers

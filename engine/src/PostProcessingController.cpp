@@ -6,6 +6,10 @@
 #include <spdlog/spdlog.h>
 
 namespace engine::graphics {
+    static std::array<std::string, FILTER_COUNT> m_filter_name_key_map;
+
+    void initialize_filter_name_key_map();
+
     void PostProcessingController::initialize() {
         auto platform        = get<platform::PlatformController>();
         auto window          = platform->window();
@@ -15,6 +19,8 @@ namespace engine::graphics {
         prepare_bloom_effect(wHeight, wWidth);
         prepare_filter_effect(wHeight, wWidth);
         Framebuffer::set_up_quad();
+
+        initialize_filter_name_key_map();
     }
 
     void PostProcessingController::draw() {
@@ -112,7 +118,8 @@ namespace engine::graphics {
 
     void PostProcessingController::draw_filter() {
         auto resources                            = get<resources::ResourcesController>();
-        resources::Shader *post_processing_shader = resources->shader(m_active_filter);
+        resources::Shader *post_processing_shader = resources->shader(
+                m_filter_name_key_map[static_cast<int>(m_active_filter)]);
         post_processing_shader->use();
 
         Framebuffer::bind_framebuffer(0);
@@ -153,11 +160,15 @@ namespace engine::graphics {
         Framebuffer::delete_quad();
     }
 
-    std::string PostProcessingController::get_active_filter() const {
+    Filter PostProcessingController::get_active_filter() const {
         return m_active_filter;
     }
 
-    void PostProcessingController::set_active_filter(std::string filterShader) {
-        m_active_filter = filterShader;
+    void PostProcessingController::set_active_filter(Filter filter) {
+        m_active_filter = filter;
+    }
+
+    void initialize_filter_name_key_map() {
+#include "post_processing_filter_key_to_string.include"
     }
 }
