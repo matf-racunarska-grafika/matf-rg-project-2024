@@ -4,6 +4,9 @@
       "backpack": {
         "path": "backpack/backpack.obj",
         "flip_uvs": false
+      },
+      "cube": {
+        "path": "cube/cube.obj"
       }
     }
   },

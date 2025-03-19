@@ -27,6 +27,10 @@ private:
 
     void end_draw() override;
 
+    void draw_test_model();
+
+    void draw_light_cube();
+
     bool enable_cursor{true};
 };
 }
