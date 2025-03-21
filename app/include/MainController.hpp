@@ -27,6 +27,7 @@ private:
 
     void end_draw() override;
 
+    // Simple abstraction functions
     void draw_test_model();
 
     void draw_light_cube();

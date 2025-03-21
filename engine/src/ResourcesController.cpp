@@ -42,9 +42,7 @@ void ResourcesController::load_models() {
         throw util::EngineError(util::EngineError::Type::ConfigurationError,
                                 "No configuration for models in the config.json, please provide the resources config. See the example in the README.md");
     }
-    for (const auto &model_entry: config["resources"]["models"].items()) {
-        model(model_entry.key());
-    }
+    for (const auto &model_entry: config["resources"]["models"].items()) { model(model_entry.key()); }
 }
 
 void ResourcesController::load_textures() {
@@ -71,6 +69,13 @@ void ResourcesController::load_skyboxes() {
     }
 }
 
+void ResourcesController::print_loaded_textures() {
+    int i;
+    for (auto [i, pair]: std::views::enumerate(m_textures)) { spdlog::info("{}. texture, {}-name, {}-path, {}-id", i, pair.second->name(), pair.second->path().string(), pair.second->id()); }
+}
+
+const std::unordered_map<std::string, std::unique_ptr<Texture> > &ResourcesController::get_m_textures() { return m_textures; }
+
 /**
  * @class AssimpSceneProcessor
  * @brief Processes the meshes in an Assimp scene.
@@ -84,9 +89,9 @@ public:
     std::vector<Mesh> process_meshes();
 
     explicit AssimpSceneProcessor(ResourcesController *resources_controller, const aiScene *scene,
-                                  std::filesystem::path model_path) :
-            m_scene(scene), m_model_path(std::move(model_path)), m_resources_controller(resources_controller) {
-    }
+                                  std::filesystem::path model_path) : m_scene(scene)
+                                                                  , m_model_path(std::move(model_path))
+                                                                  , m_resources_controller(resources_controller) {}
 
 private:
     void process_node(const aiNode *node);
@@ -112,19 +117,17 @@ Model *ResourcesController::model(
         auto &config = util::Configuration::config();
         if (!config["resources"]["models"].contains(name)) {
             throw util::EngineError(util::EngineError::Type::ConfigurationError, std::format(
-                    "No model ({}) specify in config.json. Please add the model to the config.json.",
-                    name));
+                                            "No model ({}) specify in config.json. Please add the model to the config.json.",
+                                            name));
         }
         std::filesystem::path model_path = m_models_path /
                                            std::filesystem::path(
                                                    config["resources"]["models"][name]["path"].get<
-                                                           std::string>());
+                                                       std::string>());
         Assimp::Importer importer;
         int flags = aiProcess_Triangulate | aiProcess_GenSmoothNormals |
                     aiProcess_CalcTangentSpace;
-        if (config["resources"]["models"][name].value<bool>("flip_uvs", false)) {
-            flags |= aiProcess_FlipUVs;
-        }
+        if (config["resources"]["models"][name].value<bool>("flip_uvs", false)) { flags |= aiProcess_FlipUVs; }
 
         spdlog::info("load_model(name={}, path={})", name, model_path.string());
         const aiScene *scene =
@@ -188,9 +191,7 @@ void AssimpSceneProcessor::process_node(const aiNode *node) {
         auto mesh = m_scene->mMeshes[node->mMeshes[i]];
         process_mesh(mesh);
     }
-    for (uint32_t i = 0; i < node->mNumChildren; ++i) {
-        process_node(node->mChildren[i]);
-    }
+    for (uint32_t i = 0; i < node->mNumChildren; ++i) { process_node(node->mChildren[i]); }
 }
 
 void AssimpSceneProcessor::process_mesh(aiMesh *mesh) {
@@ -241,9 +242,7 @@ void AssimpSceneProcessor::process_mesh(aiMesh *mesh) {
     for (uint32_t i = 0; i < mesh->mNumFaces; ++i) {
         aiFace face = mesh->mFaces[i];
 
-        for (uint32_t j = 0; j < face.mNumIndices; ++j) {
-            indices.push_back(face.mIndices[j]);
-        }
+        for (uint32_t j = 0; j < face.mNumIndices; ++j) { indices.push_back(face.mIndices[j]); }
     }
 
     auto material = m_scene->mMaterials[mesh->mMaterialIndex];
@@ -260,9 +259,7 @@ std::vector<Texture *> AssimpSceneProcessor::process_materials(const aiMaterial 
             aiTextureType_HEIGHT,
     };
 
-    for (auto ai_texture_type: ai_texture_types) {
-        process_material_type(textures, material, ai_texture_type);
-    }
+    for (auto ai_texture_type: ai_texture_types) { process_material_type(textures, material, ai_texture_type); }
     return textures;
 }
 
@@ -290,4 +287,4 @@ TextureType AssimpSceneProcessor::assimp_texture_type_to_engine(aiTextureType ty
     }
 }
 
-} // namespace engine
+}// namespace engine

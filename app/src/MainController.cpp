@@ -2,17 +2,27 @@
 // Created by strahinjas on 3/18/25.
 //
 
+#include "../../engine/libs/glad/include/glad/glad.h"
+
 #include <MainController.hpp>
+#include <iostream>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <spdlog/spdlog.h>
+#include <engine/core/Engine.hpp>
 
 namespace my_project {
 void MyController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     spdlog::info("Hello, from the MyController initialize");
+
+    // Some debugging prints
+    // auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    // resource_c->print_loaded_textures();
+    // auto specular_t = resource_c->texture("resources/models/backpack/specular.jpg", "resources/models/backpack/specular.jpg", engine::resources::TextureType::Specular, false);
+    // for (auto &key: resource_c->get_m_textures() | std::views::keys) { spdlog::info(key.c_str()); }
 }
 
 bool MyController::loop() {
@@ -24,6 +34,7 @@ bool MyController::loop() {
 }
 
 void MyController::poll_events() {
+
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KEY_F1).state_str() == "JustReleased") {
         enable_cursor = !enable_cursor;
@@ -43,8 +54,10 @@ void MyController::update() {
                 .state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt); }
     if (platform->key(engine::platform::KEY_D)
                 .state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt); }
-    if (platform->key(engine::platform::KEY_SPACE).state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::UP, dt); }
-    if (platform->key(engine::platform::KEY_LEFT_CONTROL).state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::DOWN, dt); }
+    if (platform->key(engine::platform::KEY_SPACE)
+                .state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::UP, dt); }
+    if (platform->key(engine::platform::KEY_LEFT_CONTROL)
+                .state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::DOWN, dt); }
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
@@ -58,12 +71,11 @@ void MyController::begin_draw() {
 void MyController::draw() {
     // I want to draw my backpack model
     // The model is loaded in automatically when I call My applications run (with the initialize method specifically)
-    // The ResourceController stores all my loaded models, textures, sky boxes, shaders so that I can access them when I
-    // need to draw
-    draw_test_model();
+    // The ResourceController stores all my loaded models, textures, sky boxes, shaders so that I can access them when I need to draw
+    this->draw_test_model();
 
     // Now I want to draw a cube, this cube will represent the point light in My scene
-    draw_light_cube();
+    this->draw_light_cube();
 
 }
 
@@ -74,16 +86,19 @@ void MyController::end_draw() {
 
 void MyController::draw_test_model() {
     auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+
     auto backpack = resource_c->model("backpack");
-    auto shader = resource_c->shader("basic_backpack");
+    auto shader = resource_c->shader("lighting_point");
 
     auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
+
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
     shader->set_mat4("model", glm::mat4(1.0f));
+
     backpack->draw(shader);
 }
 
@@ -95,11 +110,12 @@ void MyController::draw_light_cube() {
     auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
     shader->use();
+
     shader->set_mat4("projection", graphics_c->projection_matrix());
     shader->set_mat4("view", graphics_c->camera()->view_matrix());
     auto model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 2.0f, 2.0f));
-    model = glm::scale(model, glm::vec3(0.25f));
+    model = glm::scale(model, glm::vec3(0.1f));
     shader->set_mat4("model", model);
     cube->draw(shader);
 }

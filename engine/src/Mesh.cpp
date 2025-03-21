@@ -3,6 +3,7 @@
 #include <engine/resources/Mesh.hpp>
 #include <engine/resources/Shader.hpp>
 #include <unordered_map>
+#include <spdlog/spdlog.h>
 
 namespace engine::resources {
 
@@ -56,6 +57,7 @@ void Mesh::draw(const Shader *shader) {
         uniform_name.append(std::to_string(count));
         shader->set_int(uniform_name, i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
+        //spdlog::info("uniform-{} | i-{}, texture-path{} id-{}", uniform_name, i, m_textures[i]->path().c_str(), m_textures[i]->id());
         uniform_name.clear();
     }
     glBindVertexArray(m_vao);

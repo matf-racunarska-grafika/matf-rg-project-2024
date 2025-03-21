@@ -3,7 +3,7 @@
 //
 
 #include <MainController.hpp>
-#include <../include/MyApp.hpp>
+#include <MyApp.hpp>
 #include <engine/core/Controller.hpp>
 
 namespace my_project {
