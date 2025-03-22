@@ -19,7 +19,34 @@ namespace engine::resources {
         glDisable(GL_BLEND);
     }
 
-    void Model::drawInstanced(const Shader *shader, unsigned int number_of_instances) {
+    void Model::drawInstanced(const Shader *shader, unsigned int number_of_instances, glm::mat4* modelMatrices) {
+        unsigned int buffer;
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, number_of_instances * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
+
+        for (const auto &mesh: this->m_meshes) {
+            unsigned int VAO = mesh.m_vao;
+            glBindVertexArray(VAO);
+
+            std::size_t vec4Size = sizeof(glm::vec4);
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) 0);
+            glEnableVertexAttribArray(4);
+            glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (vec4Size));
+            glEnableVertexAttribArray(5);
+            glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (2 * vec4Size));
+            glEnableVertexAttribArray(6);
+            glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (3 * vec4Size));
+
+            glVertexAttribDivisor(3, 1);
+            glVertexAttribDivisor(4, 1);
+            glVertexAttribDivisor(5, 1);
+            glVertexAttribDivisor(6, 1);
+
+            glBindVertexArray(0);
+        }
+
         shader->use();
         for (auto &mesh: m_meshes) {
             mesh.drawInstanced(shader, number_of_instances);

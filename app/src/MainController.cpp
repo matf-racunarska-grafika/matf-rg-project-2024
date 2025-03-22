@@ -235,17 +235,10 @@ namespace app {
         log_seat_shader->use();
 
         log_seat_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            log_seat_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            log_seat_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            log_seat_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            log_seat_shader->set_float("material.shininess", 32.0f);
-        } else {
-            log_seat_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            log_seat_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            log_seat_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            log_seat_shader->set_float("material.shininess", 128.0f);
-        }
+        log_seat_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        log_seat_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        log_seat_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        log_seat_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
         log_seat_shader->set_vec3("viewPos", camera->Position);
 
         log_seat_shader->set_mat4("projection", graphics->projection_matrix());
@@ -293,17 +286,10 @@ namespace app {
         tent_shader->use();
 
         tent_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            tent_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            tent_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            tent_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            tent_shader->set_float("material.shininess", 32.0f);
-        } else {
-            tent_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            tent_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            tent_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            tent_shader->set_float("material.shininess", 128.0f);
-        }
+        tent_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        tent_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        tent_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        tent_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
         tent_shader->set_vec3("viewPos", camera->Position);
 
         tent_shader->set_mat4("projection", graphics->projection_matrix());
@@ -333,17 +319,10 @@ namespace app {
         old_tree_shader->use();
 
         old_tree_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            old_tree_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            old_tree_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            old_tree_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            old_tree_shader->set_float("material.shininess", 32.0f);
-        } else {
-            old_tree_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            old_tree_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            old_tree_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            old_tree_shader->set_float("material.shininess", 128.0f);
-        }
+        old_tree_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        old_tree_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        old_tree_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        old_tree_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
         old_tree_shader->set_vec3("viewPos", camera->Position);
 
         old_tree_shader->set_mat4("projection", graphics->projection_matrix());
@@ -386,19 +365,11 @@ namespace app {
 
         bushShader->set_bool("useSubsurfaceScattering", true);
 
-        if (is_day) {
-            bushShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            bushShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            bushShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            bushShader->set_float("material.shininess", 32.0f);
-            bushShader->set_vec3("subsurfaceColor", glm::vec3(0.2f, 0.5f, 0.1f));
-        } else {
-            bushShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            bushShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            bushShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            bushShader->set_float("material.shininess", 128.0f);
-            bushShader->set_vec3("subsurfaceColor", glm::vec3(0.1f, 0.3f, 0.05f));
-        }
+        bushShader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        bushShader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        bushShader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        bushShader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
+        bushShader->set_vec3("subsurfaceColor", is_day ? glm::vec3(0.2f, 0.5f, 0.1f) : glm::vec3(0.1f, 0.3f, 0.05f));
 
         bushShader->set_float("alphaThreshold", 0.5f);
 
@@ -462,7 +433,7 @@ namespace app {
         auto *modelMatrices   = new glm::mat4[amount];
 
         for (unsigned int row = 0; row < rowCount; row++) {
-            float x = row == 0 ? 40.0f : 44.0f;
+            float x = (row == 0) ? 40.0f : 44.0f;
 
             for (unsigned int col = 0; col < colCount; col++) {
                 unsigned int index   = row * colCount + col;
@@ -497,60 +468,22 @@ namespace app {
             modelMatrices[i] = model;
         }
 
-        unsigned int buffer;
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
-
-        for (const auto &mesh: white_flowers->meshes()) {
-            unsigned int VAO = mesh.m_vao;
-            glBindVertexArray(VAO);
-
-            std::size_t vec4Size = sizeof(glm::vec4);
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) 0);
-            glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (vec4Size));
-            glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (2 * vec4Size));
-            glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (3 * vec4Size));
-
-            glVertexAttribDivisor(3, 1);
-            glVertexAttribDivisor(4, 1);
-            glVertexAttribDivisor(5, 1);
-            glVertexAttribDivisor(6, 1);
-
-            glBindVertexArray(0);
-        }
-
         glm::vec3 lightPos = is_day
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
         flower_shader->use();
 
         flower_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            flower_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            flower_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            flower_shader->set_float("material.shininess", 32.0f);
 
-            flower_shader->set_float("brightnessVariation", 0.12f);
-            flower_shader->set_float("petalTranslucency", 0.2f);
-            flower_shader->set_float("saturationBoost", 0.15f);
-            flower_shader->set_float("windStrength", wind_speed);
-        } else {
-            flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            flower_shader->set_float("material.shininess", 128.0f);
+        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        flower_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        flower_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
-            flower_shader->set_float("brightnessVariation", 0.08f);
-            flower_shader->set_float("petalTranslucency", 0.1f);
-            flower_shader->set_float("saturationBoost", 0.25f);
-            flower_shader->set_float("windStrength", wind_speed * 1.5);
-        }
+        flower_shader->set_float("brightnessVariation", is_day ? 0.12f : 0.08f);
+        flower_shader->set_float("petalTranslucency", is_day ? 0.2f : 0.1f);
+        flower_shader->set_float("saturationBoost", is_day ? 0.15f : 0.25f);
+        flower_shader->set_float("windStrength", is_day ? wind_speed : wind_speed * 1.5);
 
         flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
         flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
@@ -562,11 +495,10 @@ namespace app {
 
         flower_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 
-        white_flowers->drawInstanced(flower_shader, amount);
+        white_flowers->drawInstanced(flower_shader, amount, modelMatrices);
 
         delete[] modelMatrices;
     }
-
     void MainController::draw_flowers() {
         draw_white_flowers();
         draw_red_flowers();
@@ -584,17 +516,10 @@ namespace app {
         stoneShader->set_mat4("projection", graphics->projection_matrix());
         stoneShader->set_mat4("view", camera->view_matrix());
 
-        if (is_day) {
-            stoneShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            stoneShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            stoneShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            stoneShader->set_float("material.shininess", 32.0f);
-        } else {
-            stoneShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            stoneShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            stoneShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            stoneShader->set_float("material.shininess", 128.0f);
-        }
+        stoneShader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        stoneShader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        stoneShader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        stoneShader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
         auto drawPathSegment = [&](const glm::vec3 &translation, float yRotation, float scale) {
             glm::mat4 model = glm::mat4(1.0f);
@@ -659,7 +584,7 @@ namespace app {
         drawMushroom(glm::vec3(30, -10, 17), 0.19f);
     }
 
-    void MainController::draw_red_flowers() {
+       void MainController::draw_red_flowers() {
         engine::resources::Model *roses          = resources->model("roses");
         engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
@@ -697,57 +622,19 @@ namespace app {
             modelMatrices[i] = model;
         }
 
-        unsigned int buffer;
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), modelMatrices, GL_STATIC_DRAW);
-
-        for (const auto &mesh: roses->meshes()) {
-            unsigned int VAO = mesh.m_vao;
-            glBindVertexArray(VAO);
-
-            std::size_t vec4Size = sizeof(glm::vec4);
-            glEnableVertexAttribArray(3);
-            glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) 0);
-            glEnableVertexAttribArray(4);
-            glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (vec4Size));
-            glEnableVertexAttribArray(5);
-            glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (2 * vec4Size));
-            glEnableVertexAttribArray(6);
-            glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void *) (3 * vec4Size));
-
-            glVertexAttribDivisor(3, 1);
-            glVertexAttribDivisor(4, 1);
-            glVertexAttribDivisor(5, 1);
-            glVertexAttribDivisor(6, 1);
-
-            glBindVertexArray(0);
-        }
-
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         flower_shader->use();
         flower_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            flower_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            flower_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            flower_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            flower_shader->set_float("material.shininess", 32.0f);
 
-            flower_shader->set_float("brightnessVariation", 0.12f);
-            flower_shader->set_float("petalTranslucency", 0.2f);
-            flower_shader->set_float("saturationBoost", 0.15f);
-            flower_shader->set_float("windStrength", wind_speed);
-        } else {
-            flower_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            flower_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            flower_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            flower_shader->set_float("material.shininess", 128.0f);
+        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        flower_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        flower_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
-            flower_shader->set_float("brightnessVariation", 0.08f);
-            flower_shader->set_float("petalTranslucency", 0.1f);
-            flower_shader->set_float("saturationBoost", 0.25f);
-            flower_shader->set_float("windStrength", wind_speed * 1.5);
-        }
+        flower_shader->set_float("brightnessVariation", is_day ? 0.12f : 0.08f);
+        flower_shader->set_float("petalTranslucency", is_day ? 0.2f : 0.1f);
+        flower_shader->set_float("saturationBoost", is_day ? 0.15f : 0.25f);
+        flower_shader->set_float("windStrength", is_day ? wind_speed : wind_speed * 1.5);
 
         flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
         flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
@@ -758,7 +645,7 @@ namespace app {
         flower_shader->set_mat4("view", camera->view_matrix());
 
         flower_shader->set_vec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-        roses->drawInstanced(flower_shader, amount);
+        roses->drawInstanced(flower_shader, amount, modelMatrices);
 
         delete[] modelMatrices;
     }
@@ -783,15 +670,9 @@ namespace app {
         terrain_shader->set_float("ambientStrength", 0.1f);
         terrain_shader->set_float("specularStrength", 0.0f);
 
-        if (is_day) {
-            terrain_shader->set_float("constant", 1.0f);
-            terrain_shader->set_float("linear", 0.0003f);
-            terrain_shader->set_float("quadratic", 0.00001f);
-        } else {
-            terrain_shader->set_float("constant", 1.0f);
-            terrain_shader->set_float("linear", 0.014f);
-            terrain_shader->set_float("quadratic", 0.0007f);
-        }
+        terrain_shader->set_float("constant", 1.0f);
+        terrain_shader->set_float("linear", is_day ? 0.0003f : 0.014f);
+        terrain_shader->set_float("quadratic", is_day ? 0.00001f : 0.0007f);
 
         terrain->draw(terrain_shader);
     }
@@ -883,17 +764,10 @@ namespace app {
         test_shader->use();
 
         test_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            test_shader->set_float("material.shininess", 32.0f);
-        } else {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            test_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_float("material.shininess", 128.0f);
-        }
+        test_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        test_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        test_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        test_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
         test_shader->set_vec3("viewPos", camera->Position);
 
         test_shader->set_mat4("projection", graphics->projection_matrix());

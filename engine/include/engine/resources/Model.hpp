@@ -31,7 +31,7 @@ namespace engine::resources {
         * @param shader The shader to use for drawing.
         * @param number_of_instances Number of model instances to be drawn
         */
-        void drawInstanced(const Shader *shader, unsigned int number_of_instances);
+        void drawInstanced(const Shader *shader, unsigned int number_of_instances, glm::mat4* modelMatrices);
 
         /**
         * @brief Destroys the model in the OpenGL context.
