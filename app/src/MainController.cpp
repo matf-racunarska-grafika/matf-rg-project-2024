@@ -58,7 +58,6 @@ namespace app {
         camera->Position = glm::vec3(5, 27, 17);
         camera->Yaw      = -38;
         camera->Pitch    = -5;
-
     }
 
     bool MainController::loop() {
@@ -117,7 +116,7 @@ namespace app {
         tree_shader->set_mat4("view", camera->view_matrix());
 
         auto draw_yellow_tree = [&](float x, float y, float z, float scale) {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::translate(model, glm::vec3(x, y, z));
             model           = glm::scale(model, glm::vec3(scale));
             tree_shader->set_mat4("model", model);
@@ -125,7 +124,7 @@ namespace app {
         };
 
         auto draw_green_tree = [&](float x, float y, float z, float scale) {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
             model           = glm::translate(model, glm::vec3(x, y, z));
             model           = glm::scale(model, glm::vec3(scale));
@@ -134,7 +133,7 @@ namespace app {
         };
 
         auto draw_tall_tree = [&](float x, float y, float z, float scale) {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::translate(model, glm::vec3(x, y, z));
             model           = glm::scale(model, glm::vec3(scale));
             tree_shader->set_mat4("model", model);
@@ -142,7 +141,7 @@ namespace app {
         };
 
         auto draw_pine_tree = [&](float x, float y, float z) {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
             model           = glm::translate(model, glm::vec3(x, y, z));
             model           = glm::scale(model, glm::vec3(11.0f));
@@ -171,14 +170,14 @@ namespace app {
         draw_tall_tree(-6, 14, -15, 0.1f);
         draw_tall_tree(-19, 14, -8, 0.1f);
         draw_tall_tree(21, 14, 38, 0.1f); {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
             model           = glm::translate(model, glm::vec3(-17, 28, -17));
             model           = glm::scale(model, glm::vec3(0.210f));
             tree_shader->set_mat4("model", model);
             oak_tree->draw(tree_shader);
         } {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
             model           = glm::translate(model, glm::vec3(8, 13, 59));
             model           = glm::scale(model, glm::vec3(0.110f));
@@ -254,7 +253,7 @@ namespace app {
 
         for (int i = 0; i < 3; i++) {
             if (i == 0) {
-                glm::mat4 model = glm::mat4(1.0f);
+                auto model = glm::mat4(1.0f);
                 model           = glm::rotate(model, glm::radians(42.0f), glm::vec3(0, 1, 0));
                 model           = glm::translate(model, glm::vec3(6, 17.5, 2));
                 model           = glm::scale(model, glm::vec3(0.04));
@@ -263,7 +262,7 @@ namespace app {
 
                 log_seat->draw(log_seat_shader);
             } else if (i == 1) {
-                glm::mat4 model = glm::mat4(1.0f);
+                auto model = glm::mat4(1.0f);
                 model           = glm::rotate(model, glm::radians(155.0f), glm::vec3(0, 1, 0));
                 model           = glm::translate(model, glm::vec3(-16, 17.5, -9));
                 model           = glm::scale(model, glm::vec3(0.04));
@@ -272,7 +271,7 @@ namespace app {
 
                 log_seat->draw(log_seat_shader);
             } else {
-                glm::mat4 model = glm::mat4(1.0f);
+                auto model = glm::mat4(1.0f);
                 model           = glm::rotate(model, glm::radians(-100.0f), glm::vec3(0, 1, 0));
                 model           = glm::translate(model, glm::vec3(1, 17.5, -26));
                 model           = glm::scale(model, glm::vec3(0.04));
@@ -310,7 +309,7 @@ namespace app {
         tent_shader->set_mat4("projection", graphics->projection_matrix());
         tent_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
+        auto model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 1, 0));
         model           = glm::translate(model, glm::vec3(16, 17, -14));
         model           = glm::scale(model, glm::vec3(0.037));
@@ -350,7 +349,7 @@ namespace app {
         old_tree_shader->set_mat4("projection", graphics->projection_matrix());
         old_tree_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
+        auto model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(3.0f), glm::vec3(0, 0, 1));
         model           = glm::translate(model, glm::vec3(65, 40, -39));
         model           = glm::scale(model, glm::vec3(0.04));
@@ -361,14 +360,14 @@ namespace app {
     }
 
     void MainController::draw_bushes() {
-        auto bush1      = resources->model("bush1");
-        auto bush2      = resources->model("bush2");
-        auto laurelBush = resources->model("laurel_bush");
+        const auto bush1      = resources->model("bush1");
+        const auto bush2      = resources->model("bush2");
+        const auto laurelBush = resources->model("laurel_bush");
         auto bushShader = resources->shader("bush_shader");
 
-        double currentTime = glfwGetTime();
+        const double currentTime = glfwGetTime();
 
-        glm::vec3 lightPos = is_day
+        const glm::vec3 lightPos = is_day
                                  ? glm::vec3(0.0f, 60.0f, 0.0f)
                                  : glm::vec3(12.0f, 25.0f, 6.0f);
         bushShader->use();
@@ -414,7 +413,7 @@ namespace app {
         };
 
         auto drawBush1 = [&](const glm::vec3 &translation, float scale) {
-            glm::mat4 model = glm::mat4(1.0f);
+            auto model = glm::mat4(1.0f);
             model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
             model           = glm::translate(model, translation);
             model           = glm::scale(model, glm::vec3(scale));
@@ -422,7 +421,7 @@ namespace app {
         };
 
         auto drawSimple = [&](engine::resources::Model *model, const glm::vec3 &translation, float scale) {
-            glm::mat4 m = glm::mat4(1.0f);
+            auto m = glm::mat4(1.0f);
             m           = glm::translate(m, translation);
             m           = glm::scale(m, glm::vec3(scale));
             drawModel(model, m);
@@ -455,7 +454,7 @@ namespace app {
 
     void MainController::draw_white_flowers() {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
-        engine::resources::Shader *flower_shader = resources->shader("flower_shader");
+        const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         unsigned int rowCount = 2;
         unsigned int colCount = 10;
@@ -467,7 +466,7 @@ namespace app {
 
             for (unsigned int col = 0; col < colCount; col++) {
                 unsigned int index   = row * colCount + col;
-                glm::mat4 model      = glm::mat4(1.0f);
+                auto model      = glm::mat4(1.0f);
                 model                = glm::translate(model, glm::vec3(x, 17.4f, 4.0f * col - 16));
                 model                = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
                 model                = glm::scale(model, glm::vec3(0.12f));
@@ -553,7 +552,7 @@ namespace app {
             flower_shader->set_float("windStrength", wind_speed * 1.5);
         }
 
-        flower_shader->set_float("time", glfwGetTime());
+        flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
         flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
         flower_shader->set_float("windSpeed", 0.8);
 
@@ -750,7 +749,7 @@ namespace app {
             flower_shader->set_float("windStrength", wind_speed * 1.5);
         }
 
-        flower_shader->set_float("time", glfwGetTime());
+        flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
         flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
         flower_shader->set_float("windSpeed", 0.8);
 
@@ -773,7 +772,7 @@ namespace app {
         terrain_shader->set_mat4("projection", graphics->projection_matrix());
         terrain_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
+        auto model = glm::mat4(1.0f);
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         terrain_shader->set_mat4("model", model);
 
@@ -805,7 +804,7 @@ namespace app {
 
         water_shader->use();
 
-        float currentTime = static_cast<float>(glfwGetTime());
+        const auto currentTime = static_cast<float>(glfwGetTime());
         water_shader->set_float("time", currentTime);
 
         glm::vec3 waterColor = is_day
@@ -817,7 +816,7 @@ namespace app {
         water_shader->set_mat4("projection", graphics->projection_matrix());
         water_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
+        auto model = glm::mat4(1.0f);
         model           = glm::scale(model, glm::vec3(30, 1, 30));
         model           = glm::translate(model, glm::vec3(0, 7, 0));
         model           = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
@@ -827,8 +826,8 @@ namespace app {
     }
 
     void MainController::test() {
-        engine::resources::Model *test_model   = resources->model("pine_tree");
-        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
+        engine::resources::Model *test_model   = resources->model("fire");
+        engine::resources::Shader *test_shader = resources->shader("fire_shader");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -851,7 +850,7 @@ namespace app {
         test_shader->set_mat4("projection", graphics->projection_matrix());
         test_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
+        auto model = glm::mat4(1.0f);
         model           = glm::rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
         model           = glm::rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
         model           = glm::rotate(model, glm::radians(test_rotation_z), glm::vec3(0, 0, 1));
@@ -864,7 +863,7 @@ namespace app {
     }
 
     void MainController::draw_skybox() {
-        auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+        const auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
         if (is_day)
             skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_day");
@@ -877,7 +876,7 @@ namespace app {
     void MainController::draw_stones() {
         engine::resources::Model *fantasy_rock = resources->model("frock");
         engine::resources::Model *grave        = resources->model("grave");
-        engine::resources::Shader *test_shader = resources->shader("tree_shader2");
+        const engine::resources::Shader *test_shader = resources->shader("tree_shader2");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -930,15 +929,15 @@ namespace app {
         fire_shader->set_mat4("projection", graphics->projection_matrix());
         fire_shader->set_mat4("view", camera->view_matrix());
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(12, 21, 7));
-        model           = glm::scale(model, glm::vec3(3.08));
+        auto model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(12, 20.5, 6.5));
+        model           = glm::scale(model, glm::vec3(3.1));
         fire_shader->set_mat4("model", model);
 
-        static float startTime = glfwGetTime();
-        float currentTime      = glfwGetTime() - startTime;
+        static double startTime = glfwGetTime();
+        double currentTime      = glfwGetTime() - startTime;
 
-        fire_shader->set_float("time", currentTime);
+        fire_shader->set_float("time", static_cast<float>(currentTime));
         fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));
         fire_shader->set_vec3("glowColor", glm::vec3(1.0f, 0.3f, 0.0f));
         fire_shader->set_float("intensity", 1.5f);
@@ -953,13 +952,12 @@ namespace app {
     }
 
     void MainController::update_camera() {
-        auto gui = engine::core::Controller::get<GUIController>();
-        if (gui->is_enabled())
+        if (const auto gui = engine::core::Controller::get<GUIController>(); gui->is_enabled())
             return;
 
-        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-        float dt      = platform->dt();
+        const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        const auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        const float dt      = platform->dt();
         if (platform->key(engine::platform::KeyId::KEY_W).is_down() || platform->key(engine::platform::KeyId::KEY_UP).
             is_down()) {
             if (platform->key(engine::platform::KEY_LEFT_SHIFT).is_down())

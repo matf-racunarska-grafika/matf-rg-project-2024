@@ -23,8 +23,7 @@ namespace app {
         auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         graphics->begin_gui();
 
-        auto model = engine::core::Controller::get<engine::resources::ResourcesController>()->model("test");
-        ImGui::Begin(model->name().c_str());
+        ImGui::Begin("Testiranje podesavanja");
         ImGui::DragFloat("Skaliranje:", &test_scale, 0.01, 0.01, 10);
         ImGui::DragFloat("RotacijaX:", &test_rotation_x, 1, -180, 180);
         ImGui::DragFloat("RotacijaY:", &test_rotation_y, 1, -180, 180);
