@@ -42,8 +42,9 @@ private:
     void draw_skybox();
 
     // Setting up the initial camera parameters
-    void initalize_camera();
+    void initialize_camera();
 
+    bool enable_gui{false};
     bool enable_cursor{true};
 };
 }

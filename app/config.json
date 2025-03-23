@@ -13,7 +13,8 @@
         "path": "cube/cube.obj"
       },
       "dog": {
-        "path": "Dog1/Dog1.obj"
+        "path": "Dog1/Dog1.obj",
+        "flip_uvs": true
       }
     }
   },

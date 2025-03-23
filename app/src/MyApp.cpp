@@ -2,6 +2,7 @@
 // Created by strahinjas on 3/18/25.
 //
 
+#include <GUIController.hpp>
 #include <MainController.hpp>
 #include <MyApp.hpp>
 #include <engine/core/Controller.hpp>
@@ -13,5 +14,8 @@ void MyApp::app_setup() {
 
     auto main_controller = MyApp::register_controller<my_project::MyController>();
     main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
+
+    auto gui_controller = MyApp::register_controller<my_project::GUIController>();
+    gui_controller->after(main_controller);
 }
 }
