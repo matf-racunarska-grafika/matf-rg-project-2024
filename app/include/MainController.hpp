@@ -6,6 +6,7 @@
 #define MAINCONTROLLER_HPP
 
 #include <engine/core/Controller.hpp>
+#include <engine/core/Engine.hpp>
 
 namespace my_project {
 class MyController final : public engine::core::Controller {
@@ -31,6 +32,14 @@ private:
     void draw_test_model();
 
     void draw_light_cube();
+
+    void draw_island_model();
+
+    void draw_light_source_birds();
+
+    void draw_model_dog();
+
+    void draw_skybox();
 
     bool enable_cursor{true};
 };

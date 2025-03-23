@@ -1,9 +1,13 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path": "backpack/backpack.obj",
-        "flip_uvs": false
+      "floating_island": {
+        "path": "island/island.obj",
+        "flip_uvs": true
+      },
+      "light_bird": {
+        "path": "Bird/bird1.obj",
+        "flip_uvs": true
       },
       "cube": {
         "path": "cube/cube.obj"
@@ -12,7 +16,7 @@
   },
   "window": {
     "height": 600,
-    "title": "Backpack showcase!",
+    "title": "Floating safe Haven",
     "width": 800
   }
 }

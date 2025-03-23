@@ -39,7 +39,7 @@ uint32_t OpenGL::generate_texture(const std::filesystem::path &path, bool flip_u
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        spdlog::info("Texture_path - {}, num_components - {}, format - {}, texture_id - {}", path.string(), nr_components, format, texture_id);
+        //spdlog::info("Texture_path - {}, num_components - {}, format - {}, texture_id - {}", path.string(), nr_components, format, texture_id);
     } else {
         throw util::EngineError(util::EngineError::Type::AssetLoadingError,
                                 std::format("Failed to load texture {}", path.string()));
@@ -126,6 +126,7 @@ void OpenGL::assert_no_error(std::source_location location) {
 uint32_t face_index(std::string_view name);
 
 uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool flip_uvs) {
+    spdlog::info("path={}", path.c_str());
     RG_GUARANTEE(std::filesystem::is_directory(path),
                  "Directory '{}' doesn't exist. Please specify path to be a directory to where the cubemap textures are located. The cubemap textures should be named: right, left, top, bottom, front, back; by their respective faces in the cubemap.",
                  path.string());

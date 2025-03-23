@@ -2,16 +2,21 @@
 // Created by strahinjas on 3/18/25.
 //
 
-#include "../../engine/libs/glad/include/glad/glad.h"
-
 #include <MainController.hpp>
-#include <iostream>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <spdlog/spdlog.h>
 #include <engine/core/Engine.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
+#include <engine/graphics/Camera.hpp>
 
 namespace my_project {
 void MyController::initialize() {
@@ -71,12 +76,11 @@ void MyController::begin_draw() {
 void MyController::draw() {
     // I want to draw my backpack model
     // The model is loaded in automatically when I call My applications run (with the initialize method specifically)
-    // The ResourceController stores all my loaded models, textures, sky boxes, shaders so that I can access them when I need to draw
-    this->draw_test_model();
-
-    // Now I want to draw a cube, this cube will represent the point light in My scene
-    this->draw_light_cube();
-
+    // The ResourceController stores all my loaded models, textures, skyboxes, shaders so that I can access them when I need to draw
+    this->draw_island_model();
+    this->draw_light_source_birds();
+    this->draw_skybox();
+    //this->draw_light_cube();
 }
 
 void MyController::end_draw() {
@@ -84,40 +88,94 @@ void MyController::end_draw() {
     platform->swap_buffers();
 }
 
-void MyController::draw_test_model() {
+void MyController::draw_light_source_birds() {
     auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto light_birds = resource_c->model("light_bird");
 
-    auto backpack = resource_c->model("backpack");
-    auto shader = resource_c->shader("lighting_point");
-
-    auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
-
-
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-    shader->set_mat4("model", glm::mat4(1.0f));
-
-    backpack->draw(shader);
-}
-
-void MyController::draw_light_cube() {
-    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
-
-    auto cube = resource_c->model("cube");
-    auto shader = resource_c->shader("light_cube");
     auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = resource_c->shader("light_source_birds");
 
     shader->use();
-
     shader->set_mat4("projection", graphics_c->projection_matrix());
     shader->set_mat4("view", graphics_c->camera()->view_matrix());
     auto model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 2.0f, 2.0f));
-    model = glm::scale(model, glm::vec3(0.1f));
+    model = glm::translate(model, glm::vec3(0.2f, 2.57f, 3.2f));
+    model = glm::scale(model, glm::vec3(0.04f));
     shader->set_mat4("model", model);
-    cube->draw(shader);
+    light_birds->draw(shader);
+
+    auto model1 = glm::mat4(1.0f);
+    model1 = glm::rotate(model1, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model1 = glm::translate(model1, glm::vec3(-5.85f, -1.25f, 5.0f));
+    model1 = glm::scale(model1, glm::vec3(0.04f));
+    shader->set_mat4("model", model1);
+    light_birds->draw(shader);
 }
+
+void MyController::draw_island_model() {
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto island = resource_c->model("floating_island");
+
+    auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = resource_c->shader("lighting_point");
+
+    shader->use();
+    shader->set_mat4("projection", graphics_c->projection_matrix());
+    shader->set_mat4("view", graphics_c->camera()->view_matrix());
+    auto model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(0.5f));
+    shader->set_mat4("model", model);
+
+    // Passing camera position
+    shader->set_vec3("viewPos", graphics_c->camera()->Position);
+    // Pass the parametars for my light source (The campfire which will act as a point light)
+    shader->set_vec3("LightPoints[0].position", glm::vec3(0.2f, 3.0f, 3.3f));
+    shader->set_vec3("LightPoints[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("LightPoints[0].diffuse", glm::vec3(0.7f, 0.7f, 0.7f));
+    shader->set_vec3("LightPoints[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_float("LightPoints[0].constant", 1.0f);
+    shader->set_float("LightPoints[0].linear", 0.09f);
+    shader->set_float("LightPoints[0].quadratic", 0.032f);
+
+    shader->set_vec3("LightPoints[1].position", glm::vec3(-5.8f, -0.8f, 5.15f));
+    shader->set_vec3("LightPoints[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("LightPoints[1].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_vec3("LightPoints[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_float("LightPoints[1].constant", 1.0f);
+    shader->set_float("LightPoints[1].linear", 0.09f);
+    shader->set_float("LightPoints[1].quadratic", 0.032f);
+
+    island->draw(shader);
+}
+
+void MyController::draw_skybox() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+}
+
+// void MyController::draw_light_cube() {
+//     auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+//     auto light_birds = resource_c->model("cube");
+//
+//     auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+//     auto shader = resource_c->shader("temp");
+//
+//     shader->use();
+//     shader->set_mat4("projection", graphics_c->projection_matrix());
+//     shader->set_mat4("view", graphics_c->camera()->view_matrix());
+//     auto model = glm::mat4(1.0f);
+//     model = glm::translate(model, glm::vec3(0.2f, 3.0f, 3.3f));
+//     model = glm::scale(model, glm::vec3(0.04f));
+//     shader->set_mat4("model", model);
+//     light_birds->draw(shader);
+//
+//     auto model1 = glm::mat4(1.0f);
+//     model1 = glm::rotate(model1, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//     model1 = glm::translate(model1, glm::vec3(-5.8f, -0.8f, 5.15f));
+//     model1 = glm::scale(model1, glm::vec3(0.04f));
+//     shader->set_mat4("model", model1);
+//     light_birds->draw(shader);
+// }
 
 }

@@ -6,6 +6,6 @@
  */
 
 int main(int argc, char **argv) {
-    std::cout << "Welcome to my application | Night on a beach |" << std::endl;
+    std::cout << "Welcome to my application | Floating safe haven |" << std::endl;
     return std::make_unique<my_project::MyApp>()->run(argc, argv);
 }

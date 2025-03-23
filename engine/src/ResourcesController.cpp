@@ -112,6 +112,7 @@ private:
 
 Model *ResourcesController::model(
         const std::string &name) {
+    //spdlog::info("[ResourcesController]: loading model {}", name);
     auto &result = m_models[name];
     if (!result) {
         auto &config = util::Configuration::config();
