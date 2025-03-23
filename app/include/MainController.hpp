@@ -29,7 +29,7 @@ private:
     void end_draw() override;
 
     // Simple abstraction functions
-    void draw_test_model();
+    //void draw_test_model();
 
     void draw_light_cube();
 
@@ -40,6 +40,9 @@ private:
     void draw_model_dog();
 
     void draw_skybox();
+
+    // Setting up the initial camera parameters
+    void initalize_camera();
 
     bool enable_cursor{true};
 };

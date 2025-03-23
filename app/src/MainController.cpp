@@ -3,6 +3,7 @@
 //
 
 #include <MainController.hpp>
+#include <imgui_internal.h>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -28,11 +29,8 @@ void MyController::initialize() {
     // resource_c->print_loaded_textures();
     // auto specular_t = resource_c->texture("resources/models/backpack/specular.jpg", "resources/models/backpack/specular.jpg", engine::resources::TextureType::Specular, false);
     // for (auto &key: resource_c->get_m_textures() | std::views::keys) { spdlog::info(key.c_str()); }
-    auto graphics_C = Controller::get<engine::graphics::GraphicsController>();
-    auto camera = graphics_C->camera();
-    camera->Position = glm::vec3(10.0f, 5.0f, 5.0f);
-    camera->MovementSpeed += 3;
-    camera->MouseSensitivity += 0.1;
+
+    MyController::initalize_camera();
 }
 
 bool MyController::loop() {
@@ -164,6 +162,29 @@ void MyController::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
     auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+}
+
+void MyController::initalize_camera() {
+    auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto camera = graphics_c->camera();
+    camera->Position = glm::vec3(0.0f, 0.0f, 3.0f);
+}
+
+void MyController::draw_model_dog() {
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto dog_model = resource_c->model("dog");
+
+    auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = resource_c->shader("lighting_scene");
+
+    shader->use();
+    shader->set_mat4("projection", graphics_c->projection_matrix());
+    shader->set_mat4("view", graphics_c->camera()->view_matrix());
+    auto model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(6.0f, -2.5f, 3.2f));
+    model = glm::scale(model, glm::vec3(0.04f));
+    shader->set_mat4("model", model);
+    dog_model->draw(shader);
 }
 
 void MyController::draw_light_cube() {

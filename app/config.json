@@ -11,12 +11,15 @@
       },
       "cube": {
         "path": "cube/cube.obj"
+      },
+      "dog": {
+        "path": "Dog1/Dog1.obj"
       }
     }
   },
   "window": {
-    "height": 600,
+    "height": 1080,
     "title": "Floating safe Haven",
-    "width": 800
+    "width": 1920
   }
 }
