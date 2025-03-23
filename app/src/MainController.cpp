@@ -43,13 +43,18 @@ void MyController::poll_events() {
         platform->set_enable_cursor(enable_cursor);
     }
 
-    // EVENT 1
-    if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
-        // ... wait 5 seconds then execute event1
-        Timer delay_seconds(5.0f);
+    // Control directional lighting diffuse strength with +, -
+    if (platform->key(engine::platform::KEY_1).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength - glm::vec3(0.1f)); }
+    if (platform->key(engine::platform::KEY_2).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength + glm::vec3(0.1f)); }
 
-        void execute_event1();
-    }
+    // // EVENT 1
+    // if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
+    //     // ... wait 5 seconds then execute event1
+    //     Timer delay_seconds(5.0f);
+    //     engine::core::App::ExecuteEvent_delay(5.0f, do_something);
+    //
+    //     void execute_event1();
+    // }
     // EVENT 2
 
 }
@@ -162,7 +167,7 @@ void MyController::draw_model_dog() {
     // Parametars for directional light
     shader->set_vec3("LightDirectional.direction", glm::vec3(0.4f, -0.4f, -1.0f));
     shader->set_vec3("LightDirectional.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("LightDirectional.diffuse", glm::vec3(0.7f, 0.7f, 0.7f));
+    shader->set_vec3("LightDirectional.diffuse", directionalStrength);
     dog_model->draw(shader);
 }
 
@@ -183,7 +188,7 @@ void MyController::draw_island_model() {
     // Passing camera position
     shader->set_vec3("viewPos", graphics_c->camera()->Position);
     // Pass the parametars for my light source (The campfire which will act as a point light)
-    shader->set_vec3("LightPoints[0].position", glm::vec3(0.2f, 3.0f, 3.3f));
+    shader->set_vec3("LightPoints[0].position", glm::vec3(1.0f, 3.5f, 3.3f));
     shader->set_vec3("LightPoints[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
     shader->set_vec3("LightPoints[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
     //shader->set_vec3("LightPoints[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -202,7 +207,7 @@ void MyController::draw_island_model() {
     // Parametars for directional light
     shader->set_vec3("LightDirectional.direction", glm::vec3(0.4f, -0.4f, -1.0f));
     shader->set_vec3("LightDirectional.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("LightDirectional.diffuse", glm::vec3(0.7f, 0.7f, 0.7f));
+    shader->set_vec3("LightDirectional.diffuse", directionalStrength);
 
     island->draw(shader);
 }

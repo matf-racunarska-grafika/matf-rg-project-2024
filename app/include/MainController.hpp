@@ -60,6 +60,7 @@ private:
         std::chrono::steady_clock::time_point start_time;
     };
 
+    glm::vec3 directionalStrength = {0.8f, 0.8f, 0.8f};
     bool enable_gui{false};
     bool enable_cursor{true};
 };
