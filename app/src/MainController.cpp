@@ -42,6 +42,16 @@ void MyController::poll_events() {
         enable_cursor = !enable_cursor;
         platform->set_enable_cursor(enable_cursor);
     }
+
+    // EVENT 1
+    if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
+        // ... wait 5 seconds then execute event1
+        Timer delay_seconds(5.0f);
+
+        void execute_event1();
+    }
+    // EVENT 2
+
 }
 
 void MyController::update() {
@@ -62,19 +72,22 @@ void MyController::update() {
                 .state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::UP, dt); }
     if (platform->key(engine::platform::KEY_LEFT_CONTROL)
                 .state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::DOWN, dt); }
+
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
+    auto graphics_c = Controller::get<engine::graphics::GraphicsController>();
+    graphics_c->perspective_params().FOV = glm::radians(camera->Zoom);
 }
 
 void MyController::begin_draw() {
-    // Let`s clear the color buffers so that the new colors can be drawn to the pixels
+    // Let`s clear the color buffers so that new colors can be drawn to the pixels
     engine::graphics::OpenGL::clear_buffers();
 }
 
 void MyController::draw() {
     // I want to draw my backpack model
-    // The model is loaded in automatically when I call My applications run (with the initialize method specifically)
+    // The model is loaded in automatically when I call My applications run
     // The ResourceController stores all my loaded models, textures, skyboxes, shaders so that I can access them when I need to draw
     this->draw_island_model();
     this->draw_light_source_birds();

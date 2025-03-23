@@ -44,6 +44,22 @@ private:
     // Setting up the initial camera parameters
     void initialize_camera();
 
+    class Timer {
+    public:
+        explicit Timer(float delay_seconds) : delay_time(delay_seconds)
+                                          , start_time(std::chrono::steady_clock::now()) {}
+
+        bool has_expired() const {
+            auto now = std::chrono::steady_clock::now();
+            float elapsed = std::chrono::duration_cast<std::chrono::duration<float> >(now - start_time).count();
+            return elapsed >= delay_time;
+        }
+
+    private:
+        float delay_time;
+        std::chrono::steady_clock::time_point start_time;
+    };
+
     bool enable_gui{false};
     bool enable_cursor{true};
 };
