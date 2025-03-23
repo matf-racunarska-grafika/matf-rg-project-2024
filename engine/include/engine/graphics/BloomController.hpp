@@ -1,15 +1,28 @@
 #ifndef BLOOMCONTROLLER_HPP
 #define BLOOMCONTROLLER_HPP
-
-#include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
-#include <engine/platform/PlatformEventObserver.hpp>
 
-class BloomController final : public engine::core::Controller {
-public:
+namespace engine::graphics {
+    class BloomController final : public core::Controller {
+    public:
+        unsigned int pingpongFBO[2];
+        unsigned int pingpongColorbuffers[2];
+        unsigned int hdrFBO;
+        unsigned int colorBuffers[2];
+        float exposure                = 1.0f;
+        bool bloom                    = true;
+        const unsigned int SCR_WIDTH  = 1400;
+        const unsigned int SCR_HEIGHT = 1000;
+        void render_bloom();
+        void prepare_hdr();
+        void finalize_bloom();
+        void hdr_bloom_setup();
 
-private:
-};
+    private:
+        unsigned int m_quadVAO = 0;
+        unsigned int m_quadVBO = 0;
+        void renderQuad();
+    };
+} // namespace engine::graphics
 
 #endif //BLOOMCONTROLLER_HPP
-

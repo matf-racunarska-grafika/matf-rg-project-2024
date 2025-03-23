@@ -1,4 +1,5 @@
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/BloomController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -27,6 +28,7 @@ namespace app {
 
     engine::resources::ResourcesController *resources;
     engine::graphics::GraphicsController *graphics;
+    engine::graphics::BloomController* bloom_controller;
     GUIController gui;
     engine::graphics::Camera *camera;
 
@@ -46,6 +48,9 @@ namespace app {
     void MainController::initialize() {
         engine::graphics::OpenGL::enable_depth_testing();
         graphics      = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        bloom_controller = engine::core::Controller::get<engine::graphics::BloomController>();
+        bloom_controller->hdr_bloom_setup();
+        resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         camera        = graphics->camera();
         resources     = engine::core::Controller::get<engine::resources::ResourcesController>();
         gui           = GUIController();
@@ -77,6 +82,7 @@ namespace app {
     }
 
     void MainController::draw() {
+        bloom_controller->prepare_hdr();
         draw_water();
         draw_terrain();
         draw_campfire();
@@ -93,6 +99,7 @@ namespace app {
             draw_fire();
         test();
         draw_skybox();
+        bloom_controller->finalize_bloom();
     }
 
     void MainController::draw_forest() {
@@ -202,7 +209,7 @@ namespace app {
 
     void MainController::draw_campfire() {
         engine::resources::Model *campfire         = resources->model("campfire");
-        engine::resources::Shader *campfire_shader = resources->shader("campfire_shader");
+        engine::resources::Shader *campfire_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         glm::vec3 ambient  = is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
@@ -228,7 +235,7 @@ namespace app {
 
     void MainController::draw_logs() {
         engine::resources::Model *log_seat         = resources->model("log_seat");
-        engine::resources::Shader *log_seat_shader = resources->shader("campfire_shader");
+        engine::resources::Shader *log_seat_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -279,7 +286,7 @@ namespace app {
     void MainController::draw_tents() {
         engine::resources::Model *viking_tent   = resources->model("viking_tent");
         engine::resources::Model *stylized_tent = resources->model("stylized_tent");
-        engine::resources::Shader *tent_shader  = resources->shader("campfire_shader");
+        engine::resources::Shader *tent_shader  = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -312,7 +319,7 @@ namespace app {
 
     void MainController::draw_old_tree() {
         engine::resources::Model *old_tree         = resources->model("old_tree");
-        engine::resources::Shader *old_tree_shader = resources->shader("tree_shader2");
+        engine::resources::Shader *old_tree_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -425,7 +432,7 @@ namespace app {
 
     void MainController::draw_white_flowers() {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
-        const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
+        const engine::resources::Shader *flower_shader = resources->shader("basic");
 
         unsigned int rowCount = 2;
         unsigned int colCount = 10;
@@ -586,7 +593,7 @@ namespace app {
 
        void MainController::draw_red_flowers() {
         engine::resources::Model *roses          = resources->model("roses");
-        engine::resources::Shader *flower_shader = resources->shader("flower_shader");
+        engine::resources::Shader *flower_shader = resources->shader("basic");
 
         unsigned int amount                 = 21;
         auto *modelMatrices                 = new glm::mat4[amount];
@@ -652,7 +659,7 @@ namespace app {
 
     void MainController::draw_terrain() {
         engine::resources::Model *terrain         = resources->model("terrain");
-        engine::resources::Shader *terrain_shader = resources->shader("terrain_shader");
+        engine::resources::Shader *terrain_shader = resources->shader("basic");
 
         terrain_shader->use();
 
@@ -757,7 +764,7 @@ namespace app {
     void MainController::draw_stones() {
         engine::resources::Model *fantasy_rock = resources->model("frock");
         engine::resources::Model *grave        = resources->model("grave");
-        const engine::resources::Shader *test_shader = resources->shader("tree_shader2");
+        const engine::resources::Shader *test_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
