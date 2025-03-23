@@ -20,7 +20,6 @@ void main()
     TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
-
 //#shader fragment
 #version 330 core
 
@@ -35,6 +34,14 @@ struct Light_point {
     float linear;
     float quadratic;
 };
+
+struct Light_dir {
+    vec3 direction;
+
+    vec3 ambient;
+    vec3 diffuse;
+};
+
 #define NUM_POINT_LIGHTS 2
 
 out vec4 FragColor;
@@ -44,18 +51,19 @@ in vec2 TexCoords;
 in vec3 Normal;
 
 uniform vec3 viewPos;
-
+uniform Light_dir LightDirectional;
 uniform Light_point LightPoints[NUM_POINT_LIGHTS];
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 
 vec3 CalculatePointLight(Light_point source_point, vec3 norm_vec, vec3 viewers_position);
+vec3 CalculateDirectionalLight(Light_dir direct_light, vec3 norm_vec);
 
 void main() {
     vec3 norm = normalize(Normal);
 
-    vec3 result = vec3(0.0f);
+    vec3 result = CalculateDirectionalLight(LightDirectional, norm);
     for (int i = 0; i < NUM_POINT_LIGHTS; i++) {
         result += CalculatePointLight(LightPoints[i], norm, viewPos);
     }
@@ -84,4 +92,13 @@ vec3 CalculatePointLight(Light_point LightPoint, vec3 norm, vec3 viewPos) {
     //    vec3 specularCol = LightPoint.specular * max(dot(viewDir, reflectDir), 0) * texture(texture_specular1, TexCoords).rgb;
 
     return (ambientCol + diffuseCol);
+}
+
+vec3 CalculateDirectionalLight(Light_dir directionalLight, vec3 normal) {
+    vec3 lightDir = normalize(-directionalLight.direction);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    vec3 ambient = directionalLight.ambient * vec3(texture(texture_diffuse1, TexCoords));
+    vec3 diffuse = directionalLight.diffuse * diff * vec3(texture(texture_diffuse1, TexCoords));
+    return (ambient + diffuse);
 }

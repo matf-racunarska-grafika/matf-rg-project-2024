@@ -28,6 +28,11 @@ void MyController::initialize() {
     // resource_c->print_loaded_textures();
     // auto specular_t = resource_c->texture("resources/models/backpack/specular.jpg", "resources/models/backpack/specular.jpg", engine::resources::TextureType::Specular, false);
     // for (auto &key: resource_c->get_m_textures() | std::views::keys) { spdlog::info(key.c_str()); }
+    auto graphics_C = Controller::get<engine::graphics::GraphicsController>();
+    auto camera = graphics_C->camera();
+    camera->Position = glm::vec3(10.0f, 5.0f, 5.0f);
+    camera->MovementSpeed += 3;
+    camera->MouseSensitivity += 0.1;
 }
 
 bool MyController::loop() {
@@ -80,6 +85,8 @@ void MyController::draw() {
     this->draw_island_model();
     this->draw_light_source_birds();
     this->draw_skybox();
+
+
     //this->draw_light_cube();
 }
 
@@ -105,8 +112,8 @@ void MyController::draw_light_source_birds() {
     light_birds->draw(shader);
 
     auto model1 = glm::mat4(1.0f);
+    model1 = glm::translate(model1, glm::vec3(-2.58f, -1.25f, 7.3f));
     model1 = glm::rotate(model1, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model1 = glm::translate(model1, glm::vec3(-5.85f, -1.25f, 5.0f));
     model1 = glm::scale(model1, glm::vec3(0.04f));
     shader->set_mat4("model", model1);
     light_birds->draw(shader);
@@ -117,7 +124,7 @@ void MyController::draw_island_model() {
     auto island = resource_c->model("floating_island");
 
     auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = resource_c->shader("lighting_point");
+    auto shader = resource_c->shader("lighting_scene");
 
     shader->use();
     shader->set_mat4("projection", graphics_c->projection_matrix());
@@ -130,20 +137,25 @@ void MyController::draw_island_model() {
     shader->set_vec3("viewPos", graphics_c->camera()->Position);
     // Pass the parametars for my light source (The campfire which will act as a point light)
     shader->set_vec3("LightPoints[0].position", glm::vec3(0.2f, 3.0f, 3.3f));
-    shader->set_vec3("LightPoints[0].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-    shader->set_vec3("LightPoints[0].diffuse", glm::vec3(0.7f, 0.7f, 0.7f));
-    shader->set_vec3("LightPoints[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_vec3("LightPoints[0].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader->set_vec3("LightPoints[0].diffuse", glm::vec3(0.9f, 0.9f, 0.9f));
+    //shader->set_vec3("LightPoints[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
     shader->set_float("LightPoints[0].constant", 1.0f);
-    shader->set_float("LightPoints[0].linear", 0.09f);
-    shader->set_float("LightPoints[0].quadratic", 0.032f);
+    shader->set_float("LightPoints[0].linear", 0.14f);
+    shader->set_float("LightPoints[0].quadratic", 0.07f);
 
-    shader->set_vec3("LightPoints[1].position", glm::vec3(-5.8f, -0.8f, 5.15f));
-    shader->set_vec3("LightPoints[1].ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-    shader->set_vec3("LightPoints[1].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader->set_vec3("LightPoints[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_vec3("LightPoints[1].position", glm::vec3(-2.55f, -0.85f, 7.33f));
+    shader->set_vec3("LightPoints[1].ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader->set_vec3("LightPoints[1].diffuse", glm::vec3(0.9f, 0.9f, 0.9f));
+    //shader->set_vec3("LightPoints[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
     shader->set_float("LightPoints[1].constant", 1.0f);
-    shader->set_float("LightPoints[1].linear", 0.09f);
-    shader->set_float("LightPoints[1].quadratic", 0.032f);
+    shader->set_float("LightPoints[1].linear", 0.22f);
+    shader->set_float("LightPoints[1].quadratic", 0.20f);
+
+    // Parametars for directional light
+    shader->set_vec3("LightDirectional.direction", glm::vec3(1.0f, -1.0f, -1.0f));
+    shader->set_vec3("LightDirectional.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader->set_vec3("LightDirectional.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
 
     island->draw(shader);
 }
@@ -154,28 +166,28 @@ void MyController::draw_skybox() {
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
 }
 
-// void MyController::draw_light_cube() {
-//     auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
-//     auto light_birds = resource_c->model("cube");
-//
-//     auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
-//     auto shader = resource_c->shader("temp");
-//
-//     shader->use();
-//     shader->set_mat4("projection", graphics_c->projection_matrix());
-//     shader->set_mat4("view", graphics_c->camera()->view_matrix());
-//     auto model = glm::mat4(1.0f);
-//     model = glm::translate(model, glm::vec3(0.2f, 3.0f, 3.3f));
-//     model = glm::scale(model, glm::vec3(0.04f));
-//     shader->set_mat4("model", model);
-//     light_birds->draw(shader);
-//
-//     auto model1 = glm::mat4(1.0f);
-//     model1 = glm::rotate(model1, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-//     model1 = glm::translate(model1, glm::vec3(-5.8f, -0.8f, 5.15f));
-//     model1 = glm::scale(model1, glm::vec3(0.04f));
-//     shader->set_mat4("model", model1);
-//     light_birds->draw(shader);
-// }
+void MyController::draw_light_cube() {
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto light_birds = resource_c->model("cube");
+
+    auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = resource_c->shader("temp");
+
+    shader->use();
+    shader->set_mat4("projection", graphics_c->projection_matrix());
+    shader->set_mat4("view", graphics_c->camera()->view_matrix());
+    auto model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.2f, 3.0f, 3.3f));
+    model = glm::scale(model, glm::vec3(0.04f));
+    shader->set_mat4("model", model);
+    light_birds->draw(shader);
+
+    // auto model1 = glm::mat4(1.0f);
+    // model1 = glm::rotate(model1, glm::radians(30.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // model1 = glm::translate(model1, glm::vec3(-5.8f, -0.8f, 5.15f));
+    // model1 = glm::scale(model1, glm::vec3(0.04f));
+    // shader->set_mat4("model", model1);
+    // light_birds->draw(shader);
+}
 
 }
