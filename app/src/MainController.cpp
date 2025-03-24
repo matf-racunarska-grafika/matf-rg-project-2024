@@ -13,6 +13,9 @@
 #include <engine/graphics/Camera.hpp>
 
 namespace my_project {
+
+MyController::Timer MyController::inner_event_timer(0.0f);
+
 void MyController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     spdlog::info("Hello, from the MyController initialize");
@@ -43,21 +46,25 @@ void MyController::poll_events() {
         platform->set_enable_cursor(enable_cursor);
     }
 
-    // Control directional lighting diffuse strength with +, -
+    // Control directional lighting diffuse strength +, -
     if (platform->key(engine::platform::KEY_1).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength - glm::vec3(0.1f)); }
     if (platform->key(engine::platform::KEY_2).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength + glm::vec3(0.1f)); }
 
     // // EVENT 1
-    // if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
-    //     // ... wait 5 seconds then execute event1
-    //     Timer delay_seconds(5.0f);
-    //     engine::core::App::ExecuteEvent_delay(5.0f, do_something);
-    //
-    //     void execute_event1();
-    // }
-    // EVENT 2
-
+    if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
+        // ... wait 5 seconds then execute event1
+        setTimer(5.0f);
+        MyController::event1_in_waiting = true;
+    }
+    if (inner_event_timer.has_expired() && event1_in_waiting) {
+        scene_event1();
+        event1_in_waiting = false;
+    }
 }
+
+void MyController::setTimer(float delay_seconds) { MyController::inner_event_timer = Timer(delay_seconds); }
+
+void MyController::scene_event1() { MyController::draw_dog = !MyController::draw_dog; }
 
 void MyController::update() {
     auto gui_c = engine::core::Controller::get<GUIController>();
@@ -97,8 +104,7 @@ void MyController::draw() {
     this->draw_island_model();
     this->draw_light_source_birds();
     this->draw_skybox();
-    this->draw_model_dog();
-
+    if (MyController::draw_dog) { this->draw_model_dog(); }
     //this->draw_light_cube();
 }
 

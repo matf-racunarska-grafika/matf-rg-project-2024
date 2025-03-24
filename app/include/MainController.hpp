@@ -44,6 +44,10 @@ private:
     // Setting up the initial camera parameters
     void initialize_camera();
 
+    void setTimer(float delay_seconds);
+
+    void scene_event1();
+
     class Timer {
     public:
         explicit Timer(float delay_seconds) : delay_time(delay_seconds)
@@ -60,6 +64,9 @@ private:
         std::chrono::steady_clock::time_point start_time;
     };
 
+    bool event1_in_waiting{false};
+    bool draw_dog{true};
+    static Timer inner_event_timer;
     glm::vec3 directionalStrength = {0.8f, 0.8f, 0.8f};
     bool enable_gui{false};
     bool enable_cursor{true};
