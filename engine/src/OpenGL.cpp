@@ -152,7 +152,8 @@ uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool fl
             uint32_t i = face_index(file.path()
                                         .stem()
                                         .c_str());
-            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB,
+            int32_t format = texture_format(nr_channels);
+            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format,
                             GL_UNSIGNED_BYTE,
                             data);
         } else {
