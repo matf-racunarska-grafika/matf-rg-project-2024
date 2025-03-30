@@ -76,7 +76,7 @@ namespace app {
     }
 
     void MainController::end_draw() {
-        engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
+        get<engine::platform::PlatformController>()->swap_buffers();
     }
 
     void MainController::draw() {
@@ -100,37 +100,37 @@ namespace app {
         bloom_controller->finalize_bloom();
     }
 
-    void MainController::draw_forest() {
+    void MainController::draw_forest() const {
         auto *yellow_tree = resources->model("yellow_tree");
         auto *green_tree  = resources->model("green_tree");
         auto *tall_tree   = resources->model("beech_tree");
         auto *oak_tree    = resources->model("oak_tree");
         auto *tree_gate   = resources->model("tree_gate");
         auto *pine_tree   = resources->model("pine_tree");
-        auto *tree_shader = resources->shader("basic");
+        const auto *tree_shader = resources->shader("basic");
 
         set_common_shader_variables(tree_shader, camera, graphics);
 
-        auto draw_yellow_tree = [&](float x, float y, float z, float scale) {
+        auto draw_yellow_tree = [&](const float x, const float y, const float z, float scale) {
             auto model = glm::mat4(1.0f);
-            model      = glm::translate(model, glm::vec3(x, y, z));
+            model      = translate(model, glm::vec3(x, y, z));
             model      = glm::scale(model, glm::vec3(scale));
             tree_shader->set_mat4("model", model);
             yellow_tree->draw(tree_shader);
         };
 
-        auto draw_green_tree = [&](float x, float y, float z, float scale) {
+        auto draw_green_tree = [&](const float x, const float y, const float z, float scale) {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
-            model      = glm::translate(model, glm::vec3(x, y, z));
+            model      = rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
+            model      = translate(model, glm::vec3(x, y, z));
             model      = glm::scale(model, glm::vec3(scale));
             tree_shader->set_mat4("model", model);
             green_tree->draw(tree_shader);
         };
 
-        auto draw_tall_tree = [&](float x, float y, float z, float scale) {
+        auto draw_tall_tree = [&](const float x, const float y, const float z, float scale) {
             auto model = glm::mat4(1.0f);
-            model      = glm::translate(model, glm::vec3(x, y, z));
+            model      = translate(model, glm::vec3(x, y, z));
             model      = glm::scale(model, glm::vec3(scale));
             tree_shader->set_mat4("model", model);
             tall_tree->draw(tree_shader);
@@ -138,9 +138,9 @@ namespace app {
 
         auto draw_pine_tree = [&](float x, float y, float z) {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model      = glm::translate(model, glm::vec3(x, y, z));
-            model      = glm::scale(model, glm::vec3(11.0f));
+            model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model      = translate(model, glm::vec3(x, y, z));
+            model      = scale(model, glm::vec3(11.0f));
             tree_shader->set_mat4("model", model);
             pine_tree->draw(tree_shader);
         };
@@ -167,16 +167,16 @@ namespace app {
         draw_tall_tree(-19, 14, -8, 0.1f);
         draw_tall_tree(21, 14, 38, 0.1f); {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-            model      = glm::translate(model, glm::vec3(-17, 28, -17));
-            model      = glm::scale(model, glm::vec3(0.210f));
+            model      = rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+            model      = translate(model, glm::vec3(-17, 28, -17));
+            model      = scale(model, glm::vec3(0.210f));
             tree_shader->set_mat4("model", model);
             oak_tree->draw(tree_shader);
         } {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
-            model      = glm::translate(model, glm::vec3(8, 13, 59));
-            model      = glm::scale(model, glm::vec3(0.110f));
+            model      = rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
+            model      = translate(model, glm::vec3(8, 13, 59));
+            model      = scale(model, glm::vec3(0.110f));
             tree_shader->set_mat4("model", model);
             tree_gate->draw(tree_shader);
         }
@@ -196,21 +196,21 @@ namespace app {
         draw_pine_tree(3, 28, 17);
     }
 
-    void MainController::draw_campfire() {
+    void MainController::draw_campfire() const {
         engine::resources::Model *campfire         = resources->model("campfire");
-        engine::resources::Shader *campfire_shader = resources->shader("basic");
+        const engine::resources::Shader *campfire_shader = resources->shader("basic");
 
         set_common_shader_variables(campfire_shader, camera, graphics);
         campfire_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(5.0f));
 
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(12.0f, 17.3f, 6.0f));
+        const glm::mat4 model = translate(glm::mat4(1.0f), glm::vec3(12.0f, 17.3f, 6.0f));
         campfire_shader->set_mat4("model", model);
         campfire->draw(campfire_shader);
     }
 
-    void MainController::draw_logs() {
+    void MainController::draw_logs() const {
         engine::resources::Model *log_seat         = resources->model("log_seat");
-        engine::resources::Shader *log_seat_shader = resources->shader("basic");
+        const engine::resources::Shader *log_seat_shader = resources->shader("basic");
 
         set_common_shader_variables(log_seat_shader, camera, graphics);
         log_seat_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(4.0f));
@@ -218,27 +218,27 @@ namespace app {
         for (int i = 0; i < 3; i++) {
             if (i == 0) {
                 auto model = glm::mat4(1.0f);
-                model      = glm::rotate(model, glm::radians(42.0f), glm::vec3(0, 1, 0));
-                model      = glm::translate(model, glm::vec3(6, 17.5, 2));
-                model      = glm::scale(model, glm::vec3(0.04));
+                model      = rotate(model, glm::radians(42.0f), glm::vec3(0, 1, 0));
+                model      = translate(model, glm::vec3(6, 17.5, 2));
+                model      = scale(model, glm::vec3(0.04));
 
                 log_seat_shader->set_mat4("model", model);
 
                 log_seat->draw(log_seat_shader);
             } else if (i == 1) {
                 auto model = glm::mat4(1.0f);
-                model      = glm::rotate(model, glm::radians(155.0f), glm::vec3(0, 1, 0));
-                model      = glm::translate(model, glm::vec3(-16, 17.5, -9));
-                model      = glm::scale(model, glm::vec3(0.04));
+                model      = rotate(model, glm::radians(155.0f), glm::vec3(0, 1, 0));
+                model      = translate(model, glm::vec3(-16, 17.5, -9));
+                model      = scale(model, glm::vec3(0.04));
 
                 log_seat_shader->set_mat4("model", model);
 
                 log_seat->draw(log_seat_shader);
             } else {
                 auto model = glm::mat4(1.0f);
-                model      = glm::rotate(model, glm::radians(-100.0f), glm::vec3(0, 1, 0));
-                model      = glm::translate(model, glm::vec3(1, 17.5, -26));
-                model      = glm::scale(model, glm::vec3(0.04));
+                model      = rotate(model, glm::radians(-100.0f), glm::vec3(0, 1, 0));
+                model      = translate(model, glm::vec3(1, 17.5, -26));
+                model      = scale(model, glm::vec3(0.04));
 
                 log_seat_shader->set_mat4("model", model);
 
@@ -247,7 +247,7 @@ namespace app {
         }
     }
 
-    void MainController::draw_tents() {
+    void MainController::draw_tents() const {
         engine::resources::Model *viking_tent   = resources->model("viking_tent");
         engine::resources::Model *stylized_tent = resources->model("stylized_tent");
         engine::resources::Shader *tent_shader  = resources->shader("basic");
@@ -256,37 +256,37 @@ namespace app {
         tent_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(2.0f));
 
         auto model = glm::mat4(1.0f);
-        model      = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0, 1, 0));
-        model      = glm::translate(model, glm::vec3(16, 17, -14));
-        model      = glm::scale(model, glm::vec3(0.037));
+        model      = rotate(model, glm::radians(-20.0f), glm::vec3(0, 1, 0));
+        model      = translate(model, glm::vec3(16, 17, -14));
+        model      = scale(model, glm::vec3(0.037));
         tent_shader->set_mat4("model", model);
         viking_tent->draw(tent_shader);
 
         model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-128.0f), glm::vec3(0, 1, 0));
-        model = glm::translate(model, glm::vec3(0, 20, -33));
-        model = glm::scale(model, glm::vec3(0.06));
+        model = rotate(model, glm::radians(-128.0f), glm::vec3(0, 1, 0));
+        model = translate(model, glm::vec3(0, 20, -33));
+        model = scale(model, glm::vec3(0.06));
         tent_shader->set_mat4("model", model);
         stylized_tent->draw(tent_shader);
     }
 
-    void MainController::draw_old_tree() {
+    void MainController::draw_old_tree() const {
         engine::resources::Model *old_tree         = resources->model("old_tree");
-        engine::resources::Shader *old_tree_shader = resources->shader("basic");
+        const engine::resources::Shader *old_tree_shader = resources->shader("basic");
 
         set_common_shader_variables(old_tree_shader, camera, graphics);
 
         auto model = glm::mat4(1.0f);
-        model      = glm::rotate(model, glm::radians(3.0f), glm::vec3(0, 0, 1));
-        model      = glm::translate(model, glm::vec3(65, 40, -39));
-        model      = glm::scale(model, glm::vec3(0.04));
+        model      = rotate(model, glm::radians(3.0f), glm::vec3(0, 0, 1));
+        model      = translate(model, glm::vec3(65, 40, -39));
+        model      = scale(model, glm::vec3(0.04));
 
         old_tree_shader->set_mat4("model", model);
 
         old_tree->draw(old_tree_shader);
     }
 
-    void MainController::draw_bushes() {
+    void MainController::draw_bushes() const {
         const auto bush1       = resources->model("bush1");
         const auto bush2       = resources->model("bush2");
         const auto laurel_bush = resources->model("laurel_bush");
@@ -301,15 +301,15 @@ namespace app {
 
         auto drawBush1 = [&](const glm::vec3 &translation, float scale) {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model      = glm::translate(model, translation);
+            model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model      = translate(model, translation);
             model      = glm::scale(model, glm::vec3(scale));
             drawModel(bush1, model);
         };
 
         auto drawSimple = [&](engine::resources::Model *model, const glm::vec3 &translation, float scale) {
             auto m = glm::mat4(1.0f);
-            m      = glm::translate(m, translation);
+            m      = translate(m, translation);
             m      = glm::scale(m, glm::vec3(scale));
             drawModel(model, m);
         };
@@ -330,9 +330,9 @@ namespace app {
         drawSimple(laurel_bush, glm::vec3(33, 17, -6), 0.680f);
     }
 
-    void MainController::draw_white_flowers() {
+    void MainController::draw_white_flowers() const {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
-        engine::resources::Shader *flower_shader = resources->shader("flower_shader");
+        const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         unsigned int rowCount = 2;
         unsigned int colCount = 10;
@@ -343,15 +343,15 @@ namespace app {
             float x = (row == 0) ? 40.0f : 44.0f;
 
             for (unsigned int col = 0; col < colCount; col++) {
-                unsigned int index   = row * colCount + col;
-                auto model           = glm::mat4(1.0f);
-                model                = glm::translate(model, glm::vec3(x, 17.4f, 4.0f * col - 16));
-                model                = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-                model                = glm::scale(model, glm::vec3(0.12f));
-                modelMatrices[index] = model;
+                const unsigned int index = row * colCount + col;
+                auto model               = glm::mat4(1.0f);
+                model                    = translate(model, glm::vec3(x, 17.4f, 4.0f * static_cast<float>(col) - 16));
+                model                    = rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+                model                    = scale(model, glm::vec3(0.12f));
+                modelMatrices[index]     = model;
             }
         }
-        std::vector<glm::vec3> translations = {
+        const std::vector<glm::vec3> translations = {
                 glm::vec3(-3, -21, -17.2),
                 glm::vec3(-7, -17, -17.2),
                 glm::vec3(-14, -11, -17.2),
@@ -369,37 +369,35 @@ namespace app {
 
         for (unsigned int i = rowCount * colCount; i < amount; i++) {
             auto model       = glm::mat4(1.0f);
-            model            = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-            model            = glm::translate(model, translations[i - rowCount * colCount]);
-            model            = glm::scale(model, glm::vec3(0.12f));
+            model            = rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+            model            = translate(model, translations[i - rowCount * colCount]);
+            model            = scale(model, glm::vec3(0.12f));
             modelMatrices[i] = model;
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
-
         white_flowers->drawInstanced(flower_shader, amount, modelMatrices);
-
         delete[] modelMatrices;
     }
 
-    void MainController::draw_flowers() {
+    void MainController::draw_flowers() const {
         draw_white_flowers();
         draw_red_flowers();
     }
 
-    void MainController::draw_path() {
+    void MainController::draw_path() const {
         auto path         = resources->model("path");
         auto stone_shader = resources->shader("basic");
 
         set_common_shader_variables(stone_shader, camera, graphics);
 
         auto draw_path_segment = [&](const glm::vec3 &translation, float yRotation, float scale) {
-            glm::mat4 model = glm::mat4(1.0f);
-            model           = glm::rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
-            model           = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
-            model           = glm::rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
-            model           = glm::translate(model, translation);
-            model           = glm::scale(model, glm::vec3(scale));
+            auto model = glm::mat4(1.0f);
+            model      = rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
+            model      = rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+            model      = rotate(model, glm::radians(15.0f), glm::vec3(0, 0, 1));
+            model      = translate(model, translation);
+            model      = glm::scale(model, glm::vec3(scale));
             stone_shader->set_mat4("model", model);
             path->draw(stone_shader);
         };
@@ -410,17 +408,17 @@ namespace app {
         draw_path_segment(glm::vec3(-1, 12, -17.5), 0.0f, 0.19f);
     }
 
-    void MainController::draw_mushrooms() {
-        auto mushroom      = resources->model("shrooms");
-        auto shroom_shader = resources->shader("basic");
+    void MainController::draw_mushrooms() const {
+        const auto mushroom      = resources->model("shrooms");
+        const auto shroom_shader = resources->shader("basic");
 
         set_common_shader_variables(shroom_shader, camera, graphics);
 
         auto drawMushroom = [&](const glm::vec3 &translation, float scale, float yRotation = 0.0f) {
             auto model = glm::mat4(1.0f);
-            model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model      = glm::rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
-            model      = glm::translate(model, translation);
+            model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model      = rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
+            model      = translate(model, translation);
             model      = glm::scale(model, glm::vec3(scale));
             shroom_shader->set_mat4("model", model);
             mushroom->draw(shroom_shader);
@@ -433,13 +431,13 @@ namespace app {
         drawMushroom(glm::vec3(30, -10, 17), 0.19f);
     }
 
-    void MainController::draw_red_flowers() {
+    void MainController::draw_red_flowers() const {
         engine::resources::Model *roses          = resources->model("roses");
-        engine::resources::Shader *flower_shader = resources->shader("flower_shader");
+        const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        unsigned int amount                 = 21;
-        auto *modelMatrices                 = new glm::mat4[amount];
-        std::vector<glm::vec3> translations = {
+        constexpr unsigned int amount      = 21;
+        auto *modelMatrices      = new glm::mat4[amount];
+        const std::vector translations = {
                 glm::vec3(-10, 0, 17),
                 glm::vec3(-4, 9, 17),
                 glm::vec3(-4, 19, 17),
@@ -465,35 +463,32 @@ namespace app {
 
         for (int i = 0; i < amount; i++) {
             auto model       = glm::mat4(1.0f);
-            model            = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-            model            = glm::translate(model, translations[i]);
-            model            = glm::scale(model, glm::vec3(0.04f));
+            model            = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+            model            = translate(model, translations[i]);
+            model            = scale(model, glm::vec3(0.04f));
             modelMatrices[i] = model;
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
         roses->drawInstanced(flower_shader, amount, modelMatrices);
-
         delete[] modelMatrices;
     }
 
-    void MainController::draw_terrain() {
+    void MainController::draw_terrain() const {
         engine::resources::Model *terrain         = resources->model("terrain");
-        engine::resources::Shader *terrain_shader = resources->shader("basic");
+        const engine::resources::Shader *terrain_shader = resources->shader("basic");
         set_common_shader_variables(terrain_shader, camera, graphics);
         auto model = glm::mat4(1.0f);
-        model      = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model      = translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
         terrain_shader->set_mat4("model", model);
-
         terrain->draw(terrain_shader);
     }
 
-    void MainController::draw_water() {
-        engine::resources::Model *water_model   = resources->model("water");
-        engine::resources::Shader *water_shader = resources->shader("water_shader");
+    void MainController::draw_water() const {
+        engine::resources::Model *water_model         = resources->model("water");
+        const engine::resources::Shader *water_shader = resources->shader("water_shader");
 
-        auto lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-
+        const auto lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         water_shader->use();
 
         const auto currentTime = static_cast<float>(glfwGetTime());
@@ -509,19 +504,19 @@ namespace app {
         water_shader->set_mat4("view", camera->view_matrix());
 
         auto model = glm::mat4(1.0f);
-        model      = glm::scale(model, glm::vec3(30, 1, 30));
-        model      = glm::translate(model, glm::vec3(0, 7, 0));
-        model      = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model      = scale(model, glm::vec3(30, 1, 30));
+        model      = translate(model, glm::vec3(0, 7, 0));
+        model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
         water_shader->set_mat4("model", model);
 
         water_model->drawBlended(water_shader);
     }
 
-    void MainController::test() {
+    void MainController::test() const {
         engine::resources::Model *test_model   = resources->model("fire");
-        engine::resources::Shader *test_shader = resources->shader("fire_shader");
+        const engine::resources::Shader *test_shader = resources->shader("fire_shader");
 
-        glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+        const glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         test_shader->use();
 
@@ -543,59 +538,59 @@ namespace app {
         test_shader->set_mat4("view", camera->view_matrix());
 
         auto model = glm::mat4(1.0f);
-        model      = glm::rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
-        model      = glm::rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
-        model      = glm::rotate(model, glm::radians(test_rotation_z), glm::vec3(0, 0, 1));
-        model      = glm::translate(model, glm::vec3(test_x, test_y, test_z));
-        model      = glm::scale(model, glm::vec3(test_scale));
+        model      = rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
+        model      = rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
+        model      = rotate(model, glm::radians(test_rotation_z), glm::vec3(0, 0, 1));
+        model      = translate(model, glm::vec3(test_x, test_y, test_z));
+        model      = scale(model, glm::vec3(test_scale));
 
         test_shader->set_mat4("model", model);
 
         test_model->draw(test_shader);
     }
 
-    void MainController::draw_skybox() {
-        const auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    void MainController::draw_skybox() const {
+        const auto shader = get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
         if (is_day)
-            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_day");
+            skybox_cube = get<engine::resources::ResourcesController>()->skybox("skybox_day");
         else
-            skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(
+            skybox_cube = get<engine::resources::ResourcesController>()->skybox(
                     "skybox_night");
-        engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+        get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 
-    void MainController::draw_stones() {
+    void MainController::draw_stones() const {
         engine::resources::Model *fantasy_rock  = resources->model("frock");
         engine::resources::Model *grave         = resources->model("grave");
-        engine::resources::Shader *stone_shader = resources->shader("basic");
+        const engine::resources::Shader *stone_shader = resources->shader("basic");
 
         set_common_shader_variables(stone_shader, camera, graphics);
 
         auto model = glm::mat4(1.0f);
-        model      = glm::translate(model, glm::vec3(66, 14, -16));
-        model      = glm::scale(model, glm::vec3(1.65));
+        model      = translate(model, glm::vec3(66, 14, -16));
+        model      = scale(model, glm::vec3(1.65));
         stone_shader->set_mat4("model", model);
         fantasy_rock->draw(stone_shader);
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(57, 14, -22));
-        model = glm::scale(model, glm::vec3(1.65));
+        model = translate(model, glm::vec3(57, 14, -22));
+        model = scale(model, glm::vec3(1.65));
         stone_shader->set_mat4("model", model);
         fantasy_rock->draw(stone_shader);
 
         model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = glm::rotate(model, glm::radians(-48.0f), glm::vec3(0, 0, 1));
-        model = glm::translate(model, glm::vec3(29, 71, 12));
-        model = glm::scale(model, glm::vec3(1.35));
+        model = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model = rotate(model, glm::radians(-48.0f), glm::vec3(0, 0, 1));
+        model = translate(model, glm::vec3(29, 71, 12));
+        model = scale(model, glm::vec3(1.35));
         stone_shader->set_mat4("model", model);
         grave->draw(stone_shader);
     }
 
     void MainController::draw_fire() {
         engine::resources::Model *fire         = resources->model("fire");
-        engine::resources::Shader *fire_shader = resources->shader("fire_shader");
+        const engine::resources::Shader *fire_shader = resources->shader("fire_shader");
         fire_shader->use();
         fire_shader->set_vec3("viewPos", camera->Position);
 
@@ -603,8 +598,8 @@ namespace app {
         fire_shader->set_mat4("view", camera->view_matrix());
 
         auto model = glm::mat4(1.0f);
-        model      = glm::translate(model, glm::vec3(12, 20.5, 6.5));
-        model      = glm::scale(model, glm::vec3(3.1));
+        model      = translate(model, glm::vec3(12, 20.5, 6.5));
+        model      = scale(model, glm::vec3(3.1));
         fire_shader->set_mat4("model", model);
 
         static double startTime = glfwGetTime();
@@ -625,11 +620,11 @@ namespace app {
     }
 
     void MainController::update_camera() {
-        if (const auto gui = engine::core::Controller::get<GUIController>(); gui->is_enabled())
+        if (const auto gui = get<GUIController>(); gui->is_enabled())
             return;
 
-        const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-        const auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        const auto platform = get<engine::platform::PlatformController>();
+        const auto camera   = get<engine::graphics::GraphicsController>()->camera();
         const float dt      = platform->dt();
         if (platform->key(engine::platform::KeyId::KEY_W).is_down() || platform->key(engine::platform::KeyId::KEY_UP).
             is_down()) {
