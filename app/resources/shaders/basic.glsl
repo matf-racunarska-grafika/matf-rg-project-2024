@@ -45,33 +45,35 @@ uniform sampler2D texture_diffuse1;
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
+uniform vec3 lightColor;
 
 void main()
 {
+    vec4 texColor = texture(texture_diffuse1, TexCoords);
+    if (texColor.a < 0.1)
+        discard;
+
     vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
     vec3 lightDir = normalize(light.position - FragPos);
 
-    vec4 texColor = texture(texture_diffuse1, TexCoords);
-
-    if (texColor.a < 0.1)
-    discard;
-
-    vec3 ambient = light.ambient * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
+    vec3 ambient = light.ambient * texColor.rgb * lightColor;
 
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0).xyz;
+    vec3 diffuse = light.diffuse * diff * texColor.rgb * lightColor;
 
-    vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * spec * material.specular;
+    vec3 specular = light.specular * spec * material.specular * lightColor;
 
-    vec3 res = ambient + diffuse + specular;
-    float brightness = dot(res, vec3(0.2126, 0.7152, 0.0722));
+    vec3 result = ambient + diffuse + specular;
+
+    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
+
     if (brightness > 1.0)
-        BrightColor = vec4(res, 1.0);
+        BrightColor = vec4(result, 1.0);
     else
         BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-    FragColor = vec4(res, 1.0);
+    FragColor = vec4(result, 1.0);
 }

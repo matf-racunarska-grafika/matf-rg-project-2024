@@ -1,5 +1,7 @@
 #include <imgui.h>
 #include <engine/core/Engine.hpp>
+#include <engine/graphics/BloomController.hpp>
+
 #include <GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <MainController.hpp>
@@ -21,6 +23,7 @@ namespace app {
     void GUIController::draw() {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera   = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        auto bloomController = engine::core::Controller::get<engine::graphics::BloomController>();
         graphics->begin_gui();
 
         ImGui::Begin("Testiranje podesavanja");
@@ -33,11 +36,13 @@ namespace app {
         ImGui::DragFloat("Z:", &test_z, 1, 100, 100);
         ImGui::End();
 
-        ImGui::Begin("Wind speed");
-        ImGui::DragFloat("Wind speed:", &wind_speed, 0.01, 0, 10);
+        ImGui::Begin("Bloom");
+        ImGui::DragFloat("Bloom Intensity", &bloomController->bloomStrength, 0.1f, 0.0f, 30.0f);
+        ImGui::DragFloat("Exposure", &bloomController->exposure, 0.1f, 0.1f, 10.0f);
+        ImGui::DragInt("Bloom passes", &bloomController->bloom_passes, 1, 0, 10);
+
         ImGui::End();
 
-        // Draw camera info
         ImGui::Begin("Camera info");
         const auto &c = *camera;
         ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);

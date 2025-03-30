@@ -109,7 +109,7 @@ namespace app {
         auto *oak_tree    = resources->model("oak_tree");
         auto *tree_gate   = resources->model("tree_gate");
         auto *pine_tree   = resources->model("pine_tree");
-        auto *tree_shader = resources->shader("tree_shader2");
+        auto *tree_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         tree_shader->use();
@@ -117,7 +117,8 @@ namespace app {
         tree_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.1f));
         tree_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.3f));
         tree_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f) : glm::vec3(0.5f));
-        tree_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
+        tree_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
+        tree_shader->set_float("material.shininess", is_day ? 1024.0f : 2048.0f);
         tree_shader->set_vec3("viewPos", camera->Position);
         tree_shader->set_mat4("projection", graphics->projection_matrix());
         tree_shader->set_mat4("view", camera->view_matrix());
@@ -208,22 +209,25 @@ namespace app {
     }
 
     void MainController::draw_campfire() {
-        engine::resources::Model *campfire         = resources->model("campfire");
+        engine::resources::Model *campfire = resources->model("campfire");
         engine::resources::Shader *campfire_shader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-        glm::vec3 ambient  = is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
-        glm::vec3 diffuse  = is_day ? glm::vec3(0.5f) : glm::vec3(0.3f);
-        glm::vec3 specular(0.1f);
-        float shininess = is_day ? 2048.0f : 4096.0f;
+
+        glm::vec3 ambient = is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
+        glm::vec3 diffuse = is_day ? glm::vec3(0.5f) : glm::vec3(5.0f);
+        glm::vec3 specular(0.0f);
+
+        float shininess = is_day ? 64.0f : 32.0f;
 
         campfire_shader->use();
         campfire_shader->set_vec3("light.position", lightPos);
         campfire_shader->set_vec3("light.ambient", ambient);
         campfire_shader->set_vec3("light.diffuse", diffuse);
         campfire_shader->set_vec3("light.specular", specular);
+        campfire_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
         campfire_shader->set_vec3("viewPos", camera->Position);
-        campfire_shader->set_vec3("material.specular", glm::vec3(0.5f));
+        campfire_shader->set_vec3("material.specular", glm::vec3(1.0f));
         campfire_shader->set_float("material.shininess", shininess);
         campfire_shader->set_mat4("projection", graphics->projection_matrix());
         campfire_shader->set_mat4("view", camera->view_matrix());
@@ -432,7 +436,7 @@ namespace app {
 
     void MainController::draw_white_flowers() {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
-        const engine::resources::Shader *flower_shader = resources->shader("basic");
+        const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         unsigned int rowCount = 2;
         unsigned int colCount = 10;
@@ -482,19 +486,12 @@ namespace app {
 
         flower_shader->set_vec3("light.position", lightPos);
 
-        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.4f) : glm::vec3(0.3f));
         flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
         flower_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
         flower_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
-        flower_shader->set_float("brightnessVariation", is_day ? 0.12f : 0.08f);
-        flower_shader->set_float("petalTranslucency", is_day ? 0.2f : 0.1f);
-        flower_shader->set_float("saturationBoost", is_day ? 0.15f : 0.25f);
-        flower_shader->set_float("windStrength", is_day ? wind_speed : wind_speed * 1.5);
-
-        flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
-        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
-        flower_shader->set_float("windSpeed", 0.8);
+        flower_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
 
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
@@ -513,7 +510,7 @@ namespace app {
 
     void MainController::draw_path() {
         auto path        = resources->model("path");
-        auto stoneShader = resources->shader("campfire_shader");
+        auto stoneShader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -547,7 +544,7 @@ namespace app {
 
     void MainController::draw_mushrooms() {
         auto mushroom     = resources->model("shrooms");
-        auto shroomShader = resources->shader("campfire_shader");
+        auto shroomShader = resources->shader("basic");
 
         glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
@@ -555,17 +552,10 @@ namespace app {
         shroomShader->set_vec3("light.position", lightPos);
         shroomShader->set_vec3("viewPos", camera->Position);
 
-        if (is_day) {
-            shroomShader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            shroomShader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            shroomShader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            shroomShader->set_float("material.shininess", 32.0f);
-        } else {
-            shroomShader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            shroomShader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            shroomShader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            shroomShader->set_float("material.shininess", 128.0f);
-        }
+        shroomShader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f, 0.2f, 0.2f) : glm::vec3(0.1f, 0.1f, 0.1f));
+        shroomShader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f, 0.5f, 0.5f) : glm::vec3(0.3f, 0.3f, 0.3f));
+        shroomShader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
+        shroomShader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
         shroomShader->set_float("wetness", 0.6f);
         shroomShader->set_float("capTranslucency", 0.3f);
@@ -593,7 +583,7 @@ namespace app {
 
        void MainController::draw_red_flowers() {
         engine::resources::Model *roses          = resources->model("roses");
-        engine::resources::Shader *flower_shader = resources->shader("basic");
+        engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         unsigned int amount                 = 21;
         auto *modelMatrices                 = new glm::mat4[amount];
@@ -638,14 +628,7 @@ namespace app {
         flower_shader->set_vec3("light.specular", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.5f, 0.5f, 0.5f));
         flower_shader->set_float("material.shininess", is_day ? 32.0f : 128.0f);
 
-        flower_shader->set_float("brightnessVariation", is_day ? 0.12f : 0.08f);
-        flower_shader->set_float("petalTranslucency", is_day ? 0.2f : 0.1f);
-        flower_shader->set_float("saturationBoost", is_day ? 0.15f : 0.25f);
-        flower_shader->set_float("windStrength", is_day ? wind_speed : wind_speed * 1.5);
-
-        flower_shader->set_float("time", static_cast<float>(glfwGetTime()));
-        flower_shader->set_vec3("windDirection", glm::vec3(1.0f, 0.0f, 0.3f));
-        flower_shader->set_float("windSpeed", 0.8);
+        flower_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
 
         flower_shader->set_vec3("viewPos", camera->Position);
         flower_shader->set_mat4("projection", graphics->projection_matrix());
@@ -673,7 +656,7 @@ namespace app {
         terrain_shader->set_vec3("viewPos", camera->Position);
         terrain_shader->set_vec3("lightPos", is_day ? glm::vec3(100.0f, 100.0f, 100.0f) : glm::vec3(12, 25, 6));
         terrain_shader->set_vec3("lightColor", is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1, 0.7, 0.1));
-        terrain_shader->set_float("shininess", 2048.0f);
+        terrain_shader->set_float("shininess", 0.0f);
         terrain_shader->set_float("ambientStrength", 0.1f);
         terrain_shader->set_float("specularStrength", 0.0f);
 

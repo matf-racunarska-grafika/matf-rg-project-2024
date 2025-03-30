@@ -22,13 +22,14 @@ uniform sampler2D scene;
 uniform sampler2D bloomBlur;
 uniform bool bloom;
 uniform float exposure;
+uniform float bloomStrength;
 
 void main() {
-    const float gamma = 2.2;
+    const float gamma = 1.3;
     vec3 hdrColor = texture(scene, TexCoords).rgb;
     vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
     if (bloom) {
-        hdrColor += bloomColor;
+        hdrColor += bloomColor * bloomStrength;
     }
 
     vec3 result = vec3(1.0) - exp(-hdrColor * exposure);

@@ -82,7 +82,6 @@ namespace engine::graphics {
         engine::resources::Shader *shader = resources->shader("basic");
         engine::resources::Shader *blur_shader = resources->shader("blur");
         engine::resources::Shader *bloom_final = resources->shader("bloom_final");
-        engine::resources::Shader *light       = resources->shader("fire_shader");
 
         shader->use();
         shader->set_int("texture_diffuse1", 0);
@@ -95,7 +94,6 @@ namespace engine::graphics {
 
     void BloomController::render_bloom() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
         engine::resources::Shader *blur_shader = resources->shader("blur");
         engine::resources::Shader *bloom_final = resources->shader("bloom_final");
@@ -103,7 +101,7 @@ namespace engine::graphics {
         bool horizontal      = true;
         bool first_iteration = true;
         blur_shader->use();
-        unsigned int amount = 10;
+        unsigned int amount = bloom_passes;
         for (unsigned int i = 0; i < amount; ++i) {
             CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
             blur_shader->set_int("horizontal", horizontal);
@@ -126,8 +124,9 @@ namespace engine::graphics {
         CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
         CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
 
-        bloom_final->set_int("bloom", 1);
-        bloom_final->set_float("exposure", 1.0f);
+        bloom_final->set_bool("bloom", bloom);
+        bloom_final->set_float("exposure", exposure);
+        bloom_final->set_float("bloomStrength", bloomStrength);
         this->renderQuad();
     }
     void BloomController::prepare_hdr() {
