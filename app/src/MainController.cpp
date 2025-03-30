@@ -821,7 +821,7 @@ namespace app {
         fire_shader->set_float("time", static_cast<float>(currentTime));
         fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));
         fire_shader->set_vec3("glowColor", glm::vec3(1.0f, 0.3f, 0.0f));
-        fire_shader->set_float("intensity", 1.5f);
+        fire_shader->set_float("intensity", 50.0f);
         fire_shader->set_float("flickerSpeed", 5.0f);
         fire_shader->set_float("distortionAmount", 0.1f);
 
