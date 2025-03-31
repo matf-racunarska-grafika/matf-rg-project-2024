@@ -37,7 +37,7 @@ namespace app {
         ImGui::End();
 
         ImGui::Begin("Bloom");
-        ImGui::DragFloat("Bloom Intensity", &bloomController->bloomStrength, 0.1f, 0.0f, 30.0f);
+        ImGui::DragFloat("Bloom Intensity", &bloomController->bloom_strength, 0.1f, 0.0f, 30.0f);
         ImGui::DragFloat("Exposure", &bloomController->exposure, 0.1f, 0.1f, 10.0f);
         ImGui::DragInt("Bloom passes", &bloomController->bloom_passes, 1, 0, 10);
 

@@ -30,16 +30,16 @@ namespace app {
     GUIController gui;
     engine::graphics::Camera *camera;
 
-    class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
+    class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
     public:
         void on_mouse_move(engine::platform::MousePosition position) override;
     };
 
     void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
-        auto gui = engine::core::Controller::get<GUIController>();
+        const auto gui = engine::core::Controller::get<GUIController>();
         if (gui->is_enabled())
             return;
-        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        const auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         camera->rotate_camera(position.dx, position.dy);
     }
 
@@ -52,7 +52,7 @@ namespace app {
         camera        = graphics->camera();
         resources     = get<engine::resources::ResourcesController>();
         gui           = GUIController();
-        auto platform = get<engine::platform::PlatformController>();
+        const auto platform = get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         mouse_enabled = false;
         platform->set_enable_cursor(mouse_enabled);
@@ -64,8 +64,7 @@ namespace app {
     }
 
     bool MainController::loop() {
-        auto platform = get<engine::platform::PlatformController>();
-        if (platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) {
+        if (const auto platform = get<engine::platform::PlatformController>(); platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) {
             return false;
         }
         return true;
@@ -111,7 +110,7 @@ namespace app {
 
         set_common_shader_variables(tree_shader, camera, graphics);
 
-        auto draw_yellow_tree = [&](const float x, const float y, const float z, float scale) {
+        auto draw_yellow_tree = [&](const float x, const float y, const float z, const float scale) {
             auto model = glm::mat4(1.0f);
             model      = translate(model, glm::vec3(x, y, z));
             model      = glm::scale(model, glm::vec3(scale));
@@ -119,7 +118,7 @@ namespace app {
             yellow_tree->draw(tree_shader);
         };
 
-        auto draw_green_tree = [&](const float x, const float y, const float z, float scale) {
+        auto draw_green_tree = [&](const float x, const float y, const float z, const float scale) {
             auto model = glm::mat4(1.0f);
             model      = rotate(model, glm::radians(-90.0f), glm::vec3(1.0, 0, 0));
             model      = translate(model, glm::vec3(x, y, z));
@@ -128,7 +127,7 @@ namespace app {
             green_tree->draw(tree_shader);
         };
 
-        auto draw_tall_tree = [&](const float x, const float y, const float z, float scale) {
+        auto draw_tall_tree = [&](const float x, const float y, const float z, const float scale) {
             auto model = glm::mat4(1.0f);
             model      = translate(model, glm::vec3(x, y, z));
             model      = glm::scale(model, glm::vec3(scale));
@@ -136,7 +135,7 @@ namespace app {
             tall_tree->draw(tree_shader);
         };
 
-        auto draw_pine_tree = [&](float x, float y, float z) {
+        auto draw_pine_tree = [&](const float x, const float y, const float z) {
             auto model = glm::mat4(1.0f);
             model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
             model      = translate(model, glm::vec3(x, y, z));
@@ -250,7 +249,7 @@ namespace app {
     void MainController::draw_tents() const {
         engine::resources::Model *viking_tent   = resources->model("viking_tent");
         engine::resources::Model *stylized_tent = resources->model("stylized_tent");
-        engine::resources::Shader *tent_shader  = resources->shader("basic");
+        const engine::resources::Shader *tent_shader  = resources->shader("basic");
 
         set_common_shader_variables(tent_shader, camera, graphics);
         tent_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(2.0f));
@@ -334,13 +333,13 @@ namespace app {
         engine::resources::Model *white_flowers  = resources->model("flowers2");
         const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        unsigned int rowCount = 2;
-        unsigned int colCount = 10;
-        unsigned int amount   = rowCount * colCount + 13;
+        constexpr unsigned int rowCount = 2;
+        constexpr unsigned int colCount = 10;
+        constexpr unsigned int amount   = rowCount * colCount + 13;
         auto *modelMatrices   = new glm::mat4[amount];
 
         for (unsigned int row = 0; row < rowCount; row++) {
-            float x = (row == 0) ? 40.0f : 44.0f;
+            const float x = (row == 0) ? 40.0f : 44.0f;
 
             for (unsigned int col = 0; col < colCount; col++) {
                 const unsigned int index = row * colCount + col;
@@ -351,7 +350,7 @@ namespace app {
                 modelMatrices[index]     = model;
             }
         }
-        const std::vector<glm::vec3> translations = {
+        const std::vector translations = {
                 glm::vec3(-3, -21, -17.2),
                 glm::vec3(-7, -17, -17.2),
                 glm::vec3(-14, -11, -17.2),
@@ -386,8 +385,8 @@ namespace app {
     }
 
     void MainController::draw_path() const {
-        auto path         = resources->model("path");
-        auto stone_shader = resources->shader("basic");
+        const auto path         = resources->model("path");
+        const auto stone_shader = resources->shader("basic");
 
         set_common_shader_variables(stone_shader, camera, graphics);
 
@@ -603,7 +602,7 @@ namespace app {
         fire_shader->set_mat4("model", model);
 
         static double startTime = glfwGetTime();
-        double currentTime      = glfwGetTime() - startTime;
+        const double currentTime      = glfwGetTime() - startTime;
 
         fire_shader->set_float("time", static_cast<float>(currentTime));
         fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));

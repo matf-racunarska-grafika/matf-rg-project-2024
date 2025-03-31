@@ -6,41 +6,51 @@
 #include <spdlog/spdlog.h>
 #include <engine/graphics/BloomController.hpp>
 
+#include <iostream>
+
 namespace engine::graphics {
 
-    void BloomController::renderQuad() {
+    void BloomController::render_quad() {
         {
 
             if (m_quadVAO == 0) {
                 float quadVertices[] = {
-                    -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                    1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f,  -1.0f, 0.0f, 1.0f, 0.0f,
-            };
-                CHECKED_GL_CALL(glGenVertexArrays,1, &m_quadVAO);
-                CHECKED_GL_CALL(glGenBuffers,1,&m_quadVBO);
-                CHECKED_GL_CALL(glBindVertexArray,m_quadVAO);
-                CHECKED_GL_CALL(glBindBuffer,GL_ARRAY_BUFFER, m_quadVBO);
-                CHECKED_GL_CALL(glBufferData,GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-                CHECKED_GL_CALL(glEnableVertexAttribArray,0);
-                CHECKED_GL_CALL(glVertexAttribPointer,0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
-                CHECKED_GL_CALL(glEnableVertexAttribArray,1);
-                CHECKED_GL_CALL(glVertexAttribPointer,1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+                        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+                        1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                };
+                CHECKED_GL_CALL(glGenVertexArrays, 1, &m_quadVAO);
+                CHECKED_GL_CALL(glGenBuffers, 1, &m_quadVBO);
+                CHECKED_GL_CALL(glBindVertexArray, m_quadVAO);
+                CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_quadVBO);
+                CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+                CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
+                CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+                CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
+                CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                                (void *) (3 * sizeof(float)));
             }
-            CHECKED_GL_CALL(glBindVertexArray,m_quadVAO);
-            CHECKED_GL_CALL(glDrawArrays,GL_TRIANGLE_STRIP, 0, 4);
-            CHECKED_GL_CALL(glBindVertexArray,0);
+            CHECKED_GL_CALL(glBindVertexArray, m_quadVAO);
+            CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLE_STRIP, 0, 4);
+            CHECKED_GL_CALL(glBindVertexArray, 0);
 
         }
     }
 
-
     void BloomController::hdr_bloom_setup() {
-        CHECKED_GL_CALL(glGenFramebuffers, 1, &hdrFBO);
-        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdrFBO);
-        CHECKED_GL_CALL(glGenTextures, 2, colorBuffers);
+        CHECKED_GL_CALL(glGenFramebuffers, 1, &hdr_FBO);
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdr_FBO);
+        CHECKED_GL_CALL(glGenTextures, 2, color_buffers);
 
+        if (SCR_WIDTH == 0)
+            SCR_WIDTH = 1400;
+        else
+            SCR_WIDTH = get<platform::PlatformController>()->window()->width();
+        if (SCR_HEIGHT == 0)
+            SCR_HEIGHT = 1000;
+        else
+            SCR_HEIGHT = get<platform::PlatformController>()->window()->height();
         for (unsigned int i = 0; i < 2; ++i) {
-            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[i]);
+            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, color_buffers[i]);
             CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT,
                             nullptr);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -48,25 +58,25 @@ namespace engine::graphics {
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             CHECKED_GL_CALL(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,
-                            colorBuffers[i], 0);
+                            color_buffers[i], 0);
         }
 
-        unsigned int rboDepth;
-        CHECKED_GL_CALL(glGenRenderbuffers, 1, &rboDepth);
-        CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rboDepth);
+        unsigned int rbo_depth;
+        CHECKED_GL_CALL(glGenRenderbuffers, 1, &rbo_depth);
+        CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rbo_depth);
         CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCR_WIDTH, SCR_HEIGHT);
-        CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+        CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
 
         unsigned int attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
         CHECKED_GL_CALL(glDrawBuffers, 2, attachments);
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 
-        CHECKED_GL_CALL(glGenFramebuffers, 2, pingpongFBO);
-        CHECKED_GL_CALL(glGenTextures, 2, pingpongColorbuffers);
+        CHECKED_GL_CALL(glGenFramebuffers, 2, pingpong_FBO);
+        CHECKED_GL_CALL(glGenTextures, 2, pingpong_colorbuffers);
 
         for (unsigned int i = 0; i < 2; ++i) {
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[i]);
-            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongColorbuffers[i]);
+            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpong_FBO[i]);
+            CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpong_colorbuffers[i]);
             CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT,
                             nullptr);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -74,14 +84,14 @@ namespace engine::graphics {
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             CHECKED_GL_CALL(glFramebufferTexture2D, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                            pingpongColorbuffers[i], 0);
+                            pingpong_colorbuffers[i], 0);
         }
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, 0);
 
-        auto resources                    = engine::core::Controller::get<engine::resources::ResourcesController>();
-        engine::resources::Shader *shader = resources->shader("basic");
-        engine::resources::Shader *blur_shader = resources->shader("blur");
-        engine::resources::Shader *bloom_final = resources->shader("bloom_final");
+        const auto resources                 = get<resources::ResourcesController>();
+        const resources::Shader *shader      = resources->shader("basic");
+        const resources::Shader *blur_shader = resources->shader("blur");
+        const resources::Shader *bloom_final = resources->shader("bloom_final");
 
         shader->use();
         shader->set_int("texture_diffuse1", 0);
@@ -93,22 +103,22 @@ namespace engine::graphics {
     }
 
     void BloomController::render_bloom() {
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        const auto resources = get<resources::ResourcesController>();
 
-        engine::resources::Shader *blur_shader = resources->shader("blur");
-        engine::resources::Shader *bloom_final = resources->shader("bloom_final");
+        const resources::Shader *blur_shader = resources->shader("blur");
+        const resources::Shader *bloom_final = resources->shader("bloom_final");
 
         bool horizontal      = true;
         bool first_iteration = true;
         blur_shader->use();
-        unsigned int amount = bloom_passes;
+        const unsigned int amount = bloom_passes;
         for (unsigned int i = 0; i < amount; ++i) {
-            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpongFBO[horizontal]);
+            CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, pingpong_FBO[horizontal]);
             blur_shader->set_int("horizontal", horizontal);
             CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
             CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D,
-                            first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);
-            this->renderQuad();
+                            first_iteration ? color_buffers[1] : pingpong_colorbuffers[!horizontal]);
+            this->render_quad();
             horizontal = !horizontal;
             if (first_iteration) {
                 first_iteration = false;
@@ -120,19 +130,29 @@ namespace engine::graphics {
 
         bloom_final->use();
         CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, colorBuffers[0]);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, color_buffers[0]);
         CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE1);
-        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
+        CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, pingpong_colorbuffers[!horizontal]);
 
         bloom_final->set_bool("bloom", bloom);
         bloom_final->set_float("exposure", exposure);
-        bloom_final->set_float("bloomStrength", bloomStrength);
-        this->renderQuad();
+        bloom_final->set_float("bloomStrength", bloom_strength);
+        this->render_quad();
     }
+
     void BloomController::prepare_hdr() {
-        CHECKED_GL_CALL(glBindFramebuffer,GL_FRAMEBUFFER, hdrFBO);
-        CHECKED_GL_CALL( glViewport,0, 0, SCR_WIDTH, SCR_HEIGHT);
-        CHECKED_GL_CALL(glClear,GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if (SCR_WIDTH == 0)
+            SCR_WIDTH = 1400;
+        else
+            SCR_WIDTH = get<platform::PlatformController>()->window()->width();
+        if (SCR_HEIGHT == 0)
+            SCR_HEIGHT = 1000;
+        else
+            SCR_HEIGHT = get<platform::PlatformController>()->window()->height();
+
+        CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, hdr_FBO);
+        CHECKED_GL_CALL(glViewport, 0, 0, SCR_WIDTH, SCR_HEIGHT);
+        CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     void BloomController::finalize_bloom() {
@@ -140,4 +160,4 @@ namespace engine::graphics {
         render_bloom();
     }
 
-} // namespace engine::graphics
+}
