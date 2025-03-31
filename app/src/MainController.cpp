@@ -35,9 +35,8 @@ namespace app {
         void on_mouse_move(engine::platform::MousePosition position) override;
     };
 
-    void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
-        const auto gui = engine::core::Controller::get<GUIController>();
-        if (gui->is_enabled())
+    void MainPlatformEventObserver::on_mouse_move(const engine::platform::MousePosition position) {
+        if (const auto gui = engine::core::Controller::get<GUIController>(); gui->is_enabled())
             return;
         const auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         camera->rotate_camera(position.dx, position.dy);
@@ -493,7 +492,7 @@ namespace app {
         const auto currentTime = static_cast<float>(glfwGetTime());
         water_shader->set_float("time", currentTime);
 
-        glm::vec3 waterColor = is_day
+        const glm::vec3 waterColor = is_day
                                    ? glm::vec3(0.0f, 0.4f, 0.6f)
                                    : glm::vec3(0.0f, 0.1f, 0.3f);
         water_shader->set_vec3("waterColor", waterColor);
