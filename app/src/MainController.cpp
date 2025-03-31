@@ -47,10 +47,10 @@ namespace app {
         graphics         = get<engine::graphics::GraphicsController>();
         bloom_controller = get<engine::graphics::BloomController>();
         bloom_controller->hdr_bloom_setup();
-        resources     = get<engine::resources::ResourcesController>();
-        camera        = graphics->camera();
-        resources     = get<engine::resources::ResourcesController>();
-        gui           = GUIController();
+        resources           = get<engine::resources::ResourcesController>();
+        camera              = graphics->camera();
+        resources           = get<engine::resources::ResourcesController>();
+        gui                 = GUIController();
         const auto platform = get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         mouse_enabled = false;
@@ -63,7 +63,8 @@ namespace app {
     }
 
     bool MainController::loop() {
-        if (const auto platform = get<engine::platform::PlatformController>(); platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) {
+        if (const auto platform = get<engine::platform::PlatformController>(); platform->key(
+                engine::platform::KeyId::KEY_ESCAPE).is_down()) {
             return false;
         }
         return true;
@@ -99,12 +100,12 @@ namespace app {
     }
 
     void MainController::draw_forest() const {
-        auto *yellow_tree = resources->model("yellow_tree");
-        auto *green_tree  = resources->model("green_tree");
-        auto *tall_tree   = resources->model("beech_tree");
-        auto *oak_tree    = resources->model("oak_tree");
-        auto *tree_gate   = resources->model("tree_gate");
-        auto *pine_tree   = resources->model("pine_tree");
+        auto *yellow_tree       = resources->model("yellow_tree");
+        auto *green_tree        = resources->model("green_tree");
+        auto *tall_tree         = resources->model("beech_tree");
+        auto *oak_tree          = resources->model("oak_tree");
+        auto *tree_gate         = resources->model("tree_gate");
+        auto *pine_tree         = resources->model("pine_tree");
         const auto *tree_shader = resources->shader("basic");
 
         set_common_shader_variables(tree_shader, camera, graphics);
@@ -195,7 +196,7 @@ namespace app {
     }
 
     void MainController::draw_campfire() const {
-        engine::resources::Model *campfire         = resources->model("campfire");
+        engine::resources::Model *campfire               = resources->model("campfire");
         const engine::resources::Shader *campfire_shader = resources->shader("basic");
 
         set_common_shader_variables(campfire_shader, camera, graphics);
@@ -207,7 +208,7 @@ namespace app {
     }
 
     void MainController::draw_logs() const {
-        engine::resources::Model *log_seat         = resources->model("log_seat");
+        engine::resources::Model *log_seat               = resources->model("log_seat");
         const engine::resources::Shader *log_seat_shader = resources->shader("basic");
 
         set_common_shader_variables(log_seat_shader, camera, graphics);
@@ -246,9 +247,9 @@ namespace app {
     }
 
     void MainController::draw_tents() const {
-        engine::resources::Model *viking_tent   = resources->model("viking_tent");
-        engine::resources::Model *stylized_tent = resources->model("stylized_tent");
-        const engine::resources::Shader *tent_shader  = resources->shader("basic");
+        engine::resources::Model *viking_tent        = resources->model("viking_tent");
+        engine::resources::Model *stylized_tent      = resources->model("stylized_tent");
+        const engine::resources::Shader *tent_shader = resources->shader("basic");
 
         set_common_shader_variables(tent_shader, camera, graphics);
         tent_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(2.0f));
@@ -269,7 +270,7 @@ namespace app {
     }
 
     void MainController::draw_old_tree() const {
-        engine::resources::Model *old_tree         = resources->model("old_tree");
+        engine::resources::Model *old_tree               = resources->model("old_tree");
         const engine::resources::Shader *old_tree_shader = resources->shader("basic");
 
         set_common_shader_variables(old_tree_shader, camera, graphics);
@@ -297,7 +298,7 @@ namespace app {
             model->drawBlended(bush_shader);
         };
 
-        auto drawBush1 = [&](const glm::vec3 &translation, float scale) {
+        auto drawBush1 = [&](const glm::vec3 &translation, const float scale) {
             auto model = glm::mat4(1.0f);
             model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
             model      = translate(model, translation);
@@ -305,7 +306,7 @@ namespace app {
             drawModel(bush1, model);
         };
 
-        auto drawSimple = [&](engine::resources::Model *model, const glm::vec3 &translation, float scale) {
+        auto drawSimple = [&](engine::resources::Model *model, const glm::vec3 &translation, const float scale) {
             auto m = glm::mat4(1.0f);
             m      = translate(m, translation);
             m      = glm::scale(m, glm::vec3(scale));
@@ -329,13 +330,13 @@ namespace app {
     }
 
     void MainController::draw_white_flowers() const {
-        engine::resources::Model *white_flowers  = resources->model("flowers2");
+        engine::resources::Model *white_flowers        = resources->model("flowers2");
         const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
         constexpr unsigned int rowCount = 2;
         constexpr unsigned int colCount = 10;
         constexpr unsigned int amount   = rowCount * colCount + 13;
-        auto *modelMatrices   = new glm::mat4[amount];
+        auto *modelMatrices             = new glm::mat4[amount];
 
         for (unsigned int row = 0; row < rowCount; row++) {
             const float x = (row == 0) ? 40.0f : 44.0f;
@@ -374,6 +375,8 @@ namespace app {
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
+        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
+        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
         white_flowers->drawInstanced(flower_shader, amount, modelMatrices);
         delete[] modelMatrices;
     }
@@ -389,7 +392,7 @@ namespace app {
 
         set_common_shader_variables(stone_shader, camera, graphics);
 
-        auto draw_path_segment = [&](const glm::vec3 &translation, float yRotation, float scale) {
+        auto draw_path_segment = [&](const glm::vec3 &translation, const float yRotation, const float scale) {
             auto model = glm::mat4(1.0f);
             model      = rotate(model, glm::radians(90.0f), glm::vec3(1, 0, 0));
             model      = rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
@@ -412,7 +415,7 @@ namespace app {
 
         set_common_shader_variables(shroom_shader, camera, graphics);
 
-        auto drawMushroom = [&](const glm::vec3 &translation, float scale, float yRotation = 0.0f) {
+        auto drawMushroom = [&](const glm::vec3 &translation, const float scale, const float yRotation = 0.0f) {
             auto model = glm::mat4(1.0f);
             model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
             model      = rotate(model, glm::radians(yRotation), glm::vec3(0, 1, 0));
@@ -430,11 +433,11 @@ namespace app {
     }
 
     void MainController::draw_red_flowers() const {
-        engine::resources::Model *roses          = resources->model("roses");
+        engine::resources::Model *roses                = resources->model("roses");
         const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        constexpr unsigned int amount      = 21;
-        auto *modelMatrices      = new glm::mat4[amount];
+        constexpr unsigned int amount  = 21;
+        auto *modelMatrices            = new glm::mat4[amount];
         const std::vector translations = {
                 glm::vec3(-10, 0, 17),
                 glm::vec3(-4, 9, 17),
@@ -468,12 +471,14 @@ namespace app {
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
+        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
+        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
         roses->drawInstanced(flower_shader, amount, modelMatrices);
         delete[] modelMatrices;
     }
 
     void MainController::draw_terrain() const {
-        engine::resources::Model *terrain         = resources->model("terrain");
+        engine::resources::Model *terrain               = resources->model("terrain");
         const engine::resources::Shader *terrain_shader = resources->shader("basic");
         set_common_shader_variables(terrain_shader, camera, graphics);
         auto model = glm::mat4(1.0f);
@@ -493,8 +498,8 @@ namespace app {
         water_shader->set_float("time", currentTime);
 
         const glm::vec3 waterColor = is_day
-                                   ? glm::vec3(0.0f, 0.4f, 0.6f)
-                                   : glm::vec3(0.0f, 0.1f, 0.3f);
+                                         ? glm::vec3(0.0f, 0.4f, 0.6f)
+                                         : glm::vec3(0.0f, 0.1f, 0.3f);
         water_shader->set_vec3("waterColor", waterColor);
         water_shader->set_vec3("lightPos", lightPos);
         water_shader->set_vec3("viewPos", camera->Position);
@@ -511,7 +516,7 @@ namespace app {
     }
 
     void MainController::test() const {
-        engine::resources::Model *test_model   = resources->model("fire");
+        engine::resources::Model *test_model         = resources->model("fire");
         const engine::resources::Shader *test_shader = resources->shader("fire_shader");
 
         const glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -559,8 +564,8 @@ namespace app {
     }
 
     void MainController::draw_stones() const {
-        engine::resources::Model *fantasy_rock  = resources->model("frock");
-        engine::resources::Model *grave         = resources->model("grave");
+        engine::resources::Model *fantasy_rock        = resources->model("frock");
+        engine::resources::Model *grave               = resources->model("grave");
         const engine::resources::Shader *stone_shader = resources->shader("basic");
 
         set_common_shader_variables(stone_shader, camera, graphics);
@@ -587,7 +592,7 @@ namespace app {
     }
 
     void MainController::draw_fire() {
-        engine::resources::Model *fire         = resources->model("fire");
+        engine::resources::Model *fire               = resources->model("fire");
         const engine::resources::Shader *fire_shader = resources->shader("fire_shader");
         fire_shader->use();
         fire_shader->set_vec3("viewPos", camera->Position);
@@ -600,8 +605,8 @@ namespace app {
         model      = scale(model, glm::vec3(3.1));
         fire_shader->set_mat4("model", model);
 
-        static double startTime = glfwGetTime();
-        const double currentTime      = glfwGetTime() - startTime;
+        static double startTime  = glfwGetTime();
+        const double currentTime = glfwGetTime() - startTime;
 
         fire_shader->set_float("time", static_cast<float>(currentTime));
         fire_shader->set_vec3("fireColor", glm::vec3(1.0f, 0.6f, 0.2f));

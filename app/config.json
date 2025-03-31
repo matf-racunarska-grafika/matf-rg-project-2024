@@ -43,18 +43,6 @@
       "tree_gate" : {
         "path" : "tree_gate/scene.gltf"
       },
-      "floating_rock" : {
-        "path" : "rock/scene.gltf"
-      },
-      "flowers1" : {
-        "path" : "flowers_lib/scene.gltf"
-      },
-      "orange_flower" : {
-        "path" : "flower/scene.gltf"
-      },
-      "plants" : {
-        "path" : "plants/scene.gltf"
-      },
       "flowers2" : {
         "path" : "flowers/scene.gltf"
       },
