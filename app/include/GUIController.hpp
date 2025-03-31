@@ -5,7 +5,7 @@
 namespace app {
     class GUIController final : public engine::core::Controller {
     public:
-        std::string_view name() const override {
+        [[nodiscard]] std::string_view name() const override {
             return "test::app::GUIController";
         }
 

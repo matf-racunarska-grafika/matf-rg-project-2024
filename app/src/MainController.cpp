@@ -555,11 +555,11 @@ namespace app {
     void MainController::draw_skybox() const {
         const auto shader = get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
+        std::cout << active_daytime_skybox << ", " << active_nighttime_skybox << std::endl;
         if (is_day)
-            skybox_cube = get<engine::resources::ResourcesController>()->skybox("skybox_day");
+            skybox_cube = get<engine::resources::ResourcesController>()->skybox(active_daytime_skybox);
         else
-            skybox_cube = get<engine::resources::ResourcesController>()->skybox(
-                    "skybox_night");
+            skybox_cube = get<engine::resources::ResourcesController>()->skybox(active_nighttime_skybox);
         get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
     }
 

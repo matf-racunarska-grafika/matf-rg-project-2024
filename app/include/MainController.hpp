@@ -3,6 +3,8 @@
 #include <spdlog/spdlog.h>
 #include <engine/graphics/GraphicsController.hpp>
 
+#include <iostream>
+
 namespace app {
 
     extern float test_x, test_y, test_z;
@@ -61,6 +63,16 @@ namespace app {
         void update_camera();
 
         bool is_day = true;
+        std::string active_daytime_skybox = "skybox_day";
+        std::string active_nighttime_skybox = "skybox_night";
+
+        void set_daytime_skybox(const std::string &new_skybox) {
+            active_daytime_skybox = new_skybox;
+        }
+
+        void set_nighttime_skybox(const std::string &new_skybox) {
+            active_nighttime_skybox = new_skybox;
+        }
 
         void set_common_shader_variables(const engine::resources::Shader *shader,
                                          const engine::graphics::Camera *camera,
@@ -86,6 +98,15 @@ namespace app {
     public:
         [[nodiscard]] std::string_view name() const override {
             return "app::MainController";
+        }
+
+        void set_skybox(const std::string &new_skybox) {
+            std::cout << new_skybox << std::endl;
+            if (is_day) {
+                active_daytime_skybox = new_skybox;
+            } else {
+                active_nighttime_skybox = new_skybox;
+            }
         }
     };
 }
