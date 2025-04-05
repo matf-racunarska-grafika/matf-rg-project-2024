@@ -10,8 +10,8 @@ namespace engine::graphics {
         unsigned int pingpong_colorbuffers[2];
         unsigned int hdr_FBO;
         unsigned int color_buffers[2];
-        unsigned int SCR_WIDTH  = get<platform::PlatformController>()->window()->width();
-        unsigned int SCR_HEIGHT = get<platform::PlatformController>()->window()->height();
+        unsigned int scr_width  = get<platform::PlatformController>()->window()->width();
+        unsigned int scr_height = get<platform::PlatformController>()->window()->height();
         int bloom_passes              = 10;
         float exposure                = 1.0f;
         bool bloom                    = true;

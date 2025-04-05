@@ -54,7 +54,7 @@ namespace app {
             default: skybox_name = "skybox_day"; break;
             }
             std::cout << skybox_name << std::endl;
-            main_controller->set_skybox(skybox_name);
+            main_controller->set_skybox(skybox_name, true);
         }
 
         const char* nighttime_skyboxes[] = { "Night Canyon", "Night Stars" };
@@ -67,7 +67,7 @@ namespace app {
             default: skybox_name = "skybox_night"; break;
             }
             std::cout << skybox_name << std::endl;
-            main_controller->set_skybox(skybox_name);
+            main_controller->set_skybox(skybox_name, false);
         }
         ImGui::End();
 

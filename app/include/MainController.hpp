@@ -3,8 +3,6 @@
 #include <spdlog/spdlog.h>
 #include <engine/graphics/GraphicsController.hpp>
 
-#include <iostream>
-
 namespace app {
 
     extern float test_x, test_y, test_z;
@@ -100,11 +98,10 @@ namespace app {
             return "app::MainController";
         }
 
-        void set_skybox(const std::string &new_skybox) {
-            std::cout << new_skybox << std::endl;
-            if (is_day) {
+        void set_skybox(const std::string &new_skybox, const bool is_daytime_skybox) {
+            if (is_day && is_daytime_skybox) {
                 active_daytime_skybox = new_skybox;
-            } else {
+            } else if (!is_day && !is_daytime_skybox) {
                 active_nighttime_skybox = new_skybox;
             }
         }
