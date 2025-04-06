@@ -8,7 +8,6 @@ namespace app {
     extern float test_x, test_y, test_z;
     extern float test_rotation_x, test_rotation_y, test_rotation_z;
     extern float test_scale;
-    extern float wind_speed;
 
     class MainController final : public engine::core::Controller {
 

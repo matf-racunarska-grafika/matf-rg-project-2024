@@ -94,7 +94,7 @@ namespace app {
         draw_stones();
         if (!is_day)
             draw_fire();
-        test();
+        // test();
         draw_skybox();
         bloom_controller->finalize_bloom();
     }
@@ -152,6 +152,13 @@ namespace app {
         draw_yellow_tree(45, 17, 12, 0.06);
         draw_yellow_tree(37, 17, 32, 0.06);
         draw_yellow_tree(11, 17, 32, 0.06);
+        draw_yellow_tree(-69.0f, 16.0f, 19.0f, 0.06);
+        draw_yellow_tree(-59.0f, 20.0f, 26.0f, 0.06);
+        draw_yellow_tree(-65.0f, 20.0f, 34.0f, 0.06);
+        draw_yellow_tree(-76.0f, 20.0f, 31.0f, 0.06);
+        draw_yellow_tree(-86.0f, 20.0f, 26.0f, 0.06);
+        draw_yellow_tree(-86.0f, 20.0f, 13.0f, 0.06);
+        draw_yellow_tree(-77.0f, 20.0f, 6.0f, 0.06);
 
         draw_green_tree(-10, 1, 17, 0.22f);
         draw_green_tree(-2, 6, 16, 0.29f);
@@ -161,6 +168,11 @@ namespace app {
         draw_green_tree(33, 10, 17, 0.22f);
         draw_green_tree(17, -24, 17, 0.22f);
         draw_green_tree(39, -24, 17, 0.22f);
+        draw_green_tree(-59.0f, -16.0f, 20.0f, 0.29f);
+        draw_green_tree(-74.0f, -24.0f, 20.0f, 0.29f);
+        draw_green_tree(-68.0f, -41.0f, 20.0f, 0.29f);
+        draw_green_tree(-67.0f, -9.0f, 20.0f, 0.29f);
+        draw_green_tree(-87.0f, -19.0f, 20.0f, 0.29f);
 
         draw_tall_tree(-6, 14, -15, 0.1f);
         draw_tall_tree(-19, 14, -8, 0.1f);
@@ -193,6 +205,16 @@ namespace app {
         draw_pine_tree(-11, 10, 17);
         draw_pine_tree(-11, -30, 17);
         draw_pine_tree(3, 28, 17);
+        draw_pine_tree(-63.0f, -10.0f, 20.0f);
+        draw_pine_tree(-63.0f, -5.0f, 20.0f);
+        draw_pine_tree(-72.0f, -4.0f, 20.0f);
+        draw_pine_tree(-72.0f, -13.0f, 20.0f);
+        draw_pine_tree(-78.0f, -11.0f, 20.0f);
+        draw_pine_tree(-78.0f, -21.0f, 20.0f);
+        draw_pine_tree(-77.0f, -24.0f, 20.0f);
+        draw_pine_tree(-82.0f, -31.0f, 20.0f);
+        draw_pine_tree(-69.0f, -30.0f, 20.0f);
+        draw_pine_tree(-72.0f, -37.0f, 20.0f);
     }
 
     void MainController::draw_campfire() const {
@@ -333,9 +355,44 @@ namespace app {
         engine::resources::Model *white_flowers        = resources->model("flowers2");
         const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
+        const std::vector translations = {
+                glm::vec3(-3, -21, -17.2),
+                glm::vec3(-7, -17, -17.2),
+                glm::vec3(-14, -11, -17.2),
+                glm::vec3(-22, -4, -17.2),
+                glm::vec3(-27, 5, -15),
+                glm::vec3(-15, 28, -17.2),
+                glm::vec3(-1, 34, -17.2),
+                glm::vec3(9, 36, -17.2),
+                glm::vec3(18, 36, -17.2),
+                glm::vec3(28, 36, -17.2),
+                glm::vec3(38, 29, -17.2),
+                glm::vec3(51, 9, -17.2),
+                glm::vec3(5, -16, -17.2),
+                glm::vec3(-62.0f, 7.0f, -20.0f),
+                glm::vec3(-66.0f, 7.0f, -20.0f),
+                glm::vec3(-70.0f, 7.0f, -20.0f),
+                glm::vec3(-74.0f, 7.0f, -20.0f),
+                glm::vec3(-77.0f, 9.0f, -20.0f),
+                glm::vec3(-82.0f, 13.0f, -20.0f),
+                glm::vec3(-83.0f, 18.0f, -20.0f),
+                glm::vec3(-79.0f, 27.0f, -20.0f),
+                glm::vec3(-74.0f, 27.0f, -20.0f),
+                glm::vec3(-67.0f, 14.0f, -20.0f),
+                glm::vec3(-73.0f, 16.0f, -20.0f),
+                glm::vec3(-73.0f, 19.0f, -20.0f),
+                glm::vec3(-69.0f, 23.0f, -20.0f),
+                glm::vec3(-65.0f, 28.0f, -20.0f),
+                glm::vec3(-59.0f, 29.0f, -20.0f),
+                glm::vec3(-66.0f, 36.0f, -20.0f),
+                glm::vec3(-72.0f, 33.0f, -20.0f),
+                glm::vec3(-76.0f, 33.0f, -20.0f),
+                glm::vec3(-72.0f, 40.0f, -20.0f)
+        };
+
         constexpr unsigned int rowCount = 2;
         constexpr unsigned int colCount = 10;
-        constexpr unsigned int amount   = rowCount * colCount + 13;
+        const unsigned int amount       = rowCount * colCount + translations.size();
         auto *modelMatrices             = new glm::mat4[amount];
 
         for (unsigned int row = 0; row < rowCount; row++) {
@@ -350,21 +407,6 @@ namespace app {
                 modelMatrices[index]     = model;
             }
         }
-        const std::vector translations = {
-                glm::vec3(-3, -21, -17.2),
-                glm::vec3(-7, -17, -17.2),
-                glm::vec3(-14, -11, -17.2),
-                glm::vec3(-22, -4, -17.2),
-                glm::vec3(-27, 5, -15),
-                glm::vec3(-15, 28, -17.2),
-                glm::vec3(-1, 34, -17.2),
-                glm::vec3(9, 36, -17.2),
-                glm::vec3(18, 36, -17.2),
-                glm::vec3(28, 36, -17.2),
-                glm::vec3(38, 29, -17.2),
-                glm::vec3(51, 9, -17.2),
-                glm::vec3(5, -16, -17.2)
-        };
 
         for (unsigned int i = rowCount * colCount; i < amount; i++) {
             auto model       = glm::mat4(1.0f);
@@ -436,8 +478,6 @@ namespace app {
         engine::resources::Model *roses                = resources->model("roses");
         const engine::resources::Shader *flower_shader = resources->shader("flower_shader");
 
-        constexpr unsigned int amount  = 21;
-        auto *modelMatrices            = new glm::mat4[amount];
         const std::vector translations = {
                 glm::vec3(-10, 0, 17),
                 glm::vec3(-4, 9, 17),
@@ -459,8 +499,21 @@ namespace app {
                 glm::vec3(10, -37, 17),
                 glm::vec3(4, -38, 17),
                 glm::vec3(4, -23, 17),
-                glm::vec3(7, -23, 17)
+                glm::vec3(7, -23, 17),
+                glm::vec3(-65.0f, -18.0f, 20.0f),
+                glm::vec3(-57.0f, -11.0f, 20.0f),
+                glm::vec3(-69.0f, -3.0f, 20.0f),
+                glm::vec3(-74.0f, -11.0f, 20.0f),
+                glm::vec3(-83.0f, -15.0f, 20.0f),
+                glm::vec3(-80.0f, -26.0f, 20.0f),
+                glm::vec3(-70.0f, -34.0f, 20.0f),
+                glm::vec3(-65.0f, -38.0f, 20.0f),
+                glm::vec3(-62.0f, -31.0f, 20.0f),
+                glm::vec3(-54.0f, -26.0f, 20.0f)
         };
+
+        const unsigned int amount = translations.size();
+        auto *modelMatrices       = new glm::mat4[amount];
 
         for (int i = 0; i < amount; i++) {
             auto model       = glm::mat4(1.0f);
@@ -516,8 +569,8 @@ namespace app {
     }
 
     void MainController::test() const {
-        engine::resources::Model *test_model         = resources->model("fire");
-        const engine::resources::Shader *test_shader = resources->shader("fire_shader");
+        engine::resources::Model *test_model         = resources->model("roses");
+        const engine::resources::Shader *test_shader = resources->shader("basic");
 
         const glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
