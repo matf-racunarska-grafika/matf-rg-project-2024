@@ -37,9 +37,9 @@ namespace app {
         ImGui::End();
 
         ImGui::Begin("Bloom");
-        ImGui::DragFloat("Bloom Intensity", &bloom_controller->bloom_strength, 0.1f, 0.0f, 30.0f);
-        ImGui::DragFloat("Exposure", &bloom_controller->exposure, 0.1f, 0.1f, 10.0f);
-        ImGui::DragInt("Bloom passes", &bloom_controller->bloom_passes, 1, 0, 10);
+        ImGui::DragFloat("Bloom Intensity", &bloom_controller->bloom_strength, 0.1f, 0.0f, 50.0f);
+        ImGui::DragFloat("Exposure", &bloom_controller->exposure, 0.1f, 0.1f, 20.0f);
+        ImGui::DragInt("Bloom passes", &bloom_controller->bloom_passes, 1, 0, 50);
         ImGui::End();
 
         ImGui::Begin("Skybox Selection");
