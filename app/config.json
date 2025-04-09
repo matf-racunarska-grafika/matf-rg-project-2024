@@ -40,9 +40,6 @@
       "oak_tree" : {
         "path" : "mighty_oak_trees/scene.gltf"
       },
-      "tree_gate" : {
-        "path" : "tree_gate/scene.gltf"
-      },
       "flowers2" : {
         "path" : "flowers/scene.gltf"
       },
@@ -60,9 +57,6 @@
       },
       "laurel_bush" : {
         "path" : "laurel_bush/scene.gltf"
-      },
-      "frock" : {
-        "path" : "frock/scene.gltf"
       },
       "grave" : {
         "path" : "grave/scene.gltf"

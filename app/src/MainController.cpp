@@ -94,7 +94,7 @@ namespace app {
         draw_stones();
         if (!is_day)
             draw_fire();
-        // test();
+        test();
         draw_skybox();
         bloom_controller->finalize_bloom();
     }
@@ -104,7 +104,6 @@ namespace app {
         auto *green_tree        = resources->model("green_tree");
         auto *tall_tree         = resources->model("beech_tree");
         auto *oak_tree          = resources->model("oak_tree");
-        auto *tree_gate         = resources->model("tree_gate");
         auto *pine_tree         = resources->model("pine_tree");
         const auto *tree_shader = resources->shader("basic");
 
@@ -159,6 +158,9 @@ namespace app {
         draw_yellow_tree(-86.0f, 20.0f, 26.0f, 0.06);
         draw_yellow_tree(-86.0f, 20.0f, 13.0f, 0.06);
         draw_yellow_tree(-77.0f, 20.0f, 6.0f, 0.06);
+        draw_yellow_tree(60.0f, 13.0f, -20.0f, 0.05f);
+        draw_yellow_tree(54.0f, 13.0f, -31.0f, 0.05f);
+        draw_yellow_tree(59.0f, 13.0f, -39.0f, 0.05f);
 
         draw_green_tree(-10, 1, 17, 0.22f);
         draw_green_tree(-2, 6, 16, 0.29f);
@@ -173,6 +175,8 @@ namespace app {
         draw_green_tree(-68.0f, -41.0f, 20.0f, 0.29f);
         draw_green_tree(-67.0f, -9.0f, 20.0f, 0.29f);
         draw_green_tree(-87.0f, -19.0f, 20.0f, 0.29f);
+        draw_green_tree(45.0f, 39.0f, 12.0f, 0.24f);
+        draw_green_tree(65.0f, 10.0f, 12.0f, 0.24f);
 
         draw_tall_tree(-6, 14, -15, 0.1f);
         draw_tall_tree(-19, 14, -8, 0.1f);
@@ -183,13 +187,6 @@ namespace app {
             model      = scale(model, glm::vec3(0.210f));
             tree_shader->set_mat4("model", model);
             oak_tree->draw(tree_shader);
-        } {
-            auto model = glm::mat4(1.0f);
-            model      = rotate(model, glm::radians(112.0f), glm::vec3(0, 1, 0));
-            model      = translate(model, glm::vec3(8, 13, 59));
-            model      = scale(model, glm::vec3(0.110f));
-            tree_shader->set_mat4("model", model);
-            tree_gate->draw(tree_shader);
         }
 
         draw_pine_tree(32, 0, 17);
@@ -215,6 +212,9 @@ namespace app {
         draw_pine_tree(-82.0f, -31.0f, 20.0f);
         draw_pine_tree(-69.0f, -30.0f, 20.0f);
         draw_pine_tree(-72.0f, -37.0f, 20.0f);
+        draw_pine_tree(55.0f, 12.0f, 12.0f);
+        draw_pine_tree(53.0f, 19.0f, 12.0f);
+        draw_pine_tree(36.0f, 38.0f, 12.0f);
     }
 
     void MainController::draw_campfire() const {
@@ -387,7 +387,23 @@ namespace app {
                 glm::vec3(-66.0f, 36.0f, -20.0f),
                 glm::vec3(-72.0f, 33.0f, -20.0f),
                 glm::vec3(-76.0f, 33.0f, -20.0f),
-                glm::vec3(-72.0f, 40.0f, -20.0f)
+                glm::vec3(-72.0f, 40.0f, -20.0f),
+                glm::vec3(37, 5, -17),
+                glm::vec3(37, 13, -17),
+                glm::vec3(35, 16, -17),
+                glm::vec3(-7, 30, -17),
+                glm::vec3(59, -14, -12.2),
+                glm::vec3(63, -16, -12.2),
+                glm::vec3(63, -21, -12.2),
+                glm::vec3(57, -21, -12.2),
+                glm::vec3(55, -21, -12.2),
+                glm::vec3(53, -25, -12.2),
+                glm::vec3(53, -30, -12.2),
+                glm::vec3(61, -30, -12.2),
+                glm::vec3(61, -35, -12.2),
+                glm::vec3(55, -35, -12.2),
+                glm::vec3(50, -35, -12.2),
+                glm::vec3(45, -35, -12.2),
         };
 
         constexpr unsigned int rowCount = 2;
@@ -569,7 +585,7 @@ namespace app {
     }
 
     void MainController::test() const {
-        engine::resources::Model *test_model         = resources->model("roses");
+        engine::resources::Model *test_model         = resources->model("yellow_tree");
         const engine::resources::Shader *test_shader = resources->shader("basic");
 
         const glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
@@ -616,29 +632,16 @@ namespace app {
     }
 
     void MainController::draw_stones() const {
-        engine::resources::Model *fantasy_rock        = resources->model("frock");
         engine::resources::Model *grave               = resources->model("grave");
         const engine::resources::Shader *stone_shader = resources->shader("basic");
 
         set_common_shader_variables(stone_shader, camera, graphics);
 
         auto model = glm::mat4(1.0f);
-        model      = translate(model, glm::vec3(66, 14, -16));
-        model      = scale(model, glm::vec3(1.65));
-        stone_shader->set_mat4("model", model);
-        fantasy_rock->draw(stone_shader);
-
-        model = glm::mat4(1.0f);
-        model = translate(model, glm::vec3(57, 14, -22));
-        model = scale(model, glm::vec3(1.65));
-        stone_shader->set_mat4("model", model);
-        fantasy_rock->draw(stone_shader);
-
-        model = glm::mat4(1.0f);
-        model = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-        model = rotate(model, glm::radians(-48.0f), glm::vec3(0, 0, 1));
-        model = translate(model, glm::vec3(29, 71, 12));
-        model = scale(model, glm::vec3(1.35));
+        model      = rotate(model, glm::radians(-90.0f), glm::vec3(1, 0, 0));
+        model      = rotate(model, glm::radians(-48.0f), glm::vec3(0, 0, 1));
+        model      = translate(model, glm::vec3(29, 71, 12));
+        model      = scale(model, glm::vec3(1.35));
         stone_shader->set_mat4("model", model);
         grave->draw(stone_shader);
     }
