@@ -22,8 +22,6 @@ namespace app {
     float test_z          = 0.0f;
     float wind_speed      = 0.05;
 
-    bool mouse_enabled;
-
     engine::resources::ResourcesController *resources;
     engine::graphics::GraphicsController *graphics;
     engine::graphics::BloomController *bloom_controller;
@@ -730,10 +728,10 @@ namespace app {
             is_day = !is_day;
         }
         if (platform->key(engine::platform::KeyId::KEY_Q).is_down()) {
-            camera->rotate_camera(-5, 0);
+            camera->rotate_camera(-10, 0);
         }
         if (platform->key(engine::platform::KeyId::KEY_E).is_down()) {
-            camera->rotate_camera(5, 0);
+            camera->rotate_camera(10, 0);
         }
     }
 }
