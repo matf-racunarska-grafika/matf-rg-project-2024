@@ -53,7 +53,7 @@ namespace app {
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         m_mouse_enabled = false;
         platform->set_enable_cursor(m_mouse_enabled);
-        m_is_day           = true;
+        m_is_day         = true;
         camera->Front    = glm::vec3(0.77, -0.08, -0.6);
         camera->Position = glm::vec3(5, 27, 17);
         camera->Yaw      = -38;
@@ -98,82 +98,82 @@ namespace app {
     }
 
     void MainController::draw_forest() const {
-    auto *yellow_tree = resources->model("yellow_tree");
-    auto *green_tree = resources->model("green_tree");
-    auto *tall_tree = resources->model("beech_tree");
-    auto *oak_tree = resources->model("oak_tree");
-    auto *pine_tree = resources->model("pine_tree");
-    const auto *tree_shader = resources->shader("basic");
+        auto *yellow_tree       = resources->model("yellow_tree");
+        auto *green_tree        = resources->model("green_tree");
+        auto *tall_tree         = resources->model("beech_tree");
+        auto *oak_tree          = resources->model("oak_tree");
+        auto *pine_tree         = resources->model("pine_tree");
+        const auto *tree_shader = resources->shader("basic");
 
-    set_common_shader_variables(tree_shader, camera, graphics);
+        set_common_shader_variables(tree_shader, camera, graphics);
 
-    auto draw_tree = [&](auto* tree_model, const float x, const float y, const float z, const float scale,
-                       const float rotation_angle = 0.0f, const glm::vec3& rotation_axis = glm::vec3(0, 0, 0)) {
-        auto model = glm::mat4(1.0f);
+        auto draw_tree = [&](auto *tree_model, const float x, const float y, const float z, const float scale,
+                             const float rotation_angle = 0.0f, const glm::vec3 &rotation_axis = glm::vec3(0, 0, 0)) {
+            auto model = glm::mat4(1.0f);
 
-        if (rotation_angle != 0.0f) {
-            model = rotate(model, glm::radians(rotation_angle), rotation_axis);
+            if (rotation_angle != 0.0f) {
+                model = rotate(model, glm::radians(rotation_angle), rotation_axis);
+            }
+
+            model = translate(model, glm::vec3(x, y, z));
+            model = glm::scale(model, glm::vec3(scale));
+            tree_shader->set_mat4("model", model);
+            tree_model->draw(tree_shader);
+        };
+
+        struct TreePlacement {
+            float x, y, z, scale;
+        };
+
+        const std::vector<TreePlacement> yellow_trees = {
+                {49, 17, 9, 0.04f}, {0, 17, -22, 0.04f}, {-25, 15, 5, 0.04f}, {4, 17, 25, 0.04f},
+                {39, 17, -5, 0.06f}, {45, 17, 12, 0.06f}, {37, 17, 32, 0.06f}, {11, 17, 32, 0.06f},
+                {-69.0f, 16.0f, 19.0f, 0.06f}, {-59.0f, 20.0f, 26.0f, 0.06f}, {-65.0f, 20.0f, 34.0f, 0.06f},
+                {-76.0f, 20.0f, 31.0f, 0.06f}, {-86.0f, 20.0f, 26.0f, 0.06f}, {-86.0f, 20.0f, 13.0f, 0.06f},
+                {-77.0f, 20.0f, 6.0f, 0.06f}, {60.0f, 13.0f, -20.0f, 0.05f}, {54.0f, 13.0f, -31.0f, 0.05f},
+                {59.0f, 13.0f, -39.0f, 0.05f}
+        };
+
+        const std::vector<TreePlacement> green_trees = {
+                {-10, 1, 17, 0.22f}, {-2, 6, 16, 0.29f}, {45, 1, 16, 0.29f}, {-1, -39, 16, 0.29f},
+                {8, 11, 17, 0.22f}, {33, 10, 17, 0.22f}, {17, -24, 17, 0.22f}, {39, -24, 17, 0.22f},
+                {-59.0f, -16.0f, 20.0f, 0.29f}, {-74.0f, -24.0f, 20.0f, 0.29f}, {-68.0f, -41.0f, 20.0f, 0.29f},
+                {-67.0f, -9.0f, 20.0f, 0.29f}, {-87.0f, -19.0f, 20.0f, 0.29f}, {45.0f, 39.0f, 12.0f, 0.24f},
+                {65.0f, 10.0f, 12.0f, 0.24f}
+        };
+
+        const std::vector<TreePlacement> tall_trees = {
+                {-6, 14, -15, 0.1f}, {-19, 14, -8, 0.1f}, {21, 14, 38, 0.1f}
+        };
+
+        const std::vector<glm::vec3> pine_trees = {
+                {32, 0, 17}, {36, 22, 17}, {12, 20, 17}, {49, -9, 17}, {23, -30, 17},
+                {-5, -26, 17}, {-11, 1, 17}, {-26, 0, 13}, {-12, 10, 17}, {26, 29, 17},
+                {-11, 10, 17}, {-11, -30, 17}, {3, 28, 17}, {-63.0f, -10.0f, 20.0f},
+                {-63.0f, -5.0f, 20.0f}, {-72.0f, -4.0f, 20.0f}, {-72.0f, -13.0f, 20.0f},
+                {-78.0f, -11.0f, 20.0f}, {-78.0f, -21.0f, 20.0f}, {-77.0f, -24.0f, 20.0f},
+                {-82.0f, -31.0f, 20.0f}, {-69.0f, -30.0f, 20.0f}, {-72.0f, -37.0f, 20.0f},
+                {55.0f, 12.0f, 12.0f}, {53.0f, 19.0f, 12.0f}, {36.0f, 38.0f, 12.0f}
+        };
+
+        for (const auto &[x, y, z, scale]: yellow_trees) {
+            draw_tree(yellow_tree, x, y, z, scale);
         }
 
-        model = translate(model, glm::vec3(x, y, z));
-        model = glm::scale(model, glm::vec3(scale));
-        tree_shader->set_mat4("model", model);
-        tree_model->draw(tree_shader);
-    };
+        for (const auto &[x, y, z, scale]: green_trees) {
+            draw_tree(green_tree, x, y, z, scale, -90.0f, glm::vec3(1.0, 0, 0));
+        }
 
-    struct TreePlacement {
-        float x, y, z, scale;
-    };
+        for (const auto &[x, y, z, scale]: tall_trees) {
+            draw_tree(tall_tree, x, y, z, scale);
+        }
 
-    const std::vector<TreePlacement> yellow_trees = {
-        {49, 17, 9, 0.04f}, {0, 17, -22, 0.04f}, {-25, 15, 5, 0.04f}, {4, 17, 25, 0.04f},
-        {39, 17, -5, 0.06f}, {45, 17, 12, 0.06f}, {37, 17, 32, 0.06f}, {11, 17, 32, 0.06f},
-        {-69.0f, 16.0f, 19.0f, 0.06f}, {-59.0f, 20.0f, 26.0f, 0.06f}, {-65.0f, 20.0f, 34.0f, 0.06f},
-        {-76.0f, 20.0f, 31.0f, 0.06f}, {-86.0f, 20.0f, 26.0f, 0.06f}, {-86.0f, 20.0f, 13.0f, 0.06f},
-        {-77.0f, 20.0f, 6.0f, 0.06f}, {60.0f, 13.0f, -20.0f, 0.05f}, {54.0f, 13.0f, -31.0f, 0.05f},
-        {59.0f, 13.0f, -39.0f, 0.05f}
-    };
+        draw_tree(oak_tree, -17, 28, -17, 0.210f, 90.0f, glm::vec3(1, 0, 0));
 
-    const std::vector<TreePlacement> green_trees = {
-        {-10, 1, 17, 0.22f}, {-2, 6, 16, 0.29f}, {45, 1, 16, 0.29f}, {-1, -39, 16, 0.29f},
-        {8, 11, 17, 0.22f}, {33, 10, 17, 0.22f}, {17, -24, 17, 0.22f}, {39, -24, 17, 0.22f},
-        {-59.0f, -16.0f, 20.0f, 0.29f}, {-74.0f, -24.0f, 20.0f, 0.29f}, {-68.0f, -41.0f, 20.0f, 0.29f},
-        {-67.0f, -9.0f, 20.0f, 0.29f}, {-87.0f, -19.0f, 20.0f, 0.29f}, {45.0f, 39.0f, 12.0f, 0.24f},
-        {65.0f, 10.0f, 12.0f, 0.24f}
-    };
-
-    const std::vector<TreePlacement> tall_trees = {
-        {-6, 14, -15, 0.1f}, {-19, 14, -8, 0.1f}, {21, 14, 38, 0.1f}
-    };
-
-    const std::vector<glm::vec3> pine_trees = {
-        {32, 0, 17}, {36, 22, 17}, {12, 20, 17}, {49, -9, 17}, {23, -30, 17},
-        {-5, -26, 17}, {-11, 1, 17}, {-26, 0, 13}, {-12, 10, 17}, {26, 29, 17},
-        {-11, 10, 17}, {-11, -30, 17}, {3, 28, 17}, {-63.0f, -10.0f, 20.0f},
-        {-63.0f, -5.0f, 20.0f}, {-72.0f, -4.0f, 20.0f}, {-72.0f, -13.0f, 20.0f},
-        {-78.0f, -11.0f, 20.0f}, {-78.0f, -21.0f, 20.0f}, {-77.0f, -24.0f, 20.0f},
-        {-82.0f, -31.0f, 20.0f}, {-69.0f, -30.0f, 20.0f}, {-72.0f, -37.0f, 20.0f},
-        {55.0f, 12.0f, 12.0f}, {53.0f, 19.0f, 12.0f}, {36.0f, 38.0f, 12.0f}
-    };
-
-    for (const auto&[x, y, z, scale] : yellow_trees) {
-        draw_tree(yellow_tree, x, y, z, scale);
+        for (const auto &pos: pine_trees) {
+            draw_tree(pine_tree, pos.x, pos.y, pos.z, 11.0f, -90.0f, glm::vec3(1, 0, 0));
+        }
     }
-
-    for (const auto&[x, y, z, scale] : green_trees) {
-        draw_tree(green_tree, x, y, z, scale, -90.0f, glm::vec3(1.0, 0, 0));
-    }
-
-    for (const auto&[x, y, z, scale] : tall_trees) {
-        draw_tree(tall_tree, x, y, z, scale);
-    }
-
-    draw_tree(oak_tree, -17, 28, -17, 0.210f, 90.0f, glm::vec3(1, 0, 0));
-
-    for (const auto& pos : pine_trees) {
-        draw_tree(pine_tree, pos.x, pos.y, pos.z, 11.0f, -90.0f, glm::vec3(1, 0, 0));
-    }
-}
 
     void MainController::draw_campfire() const {
         engine::resources::Model *campfire               = resources->model("campfire");
@@ -194,35 +194,25 @@ namespace app {
         set_common_shader_variables(log_seat_shader, camera, graphics);
         log_seat_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(4.0f));
 
-        for (int i = 0; i < 3; i++) {
-            if (i == 0) {
-                auto model = glm::mat4(1.0f);
-                model      = rotate(model, glm::radians(42.0f), glm::vec3(0, 1, 0));
-                model      = translate(model, glm::vec3(6, 17.5, 2));
-                model      = scale(model, glm::vec3(0.04));
+        struct LogPlacement {
+            float rotation_angle;
+            glm::vec3 position;
+        };
 
-                log_seat_shader->set_mat4("model", model);
+        const std::vector<LogPlacement> logs = {
+                {42.0f, glm::vec3(6, 17.5, 2)},
+                {155.0f, glm::vec3(-16, 17.5, -9)},
+                {-100.0f, glm::vec3(1, 17.5, -26)}
+        };
 
-                log_seat->draw(log_seat_shader);
-            } else if (i == 1) {
-                auto model = glm::mat4(1.0f);
-                model      = rotate(model, glm::radians(155.0f), glm::vec3(0, 1, 0));
-                model      = translate(model, glm::vec3(-16, 17.5, -9));
-                model      = scale(model, glm::vec3(0.04));
+        for (const auto &[rotation_angle, position]: logs) {
+            auto model = glm::mat4(1.0f);
+            model      = rotate(model, glm::radians(rotation_angle), glm::vec3(0, 1, 0));
+            model      = translate(model, position);
+            model      = scale(model, glm::vec3(0.04));
 
-                log_seat_shader->set_mat4("model", model);
-
-                log_seat->draw(log_seat_shader);
-            } else {
-                auto model = glm::mat4(1.0f);
-                model      = rotate(model, glm::radians(-100.0f), glm::vec3(0, 1, 0));
-                model      = translate(model, glm::vec3(1, 17.5, -26));
-                model      = scale(model, glm::vec3(0.04));
-
-                log_seat_shader->set_mat4("model", model);
-
-                log_seat->draw(log_seat_shader);
-            }
+            log_seat_shader->set_mat4("model", model);
+            log_seat->draw(log_seat_shader);
         }
     }
 
