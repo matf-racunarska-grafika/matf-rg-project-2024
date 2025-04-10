@@ -36,22 +36,22 @@ namespace engine::graphics {
         }
     }
 
-    void BloomController::hdr_bloom_setup() {
+    void BloomController::bloom_setup() {
         CHECKED_GL_CALL(glGenFramebuffers, 1, &m_hdr_FBO);
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, m_hdr_FBO);
         CHECKED_GL_CALL(glGenTextures, 2, m_color_buffers);
 
-        if (scr_width == 0)
-            scr_width = 1400;
+        if (m_scr_width == 0)
+            m_scr_width = 1400;
         else
-            scr_width = get<platform::PlatformController>()->window()->width();
-        if (scr_height == 0)
-            scr_height = 1000;
+            m_scr_width = get<platform::PlatformController>()->window()->width();
+        if (m_scr_height == 0)
+            m_scr_height = 1000;
         else
-            scr_height = get<platform::PlatformController>()->window()->height();
+            m_scr_height = get<platform::PlatformController>()->window()->height();
         for (unsigned int i = 0; i < 2; ++i) {
             CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, m_color_buffers[i]);
-            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, scr_width, scr_height, 0, GL_RGBA, GL_FLOAT,
+            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, m_scr_width, m_scr_height, 0, GL_RGBA, GL_FLOAT,
                             nullptr);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -64,7 +64,7 @@ namespace engine::graphics {
         unsigned int rbo_depth;
         CHECKED_GL_CALL(glGenRenderbuffers, 1, &rbo_depth);
         CHECKED_GL_CALL(glBindRenderbuffer, GL_RENDERBUFFER, rbo_depth);
-        CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH_COMPONENT, scr_width, scr_height);
+        CHECKED_GL_CALL(glRenderbufferStorage, GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_scr_width, m_scr_height);
         CHECKED_GL_CALL(glFramebufferRenderbuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
 
         unsigned int attachments[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
@@ -77,7 +77,7 @@ namespace engine::graphics {
         for (unsigned int i = 0; i < 2; ++i) {
             CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, m_pingpong_FBO[i]);
             CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_2D, m_pingpong_colorbuffers[i]);
-            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, scr_width, scr_height, 0, GL_RGBA, GL_FLOAT,
+            CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_2D, 0, GL_RGBA16F, m_scr_width, m_scr_height, 0, GL_RGBA, GL_FLOAT,
                             nullptr);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             CHECKED_GL_CALL(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -141,17 +141,17 @@ namespace engine::graphics {
     }
 
     void BloomController::prepare_hdr() {
-        if (scr_width == 0)
-            scr_width = 1400;
+        if (m_scr_width == 0)
+            m_scr_width = 1400;
         else
-            scr_width = get<platform::PlatformController>()->window()->width();
-        if (scr_height == 0)
-            scr_height = 1000;
+            m_scr_width = get<platform::PlatformController>()->window()->width();
+        if (m_scr_height == 0)
+            m_scr_height = 1000;
         else
-            scr_height = get<platform::PlatformController>()->window()->height();
+            m_scr_height = get<platform::PlatformController>()->window()->height();
 
         CHECKED_GL_CALL(glBindFramebuffer, GL_FRAMEBUFFER, m_hdr_FBO);
-        CHECKED_GL_CALL(glViewport, 0, 0, scr_width, scr_height);
+        CHECKED_GL_CALL(glViewport, 0, 0, m_scr_width, m_scr_height);
         CHECKED_GL_CALL(glClear, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
