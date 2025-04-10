@@ -12,24 +12,14 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
     update_camera_vectors();
 }
 
-// constructor with scalar values
-Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
-        Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
-    Position = glm::vec3(posX, posY, posZ);
-    WorldUp = glm::vec3(upX, upY, upZ);
-    Yaw = yaw;
-    Pitch = pitch;
-    update_camera_vectors();
-}
-
 // returns the view matrix calculated using Euler Angles and the LookAt Matrix
 glm::mat4 Camera::view_matrix() const {
     return glm::lookAt(Position, Position + Front, Up);
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-void Camera::move_camera(Movement direction, float deltaTime) {
-    float velocity = MovementSpeed * deltaTime;
+void Camera::move_camera(Movement direction, float delta_time) {
+    float velocity = MovementSpeed * delta_time;
     if (direction == FORWARD) {
         Position += Front * velocity;
     }
@@ -51,7 +41,7 @@ void Camera::move_camera(Movement direction, float deltaTime) {
 }
 
 // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-void Camera::rotate_camera(float x_offset, float y_offset, bool constrainPitch) {
+void Camera::rotate_camera(float x_offset, float y_offset, bool constrain_pitch) {
     x_offset *= MouseSensitivity;
     y_offset *= MouseSensitivity;
 
@@ -59,7 +49,7 @@ void Camera::rotate_camera(float x_offset, float y_offset, bool constrainPitch) 
     Pitch += y_offset;
 
     // make sure that when pitch is out of bounds, screen doesn't get flipped
-    if (constrainPitch) {
+    if (constrain_pitch) {
         if (Pitch > 89.0f) {
             Pitch = 89.0f;
         }

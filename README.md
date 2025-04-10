@@ -225,8 +225,8 @@ The `resources/models/` directory stores all the models. Let's add a backpack mo
 
 ```cpp
     Model* backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
-    Shader* shader   = ... 
-    backpack->draw(shader);
+Shader* shader   = ...
+backpack->draw(shader);
 ```
 
 ### How to add a texture?
@@ -284,17 +284,17 @@ Here is an example of displaying camera info in a GUI.
 
 ```cpp
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    graphics->begin_gui();
-    // Draw Camera Info window
-    {
-        ImGui::Begin("Camera info");
-        const auto &c = *camera;
-        ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
-        ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-        ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
-        ImGui::End();
-    }
-    graphics->end_gui();
+graphics->begin_gui();
+// Draw Camera Info window
+{
+ImGui::Begin("Camera info");
+const auto &c = *camera;
+ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);
+ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
+ImGui::Text("Camera front: (%f, %f, %f)", c.Front.x, c.Front.y, c.Front.z);
+ImGui::End();
+}
+graphics->end_gui();
 ```
 
 ![img.png](extra/img.png)
@@ -378,9 +378,9 @@ the `key` on which the event occurred as an argument.
 
 ```cpp
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    platform->window()->height()
-    platform->window()->width()
-    platform->window()->title()
+platform->window()->height()
+platform->window()->width()
+platform->window()->title()
 ```
 
 Also, the `PlatformController` will update the window properties if the size of the window changes.
@@ -453,8 +453,8 @@ passed as the second argument to the `arg` method.
 ```cpp
 
 void setup() override {
-    auto parser = engine::util::ArgParser()->instance();
-    auto fps = parser->arg<int>("--fps", 60);
+auto parser = engine::util::ArgParser()->instance();
+auto fps = parser->arg<int>("--fps", 60);
 }
 ```
 
@@ -464,3 +464,103 @@ void setup() override {
 
 Here you can find a walkthrough [tutorial](engine/test/app/TUTORIAL.md) for recreating the `engine/test/app` that
 demonstrates how to use different engine systems.
+
+# Style guide
+
+Naming Conventions:
+
+* Global variables: g_ prefix (e.g., g_counter)
+* Namespaces: snake_case (e.g., math_utils)
+* Structs: PascalCase (e.g., Point3D)
+* Classes: PascalCase (e.g., Calculator)
+* Static/constant variables: UPPER_CASE (e.g., MAX_OPERATIONS)
+* Public member variables: snake_case (e.g., is_active)
+* Protected member variables: m_ prefix + snake_case (e.g., m_name)
+* Private member variables: m_ prefix + snake_case (e.g., m_max_size)
+* Member functions: snake_case (e.g., calculate_average)
+* Free functions: snake_case (e.g., process_data)
+* Parameters: snake_case (e.g., max_size)
+* Local variables: snake_case (e.g., initial_capacity)
+* Template parameters: PascalCase (e.g., Container, Result, MaxSize)
+
+Code style:
+
+* Control flow statements (if/for/while/switch/try) always with braces
+* One line per variable declaration, no multiple variable declarations on a single line
+
+```C++
+#include <vector>
+#include <string>
+
+// Global variable with g_ prefix
+int g_counter = 0;
+
+// Namespace in snake_case
+namespace math_utils {
+
+// Struct in PascalCase
+struct Point3D {
+    float x, y, z;
+};
+
+// Class in PascalCase
+class Calculator {
+public:
+    // Static and/or constant in UPPER_CASE
+    static const int MAX_OPERATIONS = 100;
+    
+    // Public member variable in snake_case
+    bool is_active;
+    
+    // Constructor (parameters in snake_case)
+    Calculator(int max_size) : m_max_size(max_size), is_active(true) {
+        // Local variable in snake_case
+        int initial_capacity = max_size * 2;
+        m_results.reserve(initial_capacity);
+    }
+    
+    // Member function in snake_case
+    float calculate_average(const std::vector<float>& values) {
+        // Parameter and local variables in snake_case
+        float sum = 0.0f;
+        int count = 0;
+        
+        // Loop with braces on same line
+        for (const auto& value : values) {
+            sum += value;
+            ++count;
+        }
+        
+        // If statement with braces on same line
+        if (count > 0) {
+            return sum / count;
+        }
+        
+        return 0.0f;
+    }
+
+protected:
+    // Protected member with m_ prefix
+    std::string m_name;
+
+private:
+    // Private member variables with m_ prefix
+    int m_max_size;
+    std::vector<float> m_results;
+};
+
+} // namespace math_utils
+
+// Free function in snake_case
+void process_data() {
+    // Local variable in snake_case
+    math_utils::Calculator calc(50);
+    ++g_counter;
+}
+
+// Template parameters always in PascalCase 
+template<typename Container, typename Result, int MaxSize>
+Result operation(const Container& c) {
+   // . 
+}
+```
