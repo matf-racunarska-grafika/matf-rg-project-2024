@@ -29,16 +29,6 @@ namespace app {
         const auto main_controller = get<MainController>();
         graphics->begin_gui();
 
-        ImGui::Begin("Testiranje podesavanja");
-        ImGui::DragFloat("Skaliranje:", &test_scale, 0.01, 0.01, 10);
-        ImGui::DragFloat("RotacijaX:", &test_rotation_x, 1, -180, 180);
-        ImGui::DragFloat("RotacijaY:", &test_rotation_y, 1, -180, 180);
-        ImGui::DragFloat("RotacijaZ:", &test_rotation_z, 1, -180, 180);
-        ImGui::DragFloat("X:", &test_x, 1, -100, 100);
-        ImGui::DragFloat("Y:", &test_y, 1, -100, 100);
-        ImGui::DragFloat("Z:", &test_z, 1, 100, 100);
-        ImGui::End();
-
         ImGui::Begin("Bloom");
         ImGui::DragFloat("Bloom Intensity", &bloom_controller->bloom_strength, 0.1f, 0.0f, 50.0f);
         ImGui::DragFloat("Exposure", &bloom_controller->exposure, 0.1f, 0.1f, 20.0f);

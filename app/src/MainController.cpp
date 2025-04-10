@@ -12,16 +12,6 @@
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
 namespace app {
-
-    float test_scale      = 1.0f;
-    float test_rotation_x = 0.0f;
-    float test_rotation_y = 0.0f;
-    float test_rotation_z = 0.0f;
-    float test_x          = 0.0f;
-    float test_y          = 0.0f;
-    float test_z          = 0.0f;
-    float wind_speed      = 0.05;
-
     engine::resources::ResourcesController *resources;
     engine::graphics::GraphicsController *graphics;
     engine::graphics::BloomController *bloom_controller;
@@ -92,7 +82,6 @@ namespace app {
         draw_stones();
         if (!m_is_day)
             draw_fire();
-        test();
         draw_skybox();
         bloom_controller->finalize_bloom();
     }
@@ -530,43 +519,6 @@ namespace app {
         water_shader->set_mat4("model", model);
 
         water_model->drawBlended(water_shader);
-    }
-
-    void MainController::test() const {
-        engine::resources::Model *test_model         = resources->model("yellow_tree");
-        const engine::resources::Shader *test_shader = resources->shader("basic");
-
-        const glm::vec3 lightPos = m_is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-
-        test_shader->use();
-
-        test_shader->set_vec3("light.position", lightPos);
-        if (m_is_day) {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-            test_shader->set_float("material.shininess", 32.0f);
-        } else {
-            test_shader->set_vec3("light.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-            test_shader->set_vec3("light.diffuse", glm::vec3(0.3f, 0.3f, 0.3f));
-            test_shader->set_vec3("light.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-            test_shader->set_float("material.shininess", 128.0f);
-        }
-        test_shader->set_vec3("viewPos", camera->Position);
-
-        test_shader->set_mat4("projection", graphics->projection_matrix());
-        test_shader->set_mat4("view", camera->view_matrix());
-
-        auto model = glm::mat4(1.0f);
-        model      = rotate(model, glm::radians(test_rotation_x), glm::vec3(1, 0, 0));
-        model      = rotate(model, glm::radians(test_rotation_y), glm::vec3(0, 1, 0));
-        model      = rotate(model, glm::radians(test_rotation_z), glm::vec3(0, 0, 1));
-        model      = translate(model, glm::vec3(test_x, test_y, test_z));
-        model      = scale(model, glm::vec3(test_scale));
-
-        test_shader->set_mat4("model", model);
-
-        test_model->draw(test_shader);
     }
 
     void MainController::draw_skybox() const {
