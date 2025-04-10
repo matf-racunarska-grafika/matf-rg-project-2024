@@ -51,9 +51,9 @@ namespace app {
         gui                 = GUIController();
         const auto platform = get<engine::platform::PlatformController>();
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
-        mouse_enabled = false;
-        platform->set_enable_cursor(mouse_enabled);
-        is_day           = true;
+        m_mouse_enabled = false;
+        platform->set_enable_cursor(m_mouse_enabled);
+        m_is_day           = true;
         camera->Front    = glm::vec3(0.77, -0.08, -0.6);
         camera->Position = glm::vec3(5, 27, 17);
         camera->Yaw      = -38;
@@ -90,7 +90,7 @@ namespace app {
         draw_path();
         draw_mushrooms();
         draw_stones();
-        if (!is_day)
+        if (!m_is_day)
             draw_fire();
         test();
         draw_skybox();
@@ -220,7 +220,7 @@ namespace app {
         const engine::resources::Shader *campfire_shader = resources->shader("basic");
 
         set_common_shader_variables(campfire_shader, camera, graphics);
-        campfire_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(5.0f));
+        campfire_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(5.0f));
 
         const glm::mat4 model = translate(glm::mat4(1.0f), glm::vec3(12.0f, 17.3f, 6.0f));
         campfire_shader->set_mat4("model", model);
@@ -232,7 +232,7 @@ namespace app {
         const engine::resources::Shader *log_seat_shader = resources->shader("basic");
 
         set_common_shader_variables(log_seat_shader, camera, graphics);
-        log_seat_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(4.0f));
+        log_seat_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(4.0f));
 
         for (int i = 0; i < 3; i++) {
             if (i == 0) {
@@ -272,7 +272,7 @@ namespace app {
         const engine::resources::Shader *tent_shader = resources->shader("basic");
 
         set_common_shader_variables(tent_shader, camera, graphics);
-        tent_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(2.0f));
+        tent_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(2.0f));
 
         auto model = glm::mat4(1.0f);
         model      = rotate(model, glm::radians(-20.0f), glm::vec3(0, 1, 0));
@@ -431,8 +431,8 @@ namespace app {
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
-        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
-        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
+        flower_shader->set_vec3("light.ambient", m_is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
+        flower_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
         white_flowers->drawInstanced(flower_shader, amount, modelMatrices);
         delete[] modelMatrices;
     }
@@ -538,8 +538,8 @@ namespace app {
         }
 
         set_common_shader_variables(flower_shader, camera, graphics);
-        flower_shader->set_vec3("light.ambient", is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
-        flower_shader->set_vec3("light.diffuse", is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
+        flower_shader->set_vec3("light.ambient", m_is_day ? glm::vec3(0.2f) : glm::vec3(0.05f));
+        flower_shader->set_vec3("light.diffuse", m_is_day ? glm::vec3(0.5f) : glm::vec3(0.1f));
         roses->drawInstanced(flower_shader, amount, modelMatrices);
         delete[] modelMatrices;
     }
@@ -558,13 +558,13 @@ namespace app {
         engine::resources::Model *water_model         = resources->model("water");
         const engine::resources::Shader *water_shader = resources->shader("water_shader");
 
-        const auto lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+        const auto lightPos = m_is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
         water_shader->use();
 
         const auto currentTime = static_cast<float>(glfwGetTime());
         water_shader->set_float("time", currentTime);
 
-        const glm::vec3 waterColor = is_day
+        const glm::vec3 waterColor = m_is_day
                                          ? glm::vec3(0.0f, 0.4f, 0.6f)
                                          : glm::vec3(0.0f, 0.1f, 0.3f);
         water_shader->set_vec3("waterColor", waterColor);
@@ -586,12 +586,12 @@ namespace app {
         engine::resources::Model *test_model         = resources->model("yellow_tree");
         const engine::resources::Shader *test_shader = resources->shader("basic");
 
-        const glm::vec3 lightPos = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+        const glm::vec3 lightPos = m_is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
 
         test_shader->use();
 
         test_shader->set_vec3("light.position", lightPos);
-        if (is_day) {
+        if (m_is_day) {
             test_shader->set_vec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
             test_shader->set_vec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
             test_shader->set_vec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -622,7 +622,7 @@ namespace app {
     void MainController::draw_skybox() const {
         const auto shader = get<engine::resources::ResourcesController>()->shader("skybox");
         engine::resources::Skybox *skybox_cube;
-        if (is_day)
+        if (m_is_day)
             skybox_cube = get<engine::resources::ResourcesController>()->skybox(active_daytime_skybox);
         else
             skybox_cube = get<engine::resources::ResourcesController>()->skybox(active_nighttime_skybox);
@@ -721,11 +721,11 @@ namespace app {
                 camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
         }
         if (platform->key(engine::platform::KeyId::KEY_P).state() == engine::platform::Key::State::JustPressed) {
-            mouse_enabled = !mouse_enabled;
-            platform->set_enable_cursor(mouse_enabled);
+            m_mouse_enabled = !m_mouse_enabled;
+            platform->set_enable_cursor(m_mouse_enabled);
         }
         if (platform->key(engine::platform::KeyId::KEY_N).state() == engine::platform::Key::State::JustPressed) {
-            is_day = !is_day;
+            m_is_day = !m_is_day;
         }
         if (platform->key(engine::platform::KeyId::KEY_Q).is_down()) {
             camera->rotate_camera(-10, 0);

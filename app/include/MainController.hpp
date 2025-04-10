@@ -10,7 +10,36 @@ namespace app {
     extern float test_scale;
 
     class MainController final : public engine::core::Controller {
+    public:
+        [[nodiscard]] std::string_view name() const override {
+            return "app::MainController";
+        }
 
+        void set_skybox(const std::string &new_skybox, const bool is_daytime_skybox) {
+            if (m_is_day && is_daytime_skybox) {
+                active_daytime_skybox = new_skybox;
+            } else if (!m_is_day && !is_daytime_skybox) {
+                active_nighttime_skybox = new_skybox;
+            }
+        }
+
+        [[nodiscard]] bool is_cursor_enabled() const {
+            return m_mouse_enabled;
+        }
+
+        void enable_cursor(const bool enable) {
+            m_mouse_enabled = enable;
+        }
+
+        void set_daytime_skybox(const std::string &new_skybox) {
+            active_daytime_skybox = new_skybox;
+        }
+
+        void set_nighttime_skybox(const std::string &new_skybox) {
+            active_nighttime_skybox = new_skybox;
+        }
+
+    private:
         void initialize() override;
 
         bool loop() override;
@@ -59,28 +88,20 @@ namespace app {
 
         void update_camera();
 
-        bool is_day = true;
-        bool mouse_enabled = false;
+        bool m_is_day = true;
+        bool m_mouse_enabled = false;
         std::string active_daytime_skybox = "skybox_day";
         std::string active_nighttime_skybox = "skybox_night";
-
-        void set_daytime_skybox(const std::string &new_skybox) {
-            active_daytime_skybox = new_skybox;
-        }
-
-        void set_nighttime_skybox(const std::string &new_skybox) {
-            active_nighttime_skybox = new_skybox;
-        }
 
         void set_common_shader_variables(const engine::resources::Shader *shader,
                                          const engine::graphics::Camera *camera,
                                          const engine::graphics::GraphicsController *graphics) const {
-            const auto light_position   = is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
-            const auto ambient    = is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
-            const auto diffuse    = is_day ? glm::vec3(0.5f) : glm::vec3(0.3f);
-            const auto specular   = is_day ? glm::vec3(0.1) : glm::vec3(0.05f);
-            const float shininess = is_day ? 1024.0f : 2048.0f;
-            const auto light_color = is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1.0f, 0.7f, 0.1f);
+            const auto light_position = m_is_day ? glm::vec3(0.0f, 60.0f, 0.0f) : glm::vec3(12.0f, 25.0f, 6.0f);
+            const auto ambient = m_is_day ? glm::vec3(0.2f) : glm::vec3(0.1f);
+            const auto diffuse = m_is_day ? glm::vec3(0.5f) : glm::vec3(0.3f);
+            const auto specular = m_is_day ? glm::vec3(0.1) : glm::vec3(0.05f);
+            const float shininess = m_is_day ? 1024.0f : 2048.0f;
+            const auto light_color = m_is_day ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(1.0f, 0.7f, 0.1f);
             shader->use();
             shader->set_vec3("light.position", light_position);
             shader->set_vec3("light.ambient", ambient);
@@ -91,27 +112,6 @@ namespace app {
             shader->set_vec3("viewPos", camera->Position);
             shader->set_mat4("projection", graphics->projection_matrix());
             shader->set_mat4("view", camera->view_matrix());
-        }
-
-    public:
-        [[nodiscard]] std::string_view name() const override {
-            return "app::MainController";
-        }
-
-        void set_skybox(const std::string &new_skybox, const bool is_daytime_skybox) {
-            if (is_day && is_daytime_skybox) {
-                active_daytime_skybox = new_skybox;
-            } else if (!is_day && !is_daytime_skybox) {
-                active_nighttime_skybox = new_skybox;
-            }
-        }
-
-        [[nodiscard]] bool is_cursor_enabled() const {
-            return mouse_enabled;
-        }
-
-        void enable_cursor(const bool enable) {
-            mouse_enabled = enable;
         }
     };
 }
