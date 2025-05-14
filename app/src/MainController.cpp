@@ -4,6 +4,8 @@
 
 #include "../include/MainController.hpp"
 
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -27,6 +29,14 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+
+    // da bi mis bio na sredini
+    platform->set_enable_cursor(false);
+    int width = platform->window()->width() / 2.0;
+    int height = platform->window()->height() / 2.0;
+    GLFWwindow *window_handle = platform->window()->handle_();
+    glfwSetCursorPos(window_handle, width, height);
+
 }
 
 bool MainController::loop() {
