@@ -5,8 +5,17 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <glm/vec3.hpp>
 
 namespace app {
+
+struct DirLight {
+    glm::vec3 direction;
+
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
 
 class MainController : public engine::core::Controller {
     void initialize() override;
@@ -29,6 +38,7 @@ class MainController : public engine::core::Controller {
 
 public:
     std::string_view name() const override { return "app::MainController"; }
+    DirLight directionalLight;
 };
 
 }// app

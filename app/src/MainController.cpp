@@ -37,6 +37,12 @@ void MainController::initialize() {
     GLFWwindow *window_handle = platform->window()->handle_();
     glfwSetCursorPos(window_handle, width, height);
 
+    // dirLight
+    directionalLight.direction = glm::vec3(0.0f, -8.0f, 0.0f);
+    directionalLight.ambient = glm::vec3(0.05f);
+    directionalLight.diffuse = glm::vec3(1.0f, 0.7843f, 0.3921f) * 0.5f;
+    directionalLight.specular = glm::vec3(0.2f, 0.2f, 0.2f) * 0.5f;
+
 }
 
 bool MainController::loop() {
@@ -52,9 +58,18 @@ void MainController::draw_car() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *car = resources->model("car");
 
-    engine::resources::Shader *shader = resources->shader("basic");
+    engine::resources::Shader *shader = resources->shader("car");
 
     shader->use();
+
+    shader->set_vec3("directionalLight.direction", directionalLight.direction);
+    shader->set_vec3("directionalLight.ambient", directionalLight.ambient);
+    shader->set_vec3("directionalLight.diffuse", directionalLight.diffuse);
+    shader->set_vec3("directionalLight.specular", directionalLight.specular);
+
+    shader->set_float("material_shininess", 64.0f);
+    shader->set_vec3("viewPosition", graphics->camera()->Position);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
@@ -71,9 +86,19 @@ void MainController::draw_traffic_light() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *traffic_light = resources->model("traffic_light");
 
-    engine::resources::Shader *shader = resources->shader("basic");
+    engine::resources::Shader *shader = resources->shader("car");
 
     shader->use();
+
+    shader->set_vec3("directionalLight.direction", directionalLight.direction);
+    shader->set_vec3("directionalLight.ambient", directionalLight.ambient);
+    shader->set_vec3("directionalLight.diffuse", directionalLight.diffuse);
+    shader->set_vec3("directionalLight.specular", directionalLight.specular);
+
+    shader->set_float("material_shininess", 64.0f);
+    shader->set_vec3("viewPosition", graphics->camera()->Position);
+
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
