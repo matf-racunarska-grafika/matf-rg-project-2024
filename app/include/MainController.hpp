@@ -15,6 +15,8 @@ class MainController : public engine::core::Controller {
 
     void draw_car();
 
+    void draw_traffic_light();
+
     void update_camera();
 
     void update() override;
