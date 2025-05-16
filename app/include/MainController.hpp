@@ -52,6 +52,7 @@ public:
     std::string_view name() const override { return "app::MainController"; }
     DirLight directionalLight;
     PointLight redPointLight;
+    PointLight yellowPointLight;
 };
 
 }// app

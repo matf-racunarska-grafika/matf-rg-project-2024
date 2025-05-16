@@ -51,6 +51,14 @@ void MainController::initialize() {
     redPointLight.linear = 0.09f;
     redPointLight.quadratic = 0.09f;
 
+    yellowPointLight.position = glm::vec3(4.5, 4.4, 1.5);
+    yellowPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
+    yellowPointLight.diffuse = glm::vec3(3.0, 2.0, 0.0);
+    yellowPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    yellowPointLight.constant = 1.0f;
+    yellowPointLight.linear = 0.09f;
+    yellowPointLight.quadratic = 0.09f;
+
 }
 
 bool MainController::loop() {
@@ -85,6 +93,15 @@ void MainController::draw_car() {
     shader->set_float("redPointLight.constant", redPointLight.constant);
     shader->set_float("redPointLight.linear", redPointLight.linear);
     shader->set_float("redPointLight.quadratic", redPointLight.quadratic);
+
+    shader->set_vec3("yellowPointLight.position", yellowPointLight.position);
+    shader->set_vec3("yellowPointLight.ambient", yellowPointLight.ambient);
+    shader->set_vec3("yellowPointLight.diffuse", yellowPointLight.diffuse);
+    shader->set_vec3("yellowPointLight.specular", yellowPointLight.specular);
+    shader->set_float("yellowPointLight.constant", yellowPointLight.constant);
+    shader->set_float("yellowPointLight.linear", yellowPointLight.linear);
+    shader->set_float("yellowPointLight.quadratic", yellowPointLight.quadratic);
+
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -121,6 +138,14 @@ void MainController::draw_traffic_light() {
     shader->set_float("redPointLight.constant", redPointLight.constant);
     shader->set_float("redPointLight.linear", redPointLight.linear);
     shader->set_float("redPointLight.quadratic", redPointLight.quadratic);
+
+    shader->set_vec3("yellowPointLight.position", yellowPointLight.position);
+    shader->set_vec3("yellowPointLight.ambient", yellowPointLight.ambient);
+    shader->set_vec3("yellowPointLight.diffuse", yellowPointLight.diffuse);
+    shader->set_vec3("yellowPointLight.specular", yellowPointLight.specular);
+    shader->set_float("yellowPointLight.constant", yellowPointLight.constant);
+    shader->set_float("yellowPointLight.linear", yellowPointLight.linear);
+    shader->set_float("yellowPointLight.quadratic", yellowPointLight.quadratic);
 
 
     shader->set_mat4("projection", graphics->projection_matrix());
