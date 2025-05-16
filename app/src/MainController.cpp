@@ -43,6 +43,14 @@ void MainController::initialize() {
     directionalLight.diffuse = glm::vec3(1.0f, 0.7843f, 0.3921f) * 0.5f;
     directionalLight.specular = glm::vec3(0.2f, 0.2f, 0.2f) * 0.5f;
 
+    redPointLight.position = glm::vec3(4.5, 4.7, 1.5);
+    redPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
+    redPointLight.diffuse = glm::vec3(2.0, 0.0, 0.0);
+    redPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    redPointLight.constant = 1.0f;
+    redPointLight.linear = 0.09f;
+    redPointLight.quadratic = 0.09f;
+
 }
 
 bool MainController::loop() {
@@ -70,6 +78,14 @@ void MainController::draw_car() {
     shader->set_float("material_shininess", 64.0f);
     shader->set_vec3("viewPosition", graphics->camera()->Position);
 
+    shader->set_vec3("redPointLight.position", redPointLight.position);
+    shader->set_vec3("redPointLight.ambient", redPointLight.ambient);
+    shader->set_vec3("redPointLight.diffuse", redPointLight.diffuse);
+    shader->set_vec3("redPointLight.specular", redPointLight.specular);
+    shader->set_float("redPointLight.constant", redPointLight.constant);
+    shader->set_float("redPointLight.linear", redPointLight.linear);
+    shader->set_float("redPointLight.quadratic", redPointLight.quadratic);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
@@ -86,7 +102,7 @@ void MainController::draw_traffic_light() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *traffic_light = resources->model("traffic_light");
 
-    engine::resources::Shader *shader = resources->shader("car");
+    engine::resources::Shader *shader = resources->shader("traffic_light");
 
     shader->use();
 
@@ -97,6 +113,14 @@ void MainController::draw_traffic_light() {
 
     shader->set_float("material_shininess", 64.0f);
     shader->set_vec3("viewPosition", graphics->camera()->Position);
+
+    shader->set_vec3("redPointLight.position", redPointLight.position);
+    shader->set_vec3("redPointLight.ambient", redPointLight.ambient);
+    shader->set_vec3("redPointLight.diffuse", redPointLight.diffuse);
+    shader->set_vec3("redPointLight.specular", redPointLight.specular);
+    shader->set_float("redPointLight.constant", redPointLight.constant);
+    shader->set_float("redPointLight.linear", redPointLight.linear);
+    shader->set_float("redPointLight.quadratic", redPointLight.quadratic);
 
 
     shader->set_mat4("projection", graphics->projection_matrix());

@@ -17,6 +17,18 @@ struct DirLight {
     glm::vec3 specular;
 };
 
+struct PointLight {
+    glm::vec3 position;
+
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
 class MainController : public engine::core::Controller {
     void initialize() override;
 
@@ -39,6 +51,7 @@ class MainController : public engine::core::Controller {
 public:
     std::string_view name() const override { return "app::MainController"; }
     DirLight directionalLight;
+    PointLight redPointLight;
 };
 
 }// app
