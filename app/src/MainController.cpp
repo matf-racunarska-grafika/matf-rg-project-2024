@@ -53,11 +53,20 @@ void MainController::initialize() {
 
     yellowPointLight.position = glm::vec3(4.5, 4.4, 1.5);
     yellowPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
-    yellowPointLight.diffuse = glm::vec3(3.0, 2.0, 0.0);
+    yellowPointLight.diffuse = glm::vec3(2.0, 2.0, 0.0);
     yellowPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
     yellowPointLight.constant = 1.0f;
     yellowPointLight.linear = 0.09f;
     yellowPointLight.quadratic = 0.09f;
+
+    greenPointLight.position = glm::vec3(4.5, 4.05, 1.5);
+    greenPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
+    greenPointLight.diffuse = glm::vec3(0.0, 2.0, 0.0);
+    greenPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    greenPointLight.constant = 1.0f;
+    greenPointLight.linear = 0.09f;
+    greenPointLight.quadratic = 0.09f;
+
 
 }
 
@@ -101,6 +110,14 @@ void MainController::draw_car() {
     shader->set_float("yellowPointLight.constant", yellowPointLight.constant);
     shader->set_float("yellowPointLight.linear", yellowPointLight.linear);
     shader->set_float("yellowPointLight.quadratic", yellowPointLight.quadratic);
+
+    shader->set_vec3("greenPointLight.position", greenPointLight.position);
+    shader->set_vec3("greenPointLight.ambient", greenPointLight.ambient);
+    shader->set_vec3("greenPointLight.diffuse", greenPointLight.diffuse);
+    shader->set_vec3("greenPointLight.specular", greenPointLight.specular);
+    shader->set_float("greenPointLight.constant", greenPointLight.constant);
+    shader->set_float("greenPointLight.linear", greenPointLight.linear);
+    shader->set_float("greenPointLight.quadratic", greenPointLight.quadratic);
 
 
     shader->set_mat4("projection", graphics->projection_matrix());
@@ -146,6 +163,14 @@ void MainController::draw_traffic_light() {
     shader->set_float("yellowPointLight.constant", yellowPointLight.constant);
     shader->set_float("yellowPointLight.linear", yellowPointLight.linear);
     shader->set_float("yellowPointLight.quadratic", yellowPointLight.quadratic);
+
+    shader->set_vec3("greenPointLight.position", greenPointLight.position);
+    shader->set_vec3("greenPointLight.ambient", greenPointLight.ambient);
+    shader->set_vec3("greenPointLight.diffuse", greenPointLight.diffuse);
+    shader->set_vec3("greenPointLight.specular", greenPointLight.specular);
+    shader->set_float("greenPointLight.constant", greenPointLight.constant);
+    shader->set_float("greenPointLight.linear", greenPointLight.linear);
+    shader->set_float("greenPointLight.quadratic", greenPointLight.quadratic);
 
 
     shader->set_mat4("projection", graphics->projection_matrix());

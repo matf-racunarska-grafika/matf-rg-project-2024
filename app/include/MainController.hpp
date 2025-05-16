@@ -53,6 +53,7 @@ public:
     DirLight directionalLight;
     PointLight redPointLight;
     PointLight yellowPointLight;
+    PointLight greenPointLight;
 };
 
 }// app

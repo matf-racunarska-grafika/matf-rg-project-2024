@@ -53,6 +53,7 @@ in vec3 FragPos;
 uniform DirLight directionalLight;
 uniform PointLight redPointLight;
 uniform PointLight yellowPointLight;
+uniform PointLight greenPointLight;
 uniform sampler2D texture_diffuse0;
 uniform sampler2D texture_specular0;
 uniform float material_shininess;
@@ -102,6 +103,7 @@ void main()
     vec3 result = CalcDirLight(directionalLight, normal, viewDir);
     result += CalcPointLight(redPointLight, normal, FragPos, viewDir);
     result += CalcPointLight(yellowPointLight, normal, FragPos, viewDir);
+    result += CalcPointLight(greenPointLight, normal, FragPos, viewDir);
 
     FragColor = vec4(result, 1.0);
 }
