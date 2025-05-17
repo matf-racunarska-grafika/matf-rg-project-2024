@@ -40,6 +40,8 @@ class MainController : public engine::core::Controller {
 
     void update_camera();
 
+    void update_lights_go();
+
     void update() override;
 
     void begin_draw() override;
@@ -48,12 +50,20 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
+    void turn_off(PointLight &light);
+
+    void turn_on(PointLight &light, int color);
+
 public:
     std::string_view name() const override { return "app::MainController"; }
     DirLight directionalLight;
     PointLight redPointLight;
     PointLight yellowPointLight;
     PointLight greenPointLight;
+
+private:
+    bool transition_started = false;
+    float time_since_transition = 0.0f;
 };
 
 }// app

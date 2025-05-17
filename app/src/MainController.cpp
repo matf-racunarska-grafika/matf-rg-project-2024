@@ -51,18 +51,20 @@ void MainController::initialize() {
     redPointLight.linear = 0.09f;
     redPointLight.quadratic = 0.09f;
 
+    // on startup yellow is turned off
     yellowPointLight.position = glm::vec3(4.5, 4.4, 1.5);
-    yellowPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
-    yellowPointLight.diffuse = glm::vec3(2.0, 2.0, 0.0);
-    yellowPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    yellowPointLight.ambient = glm::vec3(0.0, 0.0, 0.0);
+    yellowPointLight.diffuse = glm::vec3(0.0, 0.0, 0.0);
+    yellowPointLight.specular = glm::vec3(0.0, 0.0, 0.0);
     yellowPointLight.constant = 1.0f;
     yellowPointLight.linear = 0.09f;
     yellowPointLight.quadratic = 0.09f;
 
+    // on startup green is turned off
     greenPointLight.position = glm::vec3(4.5, 4.05, 1.5);
-    greenPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
-    greenPointLight.diffuse = glm::vec3(0.0, 2.0, 0.0);
-    greenPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
+    greenPointLight.ambient = glm::vec3(0.0, 0.0, 0.0);
+    greenPointLight.diffuse = glm::vec3(0.0, 0.0, 0.0);
+    greenPointLight.specular = glm::vec3(0.0, 0.0, 0.0);
     greenPointLight.constant = 1.0f;
     greenPointLight.linear = 0.09f;
     greenPointLight.quadratic = 0.09f;
@@ -199,7 +201,32 @@ void MainController::update_camera() {
 
 }
 
-void MainController::update() { update_camera(); }
+void MainController::update_lights_go() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    float dt = platform->dt();
+
+    if (!transition_started && platform->key(engine::platform::KeyId::KEY_G).state() == engine::platform::Key::State::JustPressed) {
+        transition_started = true;
+        time_since_transition = 0.0f;
+        turn_off(redPointLight);
+        spdlog::info("red off ,wait for 3 seconds......");
+    }
+
+    if (transition_started) {
+        time_since_transition += dt;
+
+        if (time_since_transition >= 3.0f) {
+            transition_started = false;
+            turn_on(greenPointLight, 2);
+            spdlog::info("3 seconds passed, green on....");
+        }
+    }
+}
+
+void MainController::update() {
+    update_camera();
+    update_lights_go();
+}
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
@@ -211,5 +238,20 @@ void MainController::draw() {
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
+}
+
+void MainController::turn_off(PointLight &light) {
+    light.ambient = glm::vec3(0.0f, 0.0f, 0.0f);
+    light.diffuse = glm::vec3(0.0f, 0.0f, 0.0f);
+    light.specular = glm::vec3(0.0f, 0.0f, 0.0f);
+}
+
+void MainController::turn_on(PointLight &light, int color) {
+    // color => 0 - red, 1 - yellow, 2 - green
+    light.ambient = glm::vec3(0.4f, 0.4f, 0.2f);
+    light.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+
+    if (color == 0) { light.diffuse = glm::vec3(2.0f, 0.0f, 0.0f); } else if (color == 1) { light.diffuse = glm::vec3(2.0f, 2.0f, 0.0f); } else if (color == 2) { light.diffuse = glm::vec3(0.0f, 2.0f, 0.0f); }
+
 }
 }// app
