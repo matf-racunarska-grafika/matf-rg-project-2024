@@ -43,6 +43,8 @@ class MainController : public engine::core::Controller {
 
     void update_lights_red();
 
+    void update_blinking_yellow();
+
     void update() override;
 
     void draw_car();
@@ -72,6 +74,10 @@ private:
     float time_since_transition = 0.0f;
 
     bool red_on = true;
+
+    bool blinking_yellow = false;
+    bool yellow_on = false;
+    std::chrono::steady_clock::time_point last_toggle_time;
 };
 
 }// app

@@ -88,6 +88,7 @@ void MainController::poll_events() {
 
         transition_on = true;
         red_on = false;
+        blinking_yellow = false;
     }
     if (platform->key(engine::platform::KeyId::KEY_R).state() == engine::platform::Key::State::JustPressed && !transition_started) {
         turn_off(greenPointLight);
@@ -95,6 +96,19 @@ void MainController::poll_events() {
 
         transition_on = false;
         red_on = true;
+        blinking_yellow = false;
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_Y).state() == engine::platform::Key::State::JustPressed && !transition_started && !blinking_yellow) {
+        turn_off(redPointLight);
+        turn_off(greenPointLight);
+        turn_on(yellowPointLight, 1);
+
+        transition_on = false;
+        red_on = false;
+        blinking_yellow = true;
+        yellow_on = true;
+        last_toggle_time = std::chrono::steady_clock::now();
     }
 }
 
@@ -121,12 +135,14 @@ void MainController::update_lights_go() {
             transition_started = true;
             time_since_transition = 0.0f;
             turn_on(redPointLight, 0);
-            turn_on(yellowPointLight, 1);
-            spdlog::info("red and yellow on ,wait for 3 seconds......");
+            //turn_on(yellowPointLight, 1);
+            spdlog::info("red on ,wait for 3 second......");
         }
 
         if (transition_started) {
             time_since_transition += dt;
+
+            if (time_since_transition >= 1.0f) { turn_on(yellowPointLight, 1); }
 
             if (time_since_transition >= 3.0f) {
                 transition_started = false;
@@ -142,10 +158,22 @@ void MainController::update_lights_go() {
 
 void MainController::update_lights_red() { if (red_on) { turn_on(redPointLight, 0); } }
 
+void MainController::update_blinking_yellow() {
+    if (blinking_yellow) {
+        auto now = std::chrono::steady_clock::now();
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_toggle_time).count() > 500) {
+            yellow_on = !yellow_on;
+            if (yellow_on) { turn_on(yellowPointLight, 1); } else { turn_off(yellowPointLight); }
+            last_toggle_time = now;
+        }
+    }
+}
+
 void MainController::update() {
     update_camera();
     update_lights_go();
     update_lights_red();
+    update_blinking_yellow();
 }
 
 void MainController::draw_car() {
