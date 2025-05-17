@@ -4,6 +4,7 @@
 
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
+#include <chrono>
 #include <engine/core/Controller.hpp>
 #include <glm/vec3.hpp>
 
@@ -34,15 +35,19 @@ class MainController : public engine::core::Controller {
 
     bool loop() override;
 
-    void draw_car();
-
-    void draw_traffic_light();
+    void poll_events() override;
 
     void update_camera();
 
     void update_lights_go();
 
+    void update_lights_red();
+
     void update() override;
+
+    void draw_car();
+
+    void draw_traffic_light();
 
     void begin_draw() override;
 
@@ -63,7 +68,10 @@ public:
 
 private:
     bool transition_started = false;
+    bool transition_on = false;
     float time_since_transition = 0.0f;
+
+    bool red_on = true;
 };
 
 }// app

@@ -69,7 +69,6 @@ void MainController::initialize() {
     greenPointLight.linear = 0.09f;
     greenPointLight.quadratic = 0.09f;
 
-
 }
 
 bool MainController::loop() {
@@ -77,7 +76,76 @@ bool MainController::loop() {
     if (platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) { return false; }
     return true;
 
+}
 
+void MainController::poll_events() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+    if (platform->key(engine::platform::KeyId::KEY_G).state() == engine::platform::Key::State::JustPressed && !transition_started) {
+        turn_off(greenPointLight);
+        turn_off(yellowPointLight);
+        turn_on(redPointLight, 0);
+
+        transition_on = true;
+        red_on = false;
+    }
+    if (platform->key(engine::platform::KeyId::KEY_R).state() == engine::platform::Key::State::JustPressed && !transition_started) {
+        turn_off(greenPointLight);
+        turn_off(yellowPointLight);
+
+        transition_on = false;
+        red_on = true;
+    }
+}
+
+void MainController::update_camera() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+    float dt = platform->dt();
+
+    if (platform->key(engine::platform::KeyId::KEY_W).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt); }
+    if (platform->key(engine::platform::KeyId::KEY_S).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt); }
+    if (platform->key(engine::platform::KeyId::KEY_A).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt); }
+    if (platform->key(engine::platform::KeyId::KEY_D).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt); }
+
+}
+
+void MainController::update_lights_go() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    float dt = platform->dt();
+
+    if (transition_on) {
+        //if (!transition_started && platform->key(engine::platform::KeyId::KEY_G).state() == engine::platform::Key::State::JustPressed) {
+        if (!transition_started) {
+            transition_started = true;
+            time_since_transition = 0.0f;
+            turn_on(redPointLight, 0);
+            turn_on(yellowPointLight, 1);
+            spdlog::info("red and yellow on ,wait for 3 seconds......");
+        }
+
+        if (transition_started) {
+            time_since_transition += dt;
+
+            if (time_since_transition >= 3.0f) {
+                transition_started = false;
+                turn_off(redPointLight);
+                turn_off(yellowPointLight);
+                turn_on(greenPointLight, 2);
+                spdlog::info("3 seconds passed, green on....");
+                transition_on = false;
+            }
+        }
+    }
+}
+
+void MainController::update_lights_red() { if (red_on) { turn_on(redPointLight, 0); } }
+
+void MainController::update() {
+    update_camera();
+    update_lights_go();
+    update_lights_red();
 }
 
 void MainController::draw_car() {
@@ -185,47 +253,6 @@ void MainController::draw_traffic_light() {
     shader->set_mat4("model", model);
 
     traffic_light->draw(shader);
-}
-
-void MainController::update_camera() {
-    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto camera = graphics->camera();
-    float dt = platform->dt();
-
-    if (platform->key(engine::platform::KeyId::KEY_W).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt); }
-    if (platform->key(engine::platform::KeyId::KEY_S).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt); }
-    if (platform->key(engine::platform::KeyId::KEY_A).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt); }
-    if (platform->key(engine::platform::KeyId::KEY_D).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt); }
-
-
-}
-
-void MainController::update_lights_go() {
-    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    float dt = platform->dt();
-
-    if (!transition_started && platform->key(engine::platform::KeyId::KEY_G).state() == engine::platform::Key::State::JustPressed) {
-        transition_started = true;
-        time_since_transition = 0.0f;
-        turn_off(redPointLight);
-        spdlog::info("red off ,wait for 3 seconds......");
-    }
-
-    if (transition_started) {
-        time_since_transition += dt;
-
-        if (time_since_transition >= 3.0f) {
-            transition_started = false;
-            turn_on(greenPointLight, 2);
-            spdlog::info("3 seconds passed, green on....");
-        }
-    }
-}
-
-void MainController::update() {
-    update_camera();
-    update_lights_go();
 }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
