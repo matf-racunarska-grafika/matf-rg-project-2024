@@ -1,22 +1,33 @@
-# {NAME-OF-THE-PROJECT}
+# Traffic Scene
 
-{INDEX} - {STUDENT-FULL-NAME}  
-{PROJECT DESCRIPTION}
+129/2022 - Ana Vidakovic  
+Simple scene with a car at a traffic light.
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+W -> FORWARD
+
+S -> BACKWARD
+
+A -> LEFT
+
+D -> RIGHT
+
+R -> TURN ON RED LIGHT
+
+G -> TRANSITION FROM RED LIGHT TO GREEN
+
+Y -> TURN ON BLINKING YELLOW LIGHT
+
+ESC -> CLOSE WINDOW
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[X] Model with lighting
+[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[X] {PRESS G} --- AFTER_1_SECOND ---> {YELLOW LIGHT TURNS ON} ---> AFTER_2_SECONDS ---> {GREEN LIGHT TURNS ON}
 
 ### Group A:
 
@@ -26,6 +37,7 @@
 [ ] Parallax Mapping
 
 ### Group B:
+
 [ ] Bloom with the use of HDR  
 [ ] Deferred Shading  
 [ ] Point Shadows  
@@ -37,12 +49,11 @@
 
 ## Models:
 
-[link1]   
-[link2]
+[https://sketchfab.com/3d-models/traffic-light-321e93bc36af4531b350febcfefee621]   
+[https://www.fab.com/listings/2e0deaee-7104-4618-ab38-24fc36cdc6bf]
 
 ## Textures
 
-[link1]  
-[link2]
+[]
 
 {OTHER-RESOURCES}
