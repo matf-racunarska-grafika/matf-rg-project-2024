@@ -78,6 +78,8 @@ private:
     bool blinking_yellow = false;
     bool yellow_on = false;
     std::chrono::steady_clock::time_point last_toggle_time;
+
+    int state = 0;
 };
 
 }// app

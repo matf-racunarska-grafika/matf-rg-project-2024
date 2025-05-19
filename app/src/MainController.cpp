@@ -103,6 +103,7 @@ void MainController::poll_events() {
         turn_off(redPointLight);
         turn_off(greenPointLight);
         turn_on(yellowPointLight, 1);
+        state = 1;
 
         transition_on = false;
         red_on = false;
@@ -135,6 +136,7 @@ void MainController::update_lights_go() {
             transition_started = true;
             time_since_transition = 0.0f;
             turn_on(redPointLight, 0);
+            state = 0;
             //turn_on(yellowPointLight, 1);
             spdlog::info("red on ,wait for 3 second......");
         }
@@ -142,13 +144,17 @@ void MainController::update_lights_go() {
         if (transition_started) {
             time_since_transition += dt;
 
-            if (time_since_transition >= 1.0f) { turn_on(yellowPointLight, 1); }
+            if (time_since_transition >= 1.0f) {
+                turn_on(yellowPointLight, 1);
+                state = 3;
+            }
 
             if (time_since_transition >= 3.0f) {
                 transition_started = false;
                 turn_off(redPointLight);
                 turn_off(yellowPointLight);
                 turn_on(greenPointLight, 2);
+                state = 2;
                 spdlog::info("3 seconds passed, green on....");
                 transition_on = false;
             }
@@ -156,14 +162,25 @@ void MainController::update_lights_go() {
     }
 }
 
-void MainController::update_lights_red() { if (red_on) { turn_on(redPointLight, 0); } }
+void MainController::update_lights_red() {
+    if (red_on) {
+        turn_on(redPointLight, 0);
+        state = 0;
+    }
+}
 
 void MainController::update_blinking_yellow() {
     if (blinking_yellow) {
         auto now = std::chrono::steady_clock::now();
         if (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_toggle_time).count() > 500) {
             yellow_on = !yellow_on;
-            if (yellow_on) { turn_on(yellowPointLight, 1); } else { turn_off(yellowPointLight); }
+            if (yellow_on) {
+                turn_on(yellowPointLight, 1);
+                state = 1;
+            } else {
+                turn_off(yellowPointLight);
+                state = -1;
+            }
             last_toggle_time = now;
         }
     }
@@ -269,6 +286,8 @@ void MainController::draw_traffic_light() {
     shader->set_float("greenPointLight.constant", greenPointLight.constant);
     shader->set_float("greenPointLight.linear", greenPointLight.linear);
     shader->set_float("greenPointLight.quadratic", greenPointLight.quadratic);
+
+    shader->set_int("state", state);
 
 
     shader->set_mat4("projection", graphics->projection_matrix());

@@ -58,6 +58,7 @@ uniform sampler2D texture_diffuse0;
 uniform sampler2D texture_specular0;
 uniform float material_shininess;
 uniform vec3 viewPosition;
+uniform int state;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
@@ -95,15 +96,55 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
+float calcGlow(vec3 texColor, vec3 targetColor) {
+    float distance = length(texColor - targetColor);
+    return smoothstep(0.4, 0.0, distance);
+}
+
 void main()
 {
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPosition - FragPos);
+    vec3 texColor = vec3(texture(texture_diffuse0, TexCoords));
 
     vec3 result = CalcDirLight(directionalLight, normal, viewDir);
     result += CalcPointLight(redPointLight, normal, FragPos, viewDir);
     result += CalcPointLight(yellowPointLight, normal, FragPos, viewDir);
     result += CalcPointLight(greenPointLight, normal, FragPos, viewDir);
+
+    vec3 redLight =  vec3(0.6,0.0,0.0);
+    vec3 yellowLight = vec3(0.6, 0.5, 0.0);
+    vec3 greenLight = vec3(0.0,0.55,0.0);
+
+    float glow = 0.0;
+    vec3 glowColor = vec3(0.0);
+
+    if (state == 0) {
+
+        glow = calcGlow(texColor, redLight);
+        glowColor = redLight * 2.0;
+        result += glow * glowColor * 5.0;
+
+    }else if (state == 1) {
+
+         glow = calcGlow(texColor, yellowLight);
+         glowColor = yellowLight * 2.0;
+         result += glow * glowColor * 5.0;
+
+    }else if (state == 2) {
+
+         glow = calcGlow(texColor, greenLight);
+         glowColor = greenLight * 2.0;
+         result += glow * glowColor * 5.0;
+
+    }else if (state == 3) {
+
+        float redGlow = calcGlow(texColor, redLight);
+        yellowLight = vec3(0.6,0.4,0.0);
+        float yellowGlow = calcGlow(texColor, yellowLight);
+        result += redGlow * redLight * 5.0;
+        result += yellowGlow * yellowLight * 5.0;
+    }
 
     FragColor = vec4(result, 1.0);
 }
