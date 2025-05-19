@@ -38,12 +38,12 @@ void MainController::initialize() {
     glfwSetCursorPos(window_handle, width, height);
 
     // dirLight
-    directionalLight.direction = glm::vec3(0.0f, -8.0f, 0.0f);
+    directionalLight.direction = glm::vec3(0.0f, -8.0f, -5.0f);
     directionalLight.ambient = glm::vec3(0.05f);
     directionalLight.diffuse = glm::vec3(1.0f, 0.7843f, 0.3921f) * 0.5f;
     directionalLight.specular = glm::vec3(0.2f, 0.2f, 0.2f) * 0.5f;
 
-    redPointLight.position = glm::vec3(4.5, 4.7, 1.5);
+    redPointLight.position = glm::vec3(4.5, 4.7, -3.5);
     redPointLight.ambient = glm::vec3(0.4, 0.4, 0.2);
     redPointLight.diffuse = glm::vec3(2.0, 0.0, 0.0);
     redPointLight.specular = glm::vec3(0.5, 0.5, 0.5);
@@ -52,7 +52,7 @@ void MainController::initialize() {
     redPointLight.quadratic = 0.09f;
 
     // on startup yellow is turned off
-    yellowPointLight.position = glm::vec3(4.5, 4.4, 1.5);
+    yellowPointLight.position = glm::vec3(4.5, 4.4, -3.5);
     yellowPointLight.ambient = glm::vec3(0.0, 0.0, 0.0);
     yellowPointLight.diffuse = glm::vec3(0.0, 0.0, 0.0);
     yellowPointLight.specular = glm::vec3(0.0, 0.0, 0.0);
@@ -61,7 +61,7 @@ void MainController::initialize() {
     yellowPointLight.quadratic = 0.09f;
 
     // on startup green is turned off
-    greenPointLight.position = glm::vec3(4.5, 4.05, 1.5);
+    greenPointLight.position = glm::vec3(4.5, 4.05, -3.5);
     greenPointLight.ambient = glm::vec3(0.0, 0.0, 0.0);
     greenPointLight.diffuse = glm::vec3(0.0, 0.0, 0.0);
     greenPointLight.specular = glm::vec3(0.0, 0.0, 0.0);
@@ -131,7 +131,6 @@ void MainController::update_lights_go() {
     float dt = platform->dt();
 
     if (transition_on) {
-        //if (!transition_started && platform->key(engine::platform::KeyId::KEY_G).state() == engine::platform::Key::State::JustPressed) {
         if (!transition_started) {
             transition_started = true;
             time_since_transition = 0.0f;
@@ -238,7 +237,7 @@ void MainController::draw_car() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -5.0f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.5f));
     shader->set_mat4("model", model);
@@ -293,7 +292,7 @@ void MainController::draw_traffic_light() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(4.5f, 4.1f, 1.5f));
+    model = glm::translate(model, glm::vec3(4.5f, 4.1f, -3.5f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, glm::vec3(0.017f));
