@@ -6,6 +6,7 @@
 #define MAINCONTROLLER_H
 
 #include <engine/core/Controller.hpp>
+
 namespace app {
 
 class MainController : public engine::core::Controller {
@@ -13,12 +14,18 @@ class MainController : public engine::core::Controller {
 
     bool loop() override;
 
+    void draw() override;
+
+    void begin_draw() override;
+
+    void end_draw() override;
+
+    void draw_cat();
+
 public:
-    std::string_view name() const override {
-        return "App::MainController";
-    }
+    std::string_view name() const override { return "App::MainController"; }
 };
 
-} // app
+}// app
 
 #endif //MAINCONTROLLER_H

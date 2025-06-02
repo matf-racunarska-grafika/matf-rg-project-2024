@@ -1,8 +1,8 @@
 {
   "resources": {
     "models": {
-      "football": {
-        "path": "football/football.fbx"
+      "cat": {
+        "path": "cat/cat.obj"
       }
     }
   },
