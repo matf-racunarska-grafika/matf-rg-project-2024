@@ -22,6 +22,10 @@ class MainController : public engine::core::Controller {
 
     void draw_cat();
 
+    void update() override;
+
+    void update_camera();
+
 public:
     std::string_view name() const override { return "App::MainController"; }
 };
