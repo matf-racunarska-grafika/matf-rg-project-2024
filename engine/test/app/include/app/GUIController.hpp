@@ -1,4 +1,3 @@
-
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
 
