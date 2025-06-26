@@ -10,6 +10,7 @@
   "window": {
     "title": "MyApp",
     "width": 1600,
-    "height": 900
+    "height": 900,
+    "fullscreen": true
   }
 }
