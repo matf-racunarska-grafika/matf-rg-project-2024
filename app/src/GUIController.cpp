@@ -2,6 +2,7 @@
 #include <engine/core/Engine.hpp>
 #include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
+#include <GLFW/glfw3.h>
 
 namespace engine::myapp {
 void GUIController::initialize() { set_enable(false); }
@@ -16,26 +17,38 @@ void GUIController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     graphics->begin_gui();
-    // Draw backpack scale slider window
-    // auto backpack  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
-    // static float f = 0.0f;
-    // ImGui::Begin(backpack->name().c_str());
-    // ImGui::Text("Loaded from: %s", backpack->path().c_str());
-    // ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
-    // ImGui::End();
+    auto &cfg = engine::util::Configuration::config()["window"];
+    static bool fullscreen = cfg.value("fullscreen", false);
 
-    // Draw camera info
-    ImGui::Begin("Camera info");
-    const auto &c = *camera;
-    ImGui::Text("Camera position: (%f, %f, %f)", c.Position
-                                                  .x, c.Position
-                                                       .y, c.Position
-                                                            .z);
-    ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-    ImGui::Text("Camera front: (%f, %f, %f)", c.Front
-                                               .x, c.Front
-                                                    .y, c.Front
-                                                         .z);
+    ImGui::Begin("Settings");
+
+    if (ImGui::Checkbox("Fullscreen", &fullscreen)) {
+        // Odmah primeni promenu
+        auto *platform = core::Controller::get<platform::PlatformController>();
+        GLFWwindow *win = platform->window()->handle_();
+
+        if (fullscreen) {
+            // Udji u fullscreen
+            GLFWmonitor *mon = glfwGetPrimaryMonitor();
+            const auto *mode = glfwGetVideoMode(mon);
+            glfwSetWindowMonitor(win, mon,
+                                 0, 0,
+                                 mode->width, mode->height,
+                                 mode->refreshRate);
+        } else {
+            // Vracanje u windowed rezim
+            int w = cfg.value("width", 800);
+            int h = cfg.value("height", 600);
+            glfwSetWindowMonitor(win, nullptr,
+                                 100, 100,
+                                 w, h,
+                                 0);
+        }
+
+        // Cuvamo promenu u configu
+        cfg["fullscreen"] = fullscreen;
+    }
+
     ImGui::End();
     graphics->end_gui();
 }
