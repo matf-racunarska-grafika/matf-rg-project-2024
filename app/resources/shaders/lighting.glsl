@@ -1,14 +1,13 @@
 //#shader vertex
 #version 330 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoords;
-layout (location = 3) in vec3 aTangent;
+layout (location = 0) in vec3 Position;
+layout (location = 1) in vec3 Normal0;
+layout (location = 2) in vec2 TexCoord0;
 
-out vec3 FragPos;
-out vec2 TexCoords;
-out mat3 TBN;
+out vec3 vLocalPos;
+out vec3 vNormal;
+out vec2 vTexCoords;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -16,98 +15,154 @@ uniform mat4 projection;
 
 void main()
 {
-    vec4 worldPos = model * vec4(aPos, 1.0);
-    FragPos = worldPos.xyz;
-    TexCoords = aTexCoords;
+    // 1) world-space pozicija
+    vec4 worldPos = model * vec4(Position, 1.0);
+    vLocalPos = worldPos.xyz;
 
-    mat3 normalMatrix = transpose(inverse(mat3(model)));
-    vec3 worldNormal = normalize(normalMatrix * aNormal);
+    // 2) normalna u world-space
+    mat3 normalMat = transpose(inverse(mat3(model)));
+    vNormal = normalize(normalMat * Normal0);
 
-    vec3 worldTangent = normalize(mat3(model) * aTangent);
+    // 3) UV
+    vTexCoords = TexCoord0;
 
-    vec3 worldBitangent = normalize(cross(worldNormal, worldTangent));
-
-    TBN = mat3(worldTangent, worldBitangent, worldNormal);
-
+    // 4) IDEALNO PROJEKTOVANJE
     gl_Position = projection * view * worldPos;
 }
 
 //#shader fragment
 #version 330 core
 
-#define NR_POINT_LIGHTS 2
+const int MAX_POINT_LIGHTS = 2;
 
-struct PointLight {
-    vec3 position;
+// Ulazi iz vertexa
+in vec2 vTexCoords;
+in vec3 vNormal;
+in vec3 vLocalPos;
 
-    float constant;
-    float linear;
-    float quadratic;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-};
-
-uniform PointLight pointLights[NR_POINT_LIGHTS];
-
-in vec3 FragPos;
-in vec2 TexCoords;
-in mat3 TBN;
-
+// Izlaz
 out vec4 FragColor;
 
-uniform sampler2D texture_diffuse1;  // Diffuse mapa
-uniform sampler2D texture_specular1; // Specular mapa
+// Osnovni tip svetla: boja + jačine
+struct BaseLight {
+    vec3 Color;
+    float AmbientIntensity;
+    float DiffuseIntensity;
+};
 
-uniform vec3 viewPos;
-uniform float material_shininess;
+// Directional light
+struct DirectionalLight {
+    BaseLight Base;
+    vec3 Direction;
+};
 
-vec3 CalcPointLight(PointLight light, vec3 norm, vec3 fragPos, vec3 viewDir)
+// Atenuacija za point light
+struct Attenuation {
+    float Constant;
+    float Linear;
+    float Exp;
+};
+
+// Point light
+struct PointLight {
+    BaseLight Base;
+    vec3 LocalPos;
+    Attenuation Atten;
+};
+
+// Materijal
+struct Material {
+    vec3 AmbientColor;
+    vec3 DiffuseColor;
+    vec3 SpecularColor;
+};
+
+// Uniformi
+uniform DirectionalLight gDirectionalLight;
+uniform int gNumPointLights;
+uniform PointLight gPointLights[MAX_POINT_LIGHTS];
+uniform Material gMaterial;
+uniform sampler2D gSampler;                // diffuse mapa
+uniform sampler2D gSamplerSpecularExponent;
+uniform vec3 gCameraLocalPos;         // pozicija kamere
+
+vec4 CalcLightInternal(BaseLight light, vec3 lightDir, vec3 normal)
 {
-    vec3 lightDir = normalize(light.position - fragPos);
+    // Ambient
+    vec4 ambient = vec4(light.Color, 1.0)
+    * light.AmbientIntensity
+    * vec4(gMaterial.AmbientColor, 1.0);
 
-    // Primena light wrapping-a
-    float wrapFactor = 0.3;
-    float diffRaw = max(dot(norm, lightDir), 0.0);
-    float diff = (diffRaw + wrapFactor) / (1.0 + wrapFactor);
+    // Diffuse i specular
+    float diffFactor = max(dot(normal, -lightDir), 0.0);
+    vec4 diffuse = vec4(0.0);
+    vec4 specular = vec4(0.0);
+    if (diffFactor > 0.0) {
+        diffuse = vec4(light.Color, 1.0)
+        * light.DiffuseIntensity
+        * vec4(gMaterial.DiffuseColor, 1.0)
+        * diffFactor;
 
-    // Spekularnaa komponenta
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = (diffRaw > 0.0) ? pow(max(dot(viewDir, reflectDir), 0.0), material_shininess) : 0.0;
-
-    // Atenuacija
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-
-    // Uzimanje boje iz diffuse i specular mapa
-    vec3 diffuseColor = texture(texture_diffuse1, TexCoords).rgb;
-    float specularMap = texture(texture_specular1, TexCoords).r;
-
-    // Kombinovanje komponenata
-    vec3 ambient = light.ambient * diffuseColor;
-    vec3 diffuse = light.diffuse * diff * diffuseColor;
-    vec3 specular = light.specular * spec * specularMap;
-
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
+        // Phong specular
+        vec3 toCam = normalize(gCameraLocalPos - vLocalPos);
+        vec3 reflectR = reflect(lightDir, normal);
+        float specFactor = max(dot(toCam, reflectR), 0.0);
+        if (specFactor > 0.0) {
+            float exponent = texture(gSamplerSpecularExponent, vTexCoords).r * 255.0;
+            specFactor = pow(specFactor, exponent);
+            specular = vec4(light.Color, 1.0)
+            * light.DiffuseIntensity
+            * vec4(gMaterial.SpecularColor, 1.0)
+            * specFactor;
+        }
+    }
 
     return ambient + diffuse + specular;
 }
 
+//==========================================================================
+// Directional light
+//==========================================================================
+vec4 CalcDirectionalLight(vec3 normal)
+{
+    return CalcLightInternal(
+        gDirectionalLight.Base,
+        normalize(-gDirectionalLight.Direction),
+        normal
+    );
+}
+
+//==========================================================================
+// Jedan point light
+//==========================================================================
+vec4 CalcPointLight(int i, vec3 normal)
+{
+    vec3 lightDir = normalize(vLocalPos - gPointLights[i].LocalPos);
+    vec4 color = CalcLightInternal(
+        gPointLights[i].Base,
+        lightDir,
+        normal
+    );
+
+    float dist = length(vLocalPos - gPointLights[i].LocalPos);
+    float atten = gPointLights[i].Atten.Constant
+    + gPointLights[i].Atten.Linear * dist
+    + gPointLights[i].Atten.Exp * dist * dist;
+    return color / atten;
+}
+
 void main()
 {
-    vec3 norm = normalize(TBN[2]);
+    vec3 normal = normalize(vNormal);
 
-    // Pravac ka kameri
-    vec3 viewDir = normalize(viewPos - FragPos);
+    // 1) Directional light
+    vec4 totalLight = CalcDirectionalLight(normal);
 
-    // Sumiramo osvetljenje od svih point light-ova
-    vec3 result = vec3(0.0);
-    for (int i = 0; i < NR_POINT_LIGHTS; i++) {
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-    }
+    // 2) Point lights
+    for (int i = 0; i < gNumPointLights; ++i)
+    totalLight += CalcPointLight(i, normal);
 
-    FragColor = vec4(result, 1.0);
+    // 3) Miks sa diffuse teksturom
+    vec4 baseColor = texture(gSampler, vTexCoords);
+    FragColor = baseColor * totalLight;
 }
