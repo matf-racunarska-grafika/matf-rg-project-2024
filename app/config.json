@@ -12,6 +12,10 @@
       "terrain": {
         "path": "terrain/Terrain.obj",
         "flip_uvs": true
+      },
+      "tree": {
+        "path": "tree/raw2.obj",
+        "flip_uvs": true
       }
     }
   },

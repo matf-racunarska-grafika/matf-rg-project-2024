@@ -66,6 +66,13 @@ void MainController::draw() {
     auto terrain = engine::core::Controller::get<engine::resources::ResourcesController>()->model("terrain");
     draw_mesh(terrain, PointLightShader, glm::vec3(0.0f, -10.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
 
+    auto tree = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree");
+    draw_mesh(tree, PointLightShader, glm::vec3(26.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, PointLightShader, glm::vec3(-15.0f, 3.0f, 20.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, PointLightShader, glm::vec3(30.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, PointLightShader, glm::vec3(-20.0f, 3.0f, 10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, PointLightShader, glm::vec3(26.0f, 3.0f, 10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+
     // Crtaj skybox
     draw_skybox();
 }
@@ -116,26 +123,26 @@ void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float sca
 
 void MainController::set_point_lights(auto shader) {
     // Pozicije point lightova
-    glm::vec3 lightPos0 = glm::vec3(-5.0, 1.0f, 2.0f);
-    glm::vec3 lightPos1 = glm::vec3(0.0f, 1.0f, 2.0f);
+    glm::vec3 lightPos0 = glm::vec3(-10.0, 1.0f, 2.0f);
+    glm::vec3 lightPos1 = glm::vec3(10.0f, 3.0f, 50.0f);
 
     // Postavljanje uniform-e za prvi point light
     shader->set_vec3("pointLights[0].position", lightPos0);
     shader->set_float("pointLights[0].constant", 1.0f);
-    shader->set_float("pointLights[0].linear", 0.09);
-    shader->set_float("pointLights[0].quadratic", 0.032);
-    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.2));
-    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.5));
-    shader->set_vec3("pointLights[0].specular", glm::vec3(0.3));
+    shader->set_float("pointLights[0].linear", 0.09f);
+    shader->set_float("pointLights[0].quadratic", 0.032f);
+    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.5));
+    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.9));
+    shader->set_vec3("pointLights[0].specular", glm::vec3(0.7));
 
     // Postavljanje uniform-e za drugi point light
     shader->set_vec3("pointLights[1].position", lightPos1);
     shader->set_float("pointLights[1].constant", 1.0f);
-    shader->set_float("pointLights[1].linear", 0.09);
-    shader->set_float("pointLights[1].quadratic", 0.032);
-    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.2));
-    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.5));
-    shader->set_vec3("pointLights[1].specular", glm::vec3(0.3));
+    shader->set_float("pointLights[1].linear", 0.09f);
+    shader->set_float("pointLights[1].quadratic", 0.032f);
+    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.5));
+    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.9));
+    shader->set_vec3("pointLights[1].specular", glm::vec3(0.7));
 
     // Mesh na poziciji izvora point light-ova
     draw_light_source_mesh(lightPos0, 3.0f);// prvi izvor svetla
