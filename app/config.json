@@ -8,6 +8,14 @@
       "light_bulb": {
         "path": "light_bulb/light_bulb.fbx",
         "flip_uvs": false
+      },
+      "terrain": {
+        "path": "terrain/Terrain.obj",
+        "flip_uvs": true
+      },
+      "tree": {
+        "path": "tree/raw2.obj",
+        "flip_uvs": true
       }
     }
   },

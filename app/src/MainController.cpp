@@ -4,6 +4,7 @@
 #include <engine/graphics/GraphicsController.hpp>
 #include <app/MainController.hpp>
 #include <app/GUIController.hpp>
+#include <glad/glad.h>
 
 namespace engine::myapp {
 void MainPlatformEventObserver::on_key(engine::platform::Key key) { spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str()); }
@@ -13,6 +14,87 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 void MainController::initialize() {
     // User initialization
     engine::graphics::OpenGL::enable_depth_testing();
+
+    // ───────────── Point shadow ──────────────────────────────────────
+    // 1) Depth‐framebuffer i tekstura
+    glGenFramebuffers(1, &depthMapFBO);
+    glGenTextures(1, &depthMap);
+
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 SHADOW_WIDTH, SHADOW_HEIGHT,
+                 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = {1, 1, 1, 1};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    //
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                           GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // ────────────────────────────────────────────────────────────────
+
+
+    // ─── MSAA off-screen FBO setup ───────────────────────────────
+    glEnable(GL_MULTISAMPLE);
+
+    //
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    int width = vp[2];
+    int height = vp[3];
+
+    // 1)
+    glGenFramebuffers(1, &msFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
+
+    // 2)
+    glGenRenderbuffers(1, &msColorRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, msColorRBO);
+    glRenderbufferStorageMultisample(
+            GL_RENDERBUFFER,
+            MSAA_SAMPLES,
+            GL_RGBA8,
+            width,
+            height
+            );
+    glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GL_COLOR_ATTACHMENT0,
+            GL_RENDERBUFFER,
+            msColorRBO
+            );
+
+    // 3)
+    glGenRenderbuffers(1, &msDepthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, msDepthRBO);
+    glRenderbufferStorageMultisample(
+            GL_RENDERBUFFER,
+            MSAA_SAMPLES,
+            GL_DEPTH24_STENCIL8,
+            width,
+            height
+            );
+    glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GL_DEPTH_STENCIL_ATTACHMENT,
+            GL_RENDERBUFFER,
+            msDepthRBO
+            );
+
+    // 4)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::error("MSAA FBO is not complete!"); }
+
+    // 5)
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // ───────────────────────────────────────────────────────────────
 
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
@@ -37,29 +119,91 @@ void MainController::poll_events() {
 
 void MainController::update() { update_camera(); }
 
-void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
+void MainController::begin_draw() {
+    glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
 
+// Scena
 void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("viewPos", graphics->camera()->Position);
 
-    // Postavi globalne point lightove
-    set_point_lights(shader);
+    auto Unlit = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    Unlit->use();
+    Unlit->set_mat4("projection", graphics->projection_matrix());
+    Unlit->set_mat4("view", graphics->camera()->view_matrix());
+    Unlit->set_vec3("viewPos", graphics->camera()->Position);
+
+    auto Lit = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
+    Lit->use();
+    Lit->set_mat4("projection", graphics->projection_matrix());
+    Lit->set_mat4("view", graphics->camera()->view_matrix());
+    Lit->set_vec3("viewPos", graphics->camera()->Position);
+
+    // Crtaj point light-ove
+    set_lights(Lit);
 
     // Crtaj modele
-    draw_backpack(glm::vec3(-5.0f, 0.0f, -7.0f));
-    draw_backpack(glm::vec3(5.0f, 0.0f, -7.0f));
+    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+    draw_mesh(backpack, Lit, glm::vec3(-5.0f, 0.0f, -7.0f), glm::vec3(0.0f), glm::vec3(0.5f));
+    draw_mesh(backpack, Lit, glm::vec3(5.0f, 0.0f, -7.0f), glm::vec3(0.0f), glm::vec3(0.5f));
 
+    auto terrain = engine::core::Controller::get<engine::resources::ResourcesController>()->model("terrain");
+    draw_mesh(terrain, Lit, glm::vec3(0.0f, -10.0f, 0.0f), glm::vec3(0.0f), glm::vec3(3.0f));
+
+    auto tree = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree");
+    draw_mesh(tree, Lit, glm::vec3(26.0f, 3.0f, 0.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, Lit, glm::vec3(-15.0f, 3.0f, 20.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, Lit, glm::vec3(30.0f, 3.0f, -10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, Lit, glm::vec3(-20.0f, 3.0f, 10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+    draw_mesh(tree, Lit, glm::vec3(26.0f, 3.0f, 10.0f), glm::vec3(0.0f, 0.0f, -80.0f), glm::vec3(10.0f));
+
+    // Crtaj skybox
     draw_skybox();
 }
 
-void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+void MainController::end_draw() {
+    // 1)
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, msFBO);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    int w = vp[2], h = vp[3];
+
+    glBlitFramebuffer(
+            0, 0, w, h,
+            0, 0, w, h,
+            GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    // 2)
+    engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
+}
+
+// USER DEFINED
 // ---------------------------------------------------------------------------------------------------------------------------
+
+void MainController::draw_mesh(auto model, auto shader,
+                               const glm::vec3 &position,
+                               const glm::vec3 &rotation,// Eulerovi uglovi u radijanima: (rotX, rotY, rotZ)
+                               const glm::vec3 &scale) {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, position);
+
+    modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMat = glm::scale(modelMat, scale);
+    shader->set_mat4("model", modelMat);
+
+    model->draw(shader);
+}
 
 void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float scale) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -70,10 +214,9 @@ void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float sca
     basicShader->set_mat4("projection", graphics->projection_matrix());
     basicShader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Kreiraj model matricu tako da se kocka postavi na lightPos i skalira
     glm::mat4 modelMat = glm::mat4(1.0f);
     modelMat = glm::translate(modelMat, lightPos);
-    // rotacija od 90 stepeni oko X ose
+
     modelMat = glm::rotate(modelMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     modelMat = glm::scale(modelMat, glm::vec3(scale));
     basicShader->set_mat4("model", modelMat);
@@ -81,52 +224,51 @@ void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float sca
     cubeModel->draw(basicShader);
 }
 
-void MainController::set_point_lights(auto shader) {
-    // Pozicije point lightova
-    glm::vec3 lightPos0 = glm::vec3(-5.0, 1.0f, 2.0f);
-    glm::vec3 lightPos1 = glm::vec3(0.0f, 1.0f, 2.0f);
+void MainController::set_lights(auto shader) {
+    // 1) Directional light
+    shader->set_vec3("gDirectionalLight.Base.Color", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_float("gDirectionalLight.Base.AmbientIntensity", 0.2f);
+    shader->set_float("gDirectionalLight.Base.DiffuseIntensity", 0.5f);
+    shader->set_vec3("gDirectionalLight.Direction", glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)));
 
-    // Postavljanje uniform-e za prvi point light
-    shader->set_vec3("pointLights[0].position", lightPos0);
-    shader->set_float("pointLights[0].constant", 1.0f);
-    shader->set_float("pointLights[0].linear", 0.09f);
-    shader->set_float("pointLights[0].quadratic", 0.032f);
-    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->set_vec3("pointLights[0].specular", glm::vec3(0.3f, 0.3f, 0.3f));
+    // 2) Broj point light-ova
+    shader->set_int("gNumPointLights", 2);
 
-    // Postavljanje uniform-e za drugi point light
-    shader->set_vec3("pointLights[1].position", lightPos1);
-    shader->set_float("pointLights[1].constant", 1.0f);
-    shader->set_float("pointLights[1].linear", 0.09f);
-    shader->set_float("pointLights[1].quadratic", 0.032f);
-    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->set_vec3("pointLights[1].specular", glm::vec3(0.3f, 0.3f, 0.3f));
+    // 3) Parametri point light-ova
+    glm::vec3 lightPos[2] = {
+            glm::vec3(-10.0f, 1.0f, 2.0f),
+            glm::vec3(10.0f, 3.0f, 50.0f)
+    };
+    for (int i = 0; i < 2; ++i) {
+        std::string base = "gPointLights[" + std::to_string(i) + "]";
+        shader->set_vec3(base + ".Base.Color", glm::vec3(1.0f, 0.8f, 0.6f));
+        shader->set_float(base + ".Base.AmbientIntensity", 0.1f);
+        shader->set_float(base + ".Base.DiffuseIntensity", 1.0f);
+        shader->set_vec3(base + ".LocalPos", lightPos[i]);
+        shader->set_float(base + ".Atten.Constant", 1.0f);
+        shader->set_float(base + ".Atten.Linear", 0.09f);
+        shader->set_float(base + ".Atten.Exp", 0.032f);
+    }
 
-    // Mesh na poziciji izvora point light-ova
-    draw_light_source_mesh(lightPos0, 3.0f);// prvi izvor svetla
-    draw_light_source_mesh(lightPos1, 3.0f);// drugi izvor svetla
-}
+    // 4) Materijal
+    shader->set_vec3("gMaterial.AmbientColor", glm::vec3(1.0f));
+    shader->set_vec3("gMaterial.DiffuseColor", glm::vec3(1.0f));
+    shader->set_vec3("gMaterial.SpecularColor", glm::vec3(1.0f));
 
-void MainController::draw_backpack(const glm::vec3 &modelPos) {
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
-    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+    // 5) Kamera u world-space za Phong specular
+    {
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        glm::vec3 camPos = graphics->camera()->Position;
+        shader->set_vec3("gCameraLocalPos", camPos);
+    }
 
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
+    // 6) Teksturne jedinice
+    shader->set_int("gSampler", 0);                // diffuse texture na slotu 0
+    shader->set_int("gSamplerSpecularExponent", 1);// specular exponent map na slotu 1
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, modelPos);
-    model = glm::scale(model, glm::vec3(m_backpack_scale));
-    shader->set_mat4("model", model);
-
-    auto camera = graphics->camera();
-    shader->set_vec3("viewPos", camera->Position);
-
-    backpack->draw(shader);
+    // 7) Mesh na poziciji izvora point light-ova
+    draw_light_source_mesh(lightPos[0], 3.0f);// prvi izvor svetla
+    draw_light_source_mesh(lightPos[1], 3.0f);// drugi izvor svetla
 }
 
 void MainController::draw_skybox() {
@@ -143,7 +285,7 @@ void MainController::update_camera() {
     float dt = platform->dt();
 
     // Ako je SHIFT pritisnut, povecaj faktor brzine
-    float speedMultiplier = 1.0f;
+    float speedMultiplier = 2.0f;
     if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::Pressed) { speedMultiplier = 4.0f; }
 
     if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt * speedMultiplier); }

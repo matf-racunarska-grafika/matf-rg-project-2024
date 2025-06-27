@@ -24,7 +24,7 @@ void GraphicsController::initialize() {
     m_perspective_params.Height = static_cast<float>(platform->window()
                                                              ->height());
     m_perspective_params.Near = 0.1f;
-    m_perspective_params.Far = 100.f;
+    m_perspective_params.Far = 300.f;
 
     m_ortho_params.Bottom = 0.0f;
     m_ortho_params.Top = static_cast<float>(platform->window()
@@ -64,9 +64,7 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Top = static_cast<float>(height);
 }
 
-std::string_view GraphicsController::name() const {
-    return "GraphicsController";
-}
+std::string_view GraphicsController::name() const { return "GraphicsController"; }
 
 void GraphicsController::begin_gui() {
     ImGui_ImplOpenGL3_NewFrame();
@@ -90,7 +88,7 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, skybox->texture());
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 36);
     CHECKED_GL_CALL(glBindVertexArray, 0);
-    CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
+    CHECKED_GL_CALL(glDepthFunc, GL_LESS);// set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
 }
