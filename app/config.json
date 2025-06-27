@@ -4,13 +4,17 @@
       "backpack": {
         "path": "backpack/backpack.obj",
         "flip_uvs": false
+      },
+      "cube": {
+        "path": "cube/cube.obj",
+        "flip_uvs": false
       }
     }
   },
   "window": {
-    "title": "MyApp",
-    "width": 1600,
     "height": 900,
-    "fullscreen": true
+    "title": "RG Projekat - mi22105",
+    "width": 1600,
+    "fullscreen": false
   }
 }

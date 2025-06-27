@@ -40,15 +40,70 @@ void MainController::update() { update_camera(); }
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw() {
-    draw_backpack();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    // Postavi globalne point lightove
+    set_point_lights(shader);
+
+    // Crtaj modele
+    draw_backpack(glm::vec3(-5.0f, 0.0f, -7.0f));
+    draw_backpack(glm::vec3(5.0f, 0.0f, -7.0f));
+
     draw_skybox();
 }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
 
-void MainController::draw_backpack() {
+// ---------------------------------------------------------------------------------------------------------------------------
+
+void MainController::draw_light_source_cube(const glm::vec3 &lightPos, float scale) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    // Point light shader
+    auto basicShader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto cubeModel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("cube");
+
+    basicShader->use();
+    basicShader->set_mat4("projection", graphics->projection_matrix());
+    basicShader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, lightPos);
+    modelMat = glm::scale(modelMat, glm::vec3(scale));
+    basicShader->set_mat4("model", modelMat);
+
+    cubeModel->draw(basicShader);
+}
+
+void MainController::set_point_lights(auto shader) {
+    // Postavljanje uniform-e za prvi point light
+    shader->set_vec3("pointLights[0].position", glm::vec3(-5.0, 1.0f, 2.0f));
+    shader->set_float("pointLights[0].constant", 1.0f);
+    shader->set_float("pointLights[0].linear", 0.09f);
+    shader->set_float("pointLights[0].quadratic", 0.032f);
+    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("pointLights[0].specular", glm::vec3(0.3f, 0.3f, 0.3f));
+
+    // Postavljanje uniform-e za drugi point light
+    shader->set_vec3("pointLights[1].position", glm::vec3(0.0f));// ili neka daleka pozicija
+    shader->set_float("pointLights[1].constant", 1.0f);
+    shader->set_float("pointLights[1].linear", 0.0f);
+    shader->set_float("pointLights[1].quadratic", 0.0f);
+    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
+    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.0f));
+    shader->set_vec3("pointLights[1].specular", glm::vec3(0.0f));
+
+    // Cube na poziciji izvora point light-ova
+    draw_light_source_cube(glm::vec3(1.2f, 1.0f, 2.0f), 0.5f); // prvi izvor svetla
+    draw_light_source_cube(glm::vec3(-1.2f, 1.0f, 2.0f), 0.5f);// drugi izvor svetla
+}
+
+void MainController::draw_backpack(const glm::vec3 &modelPos) {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
     auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
 
@@ -57,25 +112,12 @@ void MainController::draw_backpack() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -7.0f));
+    model = glm::translate(model, modelPos);
     model = glm::scale(model, glm::vec3(m_backpack_scale));
     shader->set_mat4("model", model);
 
-    // Postavi poziciju kamere
     auto camera = graphics->camera();
     shader->set_vec3("viewPos", camera->Position);
-
-    // Postavi uniform varijable za point light
-    shader->set_vec3("pointLight.position", glm::vec3(1.2f, 1.0f, 2.0f));
-    shader->set_float("pointLight.constant", 1.0f);
-    shader->set_float("pointLight.linear", 0.09f);
-    shader->set_float("pointLight.quadratic", 0.032f);
-    shader->set_vec3("pointLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-    shader->set_vec3("pointLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-    shader->set_vec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-    // Postavi materijal
-    shader->set_float("material_shininess", 32.0f);
 
     backpack->draw(shader);
 }
