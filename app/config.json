@@ -5,8 +5,8 @@
         "path": "backpack/backpack.obj",
         "flip_uvs": false
       },
-      "cube": {
-        "path": "cube/cube.obj",
+      "light_bulb": {
+        "path": "light_bulb/light_bulb.fbx",
         "flip_uvs": false
       }
     }

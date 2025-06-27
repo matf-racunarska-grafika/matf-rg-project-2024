@@ -61,17 +61,20 @@ void MainController::end_draw() { engine::core::Controller::get<engine::platform
 
 // ---------------------------------------------------------------------------------------------------------------------------
 
-void MainController::draw_light_source_cube(const glm::vec3 &lightPos, float scale) {
+void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float scale) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto basicShader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto cubeModel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("cube");
+    auto basicShader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("unlit_white");
+    auto cubeModel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("light_bulb");
 
     basicShader->use();
     basicShader->set_mat4("projection", graphics->projection_matrix());
     basicShader->set_mat4("view", graphics->camera()->view_matrix());
 
+    // Kreiraj model matricu tako da se kocka postavi na lightPos i skalira
     glm::mat4 modelMat = glm::mat4(1.0f);
     modelMat = glm::translate(modelMat, lightPos);
+    // rotacija od 90 stepeni oko X ose
+    modelMat = glm::rotate(modelMat, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     modelMat = glm::scale(modelMat, glm::vec3(scale));
     basicShader->set_mat4("model", modelMat);
 
@@ -79,8 +82,12 @@ void MainController::draw_light_source_cube(const glm::vec3 &lightPos, float sca
 }
 
 void MainController::set_point_lights(auto shader) {
+    // Pozicije point lightova
+    glm::vec3 lightPos0 = glm::vec3(-5.0, 1.0f, 2.0f);
+    glm::vec3 lightPos1 = glm::vec3(0.0f, 1.0f, 2.0f);
+
     // Postavljanje uniform-e za prvi point light
-    shader->set_vec3("pointLights[0].position", glm::vec3(-5.0, 1.0f, 2.0f));
+    shader->set_vec3("pointLights[0].position", lightPos0);
     shader->set_float("pointLights[0].constant", 1.0f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
@@ -89,17 +96,17 @@ void MainController::set_point_lights(auto shader) {
     shader->set_vec3("pointLights[0].specular", glm::vec3(0.3f, 0.3f, 0.3f));
 
     // Postavljanje uniform-e za drugi point light
-    shader->set_vec3("pointLights[1].position", glm::vec3(0.0f));// ili neka daleka pozicija
+    shader->set_vec3("pointLights[1].position", lightPos1);
     shader->set_float("pointLights[1].constant", 1.0f);
-    shader->set_float("pointLights[1].linear", 0.0f);
-    shader->set_float("pointLights[1].quadratic", 0.0f);
-    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
-    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.0f));
-    shader->set_vec3("pointLights[1].specular", glm::vec3(0.0f));
+    shader->set_float("pointLights[1].linear", 0.09f);
+    shader->set_float("pointLights[1].quadratic", 0.032f);
+    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+    shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("pointLights[1].specular", glm::vec3(0.3f, 0.3f, 0.3f));
 
-    // Cube na poziciji izvora point light-ova
-    draw_light_source_cube(glm::vec3(1.2f, 1.0f, 2.0f), 0.5f); // prvi izvor svetla
-    draw_light_source_cube(glm::vec3(-1.2f, 1.0f, 2.0f), 0.5f);// drugi izvor svetla
+    // Mesh na poziciji izvora point light-ova
+    draw_light_source_mesh(lightPos0, 3.0f);// prvi izvor svetla
+    draw_light_source_mesh(lightPos1, 3.0f);// drugi izvor svetla
 }
 
 void MainController::draw_backpack(const glm::vec3 &modelPos) {

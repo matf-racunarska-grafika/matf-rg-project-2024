@@ -33,7 +33,7 @@ private:
 
     void end_draw() override;
 
-    void draw_light_source_cube(const glm::vec3 &lightPos, float scale);
+    void draw_light_source_mesh(const glm::vec3 &lightPos, float scale);
 
     void set_point_lights(auto shader);
 
