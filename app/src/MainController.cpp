@@ -48,13 +48,35 @@ void MainController::end_draw() { engine::core::Controller::get<engine::platform
 
 void MainController::draw_backpack() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    // Point light shader
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("lighting");
     auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-    shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -7.0f));
+    model = glm::scale(model, glm::vec3(m_backpack_scale));
+    shader->set_mat4("model", model);
+
+    // Postavi poziciju kamere
+    auto camera = graphics->camera();
+    shader->set_vec3("viewPos", camera->Position);
+
+    // Postavi uniform varijable za point light
+    shader->set_vec3("pointLight.position", glm::vec3(1.2f, 1.0f, 2.0f));
+    shader->set_float("pointLight.constant", 1.0f);
+    shader->set_float("pointLight.linear", 0.09f);
+    shader->set_float("pointLight.quadratic", 0.032f);
+    shader->set_vec3("pointLight.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+    shader->set_vec3("pointLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+    shader->set_vec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+    // Postavi materijal
+    shader->set_float("material_shininess", 32.0f);
+
     backpack->draw(shader);
 }
 
@@ -73,9 +95,7 @@ void MainController::update_camera() {
 
     // Ako je SHIFT pritisnut, povecaj faktor brzine
     float speedMultiplier = 1.0f;
-    if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::Pressed) {
-        speedMultiplier = 4.0f;
-    }
+    if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::Pressed) { speedMultiplier = 4.0f; }
 
     if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt * speedMultiplier); }
     if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt * speedMultiplier); }
