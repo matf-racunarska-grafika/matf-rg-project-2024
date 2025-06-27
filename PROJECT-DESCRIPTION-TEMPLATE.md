@@ -1,6 +1,6 @@
-# {NAME-OF-THE-PROJECT}
+# Park Road
 
-{INDEX} - {STUDENT-FULL-NAME}  
+mi22105 - Mihailo Radulović  
 {PROJECT DESCRIPTION}
 
 ## Controls
@@ -14,35 +14,35 @@
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[X] Model with lighting  
+[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[X] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:
 
 [ ] Frame-buffers with post-processing   
 [ ] Instancing  
-[ ] Off-screen Anti-Aliasing  
+[X] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
 
 ### Group B:
+
 [ ] Bloom with the use of HDR  
 [ ] Deferred Shading  
-[ ] Point Shadows  
+[X] Point Shadows  
 [ ] SSAO
 
 ### Engine improvement:
 
-[ ] ...
+Lighting sistem, point shadows, MSAA, model spawning sistem, itd.
 
 ## Models:
 
-[link1]   
+[link1]  
 [link2]
 
 ## Textures
 
-[link1]  
-[link2]
+Nisu korišćene dodatne teksture.
 
 {OTHER-RESOURCES}

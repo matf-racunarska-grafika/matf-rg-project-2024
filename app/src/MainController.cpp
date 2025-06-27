@@ -4,6 +4,7 @@
 #include <engine/graphics/GraphicsController.hpp>
 #include <app/MainController.hpp>
 #include <app/GUIController.hpp>
+#include <glad/glad.h>
 
 namespace engine::myapp {
 void MainPlatformEventObserver::on_key(engine::platform::Key key) { spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str()); }
@@ -13,6 +14,87 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 void MainController::initialize() {
     // User initialization
     engine::graphics::OpenGL::enable_depth_testing();
+
+    // ───────────── Point shadow ──────────────────────────────────────
+    // 1) Depth‐framebuffer i tekstura
+    glGenFramebuffers(1, &depthMapFBO);
+    glGenTextures(1, &depthMap);
+
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                 SHADOW_WIDTH, SHADOW_HEIGHT,
+                 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    float borderColor[] = {1, 1, 1, 1};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    //
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                           GL_TEXTURE_2D, depthMap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // ────────────────────────────────────────────────────────────────
+
+
+    // ─── MSAA off-screen FBO setup ───────────────────────────────
+    glEnable(GL_MULTISAMPLE);
+
+    //
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    int width = vp[2];
+    int height = vp[3];
+
+    // 1)
+    glGenFramebuffers(1, &msFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
+
+    // 2)
+    glGenRenderbuffers(1, &msColorRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, msColorRBO);
+    glRenderbufferStorageMultisample(
+            GL_RENDERBUFFER,
+            MSAA_SAMPLES,
+            GL_RGBA8,
+            width,
+            height
+            );
+    glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GL_COLOR_ATTACHMENT0,
+            GL_RENDERBUFFER,
+            msColorRBO
+            );
+
+    // 3)
+    glGenRenderbuffers(1, &msDepthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, msDepthRBO);
+    glRenderbufferStorageMultisample(
+            GL_RENDERBUFFER,
+            MSAA_SAMPLES,
+            GL_DEPTH24_STENCIL8,
+            width,
+            height
+            );
+    glFramebufferRenderbuffer(
+            GL_FRAMEBUFFER,
+            GL_DEPTH_STENCIL_ATTACHMENT,
+            GL_RENDERBUFFER,
+            msDepthRBO
+            );
+
+    // 4)
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::error("MSAA FBO is not complete!"); }
+
+    // 5)
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // ───────────────────────────────────────────────────────────────
 
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
@@ -37,7 +119,10 @@ void MainController::poll_events() {
 
 void MainController::update() { update_camera(); }
 
-void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
+void MainController::begin_draw() {
+    glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
 
 // Scena
 void MainController::draw() {
@@ -77,7 +162,23 @@ void MainController::draw() {
     draw_skybox();
 }
 
-void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+void MainController::end_draw() {
+    // 1)
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, msFBO);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    int w = vp[2], h = vp[3];
+
+    glBlitFramebuffer(
+            0, 0, w, h,
+            0, 0, w, h,
+            GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+    // 2)
+    engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
+}
 
 // USER DEFINED
 // ---------------------------------------------------------------------------------------------------------------------------
@@ -94,6 +195,7 @@ void MainController::draw_mesh(auto model, auto shader,
 
     glm::mat4 modelMat = glm::mat4(1.0f);
     modelMat = glm::translate(modelMat, position);
+
     modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
     modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
     modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));

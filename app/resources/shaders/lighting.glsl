@@ -8,10 +8,12 @@ layout (location = 2) in vec2 TexCoord0;
 out vec3 vLocalPos;
 out vec3 vNormal;
 out vec2 vTexCoords;
+out vec4 vFragPosLightSpace;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 void main()
 {
@@ -26,6 +28,9 @@ void main()
     // 3) UV
     vTexCoords = TexCoord0;
 
+    //
+    vFragPosLightSpace = lightSpaceMatrix * worldPos;
+
     // 4) IDEALNO PROJEKTOVANJE
     gl_Position = projection * view * worldPos;
 }
@@ -35,12 +40,11 @@ void main()
 
 const int MAX_POINT_LIGHTS = 2;
 
-// Ulazi iz vertexa
 in vec2 vTexCoords;
 in vec3 vNormal;
 in vec3 vLocalPos;
+in vec4 vFragPosLightSpace;
 
-// Izlaz
 out vec4 FragColor;
 
 // Osnovni tip svetla: boja + jačine
@@ -85,6 +89,7 @@ uniform Material gMaterial;
 uniform sampler2D gSampler;                // diffuse mapa
 uniform sampler2D gSamplerSpecularExponent;
 uniform vec3 gCameraLocalPos;         // pozicija kamere
+uniform sampler2D shadowMap;
 
 vec4 CalcLightInternal(BaseLight light, vec3 lightDir, vec3 normal)
 {
@@ -120,9 +125,6 @@ vec4 CalcLightInternal(BaseLight light, vec3 lightDir, vec3 normal)
     return ambient + diffuse + specular;
 }
 
-//==========================================================================
-// Directional light
-//==========================================================================
 vec4 CalcDirectionalLight(vec3 normal)
 {
     return CalcLightInternal(
@@ -132,9 +134,6 @@ vec4 CalcDirectionalLight(vec3 normal)
     );
 }
 
-//==========================================================================
-// Jedan point light
-//==========================================================================
 vec4 CalcPointLight(int i, vec3 normal)
 {
     vec3 lightDir = normalize(vLocalPos - gPointLights[i].LocalPos);
@@ -151,6 +150,28 @@ vec4 CalcPointLight(int i, vec3 normal)
     return color / atten;
 }
 
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // 1) Projektuj u [0,1]
+    vec3 proj = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    proj = proj * 0.5 + 0.5;
+
+    // 2) Udaljenost iz shadowMap
+    float closestDepth = texture(shadowMap, proj.xy).r;
+    float currentDepth = proj.z;
+
+    // 3) bias za acne
+    float bias = 0.005;
+
+    // 4) ako je dalje -> u senci
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    // 5) ako je van frusta светла -> bez senke
+    if (proj.z > 1.0) shadow = 0.0;
+
+    return shadow;
+}
+
 void main()
 {
     vec3 normal = normalize(vNormal);
@@ -162,7 +183,12 @@ void main()
     for (int i = 0; i < gNumPointLights; ++i)
     totalLight += CalcPointLight(i, normal);
 
-    // 3) Miks sa diffuse teksturom
+    // 3) Izracun senke
+    float shadow = ShadowCalculation(vFragPosLightSpace);
+
+    // 4) Miks sa diffuse teksturom
     vec4 baseColor = texture(gSampler, vTexCoords);
-    FragColor = baseColor * totalLight;
+    vec3 ambient = vec3(totalLight) * gDirectionalLight.Base.AmbientIntensity;
+    vec3 lit = (vec3(totalLight) - ambient) * (1.0 - shadow);
+    FragColor = vec4((ambient + lit) * baseColor.rgb, baseColor.a);
 }
