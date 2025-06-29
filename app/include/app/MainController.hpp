@@ -34,7 +34,7 @@ private:
     GLuint depthMapFBO = 0;
     GLuint depthCubemap = 0;
     float near_plane = 1.0f, far_plane = 25.0f;
-    glm::vec3 lightPos{0.0f, 10.0f, 0.0f};
+    glm::vec3 lightPos{-10.0f, 1.0f, 2.0f};
     glm::mat4 shadowMatrices[6];
 
     // Point shadows funckije
