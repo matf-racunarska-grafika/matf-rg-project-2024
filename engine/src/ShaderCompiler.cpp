@@ -48,9 +48,9 @@ uint32_t ShaderCompiler::compile(const std::string &shader_source, ShaderType ty
     uint32_t shader_id = OpenGL::compile_shader(shader_source, type);
     if (!OpenGL::shader_compiled_successfully(shader_id)) {
         throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                "{} shader compilation {} failed:\n{}", to_string(type),
-                m_shader_name,
-                OpenGL::get_compilation_error_message(shader_id)));
+                                        "{} shader compilation {} failed:\n{}", to_string(type),
+                                        m_shader_name,
+                                        OpenGL::get_compilation_error_message(shader_id)));
     }
     return shader_id;
 }
@@ -61,9 +61,7 @@ ShaderParsingResult ShaderCompiler::parse_source() {
     std::string line;
     std::string *current_shader = nullptr;
     while (std::getline(ss, line)) {
-        if (line.starts_with("//#shader") || line.starts_with("// #shader")) {
-            current_shader = now_parsing(parsing_result, line);
-        } else if (current_shader) {
+        if (line.starts_with("//#shader") || line.starts_with("// #shader")) { current_shader = now_parsing(parsing_result, line); } else if (current_shader) {
             current_shader->append(line);
             current_shader->push_back('\n');
         }
@@ -72,8 +70,8 @@ ShaderParsingResult ShaderCompiler::parse_source() {
                       .empty() || parsing_result.fragment_shader
                                                 .empty()) {
         throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
-                m_shader_name));
+                                        "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
+                                        m_shader_name));
     }
     return parsing_result;
 }
@@ -95,15 +93,9 @@ Shader ShaderCompiler::compile_from_file(std::string shader_name,
 }
 
 std::string *ShaderCompiler::now_parsing(ShaderParsingResult &result, const std::string &line) {
-    if (line.ends_with(to_string(ShaderType::Vertex))) {
-        return &result.vertex_shader;
-    }
-    if (line.ends_with(to_string(ShaderType::Fragment))) {
-        return &result.fragment_shader;
-    }
-    if (line.ends_with(to_string(ShaderType::Geometry))) {
-        return &result.geometry_shader;
-    }
+    if (line.ends_with(to_string(ShaderType::Vertex))) { return &result.vertex_shader; }
+    if (line.ends_with(to_string(ShaderType::Fragment))) { return &result.fragment_shader; }
+    if (line.ends_with(to_string(ShaderType::Geometry))) { return &result.geometry_shader; }
     RG_SHOULD_NOT_REACH_HERE("Unknown type of shader prefix: {}. Did you mean: #shader {}|{}|{}", line,
                              to_string(ShaderType::Vertex), to_string(ShaderType::Fragment),
                              to_string(ShaderType::Geometry));

@@ -22,7 +22,6 @@ void main()
     vNormal = normalize(normalMat * Normal0);
 
     vTexCoords = TexCoord0;
-
     gl_Position = projection * view * worldPos;
 }
 
@@ -66,6 +65,7 @@ struct Material {
     vec3 SpecularColor;
 };
 
+// lighting uniforms
 uniform DirectionalLight gDirectionalLight;
 uniform int gNumPointLights;
 uniform PointLight gPointLights[MAX_POINT_LIGHTS];
@@ -73,6 +73,12 @@ uniform Material gMaterial;
 uniform sampler2D gSampler;
 uniform sampler2D gSamplerSpecularExponent;
 uniform vec3 gCameraLocalPos;
+
+// shadow uniforme
+uniform samplerCube shadowMap;
+uniform vec3 lightPos;
+uniform float far_plane;
+uniform bool shadows;
 
 vec4 CalcLightInternal(BaseLight light, vec3 lightDir, vec3 normal)
 {
@@ -102,7 +108,6 @@ vec4 CalcLightInternal(BaseLight light, vec3 lightDir, vec3 normal)
             * specFactor;
         }
     }
-
     return ambient + diffuse + specular;
 }
 
@@ -128,18 +133,39 @@ vec4 CalcPointLight(int i, vec3 normal)
     float atten = gPointLights[i].Atten.Constant
     + gPointLights[i].Atten.Linear * dist
     + gPointLights[i].Atten.Exp * dist * dist;
+
     return color / atten;
+}
+
+float ShadowCalculationCube(vec3 fragPos)
+{
+    vec3 fragToLight = fragPos - lightPos;
+    float closestDepth = texture(shadowMap, fragToLight).r * far_plane;
+    float currentDepth = length(fragToLight);
+    float bias = 0.05;
+    return (currentDepth - bias > closestDepth) ? 1.0 : 0.0;
 }
 
 void main()
 {
     vec3 normal = normalize(vNormal);
 
+    // 1) lighting
     vec4 totalLight = CalcDirectionalLight(normal);
-
     for (int i = 0; i < gNumPointLights; ++i)
     totalLight += CalcPointLight(i, normal);
 
+    // 2) base color
     vec4 baseColor = texture(gSampler, vTexCoords);
-    FragColor = baseColor * totalLight;
+
+    // 3) shadow factor
+    float shadow = shadows ? ShadowCalculationCube(vLocalPos) : 0.0;
+
+    // 4) ambient and lit
+    vec3 ambient = totalLight.rgb * gDirectionalLight.Base.AmbientIntensity;
+    vec3 nonAmb = totalLight.rgb - ambient;
+    vec3 lit = nonAmb * (1.0 - shadow);
+
+    vec3 result = (ambient + lit) * baseColor.rgb;
+    FragColor = vec4(result, baseColor.a);
 }

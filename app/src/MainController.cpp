@@ -56,7 +56,6 @@ void MainController::initialize() {
     shadowMatrices[5] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0));
 
     // ─── MSAA off-screen FBO setup ───────────────────────────────
-    // Омогући MSAA
     glEnable(GL_MULTISAMPLE);
 
     GLint vp[4];
@@ -177,12 +176,13 @@ void MainController::draw() {
 
     set_lights(Lit);
 
-    Lit->set_int("shadowMap", 1);
+    Lit->use();
+    Lit->set_int("shadowMap", 2);
     Lit->set_vec3("lightPos", lightPos);
     Lit->set_float("far_plane", far_plane);
-    Lit->set_bool("shadows", false);
+    Lit->set_bool("shadows", true);
 
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 
     renderSceneLit(Lit);
@@ -191,7 +191,7 @@ void MainController::draw() {
 }
 
 void MainController::end_draw() {
-    // 1) Resolve MSAA FBO-> default framebuffer
+    // 1) Resolve MSAA FBO -> default framebuffer
     glBindFramebuffer(GL_READ_FRAMEBUFFER, msFBO);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
