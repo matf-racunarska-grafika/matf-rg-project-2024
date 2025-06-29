@@ -4,6 +4,7 @@
 #include <string_view>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/core/Controller.hpp>
+#include <GL/gl.h>
 
 namespace engine::myapp {
 
@@ -16,25 +17,32 @@ public:
 
 class MainController final : public engine::core::Controller {
 public:
+    float pointLightIntensity = 5.0f;      // Intenzitet point light svetla
+    glm::vec3 lightPos{-10.0f, 8.0f, 2.0f};// Pozicija point light svetla
+
     std::string_view name() const override { return "test::app::MainController"; }
 
 private:
+    int width, height;// prozor
+
     // MSAA off-screen anti-aliasing
     static constexpr unsigned int MSAA_SAMPLES = 4;// број узорака
     unsigned int msFBO = 0;                        // MSAA FBO
     unsigned int msColorRBO = 0;                   // MSAA color renderbuffer
     unsigned int msDepthRBO = 0;                   // MSAA depth-stencil renderbuffer
 
-    // Shadow map rezolucija
-    static constexpr unsigned int SHADOW_WIDTH = 2048;
-    static constexpr unsigned int SHADOW_HEIGHT = 2048;
+    // Point shadows
+    static constexpr unsigned SHADOW_WIDTH = 2048;
+    static constexpr unsigned SHADOW_HEIGHT = 2048;
+    GLuint depthMapFBO = 0;
+    GLuint depthCubemap = 0;
+    float near_plane = 1.0f, far_plane = 25.0f;
+    glm::mat4 shadowMatrices[6];
 
-    // Depth‐framebuffer i tekstura
-    unsigned int depthMapFBO = 0;
-    unsigned int depthMap = 0;
+    // Point shadows funckije
+    void renderSceneDepth(const resources::Shader *depthShader);
 
-    // Matrica transformacije u svetlosni prostor
-    glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
+    void renderSceneLit(const resources::Shader *litShader);
 
     void initialize() override;
 

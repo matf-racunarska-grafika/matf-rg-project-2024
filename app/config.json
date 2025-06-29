@@ -16,6 +16,10 @@
       "tree": {
         "path": "tree/raw2.obj",
         "flip_uvs": true
+      },
+      "pole": {
+        "path": "pole/poste_01.obj",
+        "flip_uvs": true
       }
     }
   },
