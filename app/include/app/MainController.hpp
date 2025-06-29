@@ -17,7 +17,8 @@ public:
 
 class MainController final : public engine::core::Controller {
 public:
-    float pointLightIntensity = 5.0f;// Intenzitet point light svetla
+    float pointLightIntensity = 5.0f;      // Intenzitet point light svetla
+    glm::vec3 lightPos{-10.0f, 8.0f, 2.0f};// Pozicija point light svetla
 
     std::string_view name() const override { return "test::app::MainController"; }
 
@@ -36,7 +37,6 @@ private:
     GLuint depthMapFBO = 0;
     GLuint depthCubemap = 0;
     float near_plane = 1.0f, far_plane = 25.0f;
-    glm::vec3 lightPos{-10.0f, 8.0f, 2.0f};
     glm::mat4 shadowMatrices[6];
 
     // Point shadows funckije

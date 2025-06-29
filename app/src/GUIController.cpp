@@ -26,6 +26,9 @@ void GUIController::draw() {
     ImGui::Begin("Settings");
 
     ImGui::SliderFloat("Point Light Intensity", &mainCtrl->pointLightIntensity, 0.0f, 5.0f);
+    ImGui::SliderFloat3("Light Position", &mainCtrl->lightPos.x,
+                        -50.0f, 50.0f,
+                        "%.1f");
 
     if (ImGui::Checkbox("Fullscreen", &fullscreen)) {
         // Odmah primeni promenu
