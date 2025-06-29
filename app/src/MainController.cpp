@@ -15,6 +15,47 @@ void MainController::initialize() {
     // User initialization
     engine::graphics::OpenGL::enable_depth_testing();
 
+    // ──────────── Point shadows ──────────────────────────────────────────────────────────────
+    // 1) Depth cubemap setup
+    glGenFramebuffers(1, &depthMapFBO);
+
+    glGenTextures(1, &depthCubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+    for (unsigned i = 0; i < 6; ++i)
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+                     GL_DEPTH_COMPONENT,
+                     SHADOW_WIDTH, SHADOW_HEIGHT,
+                     0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) spdlog::error("Depth cubemap FBO nije complete!");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // ──────────────────────────────────────────────────────────────
+
+    // ------------- Compute shadow matrices -------------
+    glm::mat4 shadowProj = glm::perspective(
+            glm::radians(90.0f),
+            float(SHADOW_WIDTH) / float(SHADOW_HEIGHT),
+            near_plane,
+            far_plane
+            );
+
+    shadowMatrices[0] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0));
+    shadowMatrices[1] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
+    shadowMatrices[2] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
+    shadowMatrices[3] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1));
+    shadowMatrices[4] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0));
+    shadowMatrices[5] = shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0));
+    // -------------------------------------------------------------------------------
+
     // ─── MSAA off-screen FBO setup ───────────────────────────────
     glEnable(GL_MULTISAMPLE);
 
@@ -68,31 +109,6 @@ void MainController::initialize() {
     // 5)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // ───────────────────────────────────────────────────────────────
-
-    // ──────────── Point shadows ──────────────────────────────────────────────────────────────
-    // 1) Depth cubemap setup
-    glGenFramebuffers(1, &depthMapFBO);
-
-    glGenTextures(1, &depthCubemap);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-    for (unsigned i = 0; i < 6; ++i)
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-                     GL_DEPTH_COMPONENT,
-                     SHADOW_WIDTH, SHADOW_HEIGHT,
-                     0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) spdlog::error("Depth cubemap FBO nije complete!");
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // ──────────────────────────────────────────────────────────────
 
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
