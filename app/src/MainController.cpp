@@ -188,6 +188,8 @@ void MainController::draw() {
     Lit->set_mat4("projection", graphics->projection_matrix());
     Lit->set_mat4("view", graphics->camera()->view_matrix());
 
+    Lit->set_float("uLightIntensity", pointLightIntensity);
+
     set_lights(Lit);
 
     Lit->use();

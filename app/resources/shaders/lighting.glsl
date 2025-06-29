@@ -77,6 +77,7 @@ uniform samplerCube shadowMap;
 uniform vec3 lightPos;
 uniform float far_plane;
 uniform bool shadows;
+uniform float uLightIntensity;
 
 // Predefinisane offset smernice za PCF (20 uzoraka)
 vec3 sampleOffsetDirections[20] = vec3[](
@@ -164,6 +165,9 @@ vec3 CalcPointLightSmooth(int i, vec3 normal)
     vec3 lightDir = normalize(vLocalPos - pos);
     vec4 phongCol = CalcLightInternal(b, lightDir, normal);
 
+    // Intenzitet svetla
+    phongCol.rgb *= uLightIntensity;
+
     // 2)
     float d = length(vLocalPos - pos);
     float atten = a.Constant + a.Linear * d + a.Exp * (d * d);
@@ -196,7 +200,7 @@ void main()
         vec3 Li = CalcPointLightSmooth(0, normal) * baseCol;
 
         float s0 = shadows ? ShadowCalculationPCF(vLocalPos) : 0.0;
-
+        
         result += Li * (1.0 - s0);
     }
 

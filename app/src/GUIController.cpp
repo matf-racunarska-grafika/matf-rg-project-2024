@@ -3,6 +3,7 @@
 #include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <GLFW/glfw3.h>
+#include <app/MainController.hpp>
 
 namespace engine::myapp {
 void GUIController::initialize() { set_enable(false); }
@@ -16,11 +17,15 @@ void GUIController::poll_events() {
 void GUIController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    auto mainCtrl = engine::core::Controller::get<MainController>();
+
     graphics->begin_gui();
     auto &cfg = engine::util::Configuration::config()["window"];
     static bool fullscreen = cfg.value("fullscreen", false);
 
     ImGui::Begin("Settings");
+
+    ImGui::SliderFloat("Point Light Intensity", &mainCtrl->pointLightIntensity, 0.0f, 5.0f);
 
     if (ImGui::Checkbox("Fullscreen", &fullscreen)) {
         // Odmah primeni promenu
