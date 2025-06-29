@@ -140,13 +140,32 @@ void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
-    // ----- DEPTH PASS -----
+    // 1)
+    {
+        glm::mat4 shadowProj = glm::perspective(
+                glm::radians(90.0f),
+                float(SHADOW_WIDTH) / float(SHADOW_HEIGHT),
+                near_plane,
+                far_plane
+                );
+        const glm::vec3 &pos = lightPos;// lightPos је glm::vec3
+        shadowMatrices[0] = shadowProj * glm::lookAt(pos, pos + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0));
+        shadowMatrices[1] = shadowProj * glm::lookAt(pos, pos + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
+        shadowMatrices[2] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
+        shadowMatrices[3] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1));
+        shadowMatrices[4] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0));
+        shadowMatrices[5] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0));
+    }
+
+    // ====== DEPTH PASS ======
     glDisable(GL_MULTISAMPLE);
     auto depthShader = resources->shader("point_shadows_depth");
     depthShader->use();
-    for (int i = 0; i < 6; ++i)
-        depthShader->set_mat4("shadowMatrices[" + std::to_string(i) + "]",
-                              shadowMatrices[i]);
+
+    for (int face = 0; face < 6; ++face) {
+        depthShader->set_mat4("shadowMatrices[" + std::to_string(face) + "]",
+                              shadowMatrices[face]);
+    }
     depthShader->set_vec3("lightPos", lightPos);
     depthShader->set_float("far_plane", far_plane);
 
@@ -160,12 +179,10 @@ void MainController::draw() {
 
     glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
     glEnable(GL_MULTISAMPLE);
-
-    // reset viewport
     glViewport(0, 0, width, height);
-    // -------------------------------------------------
+    // =================================================
 
-    // ----- MAIN PASS -----------------------------------
+    // ====== MAIN PASS ======
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -177,17 +194,21 @@ void MainController::draw() {
     set_lights(Lit);
 
     Lit->use();
-    Lit->set_int("shadowMap", 2);
-    Lit->set_vec3("lightPos", lightPos);
-    Lit->set_float("far_plane", far_plane);
-    Lit->set_bool("shadows", true);
 
+    Lit->set_bool("shadows", true);
+    Lit->set_int("gNumPointLights", 1);
+    Lit->set_float("far_plane", far_plane);
+
+    Lit->set_vec3("lightPos", lightPos);
+
+    Lit->set_int("shadowMap", 2);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
 
     renderSceneLit(Lit);
 
     draw_skybox();
+    // =================================================
 }
 
 void MainController::end_draw() {
@@ -217,7 +238,7 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
     // 1) Backpack 1
     {
         glm::mat4 model = glm::translate(glm::mat4(1.0f),
-                                         glm::vec3(-5.0f, 0.0f, -7.0f));
+                                         glm::vec3(-5.0f, 0.0f, -5.0f));
         model = glm::scale(model, glm::vec3(0.5f));
         depthShader->set_mat4("model", model);
         resources->model("backpack")->draw(depthShader);
@@ -226,7 +247,7 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
     // 2) Backpack 2
     {
         glm::mat4 model = glm::translate(glm::mat4(1.0f),
-                                         glm::vec3(5.0f, 0.0f, -7.0f));
+                                         glm::vec3(-10.0f, 0.0f, 3.0f));
         model = glm::scale(model, glm::vec3(0.5f));
         depthShader->set_mat4("model", model);
         resources->model("backpack")->draw(depthShader);
@@ -247,8 +268,10 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
-            {26.0f, 3.0f, 10.0f}
+            {26.0f, 3.0f, 10.0f},
+            {-15.0f, 3.0f, -30.0f}
     };
+
     for (auto &pos: treePositions) {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
         model = glm::scale(model, glm::vec3(10.0f));
@@ -262,12 +285,12 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
 
     // 1) Backpack 1
     draw_mesh(resources->model("backpack"), shader,
-              glm::vec3(-5.0f, 0.0f, -7.0f),
+              glm::vec3(-5.0f, 0.0f, -5.0f),
               glm::vec3(0.0f), glm::vec3(0.5f));
 
     // 2) Backpack 2
     draw_mesh(resources->model("backpack"), shader,
-              glm::vec3(5.0f, 0.0f, -7.0f),
+              glm::vec3(-10.0f, 0.0f, 3.0f),
               glm::vec3(0.0f), glm::vec3(0.5f));
 
     // 3) Terrain
@@ -281,7 +304,8 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
-            {26.0f, 3.0f, 10.0f}
+            {26.0f, 3.0f, 10.0f},
+            {-15.0f, 3.0f, -30.0f}
     };
 
     for (auto &pos: treePositions) {
@@ -336,49 +360,38 @@ void MainController::draw_light_source_mesh(const glm::vec3 &lightPos, float sca
 
 void MainController::set_lights(auto shader) {
     // 1) Directional light
-    shader->set_vec3("gDirectionalLight.Base.Color", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader->set_float("gDirectionalLight.Base.AmbientIntensity", 0.2f);
-    shader->set_float("gDirectionalLight.Base.DiffuseIntensity", 0.5f);
+    shader->set_vec3("gDirectionalLight.Base.Color", glm::vec3(1.0f));
+    shader->set_float("gDirectionalLight.Base.AmbientIntensity", 0.1f);
+    shader->set_float("gDirectionalLight.Base.DiffuseIntensity", 0.25f);
     shader->set_vec3("gDirectionalLight.Direction", glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)));
 
-    // 2) Broj point light-ova
-    shader->set_int("gNumPointLights", 2);
+    shader->set_int("gNumPointLights", 1);
 
-    // 3) Parametri point light-ova
-    glm::vec3 lightPos[2] = {
-            glm::vec3(-10.0f, 1.0f, 2.0f),
-            glm::vec3(10.0f, 3.0f, 50.0f)
-    };
-    for (int i = 0; i < 2; ++i) {
-        std::string base = "gPointLights[" + std::to_string(i) + "]";
-        shader->set_vec3(base + ".Base.Color", glm::vec3(1.0f, 0.8f, 0.6f));
-        shader->set_float(base + ".Base.AmbientIntensity", 0.1f);
-        shader->set_float(base + ".Base.DiffuseIntensity", 1.0f);
-        shader->set_vec3(base + ".LocalPos", lightPos[i]);
-        shader->set_float(base + ".Atten.Constant", 1.0f);
-        shader->set_float(base + ".Atten.Linear", 0.09f);
-        shader->set_float(base + ".Atten.Exp", 0.032f);
-    }
+    // 3)
+    glm::vec3 lp = glm::vec3(-10.0f, 1.0f, 2.0f);
+    shader->set_vec3("gPointLights[0].Base.Color", glm::vec3(1.0f, 0.8f, 0.6f));
+    shader->set_float("gPointLights[0].Base.AmbientIntensity", 0.1f);
+    shader->set_float("gPointLights[0].Base.DiffuseIntensity", 1.0f);
+    shader->set_vec3("gPointLights[0].LocalPos", lp);
+    shader->set_float("gPointLights[0].Atten.Constant", 1.0f);
+    shader->set_float("gPointLights[0].Atten.Linear", 0.09f);
+    shader->set_float("gPointLights[0].Atten.Exp", 0.032f);
 
-    // 4) Materijal
+    // 4)
     shader->set_vec3("gMaterial.AmbientColor", glm::vec3(1.0f));
     shader->set_vec3("gMaterial.DiffuseColor", glm::vec3(1.0f));
     shader->set_vec3("gMaterial.SpecularColor", glm::vec3(1.0f));
 
-    // 5) Kamera u world-space za Phong specular
-    {
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        glm::vec3 camPos = graphics->camera()->Position;
-        shader->set_vec3("gCameraLocalPos", camPos);
-    }
+    // 5)
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->set_vec3("gCameraLocalPos", graphics->camera()->Position);
 
-    // 6) Teksturne jedinice
-    shader->set_int("gSampler", 0);                // diffuse texture na slotu 0
-    shader->set_int("gSamplerSpecularExponent", 1);// specular exponent map na slotu 1
+    // 6)
+    shader->set_int("gSampler", 0);
+    shader->set_int("gSamplerSpecularExponent", 1);
 
-    // 7) Mesh na poziciji izvora point light-ova
-    draw_light_source_mesh(lightPos[0], 3.0f);// prvi izvor svetla
-    draw_light_source_mesh(lightPos[1], 3.0f);// drugi izvor svetla
+    // 7)
+    draw_light_source_mesh(lp, 3.0f);
 }
 
 void MainController::draw_skybox() {
