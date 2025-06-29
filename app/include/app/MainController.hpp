@@ -25,17 +25,6 @@ private:
     unsigned int msColorRBO = 0;                   // MSAA color renderbuffer
     unsigned int msDepthRBO = 0;                   // MSAA depth-stencil renderbuffer
 
-    // Shadow map rezolucija
-    static constexpr unsigned int SHADOW_WIDTH = 2048;
-    static constexpr unsigned int SHADOW_HEIGHT = 2048;
-
-    // Depth‐framebuffer i tekstura
-    unsigned int depthMapFBO = 0;
-    unsigned int depthMap = 0;
-
-    // Matrica transformacije u svetlosni prostor
-    glm::mat4 lightSpaceMatrix = glm::mat4(1.0f);
-
     void initialize() override;
 
     bool loop() override;
