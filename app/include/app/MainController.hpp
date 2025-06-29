@@ -4,6 +4,7 @@
 #include <string_view>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/core/Controller.hpp>
+#include <GL/gl.h>
 
 namespace engine::myapp {
 
@@ -24,6 +25,15 @@ private:
     unsigned int msFBO = 0;                        // MSAA FBO
     unsigned int msColorRBO = 0;                   // MSAA color renderbuffer
     unsigned int msDepthRBO = 0;                   // MSAA depth-stencil renderbuffer
+
+    // Point shadows
+    static constexpr unsigned SHADOW_WIDTH = 2048;
+    static constexpr unsigned SHADOW_HEIGHT = 2048;
+    GLuint depthMapFBO = 0;
+    GLuint depthCubemap = 0;
+    float near_plane = 1.0f, far_plane = 25.0f;
+    glm::vec3 lightPos{0.0f, 10.0f, 0.0f};
+    glm::mat4 shadowMatrices[6];
 
     void initialize() override;
 
