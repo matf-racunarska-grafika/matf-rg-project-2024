@@ -28,6 +28,10 @@
       "cottage": {
         "path": "cottage/old_house.obj",
         "flip_uvs": true
+      },
+      "medieval_house": {
+        "path": "medieval_house/medieval.obj",
+        "flip_uvs": true
       }
     }
   },

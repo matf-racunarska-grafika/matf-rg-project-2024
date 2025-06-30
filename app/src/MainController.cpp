@@ -281,57 +281,64 @@ void MainController::end_draw() {
 void MainController::renderSceneDepth(const resources::Shader *depthShader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
-    // 1) Backpack 1
-    glm::vec3 backpackPos = glm::vec3(-10.0f, 0.0f, 3.0f);
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), backpackPos);
-    model = glm::scale(model, glm::vec3(0.5f));
-    depthShader->set_mat4("model", model);
-    resources->model("backpack")->draw(depthShader);
+    // 1) Backpack
+    {
+        glm::vec3 backpackPos(-10.0f, 0.0f, 3.0f);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), backpackPos);
+        model = glm::scale(model, glm::vec3(0.5f));
+        depthShader->set_mat4("model", model);
+        resources->model("backpack")->draw(depthShader);
+    }
 
-    // 2) Pole
-    glm::mat4 poleModel = glm::translate(glm::mat4(1.0f), glm::vec3(-8.0f, -7.0f, -5.0f));
-    // Po potrebi skaliraj/rotiraj poleModel da bude odgovarajuće visine/orijentacije.
-    // Ovde ćemo pretpostaviti uniformnu skalu 1.0 (bez rotacije):
-    poleModel = glm::scale(poleModel, glm::vec3(2.0f));
-    depthShader->set_mat4("model", poleModel);
-    resources->model("pole")->draw(depthShader);
+    // 2) Poles
+    {
+        std::vector<glm::vec3> polePositions = {
+                {-8.0f, -7.0f, -5.0f},
+        };
+        for (auto &pos: polePositions) {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
+            model = glm::scale(model, glm::vec3(2.0f));
+            depthShader->set_mat4("model", model);
+            resources->model("pole")->draw(depthShader);
+        }
+    }
 
     // 3) Terrain
     {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f),
-                                         glm::vec3(0.0f, -10.0f, 0.0f));
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -10.0f, 0.0f));
         model = glm::scale(model, glm::vec3(3.0f));
         depthShader->set_mat4("model", model);
         resources->model("terrain")->draw(depthShader);
     }
 
     // 4) Trees
-    std::vector<glm::vec3> treePositions = {
-            // Prvi set
-            {26.0f, 3.0f, 0.0f},
-            {-15.0f, 3.0f, 20.0f},
-            {30.0f, 3.0f, -10.0f},
-            {-20.0f, 3.0f, 10.0f},
-            {26.0f, 3.0f, 10.0f},
+    {
+        std::vector<glm::vec3> treePositions = {
+                // Prvi set
+                {26.0f, 3.0f, 0.0f},
+                {-15.0f, 3.0f, 20.0f},
+                {30.0f, 3.0f, -10.0f},
+                {-20.0f, 3.0f, 10.0f},
+                {26.0f, 3.0f, 10.0f},
 
-            // Drugi set
-            {-15.0f, 3.0f, -30.0f},
-            {16.0f, 1.0f, -30.0f}
-    };
-
-    for (auto &pos: treePositions) {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
-        model = glm::scale(model, glm::vec3(10.0f));
-        depthShader->set_mat4("model", model);
-        resources->model("tree")->draw(depthShader);
+                // Drugi set
+                {-15.0f, 3.0f, -30.0f},
+                {16.0f, 1.0f, -30.0f}
+        };
+        for (auto &pos: treePositions) {
+            glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
+            model = glm::scale(model, glm::vec3(10.0f));
+            depthShader->set_mat4("model", model);
+            resources->model("tree")->draw(depthShader);
+        }
     }
 
     // 5) Event spawner
     for (auto &entry: spawnedObjects) {
-        const std::string &modelName = std::get<0>(entry);
-        const glm::vec3 &pos = std::get<1>(entry);
-        const glm::vec3 &rot = std::get<2>(entry);
-        const glm::vec3 &scale = std::get<3>(entry);
+        const auto &modelName = std::get<0>(entry);
+        const auto &pos = std::get<1>(entry);
+        const auto &rot = std::get<2>(entry);
+        const auto &scale = std::get<3>(entry);
 
         glm::mat4 modelMat = glm::mat4(1.0f);
         modelMat = glm::translate(modelMat, pos);
@@ -355,11 +362,19 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
               glm::vec3(0.0f), // nema rotacije
               glm::vec3(0.5f));// skala 0.5
 
-    // 2) Pole
-    draw_mesh(resources->model("pole"), shader,
-              glm::vec3(-8.0f, -7.0f, -5.0f),
-              glm::vec3(0.0f), // bez rotacije
-              glm::vec3(2.0f));// skala 1
+    // 2) Poles
+    std::vector<glm::vec3> polePositions = {
+            {-8.0f, -7.0f, -5.0f},
+            {18.0f, -7.0f, -80.0f},
+            {70.0f, -7.0f, -150.0f}
+    };
+
+    for (auto &pos: polePositions) {
+        draw_mesh(resources->model("pole"), shader,
+                  pos,
+                  glm::vec3(0.0f),
+                  glm::vec3(2.0f));
+    }
 
     // 3) Terrain
     draw_mesh(resources->model("terrain"), shader,
@@ -377,13 +392,16 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
 
             // Drugi set
             {-15.0f, 3.0f, -30.0f},
-            {16.0f, 1.0f, -30.0f}
-    };
+            {16.0f, 1.0f, -30.0f},
 
-    // 5) Cottage
-    draw_mesh(resources->model("cottage"), shader,
-              glm::vec3(0.0f, -3.0f, -125.0f),
-              glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.2f));
+            // Treci set
+            {0.0f, 4.0f, -130.0f},
+            {-2.0f, 4.0f, -100.0f},
+            {10.0f, 4.0f, -140.0f},
+            {40.0f, 2.0f, -130.0f},
+            {38.0f, 1.0f, -100.0f},
+            {50.0f, 2.0f, -140.0f}
+    };
 
     for (auto &pos: treePositions) {
         draw_mesh(resources->model("tree"), shader,
@@ -391,6 +409,17 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
                   glm::vec3(0.0f, 0.0f, -80.0f),
                   glm::vec3(10.0f));
     }
+
+    // 5) Cottage
+    draw_mesh(resources->model("cottage"), shader,
+              glm::vec3(0.0f, -3.0f, -125.0f),
+              glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.2f));
+
+    // 6) Medieval House
+    draw_mesh(resources->model("medieval_house"), shader,
+              glm::vec3(50.0f, -8.0f, -20.0f),
+              glm::vec3(0.0f, -4.7f, 0.0f),
+              glm::vec3(3.0f));
 
     // Event spawner
     for (auto &entry: spawnedObjects) {
@@ -503,7 +532,7 @@ void MainController::update_camera() {
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     float dt = platform->dt();
 
-    // Ako je SHIFT pritisnut, povecaj faktor brzine
+    // Ako SHIFT je pritisnut, povecaj faktor brzine
     float speedMultiplier = 2.0f;
     if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::Pressed) { speedMultiplier = 4.0f; }
 
@@ -532,7 +561,7 @@ void MainController::executeEvent(const std::string &eventName) {
     } else if (eventName == "SPAWN_MODEL") {
         spawnedObjects.emplace_back(
                 "police_car",
-                glm::vec3(0.0f, -8.0f, -.0f),
+                glm::vec3{0.0f, -8.0f, -3.0f},
                 glm::vec3(0.0f),
                 glm::vec3(1.0f)
                 );

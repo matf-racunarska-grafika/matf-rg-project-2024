@@ -1,0 +1,9 @@
+# medieval_house.mtl
+newmtl medieval
+Ka  1.000 1.000 1.000
+Kd  1.000 1.000 1.000
+Ks  0.500 0.500 0.500
+Ns  50.0
+illum 2
+map_Kd diff.png
+map_Ks spec.png
