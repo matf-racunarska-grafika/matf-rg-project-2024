@@ -34,8 +34,11 @@ public:
     float actionTriggerTime = 0.0f;
 
     // Za treptanje svetla
+    float flickerDuration = 2.0f;
     bool flickerActive = false;
     float flickerStartTime = 0.0f;
+
+    float spawnDelay = 3.0f;
 
     // Spawn-ovani objekti: ime modela + pozicija, rotacija, skala
     std::vector<std::tuple<std::string, glm::vec3, glm::vec3, glm::vec3> > spawnedObjects;

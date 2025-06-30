@@ -36,7 +36,7 @@ namespace engine::graphics {
         static constexpr float YAW         = -90.0f;
         static constexpr float PITCH       = 0.0f;
         static constexpr float SPEED       = 4.5f;
-        static constexpr float SENSITIVITY = 0.4f;
+        static constexpr float SENSITIVITY = 0.2f;
         static constexpr float ZOOM        = 45.0f;
 
         /**
