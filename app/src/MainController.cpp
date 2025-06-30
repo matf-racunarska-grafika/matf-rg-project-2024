@@ -315,7 +315,8 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
             {26.0f, 3.0f, 10.0f},
 
             // Drugi set
-            {-15.0f, 3.0f, -30.0f}
+            {-15.0f, 3.0f, -30.0f},
+            {16.0f, 1.0f, -30.0f}
     };
 
     for (auto &pos: treePositions) {
@@ -325,7 +326,7 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
         resources->model("tree")->draw(depthShader);
     }
 
-    // 5) Spawn-ovani objekti
+    // 5) Event spawner
     for (auto &entry: spawnedObjects) {
         const std::string &modelName = std::get<0>(entry);
         const glm::vec3 &pos = std::get<1>(entry);
@@ -375,8 +376,14 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
             {26.0f, 3.0f, 10.0f},
 
             // Drugi set
-            {-15.0f, 3.0f, -30.0f}
+            {-15.0f, 3.0f, -30.0f},
+            {16.0f, 1.0f, -30.0f}
     };
+
+    // 5) Cottage
+    draw_mesh(resources->model("cottage"), shader,
+              glm::vec3(0.0f, -3.0f, -125.0f),
+              glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.2f));
 
     for (auto &pos: treePositions) {
         draw_mesh(resources->model("tree"), shader,
