@@ -24,6 +24,18 @@
       "police_car": {
         "path": "police_car/police_car.obj",
         "flip_uvs": true
+      },
+      "cottage": {
+        "path": "cottage/old_house.obj",
+        "flip_uvs": true
+      },
+      "medieval_house": {
+        "path": "medieval_house/medieval.obj",
+        "flip_uvs": true
+      },
+      "well": {
+        "path": "well/well_low.obj",
+        "flip_uvs": true
       }
     }
   },
