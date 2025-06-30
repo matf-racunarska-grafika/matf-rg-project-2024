@@ -21,8 +21,8 @@ public:
 
 class MainController final : public engine::core::Controller {
 public:
-    float pointLightIntensity = 5.0f;      // Intenzitet point light svetla
-    glm::vec3 lightPos{-10.0f, 8.0f, 2.0f};// Pozicija point light svetla
+    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
+    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
 
     // -------Scheduled event--------------------------------------------------------
     // Queue svih zakazanih događaja

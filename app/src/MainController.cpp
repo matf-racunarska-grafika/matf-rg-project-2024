@@ -281,19 +281,21 @@ void MainController::end_draw() {
 void MainController::renderSceneDepth(const resources::Shader *depthShader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
-    // 1) Backpack
+    // 1) Well
     {
-        glm::vec3 backpackPos(-10.0f, 0.0f, 3.0f);
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), backpackPos);
-        model = glm::scale(model, glm::vec3(0.5f));
+        glm::vec3 wellPos(-10.0f, -7.0f, 10.0f);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), wellPos);
+        model = glm::scale(model, glm::vec3(0.2f));
         depthShader->set_mat4("model", model);
-        resources->model("backpack")->draw(depthShader);
+        resources->model("well")->draw(depthShader);
     }
 
     // 2) Poles
     {
         std::vector<glm::vec3> polePositions = {
                 {-8.0f, -7.0f, -5.0f},
+                {18.0f, -7.0f, -80.0f},
+                {70.0f, -7.0f, -150.0f}
         };
         for (auto &pos: polePositions) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
@@ -314,16 +316,11 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
     // 4) Trees
     {
         std::vector<glm::vec3> treePositions = {
-                // Prvi set
-                {26.0f, 3.0f, 0.0f},
-                {-15.0f, 3.0f, 20.0f},
-                {30.0f, 3.0f, -10.0f},
-                {-20.0f, 3.0f, 10.0f},
-                {26.0f, 3.0f, 10.0f},
-
-                // Drugi set
-                {-15.0f, 3.0f, -30.0f},
-                {16.0f, 1.0f, -30.0f}
+                {26.0f, 3.0f, 0.0f}, {-15.0f, 3.0f, 20.0f}, {30.0f, 3.0f, -10.0f},
+                {-20.0f, 3.0f, 10.0f}, {26.0f, 3.0f, 10.0f}, {-15.0f, 3.0f, -30.0f},
+                {16.0f, 1.0f, -30.0f}, {0.0f, 4.0f, -130.0f}, {-2.0f, 4.0f, -100.0f},
+                {10.0f, 4.0f, -140.0f}, {40.0f, 2.0f, -130.0f}, {38.0f, 1.0f, -100.0f},
+                {50.0f, 2.0f, -140.0f}
         };
         for (auto &pos: treePositions) {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
@@ -333,34 +330,52 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
         }
     }
 
-    // 5) Event spawner
+    // 5) Cottage
+    {
+        glm::vec3 pos(0.0f, -3.0f, -125.0f);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
+        model = glm::rotate(model, 2.0f, glm::vec3(0, 1, 0));
+        model = glm::scale(model, glm::vec3(0.2f));
+        depthShader->set_mat4("model", model);
+        resources->model("cottage")->draw(depthShader);
+    }
+
+    // 6) Medieval House
+    {
+        glm::vec3 pos(50.0f, -8.0f, -20.0f);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
+        model = glm::rotate(model, -4.7f, glm::vec3(0, 1, 0));
+        model = glm::scale(model, glm::vec3(3.0f));
+        depthShader->set_mat4("model", model);
+        resources->model("medieval_house")->draw(depthShader);
+    }
+
+    // 7) Event spawner
     for (auto &entry: spawnedObjects) {
-        const auto &modelName = std::get<0>(entry);
+        const auto &name = std::get<0>(entry);
         const auto &pos = std::get<1>(entry);
         const auto &rot = std::get<2>(entry);
         const auto &scale = std::get<3>(entry);
 
-        glm::mat4 modelMat = glm::mat4(1.0f);
-        modelMat = glm::translate(modelMat, pos);
-        modelMat = glm::rotate(modelMat, rot.x, glm::vec3(1, 0, 0));
-        modelMat = glm::rotate(modelMat, rot.y, glm::vec3(0, 1, 0));
-        modelMat = glm::rotate(modelMat, rot.z, glm::vec3(0, 0, 1));
-        modelMat = glm::scale(modelMat, scale);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
+        model = glm::rotate(model, rot.x, glm::vec3(1, 0, 0));
+        model = glm::rotate(model, rot.y, glm::vec3(0, 1, 0));
+        model = glm::rotate(model, rot.z, glm::vec3(0, 0, 1));
+        model = glm::scale(model, scale);
 
-        depthShader->set_mat4("model", modelMat);
-        resources->model(modelName)->draw(depthShader);
+        depthShader->set_mat4("model", model);
+        resources->model(name)->draw(depthShader);
     }
 }
 
 void MainController::renderSceneLit(const resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
-    // 1) Backpack 1
-    glm::vec3 backpackPos = glm::vec3(-10.0f, 0.0f, 3.0f);
-    draw_mesh(resources->model("backpack"), shader,
-              backpackPos,     // pozicija
-              glm::vec3(0.0f), // nema rotacije
-              glm::vec3(0.5f));// skala 0.5
+    // 1) Well
+    draw_mesh(resources->model("well"), shader,
+              glm::vec3(-10.0f, -7.0f, 10.0f),
+              glm::vec3(0.0f),
+              glm::vec3(0.2f));
 
     // 2) Poles
     std::vector<glm::vec3> polePositions = {
@@ -532,7 +547,7 @@ void MainController::update_camera() {
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     float dt = platform->dt();
 
-    // Ako SHIFT je pritisnut, povecaj faktor brzine
+    // Ako je SHIFT pritisnut, povecaj faktor brzine
     float speedMultiplier = 2.0f;
     if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::Pressed) { speedMultiplier = 4.0f; }
 
@@ -556,7 +571,7 @@ void MainController::executeEvent(const std::string &eventName) {
         spdlog::info("EVENT START_FLICKER");
     } else if (eventName == "STOP_FLICKER") {
         flickerActive = false;
-        pointLightIntensity = 5.0f;// resetujemo intenzitet
+        pointLightIntensity = 7.0f;// resetujemo intenzitet
         spdlog::info("EVENT STOP_FLICKER");
     } else if (eventName == "SPAWN_MODEL") {
         spawnedObjects.emplace_back(
