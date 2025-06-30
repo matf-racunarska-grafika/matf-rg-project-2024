@@ -324,6 +324,24 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
         depthShader->set_mat4("model", model);
         resources->model("tree")->draw(depthShader);
     }
+
+    // 5) Spawn-ovani objekti
+    for (auto &entry: spawnedObjects) {
+        const std::string &modelName = std::get<0>(entry);
+        const glm::vec3 &pos = std::get<1>(entry);
+        const glm::vec3 &rot = std::get<2>(entry);
+        const glm::vec3 &scale = std::get<3>(entry);
+
+        glm::mat4 modelMat = glm::mat4(1.0f);
+        modelMat = glm::translate(modelMat, pos);
+        modelMat = glm::rotate(modelMat, rot.x, glm::vec3(1, 0, 0));
+        modelMat = glm::rotate(modelMat, rot.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rot.z, glm::vec3(0, 0, 1));
+        modelMat = glm::scale(modelMat, scale);
+
+        depthShader->set_mat4("model", modelMat);
+        resources->model(modelName)->draw(depthShader);
+    }
 }
 
 void MainController::renderSceneLit(const resources::Shader *shader) {
@@ -506,10 +524,10 @@ void MainController::executeEvent(const std::string &eventName) {
         spdlog::info("EVENT STOP_FLICKER");
     } else if (eventName == "SPAWN_MODEL") {
         spawnedObjects.emplace_back(
-                "tree",
-                glm::vec3(15.0f, 3.0f, -30.0f),
+                "police_car",
+                glm::vec3(0.0f, -8.0f, -.0f),
                 glm::vec3(0.0f),
-                glm::vec3(15.0f)
+                glm::vec3(1.0f)
                 );
         spdlog::info("EVENT SPAWN_MODEL: spawnovan tree");
     } else { spdlog::warn("executeEvent: nepoznat event '{}'", eventName); }
