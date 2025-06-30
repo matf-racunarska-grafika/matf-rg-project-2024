@@ -121,15 +121,58 @@ bool MainController::loop() {
 }
 
 void MainController::poll_events() {
-    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_F1)
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+    currentTime += platform->dt();
+
+    // 1)
+    if (platform->key(engine::platform::KeyId::KEY_F1)
                 .state() == engine::platform::Key::State::JustPressed) {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
+
+    // 2)
+    if (!actionTriggered &&
+        platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+        actionTriggered = true;
+        actionTriggerTime = currentTime;// beležimo vreme pritiska
+        constexpr float M = 2.0f;       // nakon 2 sekunde startujemo flicker
+        eventQueue.push_back({currentTime + M, "START_FLICKER"});
+        spdlog::info("L pritisnut → zakazujem START_FLICKER za +{:.2f}s", M);
+    }
 }
 
-void MainController::update() { update_camera(); }
+void MainController::update() {
+    update_camera();
+
+    std::vector<ScheduledEvent> newEvents;
+    for (auto it = eventQueue.begin(); it != eventQueue.end();) {
+        if (currentTime >= it->triggerTime) {
+            const auto name = it->eventName;
+            executeEvent(name);
+
+            if (name == "START_FLICKER") {
+                // 1)
+                newEvents.push_back({currentTime + flickerDuration, "STOP_FLICKER"});
+                spdlog::info("  zakazujem STOP_FLICKER za +{:.2f}s", flickerDuration);
+            } else if (name == "STOP_FLICKER") {
+                // 2)
+                newEvents.push_back({currentTime + spawnDelay, "SPAWN_MODEL"});
+                spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", spawnDelay);
+            }
+
+            it = eventQueue.erase(it);
+        } else { ++it; }
+    }
+    if (!newEvents.empty()) { eventQueue.insert(eventQueue.end(), newEvents.begin(), newEvents.end()); }
+
+    if (flickerActive) {
+        float elapsed = currentTime - flickerStartTime;
+        constexpr float freq = 5.0f;
+        pointLightIntensity = (sinf(2.0f * 3.14159f * freq * elapsed) + 1.0f) * 0.5f;
+    }
+}
 
 void MainController::begin_draw() {
     glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
@@ -138,14 +181,17 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>(); {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    // 1)
+    {
         glm::mat4 shadowProj = glm::perspective(
                 glm::radians(90.0f),
                 float(SHADOW_WIDTH) / float(SHADOW_HEIGHT),
                 near_plane,
                 far_plane
                 );
-        const glm::vec3 &pos = lightPos;
+        const glm::vec3 &pos = lightPos;// lightPos је glm::vec3
         shadowMatrices[0] = shadowProj * glm::lookAt(pos, pos + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0));
         shadowMatrices[1] = shadowProj * glm::lookAt(pos, pos + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
         shadowMatrices[2] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
@@ -197,6 +243,7 @@ void MainController::draw() {
     Lit->set_bool("shadows", true);
     Lit->set_int("gNumPointLights", 1);
     Lit->set_float("far_plane", far_plane);
+
     Lit->set_vec3("lightPos", lightPos);
 
     Lit->set_int("shadowMap", 2);
@@ -206,6 +253,7 @@ void MainController::draw() {
     renderSceneLit(Lit);
 
     draw_skybox();
+
     // =================================================
 }
 
@@ -259,11 +307,14 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
 
     // 4) Trees
     std::vector<glm::vec3> treePositions = {
+            // Prvi set
             {26.0f, 3.0f, 0.0f},
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
             {26.0f, 3.0f, 10.0f},
+
+            // Drugi set
             {-15.0f, 3.0f, -30.0f}
     };
 
@@ -272,6 +323,24 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
         model = glm::scale(model, glm::vec3(10.0f));
         depthShader->set_mat4("model", model);
         resources->model("tree")->draw(depthShader);
+    }
+
+    // 5) Spawn-ovani objekti
+    for (auto &entry: spawnedObjects) {
+        const std::string &modelName = std::get<0>(entry);
+        const glm::vec3 &pos = std::get<1>(entry);
+        const glm::vec3 &rot = std::get<2>(entry);
+        const glm::vec3 &scale = std::get<3>(entry);
+
+        glm::mat4 modelMat = glm::mat4(1.0f);
+        modelMat = glm::translate(modelMat, pos);
+        modelMat = glm::rotate(modelMat, rot.x, glm::vec3(1, 0, 0));
+        modelMat = glm::rotate(modelMat, rot.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rot.z, glm::vec3(0, 0, 1));
+        modelMat = glm::scale(modelMat, scale);
+
+        depthShader->set_mat4("model", modelMat);
+        resources->model(modelName)->draw(depthShader);
     }
 }
 
@@ -298,11 +367,14 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
 
     // 4) Trees
     std::vector<glm::vec3> treePositions = {
+            // Prvi set
             {26.0f, 3.0f, 0.0f},
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
             {26.0f, 3.0f, 10.0f},
+
+            // Drugi set
             {-15.0f, 3.0f, -30.0f}
     };
 
@@ -311,6 +383,22 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
                   pos,
                   glm::vec3(0.0f, 0.0f, -80.0f),
                   glm::vec3(10.0f));
+    }
+
+    // Event spawner
+    for (auto &entry: spawnedObjects) {
+        const std::string &modelName = std::get<0>(entry);
+        const glm::vec3 &pos = std::get<1>(entry);
+        const glm::vec3 &rot = std::get<2>(entry);
+        const glm::vec3 &scale = std::get<3>(entry);
+
+        draw_mesh(
+                resources->model(modelName),
+                shader,
+                pos,
+                rot,
+                scale
+                );
     }
 }
 
@@ -365,6 +453,7 @@ void MainController::set_lights(auto shader) {
     shader->set_float("gDirectionalLight.Base.DiffuseIntensity", 0.25f);
     shader->set_vec3("gDirectionalLight.Direction", glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)));
 
+    // 2)
     shader->set_int("gNumPointLights", 1);
 
     // 3)
@@ -422,6 +511,26 @@ void MainController::update_camera() {
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
+}
+
+void MainController::executeEvent(const std::string &eventName) {
+    if (eventName == "START_FLICKER") {
+        flickerActive = true;
+        flickerStartTime = currentTime;
+        spdlog::info("EVENT START_FLICKER");
+    } else if (eventName == "STOP_FLICKER") {
+        flickerActive = false;
+        pointLightIntensity = 5.0f;// resetujemo intenzitet
+        spdlog::info("EVENT STOP_FLICKER");
+    } else if (eventName == "SPAWN_MODEL") {
+        spawnedObjects.emplace_back(
+                "police_car",
+                glm::vec3(0.0f, -8.0f, -.0f),
+                glm::vec3(0.0f),
+                glm::vec3(1.0f)
+                );
+        spdlog::info("EVENT SPAWN_MODEL: spawnovan tree");
+    } else { spdlog::warn("executeEvent: nepoznat event '{}'", eventName); }
 }
 
 }

@@ -20,13 +20,17 @@
       "pole": {
         "path": "pole/poste_01.obj",
         "flip_uvs": true
+      },
+      "police_car": {
+        "path": "police_car/police_car.obj",
+        "flip_uvs": true
       }
     }
   },
   "window": {
-    "height": 900,
-    "title": "RG Projekat - mi22105",
     "width": 1600,
+    "height": 900,
+    "title": "Park Road",
     "fullscreen": false
   }
 }

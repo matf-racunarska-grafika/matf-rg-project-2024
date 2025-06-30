@@ -5,6 +5,7 @@ mi22105 - Mihailo Radulović
 
 ## Controls
 
+L -> start event  
 {BUTTON1} -> {ACTION1}  
 {BUTTON2} -> {ACTION2}  
 ...  
