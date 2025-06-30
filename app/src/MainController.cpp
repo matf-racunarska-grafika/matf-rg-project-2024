@@ -121,15 +121,68 @@ bool MainController::loop() {
 }
 
 void MainController::poll_events() {
-    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_F1)
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+    currentTime += platform->dt();
+
+    // 1)
+    if (platform->key(engine::platform::KeyId::KEY_F1)
                 .state() == engine::platform::Key::State::JustPressed) {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
+
+    // 2)
+    if (!actionTriggered &&
+        platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+        actionTriggered = true;
+        actionTriggerTime = currentTime;// beležimo vreme pritiska
+        constexpr float M = 2.0f;       // nakon 2 sekunde startujemo flicker
+        eventQueue.push_back({currentTime + M, "START_FLICKER"});
+        spdlog::info("L pritisnut → zakazujem START_FLICKER za +{:.2f}s", M);
+    }
 }
 
-void MainController::update() { update_camera(); }
+void MainController::update() {
+    // 1)
+    update_camera();
+
+    // 2)
+    std::vector<ScheduledEvent> newEvents;
+
+    // 3)
+    for (auto it = eventQueue.begin(); it != eventQueue.end(); /* nista */) {
+        // DEBUG
+        spdlog::info("  [debug] eventQueue[{}] = '{}' @ triggerTime={:.2f}, currentTime={:.2f}",
+                     std::distance(eventQueue.begin(), it),
+                     it->eventName,
+                     it->triggerTime,
+                     currentTime);
+
+        if (currentTime >= it->triggerTime) {
+            // izvrši event
+            executeEvent(it->eventName);
+
+            if (it->eventName == "START_FLICKER") {
+                constexpr float N = 3.0f;
+                newEvents.push_back({currentTime + N, "SPAWN_MODEL"});
+                spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", N);
+            }
+
+            it = eventQueue.erase(it);
+        } else { ++it; }
+    }
+
+    // 4)
+    if (!newEvents.empty()) { eventQueue.insert(eventQueue.end(), newEvents.begin(), newEvents.end()); }
+
+    // 5)
+    if (flickerActive) {
+        float elapsed = currentTime - flickerStartTime;
+        constexpr float freq = 5.0f;
+        pointLightIntensity = (sinf(2.0f * 3.14159265f * freq * elapsed) + 1.0f) * 0.5f;
+    }
+}
 
 void MainController::begin_draw() {
     glBindFramebuffer(GL_FRAMEBUFFER, msFBO);
@@ -138,14 +191,17 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>(); {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    // 1)
+    {
         glm::mat4 shadowProj = glm::perspective(
                 glm::radians(90.0f),
                 float(SHADOW_WIDTH) / float(SHADOW_HEIGHT),
                 near_plane,
                 far_plane
                 );
-        const glm::vec3 &pos = lightPos;
+        const glm::vec3 &pos = lightPos;// lightPos је glm::vec3
         shadowMatrices[0] = shadowProj * glm::lookAt(pos, pos + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0));
         shadowMatrices[1] = shadowProj * glm::lookAt(pos, pos + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0));
         shadowMatrices[2] = shadowProj * glm::lookAt(pos, pos + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1));
@@ -197,6 +253,7 @@ void MainController::draw() {
     Lit->set_bool("shadows", true);
     Lit->set_int("gNumPointLights", 1);
     Lit->set_float("far_plane", far_plane);
+
     Lit->set_vec3("lightPos", lightPos);
 
     Lit->set_int("shadowMap", 2);
@@ -206,6 +263,7 @@ void MainController::draw() {
     renderSceneLit(Lit);
 
     draw_skybox();
+
     // =================================================
 }
 
@@ -259,11 +317,14 @@ void MainController::renderSceneDepth(const resources::Shader *depthShader) {
 
     // 4) Trees
     std::vector<glm::vec3> treePositions = {
+            // Prvi set
             {26.0f, 3.0f, 0.0f},
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
             {26.0f, 3.0f, 10.0f},
+
+            // Drugi set
             {-15.0f, 3.0f, -30.0f}
     };
 
@@ -298,11 +359,14 @@ void MainController::renderSceneLit(const resources::Shader *shader) {
 
     // 4) Trees
     std::vector<glm::vec3> treePositions = {
+            // Prvi set
             {26.0f, 3.0f, 0.0f},
             {-15.0f, 3.0f, 20.0f},
             {30.0f, 3.0f, -10.0f},
             {-20.0f, 3.0f, 10.0f},
             {26.0f, 3.0f, 10.0f},
+
+            // Drugi set
             {-15.0f, 3.0f, -30.0f}
     };
 
@@ -365,6 +429,7 @@ void MainController::set_lights(auto shader) {
     shader->set_float("gDirectionalLight.Base.DiffuseIntensity", 0.25f);
     shader->set_vec3("gDirectionalLight.Direction", glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f)));
 
+    // 2)
     shader->set_int("gNumPointLights", 1);
 
     // 3)
@@ -422,6 +487,31 @@ void MainController::update_camera() {
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
+}
+
+void MainController::executeEvent(const std::string &eventName) {
+    float now = currentTime;
+
+    if (eventName == "START_FLICKER") {
+        // 1)
+        flickerActive = true;
+        flickerStartTime = now;
+        spdlog::info("EVENT START_FLICKER: flickerActive = true");
+    } else if (eventName == "SPAWN_MODEL") {
+        // 2)
+        flickerActive = false;
+        pointLightIntensity = 5.0f;
+        spdlog::info("EVENT SPAWN_MODEL: flickerActive = false, intensity reset");
+
+        // 3)
+        spawnedObjects.emplace_back(
+                "tree",
+                glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3(0.0f),
+                glm::vec3(1.0f)
+                );
+        spdlog::info("Spawnovan novi model: tree");
+    } else { spdlog::warn("executeEvent: nepoznat event '{}'", eventName); }
 }
 
 }
