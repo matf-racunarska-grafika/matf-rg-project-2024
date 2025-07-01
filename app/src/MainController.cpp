@@ -130,6 +130,17 @@ void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
+    // 0) Ажурирај светло (овај позив мора бити овде, унутар draw-а)
+    engine::graphics::lighting::PointLight pl;
+    pl.base.color = glm::vec3(1.0f, 0.8f, 0.6f);
+    pl.base.ambientIntensity = 0.1f;
+    pl.base.diffuseIntensity = 1.0f;
+    pl.position = lightPos;// GUI-vrednost
+    pl.atten.constant = 1.0f;
+    pl.atten.linear = 0.09f;
+    pl.atten.exp = 0.032f;
+    lighting.setPointLight(pl);
+
     // ───── DEPTH PASS ────────────────────────────────────────────────────────────────
     lighting.beginDepthPass();
     lighting.renderDepthPass([&](const engine::resources::Shader *depthShader) {
@@ -242,7 +253,7 @@ void MainController::draw() {
         lightShader->set_float("uLightIntensity", pointLightIntensity);
 
         // Pozicija point svetla
-        lightShader->set_vec3("gPointLights[0].LocalPos", lightPos);
+        lightShader->set_vec3("lightPos", lightPos);
 
         // 1) Well
         draw_mesh(resources->model("well"), lightShader,
