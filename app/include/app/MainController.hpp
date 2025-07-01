@@ -5,6 +5,8 @@
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/core/Controller.hpp>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <engine/graphics/MSAA.hpp>
 
 namespace engine::myapp {
 struct ScheduledEvent {
@@ -21,8 +23,8 @@ public:
 
 class MainController final : public engine::core::Controller {
 public:
-    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
-    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
+    // MSAA
+    bool msaaEnabled = true;
 
     // -------Scheduled event--------------------------------------------------------
     // Queue svih zakazanih događaja
@@ -47,16 +49,16 @@ public:
 
     // ---------------------------------------------------------------------------------------
 
+    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
+    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
+
     std::string_view name() const override { return "test::app::MainController"; }
 
 private:
     int width, height;// prozor
 
-    // MSAA off-screen anti-aliasing
-    static constexpr unsigned int MSAA_SAMPLES = 4;// број узорака
-    unsigned int msFBO = 0;                        // MSAA FBO
-    unsigned int msColorRBO = 0;                   // MSAA color renderbuffer
-    unsigned int msDepthRBO = 0;                   // MSAA depth-stencil renderbuffer
+    // MSAA
+    std::unique_ptr<engine::graphics::MSAA> _msaa;
 
     // Point shadows
     static constexpr unsigned SHADOW_WIDTH = 2048;
@@ -85,7 +87,8 @@ private:
 
     void end_draw() override;
 
-    void draw_mesh(auto model, auto shader, const glm::vec3 &position,
+    void draw_mesh(auto model, auto shader,
+                   const glm::vec3 &position,
                    const glm::vec3 &rotation,
                    const glm::vec3 &scale);
 
@@ -104,4 +107,4 @@ private:
 
 }// namespace engine::myapp
 
-#endif // MYAPP_MAINCONTROLLER_HPP
+#endif
