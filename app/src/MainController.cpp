@@ -185,11 +185,12 @@ void MainController::draw() {
                     {-20.0f, 3.0f, 10.0f}, {26.0f, 3.0f, 10.0f}, {-15.0f, 3.0f, -30.0f},
                     {16.0f, 1.0f, -30.0f}, {0.0f, 4.0f, -130.0f}, {-2.0f, 4.0f, -100.0f},
                     {10.0f, 4.0f, -140.0f}, {40.0f, 2.0f, -130.0f}, {38.0f, 1.0f, -100.0f},
-                    {50.0f, 2.0f, -140.0f}
+                    {50.0f, 2.0f, -140.0f}, {30.0f, 4.0f, -160.0f}, {40.0f, 4.0f, -190.0f}
             };
             for (auto &pos: treePositions) {
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
                 model = glm::scale(model, glm::vec3(10.0f));
+                model = glm::rotate(model, -80.0f, glm::vec3(0, 0, 1));
                 depthShader->set_mat4("model", model);
                 resources->model("tree")->draw(depthShader);
             }
@@ -299,7 +300,11 @@ void MainController::draw() {
                 {10.0f, 4.0f, -140.0f},
                 {40.0f, 2.0f, -130.0f},
                 {38.0f, 1.0f, -100.0f},
-                {50.0f, 2.0f, -140.0f}
+                {50.0f, 2.0f, -140.0f},
+
+                // Cetvrti set
+                {30.0f, 4.0f, -160.0f},
+                {40.0f, 4.0f, -190.0f}
         };
 
         for (auto &pos: treePositions) {
