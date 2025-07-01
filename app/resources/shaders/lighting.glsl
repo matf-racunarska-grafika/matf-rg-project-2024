@@ -73,10 +73,11 @@ uniform sampler2D gSampler;
 uniform sampler2D gSamplerSpecularExponent;
 uniform vec3 gCameraLocalPos;
 
-uniform samplerCube shadowMap;
-uniform vec3 lightPos;
-uniform float far_plane;
-uniform bool shadows;
+uniform samplerCube shadowMap;  // depth‐cubemap
+uniform vec3 lightPos;         // pozicija point svetla
+uniform float far_plane;       // far plane za depth pass
+uniform bool shadows;          // da li računamo senke (true/false)
+
 uniform float uLightIntensity;
 
 // Predefinisane offset smernice za PCF (20 uzoraka)
@@ -165,7 +166,6 @@ vec3 CalcPointLightSmooth(int i, vec3 normal)
     vec3 lightDir = normalize(vLocalPos - pos);
     vec4 phongCol = CalcLightInternal(b, lightDir, normal);
 
-    // Intenzitet svetla
     phongCol.rgb *= uLightIntensity;
 
     // 2)

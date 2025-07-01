@@ -27,7 +27,9 @@ add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
 add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers}
         include/engine/graphics/MSAA.hpp
-        src/MSAA.cpp)
+        src/MSAA.cpp
+        include/engine/graphics/Lighting.hpp
+        src/Lighting.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_include_directories(${PROJECT_NAME} PUBLIC
         + include/                                    # твоји хедери

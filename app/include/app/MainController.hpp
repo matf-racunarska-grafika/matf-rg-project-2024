@@ -7,6 +7,7 @@
 #include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <engine/graphics/MSAA.hpp>
+#include <engine/graphics/Lighting.hpp>
 
 namespace engine::myapp {
 struct ScheduledEvent {
@@ -25,6 +26,10 @@ class MainController final : public engine::core::Controller {
 public:
     // MSAA
     bool msaaEnabled = true;
+
+    // Lighting
+    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
+    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
 
     // -------Scheduled event--------------------------------------------------------
     // Queue svih zakazanih događaja
@@ -49,9 +54,6 @@ public:
 
     // ---------------------------------------------------------------------------------------
 
-    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
-    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
-
     std::string_view name() const override { return "test::app::MainController"; }
 
 private:
@@ -60,18 +62,8 @@ private:
     // MSAA
     std::unique_ptr<engine::graphics::MSAA> _msaa;
 
-    // Point shadows
-    static constexpr unsigned SHADOW_WIDTH = 2048;
-    static constexpr unsigned SHADOW_HEIGHT = 2048;
-    GLuint depthMapFBO = 0;
-    GLuint depthCubemap = 0;
-    float near_plane = 1.0f, far_plane = 25.0f;
-    glm::mat4 shadowMatrices[6];
-
-    // Point shadows funckije
-    void renderSceneDepth(const resources::Shader *depthShader);
-
-    void renderSceneLit(const resources::Shader *litShader);
+    // Lighting
+    engine::graphics::lighting::LightingSystem lighting{2048, 2048};
 
     void initialize() override;
 
