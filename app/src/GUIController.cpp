@@ -57,6 +57,9 @@ void GUIController::draw() {
         cfg["fullscreen"] = fullscreen;
     }
 
+    // MSAA
+    ImGui::Checkbox("Enable MSAA", &mainCtrl->msaaEnabled);
+
     ImGui::End();
     graphics->end_gui();
 }

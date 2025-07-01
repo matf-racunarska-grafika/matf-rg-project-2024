@@ -5,6 +5,9 @@
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/core/Controller.hpp>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <engine/graphics/MSAA.hpp>
+#include <engine/graphics/Lighting.hpp>
 
 namespace engine::myapp {
 struct ScheduledEvent {
@@ -21,6 +24,10 @@ public:
 
 class MainController final : public engine::core::Controller {
 public:
+    // MSAA
+    bool msaaEnabled = true;
+
+    // Lighting
     float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
     glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
 
@@ -52,24 +59,11 @@ public:
 private:
     int width, height;// prozor
 
-    // MSAA off-screen anti-aliasing
-    static constexpr unsigned int MSAA_SAMPLES = 4;// број узорака
-    unsigned int msFBO = 0;                        // MSAA FBO
-    unsigned int msColorRBO = 0;                   // MSAA color renderbuffer
-    unsigned int msDepthRBO = 0;                   // MSAA depth-stencil renderbuffer
+    // MSAA
+    std::unique_ptr<engine::graphics::MSAA> _msaa;
 
-    // Point shadows
-    static constexpr unsigned SHADOW_WIDTH = 2048;
-    static constexpr unsigned SHADOW_HEIGHT = 2048;
-    GLuint depthMapFBO = 0;
-    GLuint depthCubemap = 0;
-    float near_plane = 1.0f, far_plane = 25.0f;
-    glm::mat4 shadowMatrices[6];
-
-    // Point shadows funckije
-    void renderSceneDepth(const resources::Shader *depthShader);
-
-    void renderSceneLit(const resources::Shader *litShader);
+    // Lighting
+    engine::graphics::lighting::LightingSystem lighting{2048, 2048};
 
     void initialize() override;
 
@@ -85,7 +79,8 @@ private:
 
     void end_draw() override;
 
-    void draw_mesh(auto model, auto shader, const glm::vec3 &position,
+    void draw_mesh(auto model, auto shader,
+                   const glm::vec3 &position,
                    const glm::vec3 &rotation,
                    const glm::vec3 &scale);
 
@@ -104,4 +99,4 @@ private:
 
 }// namespace engine::myapp
 
-#endif // MYAPP_MAINCONTROLLER_HPP
+#endif
