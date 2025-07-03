@@ -1,4 +1,4 @@
-#include <app/GUIController.hpp>
+    #include <app/GUIController.hpp>
 #include <app/TestApp.hpp>
 #include <app/MainController.hpp>
 
