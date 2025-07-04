@@ -24,7 +24,6 @@ namespace app {
             auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
             camera->rotate_camera(position.dx, position.dy);
         }
-
     }
 
     void MainController::initialize() {
@@ -108,9 +107,29 @@ namespace app {
         engine::graphics::OpenGL::clear_buffers();
     }
 
+    void MainController::draw_streetlamp() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *lampModel = resources->model("streetlamp");
+        engine::resources::Shader *shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 modelLampa = glm::mat4(1.0f);
+        modelLampa = glm::translate(modelLampa, glm::vec3(-1.6f, 0.5f, -3.0f));
+        modelLampa = glm::rotate(modelLampa, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        modelLampa = glm::scale(modelLampa, glm::vec3(2.5f));
+        shader->set_mat4("model", modelLampa);
+        lampModel->draw(shader);
+
+    }
+
     void MainController::draw() {
         draw_floor();
         draw_bench();
+        draw_streetlamp();
     }
 
     void MainController::end_draw() {
