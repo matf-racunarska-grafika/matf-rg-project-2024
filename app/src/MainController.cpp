@@ -131,6 +131,23 @@ namespace app {
     }
 
     void MainController::draw() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+
+        engine::resources::Shader *modelShader = resources->shader("basic");
+
+        modelShader->use();
+
+        modelShader->set_vec3("dirLight.direction", glm::vec3(0.8f, -1.0f, 1.0f));
+        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.35f)*2.0f);
+        modelShader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.5f, 0.5f)*0.5f);
+        modelShader->set_vec3("dirLight.specular",  glm::vec3(0.4f, 0.4f, 0.3f));
+
+        modelShader->set_float("material_shininess", 32.0f);
+        modelShader->set_vec3("viewPos", graphics->camera()->Position);
+
+
         draw_floor();
         draw_bench();
         draw_streetlamp();
