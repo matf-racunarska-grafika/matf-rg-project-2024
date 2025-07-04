@@ -3,6 +3,9 @@
     "models": {
       "floor" : {
         "path" : "seamless__floor_tiled_texture_iv/scene.gltf"
+      },
+      "bench" : {
+        "path" : "bench__park_-_14mb/scene.gltf"
       }
     }
   },
