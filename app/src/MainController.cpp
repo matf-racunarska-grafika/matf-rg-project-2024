@@ -77,7 +77,7 @@ namespace app {
 
     void MainController::update_camera() {
         auto gui_controller = engine::core::Controller::get<GUIController>();
-        if (!gui_controller->is_enabled()) {
+        if (gui_controller->is_enabled()) {
             return ;
         }
 
