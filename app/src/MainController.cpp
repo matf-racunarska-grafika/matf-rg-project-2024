@@ -144,6 +144,20 @@ namespace app {
         modelShader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.5f, 0.5f)*0.5f);
         modelShader->set_vec3("dirLight.specular",  glm::vec3(0.4f, 0.4f, 0.3f));
 
+        modelShader->set_vec3("spotLight.position", glm::vec3(-1.6f, 5.0f, -3.0f));
+        modelShader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
+        modelShader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+        modelShader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+
+        modelShader->set_float("spotLight.constant", 1.0f);
+        modelShader->set_float("spotLight.linear", 0.045f);
+        modelShader->set_float("spotLight.quadratic", 0.0075f);
+
+        modelShader->set_vec3("spotLight.ambient", glm::vec3(0.2f, 0.2f, 0.1f));
+        modelShader->set_vec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 0.8f));
+        modelShader->set_vec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+
         modelShader->set_float("material_shininess", 32.0f);
         modelShader->set_vec3("viewPos", graphics->camera()->Position);
 
