@@ -7,8 +7,8 @@
     }
   },
   "window": {
-    "height": 600,
+    "height": 700,
     "title": "Hello, window!",
-    "width": 800
+    "width": 1300
   }
 }
