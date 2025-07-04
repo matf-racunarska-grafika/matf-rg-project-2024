@@ -6,6 +6,9 @@
       },
       "bench" : {
         "path" : "bench__park_-_14mb/scene.gltf"
+      },
+      "streetlamp" : {
+        "path" : "street_lamp/scene.gltf"
       }
     }
   },
