@@ -31,6 +31,10 @@ namespace app {
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         engine::graphics::OpenGL::enable_depth_testing();
 
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
+        camera->Position = glm::vec3(0.0f, 0.0f, 0.3f);
+
     }
 
     bool MainController::loop() {
