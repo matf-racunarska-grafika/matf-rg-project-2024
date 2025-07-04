@@ -58,6 +58,22 @@ namespace app {
         shader->set_mat4("model", modelPod);
         floorModel->draw(shader);
     }
+    void MainController::draw_bench() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *benchModel = resources->model("bench");
+        engine::resources::Shader *shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 modelKlupa = glm::mat4(1.0f);
+        modelKlupa = glm::translate(modelKlupa, glm::vec3(0.3f, -2.0f, -3.0f));
+        modelKlupa = glm::scale(modelKlupa, glm::vec3(0.012f));
+        shader->set_mat4("model", modelKlupa);
+        benchModel->draw(shader);
+    }
 
     void MainController::update_camera() {
         auto gui_controller = engine::core::Controller::get<GUIController>();
@@ -94,6 +110,7 @@ namespace app {
 
     void MainController::draw() {
         draw_floor();
+        draw_bench();
     }
 
     void MainController::end_draw() {
