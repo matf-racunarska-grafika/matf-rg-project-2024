@@ -4,7 +4,7 @@
 
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
-#include<engine/core/Controller.hpp>
+#include <engine/core/Controller.hpp>
 
 namespace app {
 
@@ -49,6 +49,6 @@ public:
     }
 };
 
-} // app
+}// namespace app
 
-#endif //MAINCONTROLLER_HPP
+#endif//MAINCONTROLLER_HPP

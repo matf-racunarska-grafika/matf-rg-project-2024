@@ -5,7 +5,7 @@
 #ifndef GUICONTROLLER_HPP
 #define GUICONTROLLER_HPP
 #include "engine/core/Controller.hpp"
-namespace app{
+namespace app {
 
 class GUIController : public engine::core::Controller {
 public:
@@ -21,8 +21,7 @@ private:
     void draw() override;
 };
 
-}
+}// namespace app
 
 
-
-#endif //GUICONTROLLER_HPP
+#endif//GUICONTROLLER_HPP
