@@ -25,6 +25,8 @@ class MainController : public engine::core::Controller {
 
     void begin_draw() override;
 
+    void draw_toy();
+
     void draw_streetlamp();
 
     void setup_lighting();

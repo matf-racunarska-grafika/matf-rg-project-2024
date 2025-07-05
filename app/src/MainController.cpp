@@ -125,6 +125,28 @@ namespace app {
         engine::graphics::OpenGL::clear_buffers();
     }
 
+    void MainController::draw_toy() {
+        if (!spotlightEnabled)
+            return;
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *toyModel = resources->model("toy");
+        engine::resources::Shader *shader = resources->shader("basic");
+
+        shader->use();
+
+        setup_lighting();
+
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 modelIgracka = glm::mat4(1.0f);
+        modelIgracka = glm::translate(modelIgracka, glm::vec3(-0.45f, -1.045, -2.8f));
+        modelIgracka = glm::scale(modelIgracka, glm::vec3(0.4f));
+        shader->set_mat4("model", modelIgracka);
+        toyModel->draw(shader);
+    }
+
     void MainController::draw_streetlamp() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -155,7 +177,7 @@ namespace app {
         modelShader->use();
 
         modelShader->set_vec3("dirLight.direction", glm::vec3(0.8f, -1.0f, 1.0f));
-        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.35f)*2.0f);
+        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.35f)*2.5f);
         modelShader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.5f, 0.5f)*0.5f);
         modelShader->set_vec3("dirLight.specular",  glm::vec3(0.4f, 0.4f, 0.3f));
 
@@ -186,6 +208,7 @@ namespace app {
         draw_floor();
         draw_bench();
         draw_streetlamp();
+        draw_toy();
     }
 
     void MainController::end_draw() {
