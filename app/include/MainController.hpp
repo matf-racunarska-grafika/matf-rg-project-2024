@@ -21,6 +21,8 @@ class MainController : public engine::core::Controller {
 
     void update_spotlight();
 
+    void update_spotlight_color();
+
     void update() override;
 
     void begin_draw() override;
@@ -37,6 +39,8 @@ class MainController : public engine::core::Controller {
 
 private:
     bool spotlightEnabled = false;
+
+    float spotlightRedComponent = 0.1f;
 public:
     std::string_view name() const override {
         return "app:MainController";
