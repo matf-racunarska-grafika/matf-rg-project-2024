@@ -141,7 +141,7 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 modelIgracka = glm::mat4(1.0f);
-        modelIgracka = glm::translate(modelIgracka, glm::vec3(-0.45f, -1.045, -2.8f));
+        modelIgracka = glm::translate(modelIgracka, glm::vec3(-0.45f, -1.035, -2.8f));
         modelIgracka = glm::scale(modelIgracka, glm::vec3(0.4f));
         shader->set_mat4("model", modelIgracka);
         toyModel->draw(shader);
