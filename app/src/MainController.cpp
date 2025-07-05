@@ -119,9 +119,11 @@ namespace app {
 void MainController::update_spotlight_color() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KeyId::KEY_R).state() == engine::platform::Key::State::JustPressed) {
-        spotlightRedComponent += 0.1f;
-        if (spotlightRedComponent > 2.0f) {
-            spotlightRedComponent = 0.5f;
+        spotlightRedComponentAmb += 0.1f;
+        spotlightRedComponentDif += 0.1f;
+        if (spotlightRedComponentDif > 2.0f) {
+            spotlightRedComponentAmb = 0.2f;
+            spotlightRedComponentDif = 1.0f;
         }
     }
 }
@@ -202,13 +204,15 @@ void MainController::update() {
         modelShader->set_float("spotLight.quadratic", 0.0075f);
 
     if (spotlightEnabled) {
-        modelShader->set_vec3("spotLight.ambient", glm::vec3(spotlightRedComponent, 0.2f, 0.1f));
-        modelShader->set_vec3("spotLight.diffuse", glm::vec3(spotlightRedComponent, 1.0f, 0.8f));
+        modelShader->set_vec3("spotLight.ambient", glm::vec3(spotlightRedComponentAmb, 0.2f, 0.1f));
+        modelShader->set_vec3("spotLight.diffuse", glm::vec3(spotlightRedComponentDif, 1.0f, 0.8f));
         modelShader->set_vec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     } else {
         modelShader->set_vec3("spotLight.ambient", glm::vec3(0.0f));
         modelShader->set_vec3("spotLight.diffuse", glm::vec3(0.0f));
         modelShader->set_vec3("spotLight.specular", glm::vec3(0.0f));
+        spotlightRedComponentAmb=0.2f;
+        spotlightRedComponentDif=1.0f;
     }
 
         modelShader->set_float("material_shininess", 32.0f);

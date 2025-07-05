@@ -40,7 +40,9 @@ class MainController : public engine::core::Controller {
 private:
     bool spotlightEnabled = false;
 
-    float spotlightRedComponent = 0.1f;
+    float spotlightRedComponentAmb = 0.2f;
+    float spotlightRedComponentDif = 1.0f;
+
 public:
     std::string_view name() const override {
         return "app:MainController";
