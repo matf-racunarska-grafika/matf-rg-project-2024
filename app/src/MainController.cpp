@@ -52,6 +52,9 @@ namespace app {
         engine::resources::Shader *shader = resources->shader("basic");
 
         shader->use();
+
+        setup_lighting();
+
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 modelPod = glm::mat4(1.0f);
@@ -69,6 +72,9 @@ namespace app {
         engine::resources::Shader *shader = resources->shader("basic");
 
         shader->use();
+
+        setup_lighting();
+
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 modelKlupa = glm::mat4(1.0f);
@@ -127,6 +133,9 @@ namespace app {
         engine::resources::Shader *shader = resources->shader("basic");
 
         shader->use();
+
+        setup_lighting();
+
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 modelLampa = glm::mat4(1.0f);
@@ -146,11 +155,11 @@ namespace app {
         modelShader->use();
 
         modelShader->set_vec3("dirLight.direction", glm::vec3(0.8f, -1.0f, 1.0f));
-        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.40f, 0.4f, 0.35f)*2.0f);
+        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.35f)*2.0f);
         modelShader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.5f, 0.5f)*0.5f);
         modelShader->set_vec3("dirLight.specular",  glm::vec3(0.4f, 0.4f, 0.3f));
 
-        modelShader->set_vec3("spotLight.position", glm::vec3(-1.6f, 5.0f, -3.0f));
+        modelShader->set_vec3("spotLight.position", glm::vec3(-1.4f, 5.5f, -3.0f));
         modelShader->set_vec3("spotLight.direction", glm::vec3(0.0f, -1.0f, 0.0f));
         modelShader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
         modelShader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
@@ -174,7 +183,6 @@ namespace app {
     }
 
     void MainController::draw() {
-        setup_lighting();
         draw_floor();
         draw_bench();
         draw_streetlamp();
