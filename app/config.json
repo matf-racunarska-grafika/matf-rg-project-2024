@@ -9,6 +9,9 @@
       },
       "streetlamp" : {
         "path" : "street_lamp/scene.gltf"
+      },
+      "toy" : {
+        "path" : "toy_rabbit/scene.gltf"
       }
     }
   },

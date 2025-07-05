@@ -1,0 +1,11 @@
+Model Information:
+* title:	Toy Rabbit
+* source:	https://sketchfab.com/3d-models/toy-rabbit-2a16de5706b34171bc20123e3581d561
+* author:	Nat (https://sketchfab.com/natwright)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Toy Rabbit" (https://sketchfab.com/3d-models/toy-rabbit-2a16de5706b34171bc20123e3581d561) by Nat (https://sketchfab.com/natwright) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
