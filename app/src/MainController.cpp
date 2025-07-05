@@ -34,7 +34,6 @@ namespace app {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera = graphics->camera();
         camera->Position = glm::vec3(0.0f, 0.0f, 0.3f);
-
     }
 
     bool MainController::loop() {
@@ -61,6 +60,7 @@ namespace app {
         shader->set_mat4("model", modelPod);
         floorModel->draw(shader);
     }
+
     void MainController::draw_bench() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -81,7 +81,7 @@ namespace app {
     void MainController::update_camera() {
         auto gui_controller = engine::core::Controller::get<GUIController>();
         if (gui_controller->is_enabled()) {
-            return ;
+            return;
         }
 
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -90,21 +90,29 @@ namespace app {
         float dt = platform->dt();
 
         if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::FORWARD,dt);
+            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
         }
         if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD,dt);
+            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
         }
         if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::LEFT,dt);
+            camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
         }
         if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::RIGHT,dt);
+            camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
+        }
+    }
+
+    void MainController::update_spotlight() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        if (platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+            spotlightEnabled = !spotlightEnabled;
         }
     }
 
     void MainController::update() {
         update_camera();
+        update_spotlight();
     }
 
     void MainController::begin_draw() {
@@ -138,7 +146,7 @@ namespace app {
         modelShader->use();
 
         modelShader->set_vec3("dirLight.direction", glm::vec3(0.8f, -1.0f, 1.0f));
-        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.35f)*2.0f);
+        modelShader->set_vec3("dirLight.ambient", glm::vec3(0.40f, 0.4f, 0.35f)*2.0f);
         modelShader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.5f, 0.5f)*0.5f);
         modelShader->set_vec3("dirLight.specular",  glm::vec3(0.4f, 0.4f, 0.3f));
 
@@ -151,14 +159,18 @@ namespace app {
         modelShader->set_float("spotLight.linear", 0.045f);
         modelShader->set_float("spotLight.quadratic", 0.0075f);
 
-        modelShader->set_vec3("spotLight.ambient", glm::vec3(0.2f, 0.2f, 0.1f));
-        modelShader->set_vec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 0.8f));
-        modelShader->set_vec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
+        if (spotlightEnabled) {
+            modelShader->set_vec3("spotLight.ambient", glm::vec3(0.2f, 0.2f, 0.1f));
+            modelShader->set_vec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 0.8f));
+            modelShader->set_vec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        } else {
+            modelShader->set_vec3("spotLight.ambient", glm::vec3(0.0f));
+            modelShader->set_vec3("spotLight.diffuse", glm::vec3(0.0f));
+            modelShader->set_vec3("spotLight.specular", glm::vec3(0.0f));
+        }
 
         modelShader->set_float("material_shininess", 32.0f);
         modelShader->set_vec3("viewPos", graphics->camera()->Position);
-
     }
 
     void MainController::draw() {
