@@ -127,13 +127,11 @@ namespace app {
         modelLampa = glm::scale(modelLampa, glm::vec3(2.5f));
         shader->set_mat4("model", modelLampa);
         lampModel->draw(shader);
-
     }
 
-    void MainController::draw() {
+    void MainController::setup_lighting() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera = graphics->camera();
 
         engine::resources::Shader *modelShader = resources->shader("basic");
 
@@ -161,7 +159,10 @@ namespace app {
         modelShader->set_float("material_shininess", 32.0f);
         modelShader->set_vec3("viewPos", graphics->camera()->Position);
 
+    }
 
+    void MainController::draw() {
+        setup_lighting();
         draw_floor();
         draw_bench();
         draw_streetlamp();

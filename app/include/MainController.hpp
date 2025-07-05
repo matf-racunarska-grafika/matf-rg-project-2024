@@ -17,13 +17,14 @@ class MainController : public engine::core::Controller {
     void update() override;
     void begin_draw() override;
     void draw_streetlamp();
+    void setup_lighting();
     void draw() override;
     void end_draw() override;
 
 public:
     std::string_view name() const override {
         return "app:MainController";
-    };
+    }
 };
 
 } // app
