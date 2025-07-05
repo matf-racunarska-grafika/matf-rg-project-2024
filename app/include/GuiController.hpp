@@ -15,7 +15,9 @@ public:
 
 private:
     void initialize() override;
+
     void poll_events() override;
+
     void draw() override;
 };
 
