@@ -48,7 +48,14 @@ public:
     float g_spawn_delay = 3.0f;
 
     // Spawn-ovani objekti: ime modela + pozicija, rotacija, skala
-    std::vector<std::tuple<std::string, glm::vec3, glm::vec3, glm::vec3> > g_spawned_objects;
+    struct SpawnedObject {
+        std::string name;
+        glm::vec3 position;
+        glm::vec3 rotation;// Euler uglovi u radijanima
+        glm::vec3 scale;
+    };
+
+    std::vector<SpawnedObject> g_spawned_objects;
 
     void execute_event(const std::string &eventName);
 

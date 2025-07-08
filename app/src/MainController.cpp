@@ -217,11 +217,11 @@ void MainController::draw() {
         }
 
         // 7) Event spawner
-        for (auto &entry: g_spawned_objects) {
-            const auto &name = std::get<0>(entry);
-            const auto &pos = std::get<1>(entry);
-            const auto &rot = std::get<2>(entry);
-            const auto &scale = std::get<3>(entry);
+        for (const auto &obj: g_spawned_objects) {
+            const auto &name = obj.name;
+            const auto &pos = obj.position;
+            const auto &rot = obj.rotation;
+            const auto &scale = obj.scale;
 
             glm::mat4 model = glm::translate(glm::mat4(1.0f), pos);
             model = glm::rotate(model, rot.x, glm::vec3(1, 0, 0));
@@ -325,12 +325,11 @@ void MainController::draw() {
                   glm::vec3(0.0f, -4.7f, 0.0f),
                   glm::vec3(3.0f));
 
-        // Event spawner
-        for (auto &entry: g_spawned_objects) {
-            const std::string &modelName = std::get<0>(entry);
-            const glm::vec3 &pos = std::get<1>(entry);
-            const glm::vec3 &rot = std::get<2>(entry);
-            const glm::vec3 &scale = std::get<3>(entry);
+        for (const auto &obj: g_spawned_objects) {
+            const auto &modelName = obj.name;
+            const auto &pos = obj.position;
+            const auto &rot = obj.rotation;
+            const auto &scale = obj.scale;
 
             draw_mesh(
                     resources->model(modelName),
