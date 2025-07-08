@@ -2,7 +2,6 @@
 #define MYAPP_MAINCONTROLLER_HPP
 
 #include <string_view>
-#include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/core/Controller.hpp>
 #include <GL/gl.h>
 #include <glm/glm.hpp>

@@ -1,4 +1,3 @@
-#include <glad/glad.h>
 #include <memory>
 #include <spdlog/spdlog.h>
 #include <engine/core/Engine.hpp>
@@ -113,8 +112,10 @@ void MainController::update() {
 }
 
 void MainController::begin_draw() {
-    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    auto *graphics = core::Controller::get<engine::graphics::GraphicsController>();
+
+    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { graphics->bind_framebuffer(GL_FRAMEBUFFER, 0); }
+    graphics->clear();
 }
 
 void MainController::draw() {
@@ -226,7 +227,8 @@ void MainController::draw() {
     });
     m_lighting.endDepthPass();
 
-    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    // umesto glBindFramebuffer(...)
+    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { graphics->bind_framebuffer(GL_FRAMEBUFFER, 0); }
 
     auto *platform = core::Controller::get<platform::PlatformController>();
     int width = platform->window()->width();

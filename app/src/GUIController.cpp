@@ -2,7 +2,6 @@
 #include <engine/core/Engine.hpp>
 #include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
-#include <GLFW/glfw3.h>
 #include <app/MainController.hpp>
 
 namespace engine::myapp {
