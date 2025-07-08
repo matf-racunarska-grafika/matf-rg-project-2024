@@ -47,11 +47,9 @@ void MainController::initialize() {
     // ───────────────────────────────────────────────────────────────
 
     // ─── MSAA off-screen ─────────────────────────────────────────
-    glEnable(GL_MULTISAMPLE);
-    GLint vp[4];
-    glGetIntegerv(GL_VIEWPORT, vp);
-    width = vp[2];
-    height = vp[3];
+    auto *platform = core::Controller::get<platform::PlatformController>();
+    int width = platform->window()->width();
+    int height = platform->window()->height();
     m_msaa = std::make_unique<engine::graphics::MSAA>(width, height, /*samples=*/4);
     // ───────────────────────────────────────────────────────────────
 
@@ -237,6 +235,9 @@ void MainController::draw() {
 
     if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
+    auto *platform = core::Controller::get<platform::PlatformController>();
+    int width = platform->window()->width();
+    int height = platform->window()->height();
     glViewport(0, 0, width, height);
 
     m_lighting.setCameraPosition(graphics->camera()->Position);

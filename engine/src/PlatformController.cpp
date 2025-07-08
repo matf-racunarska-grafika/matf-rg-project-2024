@@ -186,6 +186,20 @@ void PlatformController::_platform_on_mouse(double x, double y) {
     for (auto &observer: m_platform_event_observers) { observer->on_mouse_move(g_mouse_position); }
 }
 
+void PlatformController::set_fullscreen(bool enable) {
+    GLFWwindow *win = m_window.handle_();
+    if (enable) {
+        GLFWmonitor *mon = glfwGetPrimaryMonitor();
+        const auto *mode = glfwGetVideoMode(mon);
+        glfwSetWindowMonitor(win, mon, 0, 0, mode->width, mode->height, mode->refreshRate);
+    } else {
+        int w = m_window.width(), h = m_window.height();
+        glfwSetWindowMonitor(win, nullptr, 100, 100, w, h, 0);
+    }
+    // po potrebi sačuvajte ovu vrednost u config
+    util::Configuration::config()["window"]["fullscreen"] = enable;
+}
+
 void PlatformController::_platform_on_keyboard(int key_code, int action) {
     const Key result = key(g_glfw_key_to_engine[key_code]);
     for (auto &observer: m_platform_event_observers) { observer->on_key(result); }

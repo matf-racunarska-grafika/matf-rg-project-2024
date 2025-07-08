@@ -30,32 +30,7 @@ void GUIController::draw() {
                         -200.0f, 200.0f,
                         "%.1f");
 
-    if (ImGui::Checkbox("Fullscreen", &fullscreen)) {
-        // Odmah primeni promenu
-        auto *platform = core::Controller::get<platform::PlatformController>();
-        GLFWwindow *win = platform->window()->handle_();
-
-        if (fullscreen) {
-            // Udji u fullscreen
-            GLFWmonitor *mon = glfwGetPrimaryMonitor();
-            const auto *mode = glfwGetVideoMode(mon);
-            glfwSetWindowMonitor(win, mon,
-                                 0, 0,
-                                 mode->width, mode->height,
-                                 mode->refreshRate);
-        } else {
-            // Vracanje u windowed rezim
-            int w = cfg.value("width", 800);
-            int h = cfg.value("height", 600);
-            glfwSetWindowMonitor(win, nullptr,
-                                 100, 100,
-                                 w, h,
-                                 0);
-        }
-
-        // Cuvamo promenu u configu
-        cfg["fullscreen"] = fullscreen;
-    }
+    if (ImGui::Checkbox("Fullscreen", &fullscreen)) { core::Controller::get<platform::PlatformController>()->set_fullscreen(fullscreen); }
 
     // MSAA
     ImGui::Checkbox("Enable MSAA", &mainCtrl->g_msaa_enabled);

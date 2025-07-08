@@ -64,8 +64,6 @@ public:
     std::string_view name() const override { return "test::app::MainController"; }
 
 private:
-    int width, height;// prozor
-
     // MSAA
     std::unique_ptr<engine::graphics::MSAA> m_msaa;
 
