@@ -7,9 +7,6 @@
 #include <app/GUIController.hpp>
 
 namespace engine::myapp {
-void MainPlatformEventObserver::on_key(engine::platform::Key key) { spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str()); }
-
-void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) { spdlog::info("MousePosition: {} {}", position.x, position.y); }
 
 void MainController::initialize() {
     // User initialization
@@ -52,10 +49,6 @@ void MainController::initialize() {
     int height = platform->window()->height();
     m_msaa = std::make_unique<engine::graphics::MSAA>(width, height, /*samples=*/4);
     // ───────────────────────────────────────────────────────────────
-
-    auto observer = std::make_unique<MainPlatformEventObserver>();
-    engine::core::Controller::get<engine::platform::PlatformController>()
-            ->register_platform_event_observer(std::move(observer));
 }
 
 bool MainController::loop() {

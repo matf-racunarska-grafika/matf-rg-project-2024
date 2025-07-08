@@ -10,16 +10,10 @@
 #include <engine/graphics/Lighting.hpp>
 
 namespace engine::myapp {
+
 struct ScheduledEvent {
     float triggerTime;// vreme kada se event aktivira
     std::string eventName;
-};
-
-class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
-public:
-    void on_key(engine::platform::Key key) override;
-
-    void on_mouse_move(engine::platform::MousePosition position) override;
 };
 
 class MainController final : public engine::core::Controller {
