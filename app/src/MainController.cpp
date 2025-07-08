@@ -16,7 +16,7 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
 
     // ─── Lighting ─────────────────────────────────────────────────
-    lighting.initialize();
+    m_lighting.initialize();
 
     // 1) Directional light
     graphics::lighting::DirectionalLight dl;
@@ -24,26 +24,26 @@ void MainController::initialize() {
     dl.base.ambientIntensity = 0.1f;
     dl.base.diffuseIntensity = 0.25f;
     dl.direction = glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f));
-    lighting.setDirectionalLight(dl);
+    m_lighting.setDirectionalLight(dl);
 
     // 2) Point light
     graphics::lighting::PointLight pl;
-    pl.position = lightPos;
+    pl.position = g_light_pos;
     pl.base.color = glm::vec3(1.0f, 0.8f, 0.6f);
     pl.base.ambientIntensity = 0.1f;
     pl.base.diffuseIntensity = 1.0f;
     pl.atten = {1.0f, 0.09f, 0.032f};
-    lighting.setPointLight(pl);
+    m_lighting.setPointLight(pl);
 
     // 3) Material
     graphics::lighting::Material mat;
     mat.ambientColor = glm::vec3(1.0f);
     mat.diffuseColor = glm::vec3(1.0f);
     mat.specularColor = glm::vec3(1.0f);
-    lighting.setMaterial(mat);
+    m_lighting.setMaterial(mat);
 
     // 4) Pocetni intenzitet svetla
-    lighting.setLightIntensity(pointLightIntensity);
+    m_lighting.setLightIntensity(g_point_light_intensity);
     // ───────────────────────────────────────────────────────────────
 
     // ─── MSAA off-screen ─────────────────────────────────────────
@@ -52,7 +52,7 @@ void MainController::initialize() {
     glGetIntegerv(GL_VIEWPORT, vp);
     width = vp[2];
     height = vp[3];
-    _msaa = std::make_unique<engine::graphics::MSAA>(width, height, /*samples=*/4);
+    m_msaa = std::make_unique<engine::graphics::MSAA>(width, height, /*samples=*/4);
     // ───────────────────────────────────────────────────────────────
 
     auto observer = std::make_unique<MainPlatformEventObserver>();
@@ -70,7 +70,7 @@ bool MainController::loop() {
 void MainController::poll_events() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
 
-    currentTime += platform->dt();
+    g_current_time += platform->dt();
 
     // 1)
     if (platform->key(engine::platform::KeyId::KEY_F1)
@@ -80,12 +80,12 @@ void MainController::poll_events() {
     }
 
     // 2)
-    if (!actionTriggered &&
+    if (!g_action_triggered &&
         platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
-        actionTriggered = true;
-        actionTriggerTime = currentTime;// beležimo vreme pritiska
-        constexpr float M = 2.0f;       // nakon 2 sekunde startujemo flicker
-        eventQueue.push_back({currentTime + M, "START_FLICKER"});
+        g_action_triggered = true;
+        g_action_triggered = g_current_time;// beležimo vreme pritiska
+        constexpr float M = 2.0f;           // nakon 2 sekunde startujemo flicker
+        g_event_queue.push_back({g_current_time + M, "START_FLICKER"});
         spdlog::info("L pritisnut → zakazujem START_FLICKER za +{:.2f}s", M);
     }
 }
@@ -94,35 +94,35 @@ void MainController::update() {
     update_camera();
 
     std::vector<ScheduledEvent> newEvents;
-    for (auto it = eventQueue.begin(); it != eventQueue.end();) {
-        if (currentTime >= it->triggerTime) {
+    for (auto it = g_event_queue.begin(); it != g_event_queue.end();) {
+        if (g_current_time >= it->triggerTime) {
             const auto name = it->eventName;
-            executeEvent(name);
+            execute_event(name);
 
             if (name == "START_FLICKER") {
                 // 1)
-                newEvents.push_back({currentTime + flickerDuration, "STOP_FLICKER"});
-                spdlog::info("  zakazujem STOP_FLICKER za +{:.2f}s", flickerDuration);
+                newEvents.push_back({g_current_time + g_flicker_duration, "STOP_FLICKER"});
+                spdlog::info("  zakazujem STOP_FLICKER za +{:.2f}s", g_flicker_duration);
             } else if (name == "STOP_FLICKER") {
                 // 2)
-                newEvents.push_back({currentTime + spawnDelay, "SPAWN_MODEL"});
-                spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", spawnDelay);
+                newEvents.push_back({g_current_time + g_spawn_delay, "SPAWN_MODEL"});
+                spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", g_spawn_delay);
             }
 
-            it = eventQueue.erase(it);
+            it = g_event_queue.erase(it);
         } else { ++it; }
     }
-    if (!newEvents.empty()) { eventQueue.insert(eventQueue.end(), newEvents.begin(), newEvents.end()); }
+    if (!newEvents.empty()) { g_event_queue.insert(g_event_queue.end(), newEvents.begin(), newEvents.end()); }
 
-    if (flickerActive) {
-        float elapsed = currentTime - flickerStartTime;
+    if (g_flicker_active) {
+        float elapsed = g_current_time - g_flicker_start_time;
         constexpr float freq = 5.0f;
-        pointLightIntensity = (sinf(2.0f * 3.14159f * freq * elapsed) + 1.0f) * 0.5f;
+        g_point_light_intensity = (sinf(2.0f * 3.14159f * freq * elapsed) + 1.0f) * 0.5f;
     }
 }
 
 void MainController::begin_draw() {
-    if (msaaEnabled) { _msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
@@ -135,15 +135,15 @@ void MainController::draw() {
     pl.base.color = glm::vec3(1.0f, 0.8f, 0.6f);
     pl.base.ambientIntensity = 0.1f;
     pl.base.diffuseIntensity = 1.0f;
-    pl.position = lightPos;// GUI-vrednost
+    pl.position = g_light_pos;// GUI-vrednost
     pl.atten.constant = 1.0f;
     pl.atten.linear = 0.09f;
     pl.atten.exp = 0.032f;
-    lighting.setPointLight(pl);
+    m_lighting.setPointLight(pl);
 
     // ───── DEPTH PASS ────────────────────────────────────────────────────────────────
-    lighting.beginDepthPass();
-    lighting.renderDepthPass([&](const engine::resources::Shader *depthShader) {
+    m_lighting.beginDepthPass();
+    m_lighting.renderDepthPass([&](const engine::resources::Shader *depthShader) {
         depthShader->use();
 
         // 1) Well
@@ -217,7 +217,7 @@ void MainController::draw() {
         }
 
         // 7) Event spawner
-        for (auto &entry: spawnedObjects) {
+        for (auto &entry: g_spawned_objects) {
             const auto &name = std::get<0>(entry);
             const auto &pos = std::get<1>(entry);
             const auto &rot = std::get<2>(entry);
@@ -233,17 +233,17 @@ void MainController::draw() {
             resources->model(name)->draw(depthShader);
         }
     });
-    lighting.endDepthPass();
+    m_lighting.endDepthPass();
 
-    if (msaaEnabled) { _msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    if (g_msaa_enabled) { m_msaa->bindForWriting(); } else { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 
     glViewport(0, 0, width, height);
 
-    lighting.setCameraPosition(graphics->camera()->Position);
-    lighting.setLightIntensity(pointLightIntensity);
+    m_lighting.setCameraPosition(graphics->camera()->Position);
+    m_lighting.setLightIntensity(g_point_light_intensity);
 
     // ───── LIGHTING PASS ─────────────────────────────────────────────────────────────
-    lighting.renderLightingPass([&](const engine::resources::Shader *lightShader) {
+    m_lighting.renderLightingPass([&](const engine::resources::Shader *lightShader) {
         lightShader->use();
 
         // Projection & view
@@ -251,10 +251,10 @@ void MainController::draw() {
         lightShader->set_mat4("view", graphics->camera()->view_matrix());
 
         // Intenzitet point svetla
-        lightShader->set_float("uLightIntensity", pointLightIntensity);
+        lightShader->set_float("uLightIntensity", g_point_light_intensity);
 
         // Pozicija point svetla
-        lightShader->set_vec3("lightPos", lightPos);
+        lightShader->set_vec3("lightPos", g_light_pos);
 
         // 1) Well
         draw_mesh(resources->model("well"), lightShader,
@@ -326,7 +326,7 @@ void MainController::draw() {
                   glm::vec3(3.0f));
 
         // Event spawner
-        for (auto &entry: spawnedObjects) {
+        for (auto &entry: g_spawned_objects) {
             const std::string &modelName = std::get<0>(entry);
             const glm::vec3 &pos = std::get<1>(entry);
             const glm::vec3 &rot = std::get<2>(entry);
@@ -342,7 +342,7 @@ void MainController::draw() {
         }
     });
 
-    lighting.renderLightBulb(lightPos, 3.0f);
+    m_lighting.renderLightBulb(g_light_pos, 3.0f);
 
     // ───── SKYBOX ────────────────────────────────────────────────────────────────────
     draw_skybox();
@@ -350,7 +350,7 @@ void MainController::draw() {
 
 void MainController::end_draw() {
     // 1) Resolve MSAA FBO -> default framebuffer
-    if (msaaEnabled) { _msaa->resolveToDefault(); }
+    if (g_msaa_enabled) { m_msaa->resolveToDefault(); }
 
     // 2) Swap
     engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
@@ -413,24 +413,24 @@ void MainController::update_camera() {
     camera->zoom(mouse.scroll);
 }
 
-void MainController::executeEvent(const std::string &eventName) {
+void MainController::execute_event(const std::string &eventName) {
     if (eventName == "START_FLICKER") {
-        flickerActive = true;
-        flickerStartTime = currentTime;
+        g_flicker_active = true;
+        g_flicker_active = g_current_time;
         spdlog::info("EVENT START_FLICKER");
     } else if (eventName == "STOP_FLICKER") {
-        flickerActive = false;
-        pointLightIntensity = 7.0f;// resetujemo intenzitet
+        g_flicker_active = false;
+        g_point_light_intensity = 7.0f;// resetujemo intenzitet
         spdlog::info("EVENT STOP_FLICKER");
     } else if (eventName == "SPAWN_MODEL") {
-        spawnedObjects.emplace_back(
+        g_spawned_objects.emplace_back(
                 "police_car",
                 glm::vec3{0.0f, -8.0f, -3.0f},
                 glm::vec3(0.0f),
                 glm::vec3(1.0f)
                 );
         spdlog::info("EVENT SPAWN_MODEL: spawnovan tree");
-    } else { spdlog::warn("executeEvent: nepoznat event '{}'", eventName); }
+    } else { spdlog::warn("execute_event: nepoznat event '{}'", eventName); }
 }
 
 }

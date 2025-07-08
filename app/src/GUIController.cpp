@@ -25,8 +25,8 @@ void GUIController::draw() {
 
     ImGui::Begin("Settings");
 
-    ImGui::SliderFloat("Point Light Intensity", &mainCtrl->pointLightIntensity, 0.0f, 7.0f);
-    ImGui::SliderFloat3("Light Position", &mainCtrl->lightPos.x,
+    ImGui::SliderFloat("Point Light Intensity", &mainCtrl->g_point_light_intensity, 0.0f, 7.0f);
+    ImGui::SliderFloat3("Light Position", &mainCtrl->g_light_pos.x,
                         -200.0f, 200.0f,
                         "%.1f");
 
@@ -58,7 +58,7 @@ void GUIController::draw() {
     }
 
     // MSAA
-    ImGui::Checkbox("Enable MSAA", &mainCtrl->msaaEnabled);
+    ImGui::Checkbox("Enable MSAA", &mainCtrl->g_msaa_enabled);
 
     ImGui::End();
     graphics->end_gui();

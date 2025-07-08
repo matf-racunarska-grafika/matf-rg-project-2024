@@ -25,32 +25,32 @@ public:
 class MainController final : public engine::core::Controller {
 public:
     // MSAA
-    bool msaaEnabled = true;
+    bool g_msaa_enabled = true;
 
     // Lighting
-    float pointLightIntensity = 7.0f;       // Intenzitet point light svetla
-    glm::vec3 lightPos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
+    float g_point_light_intensity = 7.0f;      // Intenzitet point light svetla
+    glm::vec3 g_light_pos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
 
     // -------Scheduled event--------------------------------------------------------
     // Queue svih zakazanih događaja
-    std::vector<ScheduledEvent> eventQueue;
+    std::vector<ScheduledEvent> g_event_queue;
 
     // Flag i vreme za početnu akciju
-    float currentTime = 0.0f;// u sekundama, broji vreme od starta
-    bool actionTriggered = false;
-    float actionTriggerTime = 0.0f;
+    float g_current_time = 0.0f;// u sekundama, broji vreme od starta
+    bool g_action_triggered = false;
+    float g_action_trigger_time = 0.0f;
 
     // Za treptanje svetla
-    float flickerDuration = 2.0f;
-    bool flickerActive = false;
-    float flickerStartTime = 0.0f;
+    float g_flicker_duration = 2.0f;
+    bool g_flicker_active = false;
+    float g_flicker_start_time = 0.0f;
 
-    float spawnDelay = 3.0f;
+    float g_spawn_delay = 3.0f;
 
     // Spawn-ovani objekti: ime modela + pozicija, rotacija, skala
-    std::vector<std::tuple<std::string, glm::vec3, glm::vec3, glm::vec3> > spawnedObjects;
+    std::vector<std::tuple<std::string, glm::vec3, glm::vec3, glm::vec3> > g_spawned_objects;
 
-    void executeEvent(const std::string &eventName);
+    void execute_event(const std::string &eventName);
 
     // ---------------------------------------------------------------------------------------
 
@@ -60,10 +60,10 @@ private:
     int width, height;// prozor
 
     // MSAA
-    std::unique_ptr<engine::graphics::MSAA> _msaa;
+    std::unique_ptr<engine::graphics::MSAA> m_msaa;
 
     // Lighting
-    engine::graphics::lighting::LightingSystem lighting{2048, 2048};
+    engine::graphics::lighting::LightingSystem m_lighting{2048, 2048};
 
     void initialize() override;
 
