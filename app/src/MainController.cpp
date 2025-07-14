@@ -48,58 +48,58 @@ bool MainController::loop() {
     return true;
 }
 
-void MainController::draw_temple(){
-    //Model
+void MainController::draw_temple() {
     auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto gui = engine::core::Controller::get<app::GUIController>();
+
     engine::resources::Model *temple = resource->model("temple");
-    //shader
     engine::resources::Shader *shader = resource->shader("basic");
+
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-    //
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
-
-
-
     shader->set_float("shininess", 32.0f);
 
-    // Directional light
+    // Directional light (modulirano GUI intenzitetom)
+    float dirIntensity = gui->get_dir_light_intensity();
     shader->set_vec3("dirLight.direction", glm::vec3(-0.3f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient",  glm::vec3(0.3f));
-    shader->set_vec3("dirLight.diffuse",  glm::vec3(0.8f));
-    shader->set_vec3("dirLight.specular", glm::vec3(1.0f));
+    shader->set_vec3("dirLight.ambient",  glm::vec3(0.2f) * dirIntensity);
+    shader->set_vec3("dirLight.diffuse",  glm::vec3(0.5f) * dirIntensity);
+    shader->set_vec3("dirLight.specular", glm::vec3(0.8f) * dirIntensity);
 
     // Point light 1
+    glm::vec3 color = gui->get_point_light_color();
+    float pIntensity = gui->get_point_light_intensity();
+
     shader->set_vec3("pointLights[0].position", glm::vec3(-8.0f, 3.5f, -0.6f));
     shader->set_float("pointLights[0].constant", 1.0f);
     shader->set_float("pointLights[0].linear", 0.14f);
     shader->set_float("pointLights[0].quadratic", 0.07f);
-    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.3f, 0.1f, 0.3f));
-    shader->set_vec3("pointLights[0].diffuse", glm::vec3(1.0f, 0.4f, 0.9f));
-    shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 0.7f, 1.0f));
+    shader->set_vec3("pointLights[0].ambient",  color * 0.2f * pIntensity);
+    shader->set_vec3("pointLights[0].diffuse",  color * 0.8f * pIntensity);
+    shader->set_vec3("pointLights[0].specular", color * 1.0f * pIntensity);
 
-    //Point Light 2
+    // Point light 2
     shader->set_vec3("pointLights[1].position", glm::vec3(8.0f, 3.5f, -0.6f));
     shader->set_float("pointLights[1].constant", 1.0f);
     shader->set_float("pointLights[1].linear", 0.14f);
     shader->set_float("pointLights[1].quadratic", 0.07f);
-    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.3f, 0.1f, 0.3f));
-    shader->set_vec3("pointLights[1].diffuse", glm::vec3(1.0f, 0.4f, 0.9f));
-    shader->set_vec3("pointLights[1].specular", glm::vec3(1.0f, 0.7f, 1.0f));
-
-
+    shader->set_vec3("pointLights[1].ambient",  color * 0.2f * pIntensity);
+    shader->set_vec3("pointLights[1].diffuse",  color * 0.8f * pIntensity);
+    shader->set_vec3("pointLights[1].specular", color * 1.0f * pIntensity);
 
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
-
     temple->draw(shader);
-
 }
+
+
 
 void MainController::draw_lamp() {
     auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();

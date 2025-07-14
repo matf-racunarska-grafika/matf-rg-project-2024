@@ -22,32 +22,35 @@ void GUIController::poll_events() {
                 }
 }
 
-void GUIController::draw(){
+void GUIController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    auto camera = graphics->camera();
     graphics->begin_gui();
 
-    /* auto temple  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("temple");
-    static float f = 0.0f;
-    ImGui::Begin(temple->name().c_str());
-    ImGui::Text("Loaded from: %s", temple->path().c_str());
-    ImGui::DragFloat("Temple scale", , 0.05, 0.1, 4.0);
-    ImGui::End();*/
+    ImGui::Begin("Lighting Controls");
 
-    // Draw camera info
-    ImGui::Begin("Camera info");
-    const auto &c = *camera;
-    ImGui::Text("Camera position: (%f, %f, %f)", c.Position
-                                                  .x, c.Position
-                                                       .y, c.Position
-                                                            .z);
-    ImGui::Text("(Yaw, Pitch): (%f, %f)", c.Yaw, c.Pitch);
-    ImGui::Text("Camera front: (%f, %f, %f)", c.Front
-                                               .x, c.Front
-                                                    .y, c.Front
-                                                         .z);
+    ImGui::Separator();
+    ImGui::Text("Point Light Settings");
+    ImGui::SliderFloat("Point Light Intensity", &pointLightIntensity, 0.0f, 5.0f);
+    ImGui::ColorEdit3("Point Light Color", (float*)&pointLightColor);
+
+    ImGui::Separator();
+    ImGui::Text("Directional Light Settings");
+    ImGui::SliderFloat("Directional Light Intensity", &dirLightIntensity, 0.0f, 5.0f);
+
+    ImGui::Separator();
+    ImGui::Text("Camera Info");
+    ImGui::Text("Position: (%.1f, %.1f, %.1f)", camera->Position.x, camera->Position.y, camera->Position.z);
+    ImGui::Text("Yaw: %.1f, Pitch: %.1f", camera->Yaw, camera->Pitch);
+
+    ImGui::Separator();
+    ImGui::Text("Debug Info");
+    ImGui::Text("Use F2 to toggle this menu.");
+
     ImGui::End();
+
     graphics->end_gui();
- }
+}
+
 
 }

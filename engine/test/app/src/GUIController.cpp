@@ -20,13 +20,8 @@ void GUIController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     graphics->begin_gui();
-    // Draw backpack scale slider window
-    // auto backpack  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
-    // static float f = 0.0f;
-    // ImGui::Begin(backpack->name().c_str());
-    // ImGui::Text("Loaded from: %s", backpack->path().c_str());
-    // ImGui::DragFloat("Backpack scale", &m_backpack_scale, 0.05, 0.1, 4.0);
-    // ImGui::End();
+
+
 
     // Draw camera info
     ImGui::Begin("Camera info");
