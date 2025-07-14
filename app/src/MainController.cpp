@@ -27,9 +27,27 @@ void MainController::update() { update_camera(); }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
-void MainController::draw() { draw_skybox(); }
+void MainController::draw() {
+    draw_dunes();
+    draw_skybox();
+}
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+
+void MainController::draw_dunes() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("dunes");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(5.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -1.1f, 0.0f));
+    shader->set_mat4("model", model);
+    backpack->draw(shader);
+}
 
 void MainController::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");

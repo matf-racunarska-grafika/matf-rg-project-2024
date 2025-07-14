@@ -1,6 +1,10 @@
 {
   "resources": {
     "models": {
+      "dunes": {
+        "path": "dunes/dunes.obj",
+        "flip_uvs": false
+      }
     }
   },
   "window": {
