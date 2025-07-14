@@ -6,9 +6,9 @@ file(GLOB headers include/*.hpp)
 include_directories(include/)
 
 add_executable(${PROJECT_NAME} ${sources} ${headers}
-        src/BedroomSimulation.cpp
-        src/BedroomSimulation.cpp
-        include/BedroomSimulation.hpp
+        src/GraveyardSimulation.cpp
+        src/GraveyardSimulation.cpp
+        include/GraveyardSimulation.hpp
         include/MainController.cpp
         include/MainController.hpp
 )

@@ -3,6 +3,9 @@
     "models": {
       "flooring": {
         "path": "flooring/10417_Rectangular_rug_v1_iterations-2.obj"
+      },
+      "allah": {
+        "path": "allah/kuburan_islam.obj"
       }
     }
   },

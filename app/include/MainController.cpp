@@ -36,7 +36,10 @@ bool MainController::loop() {
     return true;
 }
 
-void MainController::draw() { draw_floor(); }
+void MainController::draw() {
+    draw_floor();
+    draw_graves();
+}
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
@@ -54,6 +57,29 @@ void MainController::draw_floor() {
     model = glm::scale(model, glm::vec3(0.6f));
     shader->set_mat4("model", model);
     floor->draw(shader);
+}
+
+void MainController::draw_graves() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *floor = resources->model("allah");
+    engine::resources::Shader *shader = resources->shader("floorShader");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    float TRANSLATE_X_FACTOR = 9.0f;
+    float TRANSLATE_Z_FACTOR = -7.0f;
+    float GRAVE_COLS = 8, GRAVE_ROWS = 7;
+    for (int i = 0; i < GRAVE_ROWS; i++) {
+        for (int j = 0; j < GRAVE_COLS; j++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(-7.0f + i * TRANSLATE_X_FACTOR, -9.0f, TRANSLATE_Z_FACTOR * (j - 2.2f)));
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+            //model = glm::scale(model, glm::vec3(1f));
+            shader->set_mat4("model", model);
+            floor->draw(shader);
+        }
+    }
 }
 
 void MainController::update() { update_camera(); }

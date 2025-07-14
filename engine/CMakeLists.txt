@@ -8,7 +8,7 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++23" COMPILER_SUPPORTS_CXX23)
 if (NOT COMPILER_SUPPORTS_CXX23)
     message(FATAL_ERROR "The compiler does not support C++23.")
-endif()
+endif ()
 
 file(GLOB engine-sources src/*.cpp)
 file(GLOB engine-headers include/engine/*.hpp)
