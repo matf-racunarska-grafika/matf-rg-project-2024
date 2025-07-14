@@ -91,6 +91,13 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     draw_temple();
+    draw_skybox();
+}
+
+void MainController::draw_skybox() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    auto skybox = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("sky");
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox);
 }
 
 void MainController::end_draw() {

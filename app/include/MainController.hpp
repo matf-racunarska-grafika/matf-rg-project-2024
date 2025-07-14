@@ -13,6 +13,7 @@ class MainController  : public engine::core::Controller
     void update_camera();
     void begin_draw() override;
     void draw() override;
+    void draw_skybox();
     void end_draw() override;
 
 
