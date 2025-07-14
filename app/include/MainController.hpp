@@ -4,9 +4,15 @@
 
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
+
+#include <memory>
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/core/Engine.hpp>
+#include <spdlog/spdlog.h>
+#include <engine/core/Engine.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 
 namespace app {
 
@@ -30,6 +36,9 @@ private:
     void end_draw() override;
 
     bool m_cursor_enabled{true};
+
+    void update_camera();
+
 };
 
 }// app

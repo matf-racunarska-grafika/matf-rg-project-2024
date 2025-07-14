@@ -2,7 +2,7 @@
 // Created by cvnpko on 7/14/25.
 //
 
-#include "../include/MainController.hpp"
+#include <MainController.hpp>
 
 namespace app {
 void MainController::initialize() { engine::graphics::OpenGL::enable_depth_testing(); }
@@ -22,12 +22,25 @@ void MainController::poll_events() {
     }
 }
 
-void MainController::update() {}
+void MainController::update() { update_camera(); }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw() {}
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+
+void MainController::update_camera() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    float dt = platform->dt();
+    if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::FORWARD, dt); }
+    if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::BACKWARD, dt); }
+    if (platform->key(engine::platform::KEY_A).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::LEFT, dt); }
+    if (platform->key(engine::platform::KEY_D).state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::RIGHT, dt); }
+    auto mouse = platform->mouse();
+    camera->rotate_camera(mouse.dx, mouse.dy);
+    camera->zoom(mouse.scroll);
+}
 
 }// app
