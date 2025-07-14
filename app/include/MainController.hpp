@@ -14,6 +14,10 @@ class MainController : public engine::core::Controller {
 
     bool loop() override;
 
+    void draw_backpack();
+
+    void draw() override;
+
 public:
     std::string_view name() const override {
         return "app::MainController";
