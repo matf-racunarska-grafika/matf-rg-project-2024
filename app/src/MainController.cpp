@@ -64,6 +64,39 @@ void MainController::draw_temple(){
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
 
+
+
+    shader->set_float("shininess", 32.0f);
+
+    // Directional light
+    shader->set_vec3("dirLight.direction", glm::vec3(-0.3f, -1.0f, -0.3f));
+    shader->set_vec3("dirLight.ambient",  glm::vec3(0.3f));
+    shader->set_vec3("dirLight.diffuse",  glm::vec3(0.8f));
+    shader->set_vec3("dirLight.specular", glm::vec3(1.0f));
+
+    // Point light 1
+    shader->set_vec3("pointLights[0].position", glm::vec3(-8.0f, 3.5f, -0.6f));
+    shader->set_float("pointLights[0].constant", 1.0f);
+    shader->set_float("pointLights[0].linear", 0.14f);
+    shader->set_float("pointLights[0].quadratic", 0.07f);
+    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.3f, 0.1f, 0.3f));
+    shader->set_vec3("pointLights[0].diffuse", glm::vec3(1.0f, 0.4f, 0.9f));
+    shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 0.7f, 1.0f));
+
+    //Point Light 2
+    shader->set_vec3("pointLights[1].position", glm::vec3(8.0f, 3.5f, -0.6f));
+    shader->set_float("pointLights[1].constant", 1.0f);
+    shader->set_float("pointLights[1].linear", 0.14f);
+    shader->set_float("pointLights[1].quadratic", 0.07f);
+    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.3f, 0.1f, 0.3f));
+    shader->set_vec3("pointLights[1].diffuse", glm::vec3(1.0f, 0.4f, 0.9f));
+    shader->set_vec3("pointLights[1].specular", glm::vec3(1.0f, 0.7f, 1.0f));
+
+
+
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+
     temple->draw(shader);
 
 }
@@ -75,22 +108,13 @@ void MainController::draw_lamp() {
     engine::resources::Model* lampModel = resource->model("lamp");
     engine::resources::Shader* lampShader = resource->shader("lamp");
 
-    if (!lampModel) {
-        spdlog::error("Lamp model not found!");
-        return;
-    }
-    if (!lampShader) {
-        spdlog::error("Lamp shader not found!");
-        return;
-    }
-
     lampShader->use();
     lampShader->set_mat4("projection", graphics->projection_matrix());
     lampShader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::vec3 lampPositions[] = {
-        glm::vec3(-8.0f, 0.8f, 0.0f),
-        glm::vec3(8.0f, 0.8f, 0.0f)
+        glm::vec3(-8.0f, 0.69f, 0.0f),
+        glm::vec3(8.0f, 0.69f, 0.0f)
     };
 
     for (int i = 0; i < 2; ++i) {
