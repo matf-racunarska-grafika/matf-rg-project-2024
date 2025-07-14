@@ -4,7 +4,12 @@
       "temple": {
         "path": "temple/scene.gltf",
         "flip_uvs": true
+      },
+      "lamp": {
+        "path": "lamp/scene.gltf",
+        "flip_uvs": true
       }
+
     }
   },
   "window": {

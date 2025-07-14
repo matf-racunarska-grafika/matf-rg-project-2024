@@ -60,13 +60,50 @@ void MainController::draw_temple(){
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-    //model=glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    //
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
 
     temple->draw(shader);
 
 }
+
+void MainController::draw_lamp() {
+    auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* lampModel = resource->model("lamp");
+    engine::resources::Shader* lampShader = resource->shader("lamp");
+
+    if (!lampModel) {
+        spdlog::error("Lamp model not found!");
+        return;
+    }
+    if (!lampShader) {
+        spdlog::error("Lamp shader not found!");
+        return;
+    }
+
+    lampShader->use();
+    lampShader->set_mat4("projection", graphics->projection_matrix());
+    lampShader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::vec3 lampPositions[] = {
+        glm::vec3(-8.0f, 0.8f, 0.0f),
+        glm::vec3(8.0f, 0.8f, 0.0f)
+    };
+
+    for (int i = 0; i < 2; ++i) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, lampPositions[i]);
+        model=glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.7f));
+        lampShader->set_mat4("model", model);
+
+        lampModel->draw(lampShader);
+    }
+}
+
 
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GUIController>();
@@ -91,6 +128,7 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     draw_temple();
+    draw_lamp();
     draw_skybox();
 }
 
