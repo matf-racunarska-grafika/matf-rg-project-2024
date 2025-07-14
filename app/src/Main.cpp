@@ -1,10 +1,11 @@
-#include <iostream>
+#include <MyApp.hpp>
+#include <spdlog/spdlog.h>
 #include <engine/core/Engine.hpp>
 
 /**
  * Start here...
  */
 int main(int argc, char **argv) {
-    std::cout << "Hello World!" << std::endl;
-    return 0;
+    auto app = std::make_unique<app::MyApp>();
+    return app->run(argc, argv);
 }
