@@ -20,15 +20,22 @@ void MainController::poll_events() {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
+    if (platform->key(engine::platform::KEY_F2).state() == engine::platform::Key::State::JustPressed) { m_is_day = !m_is_day; }
 }
 
 void MainController::update() { update_camera(); }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
-void MainController::draw() {}
+void MainController::draw() { draw_skybox(); }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+
+void MainController::draw_skybox() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(m_is_day ? "day" : "night");
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
+}
 
 void MainController::update_camera() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();

@@ -31,13 +31,16 @@ private:
 
     void begin_draw() override;
 
+    void draw_skybox();
+
     void draw() override;
 
     void end_draw() override;
 
-    bool m_cursor_enabled{true};
-
     void update_camera();
+
+    bool m_cursor_enabled{true};
+    bool m_is_day{true};
 
 };
 
