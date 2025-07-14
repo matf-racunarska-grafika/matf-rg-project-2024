@@ -1,6 +1,10 @@
 {
   "resources": {
     "models": {
+      "temple": {
+        "path": "temple/scene.gltf",
+        "flip_uvs": true
+      }
     }
   },
   "window": {
