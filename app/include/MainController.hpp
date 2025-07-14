@@ -11,6 +11,16 @@ namespace app {
 class MainController : public engine::core::Controller {
     void initialize() override;
 
+    bool loop() override;
+
+    void begin_draw() override;
+
+    void draw_floor();
+
+    void end_draw() override;
+
+    void draw() override;
+
 public:
     std::string_view name() const override { return "app::MainController"; }
 };

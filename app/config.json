@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "floor": {
+        "path": "floor/floor.obj"
+      }
     }
   },
   "window": {
