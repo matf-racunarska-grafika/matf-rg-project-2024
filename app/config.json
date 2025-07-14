@@ -1,8 +1,8 @@
 {
   "resources": {
     "models": {
-      "floor": {
-        "path": "floor/floor.obj"
+      "flooring": {
+        "path": "flooring/10417_Rectangular_rug_v1_iterations-2.obj"
       }
     }
   },
