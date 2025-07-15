@@ -9,6 +9,12 @@
       },
       "streetlamp": {
         "path": "streetlamp/streetlamp.obj"
+      },
+      "lantern": {
+        "path": "lantern/Old_Lantern_Model.obj"
+      },
+      "dog": {
+        "path": "dog/13463_Australian_Cattle_Dog_v3.obj"
       }
     }
   },

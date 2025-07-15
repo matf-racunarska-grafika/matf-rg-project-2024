@@ -19,7 +19,13 @@ class MainController : public engine::core::Controller {
 
     void draw_lamp();
 
+    void draw_lantern();
+
+    void draw_dog();
+
     void draw_graves();
+
+    void draw_car();
 
     void update() override;
 

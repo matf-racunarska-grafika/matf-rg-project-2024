@@ -44,7 +44,9 @@ bool MainController::loop() {
 void MainController::draw() {
     draw_floor();
     draw_graves();
+    draw_lantern();
     draw_lamp();
+    draw_dog();
 }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
@@ -75,8 +77,38 @@ void MainController::draw_lamp() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 17.0f));
-    //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(3.0f));
+    shader->set_mat4("model", model);
+    floor->draw(shader);
+}
+
+void MainController::draw_lantern() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *floor = resources->model("lantern");
+    engine::resources::Shader *shader = resources->shader("floorShader");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(49.0f, -10.0f, -20.0f));
+    model = glm::scale(model, glm::vec3(4.0f));
+    shader->set_mat4("model", model);
+    floor->draw(shader);
+}
+
+void MainController::draw_dog() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *floor = resources->model("dog");
+    engine::resources::Shader *shader = resources->shader("floorShader");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(40.0f, -10.0f, -20.0f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
     floor->draw(shader);
 }
@@ -112,6 +144,7 @@ void MainController::update_camera() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
+    camera->MovementSpeed = 10.0;
     float dt = platform->dt();
     if (platform->key(engine::platform::KeyId::KEY_W).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt); }
     if (platform->key(engine::platform::KeyId::KEY_S).is_down()) { camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt); }
