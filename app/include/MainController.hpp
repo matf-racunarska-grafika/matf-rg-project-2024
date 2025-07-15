@@ -39,6 +39,8 @@ private:
 
     void draw_sun();
 
+    void draw_camels();
+
     void draw() override;
 
     void end_draw() override;

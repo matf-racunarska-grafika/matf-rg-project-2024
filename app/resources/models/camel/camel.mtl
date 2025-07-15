@@ -1,0 +1,13 @@
+# Blender 4.4.3 MTL File: 'Bactrian camel.blend'
+# www.blender.org
+
+newmtl Bactria_camel_mat
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Bactrian_Camel_Diffuse.png
+map_Ns Bactrian_Camel_Roughness.png
+map_Bump -bm 0.500000 Bactrian_Camel_Normal.png

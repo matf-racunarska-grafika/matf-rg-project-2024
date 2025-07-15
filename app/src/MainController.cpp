@@ -35,7 +35,8 @@ void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 void MainController::draw() {
     draw_dunes();
     draw_pyramids();
-    draw_sphinx();
+    // draw_sphinx();
+    draw_camels();
     draw_moon();
     draw_sun();
     draw_skybox();
@@ -99,6 +100,20 @@ void MainController::draw_sphinx() {
     model = glm::scale(model, glm::vec3(1.0f));
     shader->set_mat4("model", model);
     sphinx->draw(shader);
+}
+
+void MainController::draw_camels() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto camel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("camel");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model1 = glm::mat4(1.0f);
+    model1 = glm::translate(model1, glm::vec3(-50.0f, 3.0f, 50.0f));
+    model1 = glm::scale(model1, glm::vec3(5.0f));
+    shader->set_mat4("model", model1);
+    camel->draw(shader);
 }
 
 void MainController::draw_moon() {
