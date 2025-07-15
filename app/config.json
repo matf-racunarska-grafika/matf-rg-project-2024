@@ -12,6 +12,10 @@
       "petal": {
         "path": "petal/SakuraHanaBira.glb",
         "flip_uvs": true
+      },
+      "ground": {
+        "path": "ground/scene.gltf",
+        "flip_uvs": true
       }
 
     }
