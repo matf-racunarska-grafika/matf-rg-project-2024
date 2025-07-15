@@ -60,19 +60,19 @@ void MainController::draw_pyramids() {
 
     glm::mat4 model1 = glm::mat4(1.0f);
     model1 = glm::scale(model1, glm::vec3(15.7f));
-    model1 = glm::translate(model1, glm::vec3(3.15f, -0.163f, 1.8f));
+    model1 = glm::translate(model1, glm::vec3(3.15f, -0.098f, 1.8f));
     shader->set_mat4("model", model1);
     pyramid->draw(shader);
 
     glm::mat4 model2 = glm::mat4(1.0f);
     model2 = glm::scale(model2, glm::vec3(15.3f));
-    model2 = glm::translate(model2, glm::vec3(0.0f, -0.11f, 3.0f));
+    model2 = glm::translate(model2, glm::vec3(0.0f, -0.09f, 3.0f));
     shader->set_mat4("model", model2);
     pyramid->draw(shader);
 
     glm::mat4 model3 = glm::mat4(1.0f);
     model3 = glm::scale(model3, glm::vec3(7.0f));
-    model3 = glm::translate(model3, glm::vec3(-2.0f, -0.11f, 1.0f));
+    model3 = glm::translate(model3, glm::vec3(-2.0f, -0.081f, 1.0f));
     shader->set_mat4("model", model3);
     pyramid->draw(shader);
 
