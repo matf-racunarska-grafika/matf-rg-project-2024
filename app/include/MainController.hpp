@@ -50,7 +50,8 @@ private:
     void update_camera();
 
     bool m_cursor_enabled{true};
-    bool m_is_day{true};
+    glm::mat4 model_moon{glm::mat4(1.0f)};
+    glm::mat4 model_sun{glm::mat4(1.0f)};
 
 };
 

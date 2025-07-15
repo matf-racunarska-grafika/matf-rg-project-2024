@@ -2,6 +2,7 @@
 // Created by cvnpko on 7/14/25.
 //
 #include <MainController.hpp>
+#include <MainEventController.hpp>
 
 namespace app {
 void MainController::initialize() { engine::graphics::OpenGL::enable_depth_testing(); }
@@ -19,7 +20,6 @@ void MainController::poll_events() {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
-    if (platform->key(engine::platform::KEY_F2).state() == engine::platform::Key::State::JustPressed) { m_is_day = !m_is_day; }
 }
 
 void MainController::update() { update_camera(); }
@@ -98,14 +98,16 @@ void MainController::draw_sphinx() {
 void MainController::draw_moon() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto moon = engine::core::Controller::get<engine::resources::ResourcesController>()->model("moon");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(10.0f));
+    model = glm::rotate(model, glm::radians(main_event_controller->get_event_degree()), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -300.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
     moon->draw(shader);
 }
@@ -113,20 +115,23 @@ void MainController::draw_moon() {
 void MainController::draw_sun() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto sun = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sun");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 100.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(10.0f));
+    model = glm::rotate(model, glm::radians(main_event_controller->get_event_degree()), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, 300.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
     sun->draw(shader);
 }
 
 void MainController::draw_skybox() {
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
-    auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(m_is_day ? "day" : "night");
+    auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox(main_event_controller->is_day() ? "day" : "night");
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
 }
 
