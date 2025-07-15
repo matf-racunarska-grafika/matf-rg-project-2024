@@ -12,7 +12,7 @@ namespace app {
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     void on_mouse_move(engine::platform::MousePosition position) override;
     void on_scroll(engine::platform::MousePosition position) override;
-    //void on_window_resize(int width, int height) override;
+    void on_window_resize(int width, int height) override;
 };
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
@@ -28,15 +28,19 @@ void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition positi
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (!gui_controller->is_enabled()) {
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        auto camera = graphics->camera();
-
         auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
+
+        auto camera = graphics->camera();
         auto mouse = platform->mouse();
         camera->zoom(mouse.scroll);
         graphics->perspective_params().FOV = glm::radians(camera->Zoom);
     }
 }
 
+void MainPlatformEventObserver::on_window_resize(int width, int height) {
+  //poziva vec ugradjenu fju u graphicscontrolleru ???
+    //potrebno je za bloom
+}
 
 void MainController::initialize() {
     spdlog::info("MainController initialized !");
@@ -173,14 +177,17 @@ void MainController::draw_lamp() {
         glm::vec3(14.0f, 0.69f, 0.0f)
     };
 
+    auto gui = engine::core::Controller::get<app::GUIController>();
+    glm::vec3 lightColor = gui->get_point_light_color();
+
     for (int i = 0; i < 2; ++i) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, lampPositions[i]);
         model=glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.7f));
         lampShader->set_mat4("model", model);
-        lampShader->set_vec3("emissionColor", glm::vec3(0.6f, 0.3f, 0.1f));
-        //treba dodati da kad se menja preko gui point light da se menja i emission
+        glm::vec3 emissionColor = lightColor * 0.4f;
+        lampShader->set_vec3("emissionColor", emissionColor);
         lampModel->draw(lampShader);
     }
 }
@@ -193,7 +200,7 @@ void MainController::draw_petal() {
     auto petalShader = resource->shader("petal");
 
     if (!initialized) {
-        const int numPetals = 1000;
+        const int numPetals = 1500;
         const float spread = 30.0f;
         petalMatrices.clear();
         originalPetalMatrices.clear();
@@ -241,6 +248,9 @@ void MainController::draw_ground() {
     auto shader = resource->shader("ground");
 
     shader->use();
+    shader->set_vec3("tintColor", glm::vec3(0.15f, 0.45f, 0.15f)); // boja slicna krovu
+    shader->set_float("tintStrength", 0.3f);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
@@ -252,6 +262,34 @@ void MainController::draw_ground() {
     groundModel->draw(shader);
 }
 
+void MainController::draw_tree() {
+    auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    auto treeModel = resource->model("tree");
+    auto shader = resource->shader("tree");
+
+    auto deadTreeModel = resource->model("dead_tree");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(19.0f, 0.0f, -3.0f));
+    model = glm::scale(model, glm::vec3(0.3f));
+    shader->set_mat4("model", model);
+    treeModel->draw(shader);
+
+    glm::mat4 model2 = glm::mat4(1.0f);
+    model2 = glm::translate(model2, glm::vec3(-7.0f, 0.0f, -3.0f));
+    model2=glm::rotate(model2, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    //model2 = glm::scale(model2, glm::vec3(0.5f));
+    shader->set_mat4("model", model2);
+    deadTreeModel->draw(shader);
+
+
+}
 
 
 void MainController::update_camera() {
@@ -329,6 +367,7 @@ void MainController::draw() {
     draw_petal();
     draw_skybox();
     draw_ground();
+    draw_tree();
 }
 
 void MainController::draw_skybox() {

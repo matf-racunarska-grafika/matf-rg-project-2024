@@ -29,7 +29,10 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
+uniform vec3 emissionColor;
 
 void main() {
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
+    vec3 base = texture(texture_diffuse1, TexCoords).rgb;
+    vec3 final = base + emissionColor;
+    FragColor = vec4(final, 1.0);
 }

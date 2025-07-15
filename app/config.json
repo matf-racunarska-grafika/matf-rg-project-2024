@@ -16,6 +16,14 @@
       "ground": {
         "path": "ground/scene.gltf",
         "flip_uvs": true
+      },
+      "tree": {
+        "path": "tree/scene.gltf",
+        "flip_uvs": true
+      },
+      "dead_tree": {
+        "path": "dead_tree/scene.gltf",
+        "flip_uvs": true
       }
 
     }

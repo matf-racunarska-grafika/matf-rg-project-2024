@@ -15,6 +15,7 @@ class MainController  : public engine::core::Controller
     void begin_draw() override;
     void draw_petal();
     void draw_ground();
+    void draw_tree();
     void draw() override;
     void draw_skybox();
     void draw_lamp();

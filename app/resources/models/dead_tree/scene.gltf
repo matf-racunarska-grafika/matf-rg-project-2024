@@ -1,0 +1,411 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        0.8387404680252075,
+        1.4557677507400513,
+        7.574986934661865
+      ],
+      "min": [
+        -1.4146627187728882,
+        -0.9435809254646301,
+        -0.1013660803437233
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 484644,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        0.9999492168426514,
+        0.9999886751174927,
+        0.9997166395187378
+      ],
+      "min": [
+        -0.9999293088912964,
+        -0.9999768733978271,
+        -0.9998321533203125
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        0.9997274279594421,
+        0.999986469745636,
+        0.9996052980422974,
+        1.0
+      ],
+      "min": [
+        -0.9999421238899231,
+        -0.9999653100967407,
+        -0.9988919496536255,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        1.0,
+        0.9999180436134338
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 323096,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        1.0,
+        0.9999180436134338
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 646192,
+      "componentType": 5126,
+      "count": 40387,
+      "max": [
+        1.0,
+        0.9999180436134338
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 112680,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 969288,
+      "componentType": 5126,
+      "count": 4157,
+      "max": [
+        0.7884436845779419,
+        1.4003976583480835,
+        7.548920631408691
+      ],
+      "min": [
+        -1.4741568565368652,
+        -0.893775463104248,
+        3.4098217487335205
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 1019172,
+      "componentType": 5126,
+      "count": 4157,
+      "max": [
+        0.9999445676803589,
+        0.998643696308136,
+        0.9997949600219727
+      ],
+      "min": [
+        -0.999000608921051,
+        -0.999380350112915,
+        -0.9998142719268799
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 969288,
+      "componentType": 5126,
+      "count": 4157,
+      "max": [
+        0.9022523164749146,
+        0.8700440526008606
+      ],
+      "min": [
+        0.06483205407857895,
+        0.11157591640949249
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 450720,
+      "componentType": 5125,
+      "count": 14646,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "SomeKevin (https://sketchfab.com/SomeKevin)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/smol-trees-15a4501992214cb8973d35fb94b4a2b3",
+      "title": "smol trees"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 509304,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1002544,
+      "byteOffset": 509304,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1069056,
+      "byteOffset": 1511848,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 646192,
+      "byteOffset": 2580904,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3227096,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/klener_baum_baseColor.png"
+    },
+    {
+      "uri": "textures/klener_baum_metallicRoughness.png"
+    },
+    {
+      "uri": "textures/klener_baum_normal.png"
+    },
+    {
+      "uri": "textures/blatt_baseColor.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "klener_baum",
+      "normalTexture": {
+        "index": 2
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.0,
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "blatt",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 3
+        },
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8211145618000169
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Plane.037_klener baum_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4,
+            "TEXCOORD_2": 5
+          },
+          "indices": 6,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Plane.037_blatt_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 8,
+            "POSITION": 7,
+            "TEXCOORD_0": 9
+          },
+          "indices": 10,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "3ece64b2d2a9455d817491c57e24250c.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        100.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.0,
+        -1.629206793918314e-05,
+        -99.99999999999868,
+        0.0,
+        0.0,
+        99.99999999999868,
+        -1.629206793918314e-05,
+        0.0,
+        -6.739933967590332,
+        -0.9887838959693909,
+        9.549055099487305,
+        1.0
+      ],
+      "name": "Plane.037"
+    },
+    {
+      "mesh": 0,
+      "name": "Plane.037_klener baum_0"
+    },
+    {
+      "mesh": 1,
+      "name": "Plane.037_blatt_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    }
+  ]
+}

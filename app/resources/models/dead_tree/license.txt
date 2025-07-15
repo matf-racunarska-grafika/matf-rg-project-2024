@@ -1,0 +1,11 @@
+Model Information:
+* title:	smol trees
+* source:	https://sketchfab.com/3d-models/smol-trees-15a4501992214cb8973d35fb94b4a2b3
+* author:	SomeKevin (https://sketchfab.com/SomeKevin)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "smol trees" (https://sketchfab.com/3d-models/smol-trees-15a4501992214cb8973d35fb94b4a2b3) by SomeKevin (https://sketchfab.com/SomeKevin) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

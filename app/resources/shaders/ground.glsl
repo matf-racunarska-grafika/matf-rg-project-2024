@@ -23,13 +23,16 @@ void main()
 
 //#shader fragment
 #version 330 core
-
+in vec2 TexCoords;
 out vec4 FragColor;
 
-in vec2 TexCoords;
+uniform sampler2D groundTexture;
+uniform vec3 tintColor;
+uniform float tintStrength;
 
-uniform sampler2D texture_diffuse1;
-
-void main() {
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
+void main()
+{
+    vec3 texColor = texture(groundTexture, TexCoords).rgb;
+    vec3 finalColor = mix(texColor, tintColor, tintStrength);
+    FragColor = vec4(finalColor, 1.0);
 }
