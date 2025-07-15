@@ -17,6 +17,8 @@ class MainController : public engine::core::Controller {
 
     void draw_floor();
 
+    void draw_lamp();
+
     void draw_graves();
 
     void update() override;

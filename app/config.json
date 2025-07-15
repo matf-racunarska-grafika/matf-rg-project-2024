@@ -6,6 +6,9 @@
       },
       "cobble": {
         "path": "cobble/untitled.obj"
+      },
+      "streetlamp": {
+        "path": "streetlamp/streetlamp.obj"
       }
     }
   },

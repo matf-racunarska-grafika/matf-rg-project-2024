@@ -5,10 +5,12 @@
 #include "MainController.hpp"
 #include "../../engine/test/app/include/app/MainController.hpp"
 
+#include <GuiController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
+#include <engine/util/Configuration.hpp>
 #include <spdlog/spdlog.h>
 
 namespace app {
@@ -19,8 +21,11 @@ public:
 };
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
-    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-    camera->rotate_camera(position.dx, position.dy);
+    auto gui_controller = engine::core::Controller::get<GUIController>();
+    if (!gui_controller->is_enabled()) {
+        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        camera->rotate_camera(position.dx, position.dy);
+    }
 }
 
 void MainController::initialize() {
@@ -39,6 +44,7 @@ bool MainController::loop() {
 void MainController::draw() {
     draw_floor();
     draw_graves();
+    draw_lamp();
 }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
@@ -55,6 +61,22 @@ void MainController::draw_floor() {
     model = glm::translate(model, glm::vec3(-7.0f, -10.0f, -9.0f));
     model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(15.0f, 1.0f, 13.0f));
+    shader->set_mat4("model", model);
+    floor->draw(shader);
+}
+
+void MainController::draw_lamp() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *floor = resources->model("streetlamp");
+    engine::resources::Shader *shader = resources->shader("floorShader");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 17.0f));
+    //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(3.0f));
     shader->set_mat4("model", model);
     floor->draw(shader);
 }
@@ -85,6 +107,8 @@ void MainController::draw_graves() {
 void MainController::update() { update_camera(); }
 
 void MainController::update_camera() {
+    auto gui_controller = engine::core::Controller::get<GUIController>();
+    if (gui_controller->is_enabled()) { return; }
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
