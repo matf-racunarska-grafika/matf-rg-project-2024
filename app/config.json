@@ -4,6 +4,10 @@
       "dunes": {
         "path": "dunes/dunes.obj",
         "flip_uvs": false
+      },
+      "pyramid": {
+        "path": "pyramids/Pyramid.fbx",
+        "flip_uvs": false
       }
     }
   },
