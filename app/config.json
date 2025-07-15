@@ -1,16 +1,25 @@
 {
   "resources": {
     "models": {
+      "moon": {
+        "path": "moon/moon.obj",
+        "flip_uvs": false
+      },
+      "sun": {
+        "path": "sun/sun.obj",
+        "flip_uvs": false
+      },
       "dunes": {
         "path": "dunes/dunes.obj",
+        "flip_uvs": false
+      },
+      "sphinx": {
+        "path": "sphinx/HatshepsutSphinx.obj",
         "flip_uvs": false
       },
       "pyramid": {
         "path": "pyramids/pyramid.fbx",
         "flip_uvs": false
-      },
-      "sphinx": {
-        "path": "sphinx/HatshepsutSphinx.obj"
       }
     }
   },

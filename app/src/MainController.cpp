@@ -31,6 +31,8 @@ void MainController::draw() {
     draw_dunes();
     draw_pyramids();
     draw_sphinx();
+    draw_moon();
+    draw_sun();
     draw_skybox();
 }
 
@@ -92,6 +94,36 @@ void MainController::draw_sphinx() {
     model = glm::scale(model, glm::vec3(1.0f));
     shader->set_mat4("model", model);
     sphinx->draw(shader);
+}
+
+void MainController::draw_moon() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto moon = engine::core::Controller::get<engine::resources::ResourcesController>()->model("moon");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -100.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(10.0f));
+    shader->set_mat4("model", model);
+    moon->draw(shader);
+}
+
+void MainController::draw_sun() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto sun = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sun");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, 100.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(10.0f));
+    shader->set_mat4("model", model);
+    sun->draw(shader);
 }
 
 void MainController::draw_skybox() {
