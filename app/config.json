@@ -1,17 +1,17 @@
 {
   "resources": {
     "models": {
-      "flooring": {
-        "path": "flooring/10417_Rectangular_rug_v1_iterations-2.obj"
+      "grave": {
+        "path": "grave/kuburan_islam.obj"
       },
-      "allah": {
-        "path": "allah/kuburan_islam.obj"
+      "cobble": {
+        "path": "cobble/untitled.obj"
       }
     }
   },
   "window": {
-    "height": 600,
-    "title": "Hello, window!",
-    "width": 800
+    "height": 1200,
+    "title": "Graveyard Simulation",
+    "width": 1600
   }
 }
