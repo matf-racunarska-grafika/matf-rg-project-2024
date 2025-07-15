@@ -8,11 +8,7 @@
 #include <memory>
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/GraphicsController.hpp>
-#include <engine/graphics/OpenGL.hpp>
 #include <engine/core/Engine.hpp>
-#include <spdlog/spdlog.h>
-#include <engine/core/Engine.hpp>
-#include <engine/graphics/GraphicsController.hpp>
 
 namespace app {
 

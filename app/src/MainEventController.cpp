@@ -5,8 +5,6 @@
 #include <MainEventController.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/core/Controller.hpp>
-#include <engine/graphics/GraphicsController.hpp>
-#include <spdlog/spdlog.h>
 
 namespace app {
 void MainEventController::initialize() { set_enable(false); }
@@ -17,7 +15,6 @@ void MainEventController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KeyId::KEY_F2).state() == engine::platform::Key::State::JustPressed) {
         set_enable(true);
-        spdlog::info(m_spinning);
         m_num_of_days++;
     }
 }

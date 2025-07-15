@@ -34,10 +34,10 @@ private:
     bool m_is_day{true};
     int m_num_of_days{0};
     bool m_spinning{true};
-    const float m_skybox_changing_t{20.0f};
+    const float m_skybox_changing_t{15.0f};
     float m_skybox_changed_time{0.0f};
     float m_event_degree{0.0f};
-    float m_time_scale{45.0f};
+    float m_time_scale{70.0f};
 };
 }
 
