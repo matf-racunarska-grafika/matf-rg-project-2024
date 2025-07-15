@@ -20,7 +20,7 @@ public:
 
 private:
     float pointLightIntensity = 1.0f;
-    float dirLightIntensity = 1.0f;
+    float dirLightIntensity = 1.5f;
     glm::vec3 pointLightColor = glm::vec3(1.0f, 0.6f, 0.4f);  // svetlo-roze-narandžasto
 
     void initialize() override;

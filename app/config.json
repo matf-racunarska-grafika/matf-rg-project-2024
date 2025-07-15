@@ -8,6 +8,10 @@
       "lamp": {
         "path": "lamp/scene.gltf",
         "flip_uvs": true
+      },
+      "petal": {
+        "path": "petal/SakuraHanaBira.glb",
+        "flip_uvs": true
       }
 
     }

@@ -5,7 +5,6 @@
 
 #ifndef MATF_RG_PROJECT_MESH_HPP
 #define MATF_RG_PROJECT_MESH_HPP
-
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
@@ -38,7 +37,9 @@ public:
     * @param shader The shader to use for drawing.
     */
     void draw(const Shader *shader);
-
+    void setup_instance_buffer(const std::vector<glm::mat4>& instance_matrices);
+    void draw_instanced(const Shader* shader);
+    void set_instance_count(unsigned int count) { m_instance_count = count; }
     /**
     * @brief Destroys the mesh in the OpenGL context.
     */
@@ -57,6 +58,9 @@ private:
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
+
+   unsigned int m_instance_vbo = 0;
+    unsigned int m_instance_count = 0;
 };
 } // namespace engine
 

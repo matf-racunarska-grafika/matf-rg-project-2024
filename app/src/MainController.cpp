@@ -6,11 +6,13 @@
 #include <engine/resources/ResourcesController.hpp>
 #include<spdlog/spdlog.h>
 
+
 namespace app {
 
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     void on_mouse_move(engine::platform::MousePosition position) override;
     void on_scroll(engine::platform::MousePosition position) override;
+    //void on_window_resize(int width, int height) override;
 };
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
@@ -23,15 +25,17 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition position) {
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto camera = graphics->camera();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
+    if (!gui_controller->is_enabled()) {
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
 
-    auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
-    auto mouse = platform->mouse();
-    camera->zoom(mouse.scroll);
-    graphics->perspective_params().FOV = glm::radians(camera->Zoom);
+        auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
+        auto mouse = platform->mouse();
+        camera->zoom(mouse.scroll);
+        graphics->perspective_params().FOV = glm::radians(camera->Zoom);
+    }
 }
-
 
 
 void MainController::initialize() {
@@ -39,6 +43,13 @@ void MainController::initialize() {
     auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+
+    camera->Position = glm::vec3(0.0f, 8.0f, 25.0f);
+    camera->Yaw = -90.0f;
+    camera->Pitch = -10.0f;
 
 }
 
@@ -129,6 +140,49 @@ void MainController::draw_lamp() {
 }
 
 
+void MainController::draw_petal() {
+    static bool initialized = false;
+    static std::vector<glm::mat4> instanceMatrices;
+
+    auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto petalModel = resource->model("petal");
+    auto petalShader = resource->shader("petal");
+
+    if (!initialized) {
+        int numPetals = 1000;
+        float spread = 30.0f;
+
+        std::srand(42);
+
+        for (int i = 0; i < numPetals; ++i) {
+            float x = (static_cast<float>(std::rand()) / RAND_MAX - 0.5f) * spread;
+            float y = (static_cast<float>(std::rand()) / RAND_MAX) * 10.0f + 2.0f; // od 2 do 12 visina
+            float z = (static_cast<float>(std::rand()) / RAND_MAX - 0.5f) * spread;
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(x, y, z));
+
+            float rotation = static_cast<float>(std::rand()) / RAND_MAX * glm::two_pi<float>();
+            model = glm::rotate(model, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+
+            float scale = 0.2f + static_cast<float>(std::rand()) / RAND_MAX * 0.3f;
+            model = glm::scale(model, glm::vec3(scale));
+
+            instanceMatrices.push_back(model);
+        }
+
+        petalModel->set_instance_data(instanceMatrices);
+        initialized = true;
+    }
+    petalShader->use();
+    petalShader->set_mat4("projection", graphics->projection_matrix());
+    petalShader->set_mat4("view", graphics->camera()->view_matrix());
+    petalModel->draw_instanced(petalShader, static_cast<int>(instanceMatrices.size()));
+}
+
+
+
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (gui_controller->is_enabled()) {
@@ -153,6 +207,7 @@ void MainController::begin_draw() {
 void MainController::draw() {
     draw_temple();
     draw_lamp();
+    draw_petal();
     draw_skybox();
 }
 
