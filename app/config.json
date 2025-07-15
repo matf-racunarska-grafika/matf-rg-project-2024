@@ -6,8 +6,11 @@
         "flip_uvs": false
       },
       "pyramid": {
-        "path": "pyramids/Pyramid.fbx",
+        "path": "pyramids/pyramid.fbx",
         "flip_uvs": false
+      },
+      "sphinx": {
+        "path": "sphinx/HatshepsutSphinx.obj"
       }
     }
   },
