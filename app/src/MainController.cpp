@@ -3,9 +3,15 @@
 //
 #include <MainController.hpp>
 #include <MainEventController.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 
 namespace app {
-void MainController::initialize() { engine::graphics::OpenGL::enable_depth_testing(); }
+void MainController::initialize() {
+    engine::graphics::OpenGL::enable_depth_testing();
+    auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
+    engine::graphics::PerspectiveMatrixParams &perspective_matrix = graphics->perspective_params();
+    perspective_matrix.Far = 500.0f;
+}
 
 bool MainController::loop() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();

@@ -24,7 +24,7 @@ void GraphicsController::initialize() {
     m_perspective_params.Height = static_cast<float>(platform->window()
                                                              ->height());
     m_perspective_params.Near = 0.1f;
-    m_perspective_params.Far = 500.f;
+    m_perspective_params.Far = 100.f;
 
     m_ortho_params.Bottom = 0.0f;
     m_ortho_params.Top = static_cast<float>(platform->window()
