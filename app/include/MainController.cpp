@@ -8,6 +8,7 @@
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
 #include <GuiController.hpp>
+#include <LampEvent.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -20,7 +21,15 @@ namespace app {
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
 public:
     void on_mouse_move(engine::platform::MousePosition position) override;
+
+    void on_key(engine::platform::Key key) override;
 };
+
+void MainPlatformEventObserver::on_key(engine::platform::Key key) {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto main_controller = engine::platform::PlatformController::get<MainController>();
+    if (key.id() == engine::platform::KeyId::KEY_B) { main_controller->lamp_event_handler->start_automatic_cycle(); }
+}
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
     auto gui_controller = engine::core::Controller::get<GUIController>();
@@ -34,6 +43,7 @@ void MainController::initialize() {
     spdlog::info("MainController initialized");
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+    lamp_event_handler = new LampEvent();
     engine::graphics::OpenGL::enable_depth_testing();
 }
 
@@ -75,13 +85,17 @@ void MainController::draw_lamp() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *lamp = resources->model("streetlamp");
     engine::resources::Shader *shader = resources->shader("lampShader");
+    glm::vec3 lamp_color = glm::vec3(0.1f, 5.0f, 0.0f);
+
+    lamp_event_handler->update_lamp(get<engine::platform::PlatformController>()->dt());
+
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_vec3("spot_light.direction", graphics->camera()->Front);
     shader->set_float("spot_light.cutOff", spot_light.cutOff);
     shader->set_float("spot_light.outer_cutOff", spot_light.outer_cutOff);
-    shader->set_vec3("spot_light.diffuse", glm::vec3(0.1f, 5.0f, 0.0f));
+    shader->set_vec3("spot_light.diffuse", lamp_color);
     shader->set_vec3("spot_light.specular", spot_light.specular);
     shader->set_float("spot_light.linear", spot_light.linear);
     shader->set_float("spot_light.quadratic", spot_light.quadratic);
@@ -90,12 +104,12 @@ void MainController::draw_lamp() {
     shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 newLanternPos = glm::vec3(-20.0f, -10.0f, 17.0f);
-    shader->set_vec3("spot_light.position", newLanternPos);
+    shader->set_vec3("lantern_spot_light.position", newLanternPos);
     model = glm::translate(model, newLanternPos);
     model = glm::scale(model, glm::vec3(3.0f));
     glm::vec3 lanternForward = glm::vec3(0.0f, -1.0f, 0.0f);
     glm::vec3 lanternDirection = glm::normalize(glm::mat3(model) * lanternForward);
-    shader->set_vec3("spot_light.direction", lanternDirection);
+    shader->set_vec3("lantern_spot_light.direction", lanternDirection);
     shader->set_mat4("model", model);
     lamp->draw(shader);
 }
@@ -108,24 +122,24 @@ void MainController::draw_lantern() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_vec3("spot_light.direction", graphics->camera()->Front);
-    shader->set_float("spot_light.cutOff", spot_light.cutOff);
-    shader->set_float("spot_light.outer_cutOff", spot_light.outer_cutOff);
-    shader->set_vec3("spot_light.diffuse", glm::vec3(5.0f, 0.0f, 0.0f));
-    shader->set_vec3("spot_light.specular", spot_light.specular);
-    shader->set_float("spot_light.linear", spot_light.linear);
-    shader->set_float("spot_light.quadratic", spot_light.quadratic);
-    shader->set_float("spot_light.shininess", spot_light.shininess);
+    shader->set_vec3("lantern_spot_light.direction", graphics->camera()->Front);
+    shader->set_float("lantern_spot_light.cutOff", spot_light.cutOff);
+    shader->set_float("lantern_spot_light.outer_cutOff", spot_light.outer_cutOff);
+    shader->set_vec3("lantern_spot_light.diffuse", glm::vec3(5.0f, 0.0f, 0.0f));
+    shader->set_vec3("lantern_spot_light.specular", spot_light.specular);
+    shader->set_float("lantern_spot_light.linear", spot_light.linear);
+    shader->set_float("lantern_spot_light.quadratic", spot_light.quadratic);
+    shader->set_float("lantern_spot_light.shininess", spot_light.shininess);
     shader->set_vec3("lightIntensity", point_light.intensity);
     shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 newLanternPos = glm::vec3(49.0f, -9.0f, -20.0f);
-    shader->set_vec3("spot_light.position", newLanternPos);
+    shader->set_vec3("lantern_spot_light.position", newLanternPos);
     model = glm::translate(model, newLanternPos);
     model = glm::scale(model, glm::vec3(4.0f));
     glm::vec3 lanternForward = glm::vec3(0.0f, -1.0f, 0.0f);
     glm::vec3 lanternDirection = glm::normalize(glm::mat3(model) * lanternForward);
-    shader->set_vec3("spot_light.direction", lanternDirection);
+    shader->set_vec3("lantern_spot_light.direction", lanternDirection);
     shader->set_mat4("model", model);
     lantern->draw(shader);
 }
@@ -157,7 +171,6 @@ void MainController::draw_car() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-18.0f, -9.5f, 12.9f));
-    //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(4.0f));
     shader->set_mat4("model", model);
     car->draw(shader);

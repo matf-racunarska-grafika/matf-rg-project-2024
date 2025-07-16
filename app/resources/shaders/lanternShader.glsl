@@ -30,7 +30,7 @@ in vec3 FragPos;
 
 uniform vec3 cameraPos;
 
-struct SpotLight {
+struct lanternSpotLight {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -46,39 +46,39 @@ struct SpotLight {
 uniform vec3 lightIntensity;
 uniform sampler2D texture_diffuse0;
 uniform sampler2D texture_specular0;
-uniform SpotLight spot_light;
+uniform lanternSpotLight lantern_spot_light;
 
-vec3 spotLightCalculate(SpotLight spot_light, vec3 FragPos, vec3 Normal, vec3 cameraPos, sampler2D texture_diffuse0, sampler2D texture_specular0) {
+vec3 spotLightCalculate(lanternSpotLight lantern_spot_light, vec3 FragPos, vec3 Normal, vec3 cameraPos, sampler2D texture_diffuse0, sampler2D texture_specular0) {
 
-    vec3 lightDir = normalize(FragPos - spot_light.position);
-    float theta = dot(lightDir, normalize(-spot_light.direction));
+    vec3 lightDir = normalize(FragPos - lantern_spot_light.position);
+    float theta = dot(lightDir, normalize(-lantern_spot_light.direction));
 
     float diff = max(dot(-lightDir, normalize(Normal)), 0.0);
-    vec3 diffuseSpotLight = spot_light.diffuse * texture(texture_diffuse0, TexCoords).rgb * diff;
+    vec3 diffuseSpotLight = lantern_spot_light.diffuse * texture(texture_diffuse0, TexCoords).rgb * diff;
 
     float specularStrength = 0.8;
     vec3 viewDir = normalize(cameraPos - FragPos);
     vec3 reflectDir = normalize(reflect(-lightDir, Normal));
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), spot_light.shininess);
-    vec3 specularSpotLight = spot_light.specular * texture(texture_specular0, TexCoords).rgb * spec * specularStrength;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), lantern_spot_light.shininess);
+    vec3 specularSpotLight = lantern_spot_light.specular * texture(texture_specular0, TexCoords).rgb * spec * specularStrength;
 
-    float p = (theta - spot_light.outer_cutOff) / (spot_light.cutOff - spot_light.outer_cutOff);
+    float p = (theta - lantern_spot_light.outer_cutOff) / (lantern_spot_light.cutOff - lantern_spot_light.outer_cutOff);
     float i = clamp(p, 0.0, 1.0);
     diffuseSpotLight *= i;
     specularSpotLight *= i;
 
-    float d = length(spot_light.position - FragPos);
-    float att = 1.0 / (1.0 + d * spot_light.linear + pow(d, 2) * spot_light.quadratic);
+    float d = length(lantern_spot_light.position - FragPos);
+    float att = 1.0 / (1.0 + d * lantern_spot_light.linear + pow(d, 2) * lantern_spot_light.quadratic);
     diffuseSpotLight *= att;
     specularSpotLight *= att;
-    vec3 ambient = spot_light.ambient * texture(texture_diffuse0, TexCoords).rgb;
+    vec3 ambient = lantern_spot_light.ambient * texture(texture_diffuse0, TexCoords).rgb;
     return ambient + diffuseSpotLight + specularSpotLight;
 }
 
 void main() {
     vec3 result = lightIntensity * texture(texture_diffuse0, TexCoords).rgb;
     float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
-    result += spotLightCalculate(spot_light, FragPos, Normal, cameraPos, texture_diffuse0, texture_specular0);
+    result += spotLightCalculate(lantern_spot_light, FragPos, Normal, cameraPos, texture_diffuse0, texture_specular0);
     LightColor = vec4(result, 1.0);
     FragColor = vec4(result, 1.0);
 }

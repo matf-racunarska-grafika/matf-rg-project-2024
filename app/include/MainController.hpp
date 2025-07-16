@@ -5,6 +5,7 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <LampEvent.hpp>
 #include <glm/glm.hpp>
 
 namespace app {
@@ -30,6 +31,8 @@ struct SpotLight {
     float quadratic = 0.0001f;
     float shininess = 32.0f;
 };
+
+class LampEvent;
 
 class MainController : public engine::core::Controller {
     void initialize() override;
@@ -63,6 +66,7 @@ public:
     PointLight point_light;
     SpotLight spot_light;
     bool spotlight_switch = true;
+    LampEvent *lamp_event_handler;
 };
 
 }// app
