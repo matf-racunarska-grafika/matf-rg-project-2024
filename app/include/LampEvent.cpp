@@ -62,5 +62,20 @@ void LampEvent::update_lamp(float delta_time) {
     if (lamp_state == TRANSPARENT) { main_controller->point_light.intensity = glm::vec3(1.0f); } else if (lamp_state == GREEN) { main_controller->point_light.intensity = glm::vec3(0.1f, 5.0f, 0.0f); } else if (lamp_state == BLUE) { main_controller->point_light.intensity = glm::vec3(0.0f, 0.0f, 5.0f); }
 }
 
+void LampEvent::cycle_manual_color() {
+    if (cycle_active) return;
+
+    switch (lamp_state) {
+        case TRANSPARENT: lamp_state = GREEN;
+            break;
+        case GREEN: lamp_state = BLUE;
+            break;
+        case BLUE: lamp_state = TRANSPARENT;
+            break;
+        default: lamp_state = TRANSPARENT;
+            break;
+    }
+}
+
 LampState LampEvent::get_lamp_state() const { return lamp_state; }
 }// app

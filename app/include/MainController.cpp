@@ -28,7 +28,11 @@ public:
 void MainPlatformEventObserver::on_key(engine::platform::Key key) {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto main_controller = engine::platform::PlatformController::get<MainController>();
-    if (key.id() == engine::platform::KeyId::KEY_B) { main_controller->lamp_event_handler->start_automatic_cycle(); }
+    if (key.id() == engine::platform::KeyId::KEY_B) {
+        main_controller->lamp_event_handler->start_automatic_cycle();
+        main_controller->lamp_event_handler->cycle_active = true;
+    }
+    if (key.id() == engine::platform::KeyId::KEY_N && key.state() == engine::platform::Key::State::Pressed) { main_controller->lamp_event_handler->cycle_manual_color(); }
 }
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {

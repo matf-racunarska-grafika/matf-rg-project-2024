@@ -65,7 +65,6 @@ public:
     std::string_view name() const override { return "app::MainController"; }
     PointLight point_light;
     SpotLight spot_light;
-    bool spotlight_switch = true;
     LampEvent *lamp_event_handler;
 };
 
