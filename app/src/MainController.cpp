@@ -125,7 +125,7 @@ void MainController::draw_camels() {
 
 void MainController::draw_moon() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("sun_moon_shader");
     auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto moon = engine::core::Controller::get<engine::resources::ResourcesController>()->model("moon");
     shader->use();
@@ -137,12 +137,14 @@ void MainController::draw_moon() {
     model = glm::translate(model, glm::vec3(0.0f, -300.0f, 0.0f));
     model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
+    shader->set_vec3("light", glm::vec3(247.0f, 234.0f, 198.0f) / 255.0f);
+    shader->set_float("light_coeff", 0.3f);
     moon->draw(shader);
 }
 
 void MainController::draw_sun() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("sun_moon_shader");
     auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto sun = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sun");
     shader->use();
@@ -153,6 +155,8 @@ void MainController::draw_sun() {
     model = glm::translate(model, glm::vec3(0.0f, 300.0f, 0.0f));
     model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
+    shader->set_vec3("light", glm::vec3(255.0f, 255.0f, 224.0f) / 255.0f);
+    shader->set_float("light_coeff", 0.8f);
     sun->draw(shader);
 }
 
