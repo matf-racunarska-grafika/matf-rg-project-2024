@@ -9,6 +9,9 @@
       },
       "army_truck" : {
         "path" : "army_truck/armytruck.obj"
+      },
+      "suv": {
+        "path": "suv/suv.obj"
       }
     }
   },
