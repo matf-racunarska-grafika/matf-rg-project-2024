@@ -14,11 +14,11 @@
         "flip_uvs": false
       },
       "sphinx": {
-        "path": "sphinx/HatshepsutSphinx.obj",
+        "path": "sphinx/sphinx.obj",
         "flip_uvs": false
       },
       "pyramid": {
-        "path": "pyramids/pyramid.fbx",
+        "path": "pyramids/pyramid.obj",
         "flip_uvs": false
       },
       "camel": {
