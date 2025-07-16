@@ -3,6 +3,12 @@
     "models": {
       "backpack": {
         "path": "backpack/backpack.obj"
+      },
+      "truck" : {
+        "path" : "truck/truck.obj"
+      },
+      "army_truck" : {
+        "path" : "army_truck/armytruck.obj"
       }
     }
   },
