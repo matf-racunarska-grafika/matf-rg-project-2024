@@ -51,7 +51,7 @@ namespace engine::core {
                 return curr->next();
             };
             RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), adjacent_controllers),
-                         "Please make sure that there are no cycles in the controller dependency graph.");
+                "Please make sure that there are no cycles in the controller dependency graph.");
             util::alg::topological_sort(range(m_controllers), adjacent_controllers);
         }
         for (auto controller: m_controllers) {
