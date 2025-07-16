@@ -13,6 +13,10 @@
         "path": "dunes/dunes.obj",
         "flip_uvs": false
       },
+      "sphinx": {
+        "path": "sphinx/HatshepsutSphinx.obj",
+        "flip_uvs": false
+      },
       "pyramid": {
         "path": "pyramids/pyramid.fbx",
         "flip_uvs": false

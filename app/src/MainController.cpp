@@ -35,7 +35,7 @@ void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 void MainController::draw() {
     draw_dunes();
     draw_pyramids();
-    // draw_sphinx();
+    draw_sphinx();
     draw_camels();
     draw_moon();
     draw_sun();
@@ -95,7 +95,7 @@ void MainController::draw_sphinx() {
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-5.0f, 7.0f, 50.0f));
+    model = glm::translate(model, glm::vec3(-5.0f, 7.7f, 50.0f));
     model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(1.0f));
     shader->set_mat4("model", model);
@@ -110,13 +110,15 @@ void MainController::draw_camels() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model1 = glm::mat4(1.0f);
-    model1 = glm::translate(model1, glm::vec3(-60.0f, -0.58f, 40.0f));
-    model1 = glm::scale(model1, glm::vec3(5.0f));
+    model1 = glm::translate(model1, glm::vec3(-20.0f, -0.58f, 20.0f));
+    model1 = glm::rotate(model1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model1 = glm::scale(model1, glm::vec3(2.0f));
     shader->set_mat4("model", model1);
     camel->draw(shader);
     glm::mat4 model2 = glm::mat4(1.0f);
-    model2 = glm::translate(model2, glm::vec3(-50.0f, -0.65f, 50.0f));
-    model2 = glm::scale(model2, glm::vec3(5.0f));
+    model2 = glm::translate(model2, glm::vec3(-25.0f, -0.55f, 25.0f));
+    model2 = glm::rotate(model2, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model2 = glm::scale(model2, glm::vec3(2.0f));
     shader->set_mat4("model", model2);
     camel->draw(shader);
 }
