@@ -64,6 +64,7 @@ void MainController::draw() {
     draw_lamp();
     draw_dog();
     draw_car();
+    draw_gulls();
 }
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
@@ -89,7 +90,7 @@ void MainController::draw_lamp() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *lamp = resources->model("streetlamp");
     engine::resources::Shader *shader = resources->shader("lampShader");
-    glm::vec3 lamp_color = glm::vec3(0.1f, 5.0f, 0.0f);
+    glm::vec3 lamp_color = glm::vec3(5.0f, 0.6f, 0.6f);
 
     lamp_event_handler->update_lamp(get<engine::platform::PlatformController>()->dt());
 
@@ -127,14 +128,14 @@ void MainController::draw_lantern() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_vec3("lantern_spot_light.direction", graphics->camera()->Front);
-    shader->set_float("lantern_spot_light.cutOff", spot_light.cutOff);
-    shader->set_float("lantern_spot_light.outer_cutOff", spot_light.outer_cutOff);
+    shader->set_float("lantern_spot_light.cutOff", spot_light2.cutOff);
+    shader->set_float("lantern_spot_light.outer_cutOff", spot_light2.outer_cutOff);
     shader->set_vec3("lantern_spot_light.diffuse", glm::vec3(5.0f, 0.0f, 0.0f));
-    shader->set_vec3("lantern_spot_light.specular", spot_light.specular);
-    shader->set_float("lantern_spot_light.linear", spot_light.linear);
-    shader->set_float("lantern_spot_light.quadratic", spot_light.quadratic);
-    shader->set_float("lantern_spot_light.shininess", spot_light.shininess);
-    shader->set_vec3("lightIntensity", point_light.intensity);
+    shader->set_vec3("lantern_spot_light.specular", spot_light2.specular);
+    shader->set_float("lantern_spot_light.linear", spot_light2.linear);
+    shader->set_float("lantern_spot_light.quadratic", spot_light2.quadratic);
+    shader->set_float("lantern_spot_light.shininess", spot_light2.shininess);
+    shader->set_vec3("lightIntensity", point_light2.intensity);
     shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
     glm::vec3 newLanternPos = glm::vec3(49.0f, -9.0f, -20.0f);
@@ -180,27 +181,93 @@ void MainController::draw_car() {
     car->draw(shader);
 }
 
-void MainController::draw_graves() {
+void MainController::init_gulls() {
+    if (gullsInitialized) return;
+
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *gull = resources->model("gull");
+
+    const int instanceCount = 250;
+    gullMatrices.reserve(instanceCount);
+
+    float centerX = -20.0f;
+    float centerY = 26.0f;
+    float centerZ = -26.0f;
+    float radiusX = 50.0f;
+    float radiusZ = 25.0f;
+
+    for (int i = 0; i < instanceCount; i++) {
+        float angle = (float(i) / instanceCount) * 2.0f * glm::pi<float>();
+        float x = centerX + radiusX * cos(angle) + (rand() % 1000 / 1000.0f - 0.5f) * 5.0f;
+        float z = centerZ + radiusZ * sin(angle) + (rand() % 1000 / 1000.0f - 0.5f) * 5.0f;
+        float y = centerY + (rand() % 1000 / 1000.0f) * 5.0f;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(x, y, z));
+        float scale = 2.0f + (rand() % 1000 / 1000.0f) * 1.0f;
+        model = glm::scale(model, glm::vec3(scale));
+
+        gullMatrices.push_back(model);
+    }
+
+    gull->setup_instance_matrices(gullMatrices);
+    gullsInitialized = true;
+}
+
+void MainController::init_graves() {
+    if (gravesInitialized) return;
+
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     engine::resources::Model *grave = resources->model("grave");
-    engine::resources::Shader *shader = resources->shader("basic");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
+
     float TRANSLATE_X_FACTOR = 9.0f;
     float TRANSLATE_Z_FACTOR = -7.0f;
     float GRAVE_COLS = 8, GRAVE_ROWS = 7;
+
     for (int i = 1; i < GRAVE_ROWS; i++) {
         for (int j = 1; j < GRAVE_COLS; j++) {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(-5.0f + i * TRANSLATE_X_FACTOR, -9.0f, TRANSLATE_Z_FACTOR * (j + 4.0f)));
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
             model = glm::scale(model, glm::vec3(1.0f));
-            shader->set_mat4("model", model);
-            grave->draw(shader);
+            graveMatrices.push_back(model);
         }
     }
+
+    grave->setup_instance_matrices(graveMatrices);
+    gravesInitialized = true;
+}
+
+void MainController::draw_gulls() {
+    init_gulls();
+
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model *gull = resources->model("gull");
+    engine::resources::Shader *shader = resources->shader("gullShader");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    gull->draw_instanced(shader, gullMatrices.size());
+}
+
+void MainController::draw_graves() {
+    init_graves();
+
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model *grave = resources->model("grave");
+    engine::resources::Shader *shader = resources->shader("graveShader");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    grave->draw_instanced(shader, graveMatrices.size());
 }
 
 void MainController::update() { update_camera(); }

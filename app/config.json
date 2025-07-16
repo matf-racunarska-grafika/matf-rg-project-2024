@@ -18,6 +18,9 @@
       },
       "car": {
         "path": "car/Car.obj"
+      },
+      "gull": {
+        "path": "gull/GULL.obj"
       }
     }
   },

@@ -11,53 +11,59 @@
 #include <engine/resources/Texture.hpp>
 
 namespace engine::resources {
-/**
-* @struct Vertex
-* @brief Represents a vertex in the mesh.
-*/
-struct Vertex {
-    glm::vec3 Position;
-    glm::vec3 Normal;
-    glm::vec2 TexCoords;
-
-    glm::vec3 Tangent;
-    glm::vec3 Bitangent;
-};
-
-/**
-* @class Mesh
-* @brief Represents a mesh in the model in the OpenGL context.
-*/
-class Mesh {
-    friend class AssimpSceneProcessor;
-
-public:
-
     /**
-    * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
-    * @param shader The shader to use for drawing.
+    * @struct Vertex
+    * @brief Represents a vertex in the mesh.
     */
-    void draw(const Shader *shader);
+    struct Vertex {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
+
+        glm::vec3 Tangent;
+        glm::vec3 Bitangent;
+    };
 
     /**
-    * @brief Destroys the mesh in the OpenGL context.
+    * @class Mesh
+    * @brief Represents a mesh in the model in the OpenGL context.
     */
-    void destroy();
+    class Mesh {
+        friend class AssimpSceneProcessor;
 
-private:
-    /**
-    * @brief Constructs a Mesh object.
-    * @param vertices The vertices in the mesh.
-    * @param indices The indices in the mesh.
-    * @param textures The textures in the mesh.
-     */
-    Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-         std::vector<Texture *> textures);
+    public:
+        /**
+        * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
+        * @param shader The shader to use for drawing.
+        */
+        void draw(const Shader *shader);
 
-    uint32_t m_vao{0};
-    uint32_t m_num_indices{0};
-    std::vector<Texture *> m_textures;
-};
+        /**
+        * @brief Destroys the mesh in the OpenGL context.
+        */
+        void destroy();
+
+        void draw_instanced(const Shader *shader, int instanceCount);
+
+        void setup_instance_matrices(const std::vector<glm::mat4> &instanceMatrices);
+
+    private:
+        /**
+        * @brief Constructs a Mesh object.
+        * @param vertices The vertices in the mesh.
+        * @param indices The indices in the mesh.
+        * @param textures The textures in the mesh.
+         */
+        Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
+             std::vector<Texture *> textures);
+
+        uint32_t m_vao{0};
+        uint32_t m_num_indices{0};
+        //
+        uint32_t m_instance_vbo{0};
+        //
+        std::vector<Texture *> m_textures;
+    };
 } // namespace engine
 
 #endif//MATF_RG_PROJECT_MESH_HPP

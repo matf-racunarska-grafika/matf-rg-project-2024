@@ -41,6 +41,10 @@ class MainController : public engine::core::Controller {
 
     void begin_draw() override;
 
+    void init_gulls();
+
+    void init_graves();
+
     void draw_floor();
 
     void draw_lamp();
@@ -53,6 +57,8 @@ class MainController : public engine::core::Controller {
 
     void draw_car();
 
+    void draw_gulls();
+
     void update() override;
 
     void update_camera();
@@ -63,9 +69,13 @@ class MainController : public engine::core::Controller {
 
 public:
     std::string_view name() const override { return "app::MainController"; }
-    PointLight point_light;
-    SpotLight spot_light;
+    PointLight point_light, point_light2;
+    SpotLight spot_light, spot_light2;
     LampEvent *lamp_event_handler;
+    std::vector<glm::mat4> gullMatrices;
+    std::vector<glm::mat4> graveMatrices;
+    bool gullsInitialized = false;
+    bool gravesInitialized = false;
 };
 
 }// app
