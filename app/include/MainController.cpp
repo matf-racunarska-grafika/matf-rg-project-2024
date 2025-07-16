@@ -5,6 +5,8 @@
 #include "MainController.hpp"
 #include "../../engine/test/app/include/app/MainController.hpp"
 
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+
 #include <GuiController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -56,7 +58,7 @@ void MainController::draw_floor() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *floor = resources->model("cobble");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -71,38 +73,68 @@ void MainController::draw_floor() {
 void MainController::draw_lamp() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *floor = resources->model("streetlamp");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Model *lamp = resources->model("streetlamp");
+    engine::resources::Shader *shader = resources->shader("lampShader");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("spot_light.direction", graphics->camera()->Front);
+    shader->set_float("spot_light.cutOff", spot_light.cutOff);
+    shader->set_float("spot_light.outer_cutOff", spot_light.outer_cutOff);
+    shader->set_vec3("spot_light.diffuse", glm::vec3(0.1f, 5.0f, 0.0f));
+    shader->set_vec3("spot_light.specular", spot_light.specular);
+    shader->set_float("spot_light.linear", spot_light.linear);
+    shader->set_float("spot_light.quadratic", spot_light.quadratic);
+    shader->set_float("spot_light.shininess", spot_light.shininess);
+    shader->set_vec3("lightIntensity", point_light.intensity);
+    shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-20.0f, -10.0f, 17.0f));
+    glm::vec3 newLanternPos = glm::vec3(-20.0f, -10.0f, 17.0f);
+    shader->set_vec3("spot_light.position", newLanternPos);
+    model = glm::translate(model, newLanternPos);
     model = glm::scale(model, glm::vec3(3.0f));
+    glm::vec3 lanternForward = glm::vec3(0.0f, -1.0f, 0.0f);
+    glm::vec3 lanternDirection = glm::normalize(glm::mat3(model) * lanternForward);
+    shader->set_vec3("spot_light.direction", lanternDirection);
     shader->set_mat4("model", model);
-    floor->draw(shader);
+    lamp->draw(shader);
 }
 
 void MainController::draw_lantern() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *floor = resources->model("lantern");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Model *lantern = resources->model("lantern");
+    engine::resources::Shader *shader = resources->shader("lanternShader");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("spot_light.direction", graphics->camera()->Front);
+    shader->set_float("spot_light.cutOff", spot_light.cutOff);
+    shader->set_float("spot_light.outer_cutOff", spot_light.outer_cutOff);
+    shader->set_vec3("spot_light.diffuse", glm::vec3(5.0f, 0.0f, 0.0f));
+    shader->set_vec3("spot_light.specular", spot_light.specular);
+    shader->set_float("spot_light.linear", spot_light.linear);
+    shader->set_float("spot_light.quadratic", spot_light.quadratic);
+    shader->set_float("spot_light.shininess", spot_light.shininess);
+    shader->set_vec3("lightIntensity", point_light.intensity);
+    shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(49.0f, -10.0f, -20.0f));
+    glm::vec3 newLanternPos = glm::vec3(49.0f, -9.0f, -20.0f);
+    shader->set_vec3("spot_light.position", newLanternPos);
+    model = glm::translate(model, newLanternPos);
     model = glm::scale(model, glm::vec3(4.0f));
+    glm::vec3 lanternForward = glm::vec3(0.0f, -1.0f, 0.0f);
+    glm::vec3 lanternDirection = glm::normalize(glm::mat3(model) * lanternForward);
+    shader->set_vec3("spot_light.direction", lanternDirection);
     shader->set_mat4("model", model);
-    floor->draw(shader);
+    lantern->draw(shader);
 }
 
 void MainController::draw_dog() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *floor = resources->model("dog");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Model *dog = resources->model("dog");
+    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -111,14 +143,15 @@ void MainController::draw_dog() {
     model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
-    floor->draw(shader);
+
+    dog->draw(shader);
 }
 
 void MainController::draw_car() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *floor = resources->model("car");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Model *car = resources->model("car");
+    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -127,14 +160,14 @@ void MainController::draw_car() {
     //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(4.0f));
     shader->set_mat4("model", model);
-    floor->draw(shader);
+    car->draw(shader);
 }
 
 void MainController::draw_graves() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *floor = resources->model("grave");
-    engine::resources::Shader *shader = resources->shader("floorShader");
+    engine::resources::Model *grave = resources->model("grave");
+    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -148,7 +181,7 @@ void MainController::draw_graves() {
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
             model = glm::scale(model, glm::vec3(1.0f));
             shader->set_mat4("model", model);
-            floor->draw(shader);
+            grave->draw(shader);
         }
     }
 }
