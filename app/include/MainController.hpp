@@ -48,9 +48,9 @@ private:
     void update_camera();
 
     bool m_cursor_enabled{true};
-    bool m_spotlight_enabled{true};
+    bool m_spotlight_enabled{false};
     glm::vec3 m_sun_light{glm::vec3(255.0f, 255.0f, 224.0f) / 255.0f};
-    float m_sun_light_coeff{0.8f};
+    float m_sun_light_coeff{0.9f};
     glm::vec3 m_moon_light{glm::vec3(247.0f, 234.0f, 198.0f) / 255.0f};
     float m_moon_light_coeff{0.2f};
     float m_ambient_coeff{0.1f};
