@@ -77,7 +77,6 @@ vec3 spotLightCalculate(lanternSpotLight lantern_spot_light, vec3 FragPos, vec3 
 
 void main() {
     vec3 result = lightIntensity * texture(texture_diffuse0, TexCoords).rgb;
-    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
     result += spotLightCalculate(lantern_spot_light, FragPos, Normal, cameraPos, texture_diffuse0, texture_specular0);
     LightColor = vec4(result, 1.0);
     FragColor = vec4(result, 1.0);

@@ -41,9 +41,9 @@ class MainController : public engine::core::Controller {
 
     void begin_draw() override;
 
-    void init_gulls();
+    void init_gulls();// Function that prevents recreating and uploading N instance matrices to the GPU every single frame
 
-    void init_graves();
+    void init_graves();// Function that prevents recreating and uploading N instance matrices to the GPU every single frame
 
     void draw_floor();
 

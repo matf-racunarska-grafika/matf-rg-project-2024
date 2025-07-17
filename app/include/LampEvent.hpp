@@ -20,9 +20,9 @@ public:
 
     LampState get_lamp_state() const;
 
-    void start_automatic_cycle();// trigger from key B
+    void start_automatic_cycle();// {KEY B PRESSED} --- AFTER_M_SECONDS---Triggers---> {LAMP LIGHT IS GREEN} ---> AFTER_N_SECONDS---Triggers---> {LAMP LIGHT IS BLUE} ---> AFTER_S_SECONDS---Triggers---> {LAMP LIGHT IS TRANSPARENT}
 
-    void cycle_manual_color();
+    void cycle_manual_color();// Setting the light color using key N
 
 private:
     LampState lamp_state;
