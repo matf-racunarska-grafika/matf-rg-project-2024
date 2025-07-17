@@ -6,6 +6,9 @@
       },
       "ufo": {
         "path": "ufo/nlo.obj"
+      },
+      "kuca2": {
+        "path": "kuca2/Manor.obj"
       }
     }
   },
