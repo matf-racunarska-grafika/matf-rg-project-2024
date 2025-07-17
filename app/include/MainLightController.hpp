@@ -14,7 +14,7 @@
 
 namespace app {
 
-class LightController final : public engine::core::Controller {
+class MainLightController final : public engine::core::Controller {
 public:
     std::string_view name() const override { return "app::LightController"; }
 

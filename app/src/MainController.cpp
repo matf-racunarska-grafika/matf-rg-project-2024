@@ -1,7 +1,7 @@
 //
 // Created by cvnpko on 7/14/25.
 //
-#include <LightController.hpp>
+#include <MainLightController.hpp>
 #include <MainController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <spdlog/spdlog.h>
@@ -43,7 +43,7 @@ void MainController::end_draw() { engine::core::Controller::get<engine::platform
 void MainController::draw_dunes() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto light_controller = engine::core::Controller::get<app::LightController>();
+    auto light_controller = engine::core::Controller::get<app::MainLightController>();
     auto dunes = engine::core::Controller::get<engine::resources::ResourcesController>()->model("dunes");
     shader->use();
 
@@ -62,7 +62,7 @@ void MainController::draw_dunes() {
 void MainController::draw_pyramids() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto light_controller = engine::core::Controller::get<app::LightController>();
+    auto light_controller = engine::core::Controller::get<app::MainLightController>();
     auto pyramid = engine::core::Controller::get<engine::resources::ResourcesController>()->model("pyramid");
     shader->use();
 
@@ -93,7 +93,7 @@ void MainController::draw_pyramids() {
 void MainController::draw_sphinx() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto light_controller = engine::core::Controller::get<app::LightController>();
+    auto light_controller = engine::core::Controller::get<app::MainLightController>();
     auto sphinx = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sphinx");
     shader->use();
 
@@ -113,7 +113,7 @@ void MainController::draw_sphinx() {
 void MainController::draw_camels() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto light_controller = engine::core::Controller::get<app::LightController>();
+    auto light_controller = engine::core::Controller::get<app::MainLightController>();
     auto camel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("camel");
     shader->use();
 

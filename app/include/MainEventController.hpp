@@ -37,7 +37,7 @@ private:
     const float m_skybox_changing_t{15.0f};
     float m_skybox_changed_time{0.0f};
     float m_event_degree{0.0f};
-    float m_time_scale{70.0f};
+    float m_time_scale{60.0f};
 };
 }
 

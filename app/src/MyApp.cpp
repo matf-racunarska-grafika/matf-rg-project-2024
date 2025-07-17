@@ -2,7 +2,7 @@
 // Created by cvnpko on 7/14/25.
 //
 
-#include <LightController.hpp>
+#include <MainLightController.hpp>
 #include <MainEventController.hpp>
 #include <MyApp.hpp>
 #include <engine/core/Controller.hpp>
@@ -14,7 +14,7 @@ class MainController;
 void MyApp::app_setup() {
     auto main_event_controller = register_controller<MainEventController>();
     main_event_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
-    auto light_controller = register_controller<LightController>();
+    auto light_controller = register_controller<MainLightController>();
     light_controller->after(main_event_controller);
     auto main_controller = register_controller<MainController>();
     main_controller->after(light_controller);

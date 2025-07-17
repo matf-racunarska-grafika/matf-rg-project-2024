@@ -2,10 +2,10 @@
 // Created by cvnpko on 7/17/25.
 //
 
-#include <LightController.hpp>
+#include <MainLightController.hpp>
 
 namespace app {
-void LightController::setLight(engine::resources::Shader *shader) {
+void MainLightController::setLight(engine::resources::Shader *shader) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
 
@@ -39,7 +39,7 @@ void LightController::setLight(engine::resources::Shader *shader) {
     shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 }
 
-void LightController::initialize() {
+void MainLightController::initialize() {
     m_point_light_sun.position = glm::vec3(0.0f, 300.0f, 0.0f);
     m_point_light_sun.ambient = m_sun_light * m_sun_light_coeff * m_ambient_coeff;
     m_point_light_sun.diffuse = m_sun_light * m_sun_light_coeff;
@@ -57,25 +57,25 @@ void LightController::initialize() {
     m_point_light_moon.quadratic = 0.0000004f;
 }
 
-bool LightController::loop() { return true; }
+bool MainLightController::loop() { return true; }
 
-void LightController::poll_events() {
+void MainLightController::poll_events() {
     auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     angle = main_event_controller->get_event_angle();
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) { m_spotlight_enabled = !m_spotlight_enabled; }
 }
 
-void LightController::update() {}
+void MainLightController::update() {}
 
-void LightController::begin_draw() {}
+void MainLightController::begin_draw() {}
 
-void LightController::draw() {
+void MainLightController::draw() {
     draw_moon();
     draw_sun();
 }
 
-void LightController::draw_moon() {
+void MainLightController::draw_moon() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("sun_moon_shader");
     auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
@@ -94,7 +94,7 @@ void LightController::draw_moon() {
     moon->draw(shader);
 }
 
-void LightController::draw_sun() {
+void MainLightController::draw_sun() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("sun_moon_shader");
     auto sun = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sun");
@@ -111,5 +111,5 @@ void LightController::draw_sun() {
     sun->draw(shader);
 }
 
-void LightController::end_draw() {}
+void MainLightController::end_draw() {}
 }
