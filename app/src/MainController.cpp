@@ -11,6 +11,13 @@ void MainController::initialize() {
     auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
     engine::graphics::PerspectiveMatrixParams &perspective_matrix = graphics->perspective_params();
     perspective_matrix.Far = 500.0f;
+    m_point_light.position = glm::vec3(0.0f, 300.0f, 0.0f);
+    m_point_light.ambient = m_sun_light * m_sun_light_coeff;
+    m_point_light.diffuse = m_sun_light * m_sun_light_coeff;
+    m_point_light.specular = m_sun_light * m_sun_light_coeff;
+    m_point_light.constant = 1.0f;
+    m_point_light.linear = 0.0009f;
+    m_point_light.quadratic = 0.000005f;
 }
 
 bool MainController::loop() {
@@ -49,6 +56,15 @@ void MainController::draw_dunes() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
     auto dunes = engine::core::Controller::get<engine::resources::ResourcesController>()->model("dunes");
     shader->use();
+
+    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular", m_point_light.specular);
+    shader->set_float("pointLight.constant", m_point_light.constant);
+    shader->set_float("pointLight.linear", m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -64,6 +80,15 @@ void MainController::draw_pyramids() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
     auto pyramid = engine::core::Controller::get<engine::resources::ResourcesController>()->model("pyramid");
     shader->use();
+
+    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular", m_point_light.specular);
+    shader->set_float("pointLight.constant", m_point_light.constant);
+    shader->set_float("pointLight.linear", m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
@@ -91,6 +116,15 @@ void MainController::draw_sphinx() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
     auto sphinx = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sphinx");
     shader->use();
+
+    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular", m_point_light.specular);
+    shader->set_float("pointLight.constant", m_point_light.constant);
+    shader->set_float("pointLight.linear", m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -107,6 +141,15 @@ void MainController::draw_camels() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
     auto camel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("camel");
     shader->use();
+
+    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular", m_point_light.specular);
+    shader->set_float("pointLight.constant", m_point_light.constant);
+    shader->set_float("pointLight.linear", m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model1 = glm::mat4(1.0f);
@@ -137,8 +180,8 @@ void MainController::draw_moon() {
     model = glm::translate(model, glm::vec3(0.0f, -300.0f, 0.0f));
     model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
-    shader->set_vec3("light", glm::vec3(247.0f, 234.0f, 198.0f) / 255.0f);
-    shader->set_float("light_coeff", 0.3f);
+    shader->set_vec3("light", m_moon_light);
+    shader->set_float("light_coeff", m_moon_light_coeff);
     moon->draw(shader);
 }
 
@@ -155,8 +198,8 @@ void MainController::draw_sun() {
     model = glm::translate(model, glm::vec3(0.0f, 300.0f, 0.0f));
     model = glm::scale(model, glm::vec3(15.0f));
     shader->set_mat4("model", model);
-    shader->set_vec3("light", glm::vec3(255.0f, 255.0f, 224.0f) / 255.0f);
-    shader->set_float("light_coeff", 0.8f);
+    shader->set_vec3("light", m_sun_light);
+    shader->set_float("light_coeff", m_sun_light_coeff);
     sun->draw(shader);
 }
 

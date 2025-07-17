@@ -50,7 +50,22 @@ private:
     bool m_cursor_enabled{true};
     glm::mat4 model_moon{glm::mat4(1.0f)};
     glm::mat4 model_sun{glm::mat4(1.0f)};
+    glm::vec3 m_sun_light{glm::vec3(255.0f, 255.0f, 224.0f) / 255.0f};
+    float m_sun_light_coeff{0.8f};
+    glm::vec3 m_moon_light{glm::vec3(247.0f, 234.0f, 198.0f) / 255.0f};
+    float m_moon_light_coeff{0.3f};
 
+    struct PointLight {
+        glm::vec3 position;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+
+        float constant;
+        float linear;
+        float quadratic;
+
+    } m_point_light;
 };
 
 }// app
