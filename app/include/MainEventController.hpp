@@ -14,7 +14,7 @@ public:
 
     bool is_day() const { return m_is_day; };
 
-    float get_event_degree() const { return m_event_degree; }
+    float get_event_angle() const { return m_event_degree; }
 
 private:
     void initialize() override;
