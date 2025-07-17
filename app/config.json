@@ -1,8 +1,8 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path" : "backpack/backpack.obj"
+      "ground": {
+        "path" : "ground/10450_Rectangular_Grass_Patch_v1_iterations-2.obj"
       },
       "ufo": {
         "path": "ufo/nlo.obj"

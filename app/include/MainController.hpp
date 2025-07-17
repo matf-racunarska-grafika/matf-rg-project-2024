@@ -16,6 +16,9 @@ class MainController : public engine::core::Controller {
     void update() override;
     void begin_draw() override;
     void draw_skyboxes();
+
+    void draw_ground();
+
     void draw() override;
     void end_draw() override;
     void draw_ufo();
