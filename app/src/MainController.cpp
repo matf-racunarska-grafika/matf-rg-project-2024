@@ -12,13 +12,22 @@ void MainController::initialize() {
     auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
     engine::graphics::PerspectiveMatrixParams &perspective_matrix = graphics->perspective_params();
     perspective_matrix.Far = 500.0f;
-    m_point_light.position = glm::vec3(0.0f, -300.0f, 0.0f);
-    m_point_light.ambient = m_sun_light * m_sun_light_coeff * m_ambient_coeff;
-    m_point_light.diffuse = m_sun_light * m_sun_light_coeff;
-    m_point_light.specular = m_sun_light * m_sun_light_coeff;
-    m_point_light.constant = 1.0f;
-    m_point_light.linear = 0.000009f;
-    m_point_light.quadratic = 0.00000000025f;
+
+    m_point_light_sun.position = glm::vec3(0.0f, 300.0f, 0.0f);
+    m_point_light_sun.ambient = m_sun_light * m_sun_light_coeff * m_ambient_coeff;
+    m_point_light_sun.diffuse = m_sun_light * m_sun_light_coeff;
+    m_point_light_sun.specular = m_sun_light * m_sun_light_coeff;
+    m_point_light_sun.constant = 1.0f;
+    m_point_light_sun.linear = 0.000009f;
+    m_point_light_sun.quadratic = 0.00000000025f;
+
+    m_point_light_moon.position = glm::vec3(0.0f, -300.0f, 0.0f);
+    m_point_light_moon.ambient = m_moon_light * m_moon_light_coeff * m_ambient_coeff;
+    m_point_light_moon.diffuse = m_moon_light * m_moon_light_coeff;
+    m_point_light_moon.specular = m_moon_light * m_moon_light_coeff;
+    m_point_light_moon.constant = 1.0f;
+    m_point_light_moon.linear = 0.000009f;
+    m_point_light_moon.quadratic = 0.00000000025f;
 }
 
 bool MainController::loop() {
@@ -56,15 +65,23 @@ void MainController::draw_dunes() {
     auto dunes = engine::core::Controller::get<engine::resources::ResourcesController>()->model("dunes");
     shader->use();
 
-    shader->set_vec3("pointLight.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
-                                                        glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0));
+    shader->set_vec3("pointLightSun.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                           glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_sun.position, 1.0));
+    shader->set_vec3("pointLightSun.ambient", m_point_light_sun.ambient);
+    shader->set_vec3("pointLightSun.diffuse", m_point_light_sun.diffuse);
+    shader->set_vec3("pointLightSun.specular", m_point_light_sun.specular);
+    shader->set_float("pointLightSun.constant", m_point_light_sun.constant);
+    shader->set_float("pointLightSun.linear", m_point_light_sun.linear);
+    shader->set_float("pointLightSun.quadratic", m_point_light_sun.quadratic);
 
-    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
-    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
-    shader->set_vec3("pointLight.specular", m_point_light.specular);
-    shader->set_float("pointLight.constant", m_point_light.constant);
-    shader->set_float("pointLight.linear", m_point_light.linear);
-    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLightMoon.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                            glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_moon.position, 1.0));
+    shader->set_vec3("pointLightMoon.ambient", m_point_light_moon.ambient);
+    shader->set_vec3("pointLightMoon.diffuse", m_point_light_moon.diffuse);
+    shader->set_vec3("pointLightMoon.specular", m_point_light_moon.specular);
+    shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
+    shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
+    shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
@@ -83,14 +100,23 @@ void MainController::draw_pyramids() {
     auto pyramid = engine::core::Controller::get<engine::resources::ResourcesController>()->model("pyramid");
     shader->use();
 
-    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
-                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
-    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
-    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
-    shader->set_vec3("pointLight.specular", m_point_light.specular);
-    shader->set_float("pointLight.constant", m_point_light.constant);
-    shader->set_float("pointLight.linear", m_point_light.linear);
-    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLightSun.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                           glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_sun.position, 1.0));
+    shader->set_vec3("pointLightSun.ambient", m_point_light_sun.ambient);
+    shader->set_vec3("pointLightSun.diffuse", m_point_light_sun.diffuse);
+    shader->set_vec3("pointLightSun.specular", m_point_light_sun.specular);
+    shader->set_float("pointLightSun.constant", m_point_light_sun.constant);
+    shader->set_float("pointLightSun.linear", m_point_light_sun.linear);
+    shader->set_float("pointLightSun.quadratic", m_point_light_sun.quadratic);
+
+    shader->set_vec3("pointLightMoon.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                            glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_moon.position, 1.0));
+    shader->set_vec3("pointLightMoon.ambient", m_point_light_moon.ambient);
+    shader->set_vec3("pointLightMoon.diffuse", m_point_light_moon.diffuse);
+    shader->set_vec3("pointLightMoon.specular", m_point_light_moon.specular);
+    shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
+    shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
+    shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -121,14 +147,23 @@ void MainController::draw_sphinx() {
     auto sphinx = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sphinx");
     shader->use();
 
-    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
-                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
-    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
-    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
-    shader->set_vec3("pointLight.specular", m_point_light.specular);
-    shader->set_float("pointLight.constant", m_point_light.constant);
-    shader->set_float("pointLight.linear", m_point_light.linear);
-    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLightSun.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                           glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_sun.position, 1.0));
+    shader->set_vec3("pointLightSun.ambient", m_point_light_sun.ambient);
+    shader->set_vec3("pointLightSun.diffuse", m_point_light_sun.diffuse);
+    shader->set_vec3("pointLightSun.specular", m_point_light_sun.specular);
+    shader->set_float("pointLightSun.constant", m_point_light_sun.constant);
+    shader->set_float("pointLightSun.linear", m_point_light_sun.linear);
+    shader->set_float("pointLightSun.quadratic", m_point_light_sun.quadratic);
+
+    shader->set_vec3("pointLightMoon.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                            glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_moon.position, 1.0));
+    shader->set_vec3("pointLightMoon.ambient", m_point_light_moon.ambient);
+    shader->set_vec3("pointLightMoon.diffuse", m_point_light_moon.diffuse);
+    shader->set_vec3("pointLightMoon.specular", m_point_light_moon.specular);
+    shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
+    shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
+    shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
@@ -149,14 +184,23 @@ void MainController::draw_camels() {
     shader->use();
 
 
-    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
-                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
-    shader->set_vec3("pointLight.ambient", m_point_light.ambient);
-    shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
-    shader->set_vec3("pointLight.specular", m_point_light.specular);
-    shader->set_float("pointLight.constant", m_point_light.constant);
-    shader->set_float("pointLight.linear", m_point_light.linear);
-    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLightSun.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                           glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_sun.position, 1.0));
+    shader->set_vec3("pointLightSun.ambient", m_point_light_sun.ambient);
+    shader->set_vec3("pointLightSun.diffuse", m_point_light_sun.diffuse);
+    shader->set_vec3("pointLightSun.specular", m_point_light_sun.specular);
+    shader->set_float("pointLightSun.constant", m_point_light_sun.constant);
+    shader->set_float("pointLightSun.linear", m_point_light_sun.linear);
+    shader->set_float("pointLightSun.quadratic", m_point_light_sun.quadratic);
+
+    shader->set_vec3("pointLightMoon.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                            glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_moon.position, 1.0));
+    shader->set_vec3("pointLightMoon.ambient", m_point_light_moon.ambient);
+    shader->set_vec3("pointLightMoon.diffuse", m_point_light_moon.diffuse);
+    shader->set_vec3("pointLightMoon.specular", m_point_light_moon.specular);
+    shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
+    shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
+    shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());

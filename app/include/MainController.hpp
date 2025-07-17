@@ -51,8 +51,8 @@ private:
     glm::vec3 m_sun_light{glm::vec3(255.0f, 255.0f, 224.0f) / 255.0f};
     float m_sun_light_coeff{0.8f};
     glm::vec3 m_moon_light{glm::vec3(247.0f, 234.0f, 198.0f) / 255.0f};
-    float m_moon_light_coeff{0.3f};
-    float m_ambient_coeff{0.2f};
+    float m_moon_light_coeff{0.2f};
+    float m_ambient_coeff{0.1f};
 
     struct PointLight {
         glm::vec3 position;
@@ -64,7 +64,7 @@ private:
         float linear;
         float quadratic;
 
-    } m_point_light;
+    } m_point_light_sun, m_point_light_moon;
 };
 
 }// app

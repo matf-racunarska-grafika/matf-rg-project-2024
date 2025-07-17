@@ -44,7 +44,8 @@ struct PointLight {
     vec3 specular;
 };
 
-uniform PointLight pointLight;
+uniform PointLight pointLightSun;
+uniform PointLight pointLightMoon;
 uniform vec3 viewPosition;
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -52,7 +53,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 void main() {
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPosition - FragPos);
-    vec3 result = CalcPointLight(pointLight, normal, FragPos, viewDir);
+    vec3 result = CalcPointLight(pointLightMoon, normal, FragPos, viewDir) + CalcPointLight(pointLightSun, normal, FragPos, viewDir);
     FragColor = vec4(result, 1.0);
 }
 
