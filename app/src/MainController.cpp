@@ -40,6 +40,7 @@ bool MainController::loop() {
 void MainController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) { platform->set_enable_cursor(m_cursor_enabled = !m_cursor_enabled); }
+    if (platform->key(engine::platform::KEY_F).state() == engine::platform::Key::State::JustPressed) { m_spotlight_enabled = !m_spotlight_enabled; }
 }
 
 void MainController::update() { update_camera(); }
@@ -83,6 +84,17 @@ void MainController::draw_dunes() {
     shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
     shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
+    shader->set_vec3("spotLight.position", graphics->camera()->Position);
+    shader->set_vec3("spotLight.direction", graphics->camera()->Front);
+    shader->set_vec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.diffuse", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.specular", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_float("spotLight.constant", 1.0f);
+    shader->set_float("spotLight.linear", 0.09f);
+    shader->set_float("spotLight.quadratic", 0.032f);
+    shader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -117,6 +129,17 @@ void MainController::draw_pyramids() {
     shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
     shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
     shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
+
+    shader->set_vec3("spotLight.position", graphics->camera()->Position);
+    shader->set_vec3("spotLight.direction", graphics->camera()->Front);
+    shader->set_vec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.diffuse", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.specular", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_float("spotLight.constant", 1.0f);
+    shader->set_float("spotLight.linear", 0.09f);
+    shader->set_float("spotLight.quadratic", 0.032f);
+    shader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -165,6 +188,17 @@ void MainController::draw_sphinx() {
     shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
     shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
 
+    shader->set_vec3("spotLight.position", graphics->camera()->Position);
+    shader->set_vec3("spotLight.direction", graphics->camera()->Front);
+    shader->set_vec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.diffuse", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.specular", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_float("spotLight.constant", 1.0f);
+    shader->set_float("spotLight.linear", 0.09f);
+    shader->set_float("spotLight.quadratic", 0.032f);
+    shader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -183,7 +217,6 @@ void MainController::draw_camels() {
     auto camel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("camel");
     shader->use();
 
-
     shader->set_vec3("pointLightSun.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
                                                            glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light_sun.position, 1.0));
     shader->set_vec3("pointLightSun.ambient", m_point_light_sun.ambient);
@@ -201,6 +234,17 @@ void MainController::draw_camels() {
     shader->set_float("pointLightMoon.constant", m_point_light_moon.constant);
     shader->set_float("pointLightMoon.linear", m_point_light_moon.linear);
     shader->set_float("pointLightMoon.quadratic", m_point_light_moon.quadratic);
+
+    shader->set_vec3("spotLight.position", graphics->camera()->Position);
+    shader->set_vec3("spotLight.direction", graphics->camera()->Front);
+    shader->set_vec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.diffuse", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_vec3("spotLight.specular", m_spotlight_enabled ? glm::vec3(1.0f, 1.0f, 1.0f) : glm::vec3(0.0f, 0.0f, 0.0f));
+    shader->set_float("spotLight.constant", 1.0f);
+    shader->set_float("spotLight.linear", 0.09f);
+    shader->set_float("spotLight.quadratic", 0.032f);
+    shader->set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    shader->set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
