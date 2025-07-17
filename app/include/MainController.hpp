@@ -16,10 +16,9 @@ class MainController : public engine::core::Controller {
     void update() override;
     void begin_draw() override;
     void draw_skyboxes();
-    void draw_house();
     void draw() override;
     void end_draw() override;
-
+    void draw_ufo();
 
 public:
     std::string_view name() const override {
