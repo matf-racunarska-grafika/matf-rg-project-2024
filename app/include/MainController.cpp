@@ -89,9 +89,7 @@ void MainController::draw_lamp() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *lamp = resources->model("streetlamp");
     engine::resources::Shader *shader = resources->shader("lampShader");
-
     lamp_event_handler->update_lamp(get<engine::platform::PlatformController>()->dt());
-
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
