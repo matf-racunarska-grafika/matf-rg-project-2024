@@ -59,7 +59,7 @@ void LampEvent::update_lamp(float delta_time) {
         }
     }
 
-    if (lamp_state == TRANSPARENT) { main_controller->point_light.intensity = glm::vec3(1.0f); } else if (lamp_state == GREEN) { main_controller->point_light.intensity = glm::vec3(0.1f, 0.5f, 0.0f); } else if (lamp_state == BLUE) { main_controller->point_light.intensity = glm::vec3(0.0f, 0.0f, 0.5f); }
+    if (lamp_state == TRANSPARENT) { main_controller->point_light.intensity = glm::vec3(1.0f); } else if (lamp_state == GREEN) { main_controller->point_light.intensity = glm::vec3(0.0f, 0.75f, 0.0f); } else if (lamp_state == BLUE) { main_controller->point_light.intensity = glm::vec3(0.0f, 0.0f, 0.75f); }
 }
 
 void LampEvent::cycle_manual_color() {

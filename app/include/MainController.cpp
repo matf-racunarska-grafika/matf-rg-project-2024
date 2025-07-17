@@ -90,7 +90,6 @@ void MainController::draw_lamp() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *lamp = resources->model("streetlamp");
     engine::resources::Shader *shader = resources->shader("lampShader");
-    glm::vec3 lamp_color = glm::vec3(5.0f, 0.6f, 0.6f);
 
     lamp_event_handler->update_lamp(get<engine::platform::PlatformController>()->dt());
 
@@ -100,11 +99,17 @@ void MainController::draw_lamp() {
     shader->set_vec3("spot_light.direction", graphics->camera()->Front);
     shader->set_float("spot_light.cutOff", spot_light.cutOff);
     shader->set_float("spot_light.outer_cutOff", spot_light.outer_cutOff);
-    shader->set_vec3("spot_light.diffuse", lamp_color);
+    shader->set_vec3("spot_light.diffuse", spot_light.diffuse);
     shader->set_vec3("spot_light.specular", spot_light.specular);
     shader->set_float("spot_light.linear", spot_light.linear);
     shader->set_float("spot_light.quadratic", spot_light.quadratic);
     shader->set_float("spot_light.shininess", spot_light.shininess);
+    shader->set_vec3("point_light.position", point_light.position);
+    shader->set_vec3("point_light.ambient", point_light.ambient);
+    shader->set_vec3("point_light.diffuse", point_light.intensity);
+    shader->set_vec3("point_light.specular", point_light.specular);
+    shader->set_float("point_light.linear", point_light.linear);
+    shader->set_float("point_light.quadratic", point_light.quadratic);
     shader->set_vec3("lightIntensity", point_light.intensity);
     shader->set_vec3("cameraPos", graphics->camera()->Position);
     glm::mat4 model = glm::mat4(1.0f);
