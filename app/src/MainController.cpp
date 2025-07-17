@@ -4,6 +4,7 @@
 #include <MainController.hpp>
 #include <MainEventController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
+#include <spdlog/spdlog.h>
 
 namespace app {
 void MainController::initialize() {
@@ -11,13 +12,13 @@ void MainController::initialize() {
     auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
     engine::graphics::PerspectiveMatrixParams &perspective_matrix = graphics->perspective_params();
     perspective_matrix.Far = 500.0f;
-    m_point_light.position = glm::vec3(0.0f, 300.0f, 0.0f);
-    m_point_light.ambient = m_sun_light * m_sun_light_coeff;
+    m_point_light.position = glm::vec3(0.0f, -300.0f, 0.0f);
+    m_point_light.ambient = m_sun_light * m_sun_light_coeff * m_ambient_coeff;
     m_point_light.diffuse = m_sun_light * m_sun_light_coeff;
     m_point_light.specular = m_sun_light * m_sun_light_coeff;
     m_point_light.constant = 1.0f;
-    m_point_light.linear = 0.0009f;
-    m_point_light.quadratic = 0.000005f;
+    m_point_light.linear = 0.000009f;
+    m_point_light.quadratic = 0.00000000025f;
 }
 
 bool MainController::loop() {
@@ -29,10 +30,7 @@ bool MainController::loop() {
 
 void MainController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
-        m_cursor_enabled = !m_cursor_enabled;
-        platform->set_enable_cursor(m_cursor_enabled);
-    }
+    if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) { platform->set_enable_cursor(m_cursor_enabled = !m_cursor_enabled); }
 }
 
 void MainController::update() { update_camera(); }
@@ -54,10 +52,13 @@ void MainController::end_draw() { engine::core::Controller::get<engine::platform
 void MainController::draw_dunes() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto dunes = engine::core::Controller::get<engine::resources::ResourcesController>()->model("dunes");
     shader->use();
 
-    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.position", glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                        glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0));
+
     shader->set_vec3("pointLight.ambient", m_point_light.ambient);
     shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
     shader->set_vec3("pointLight.specular", m_point_light.specular);
@@ -78,10 +79,12 @@ void MainController::draw_dunes() {
 void MainController::draw_pyramids() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto pyramid = engine::core::Controller::get<engine::resources::ResourcesController>()->model("pyramid");
     shader->use();
 
-    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
     shader->set_vec3("pointLight.ambient", m_point_light.ambient);
     shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
     shader->set_vec3("pointLight.specular", m_point_light.specular);
@@ -114,10 +117,12 @@ void MainController::draw_pyramids() {
 void MainController::draw_sphinx() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto sphinx = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sphinx");
     shader->use();
 
-    shader->set_vec3("pointLight.position", m_point_light.position);
+    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
     shader->set_vec3("pointLight.ambient", m_point_light.ambient);
     shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
     shader->set_vec3("pointLight.specular", m_point_light.specular);
@@ -139,10 +144,13 @@ void MainController::draw_sphinx() {
 void MainController::draw_camels() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto main_event_controller = engine::core::Controller::get<app::MainEventController>();
     auto camel = engine::core::Controller::get<engine::resources::ResourcesController>()->model("camel");
     shader->use();
 
-    shader->set_vec3("pointLight.position", m_point_light.position);
+
+    shader->set_vec3("pointLight.position", glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(main_event_controller->get_event_degree()),
+                                                                  glm::vec3(1.0f, 0.0f, 0.0f)) * glm::vec4(m_point_light.position, 1.0)));
     shader->set_vec3("pointLight.ambient", m_point_light.ambient);
     shader->set_vec3("pointLight.diffuse", m_point_light.diffuse);
     shader->set_vec3("pointLight.specular", m_point_light.specular);
