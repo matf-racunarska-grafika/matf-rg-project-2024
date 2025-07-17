@@ -63,7 +63,6 @@ void MainController::draw() {
     draw_lantern();
     draw_lamp();
     draw_dog();
-    draw_car();
     draw_gulls();
 }
 
@@ -169,21 +168,6 @@ void MainController::draw_dog() {
     shader->set_mat4("model", model);
 
     dog->draw(shader);
-}
-
-void MainController::draw_car() {
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *car = resources->model("car");
-    engine::resources::Shader *shader = resources->shader("basic");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-18.0f, -9.5f, 12.9f));
-    model = glm::scale(model, glm::vec3(4.0f));
-    shader->set_mat4("model", model);
-    car->draw(shader);
 }
 
 void MainController::init_gulls() {
