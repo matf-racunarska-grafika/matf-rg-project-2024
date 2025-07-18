@@ -2,13 +2,22 @@
   "resources": {
     "models": {
       "ground": {
-        "path" : "ground/10450_Rectangular_Grass_Patch_v1_iterations-2.obj"
+        "path" : "ground/Floor.obj"
       },
       "ufo": {
         "path": "ufo/nlo.obj"
       },
       "kuca2": {
         "path": "kuca2/Manor.obj"
+      },
+      "tree1": {
+        "path": "tree1/Tree.obj"
+      },
+      "tree2": {
+        "path": "tree2/Tree.obj"
+      },
+      "Sun": {
+        "path": "Sun/Sun.obj"
       }
     }
   },

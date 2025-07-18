@@ -51,8 +51,8 @@ namespace app{
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, -glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -7.0f));
+        //model = glm::rotate(model, -glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
         ground->draw(shader);
@@ -67,11 +67,55 @@ namespace app{
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-
         model = glm::translate(model, glm::vec3(0.0f, -4.6f, -2.0f));
         model = glm::scale(model, glm::vec3(1.6f));
         shader->set_mat4("model", model);
         kuca->draw(shader);
+    }
+
+    void MainController::draw_tree1() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *tree = resources->model("tree1");
+        engine::resources::Shader *shader = resources->shader("basic");
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -4.6f, 10.0f));
+        model = glm::scale(model, glm::vec3(1.6f));
+        shader->set_mat4("model", model);
+        tree->draw(shader);
+    }
+
+    void MainController::draw_tree2() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *tree = resources->model("tree2");
+        engine::resources::Shader *shader = resources->shader("basic");
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -4.6f, -10.0f));
+        model = glm::scale(model, glm::vec3(1.6f));
+        shader->set_mat4("model", model);
+        tree->draw(shader);
+    }
+
+    void MainController::draw_sun() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *sun = resources->model("Sun");
+        engine::resources::Shader *shader = resources->shader("basic");
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 20.0f, -15.0f));
+        model = glm::scale(model, glm::vec3(0.1f));
+        shader->set_mat4("model", model);
+        sun->draw(shader);
     }
 
     void MainController::draw_ufo() {
@@ -131,6 +175,9 @@ namespace app{
     void MainController::draw() {
 
         draw_ground();
+        draw_tree1();
+        draw_tree2();
+        draw_sun();
         draw_house();
         draw_ufo();
 
