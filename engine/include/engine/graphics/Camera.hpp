@@ -89,11 +89,6 @@ public:
                     float yaw = YAW, float pitch = PITCH);
 
     /**
-     * @brief  constructor with scalar values.
-     */
-    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
-
-    /**
      * @returns  returns the view matrix calculated using Euler Angles and the LookAt Matrix.
      */
     glm::mat4 view_matrix() const;
@@ -101,12 +96,12 @@ public:
     /**
      * @brief Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems).
      */
-    void move_camera(Movement direction, float deltaTime);
+    void move_camera(Movement direction, float delta_time);
 
     /**
      * @brief Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
      */
-    void rotate_camera(float x_offset, float y_offset, bool constrainPitch = true);
+    void rotate_camera(float x_offset, float y_offset, bool constrain_pitch = true);
 
     /**
      * @brief Processes input received from a mouse scroll-wheel event. Only requires to be input on the vertical wheel-axis
