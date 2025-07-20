@@ -19,9 +19,9 @@ public:
     std::string_view name() const override { return "app::GUIController"; }
 
 private:
-    float pointLightIntensity = 1.0f;
+    float pointLightIntensity = 2.0f;
     float dirLightIntensity = 1.5f;
-    glm::vec3 pointLightColor = glm::vec3(0.95f, 0.7f, 0.8f);
+    glm::vec3 pointLightColor = glm::vec3(1.0f, 0.21f, 0.21f);
 
     void initialize() override;
     void draw() override;

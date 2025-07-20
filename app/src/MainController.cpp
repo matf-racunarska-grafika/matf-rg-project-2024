@@ -4,6 +4,7 @@
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/ResourcesController.hpp>
+#include <engine/resources/Shader.hpp>
 #include<spdlog/spdlog.h>
 
 
@@ -38,8 +39,15 @@ void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition positi
 }
 
 void MainPlatformEventObserver::on_window_resize(int width, int height) {
-  //poziva vec ugradjenu fju u graphicscontrolleru ???
-    //potrebno je za bloom
+
+    auto mainCtrl = engine::core::Controller::get<app::MainController>();
+    if (mainCtrl) {
+        mainCtrl->on_window_resize(width, height);
+    }
+}
+
+void MainController::on_window_resize(int width, int height) {
+    bloom.resize(width, height);
 }
 
 void MainController::initialize() {
@@ -52,6 +60,12 @@ void MainController::initialize() {
     auto camera = graphics->camera();
 
     camera->Position = glm::vec3(6.0f, 5.0f, 28.0f);
+
+    //bloom init
+    auto resource = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Shader* blurShader  = resource->shader("bloom_blur");
+    engine::resources::Shader* finalShader = resource->shader("bloom_final");
+    bloom.initialize(platform->window()->width(), platform->window()->height(), blurShader, finalShader);
 
 }
 
@@ -186,8 +200,9 @@ void MainController::draw_lamp() {
         model=glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.7f));
         lampShader->set_mat4("model", model);
-        glm::vec3 emissionColor = lightColor * 0.4f;
+        glm::vec3 emissionColor = lightColor * 2.0f;
         lampShader->set_vec3("emissionColor", emissionColor);
+        lampShader->set_float("bloomThreshold", 0.5f);
         lampModel->draw(lampShader);
     }
 }
@@ -267,7 +282,7 @@ void MainController::draw_tree() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
     auto treeModel = resource->model("tree");
-    auto shader = resource->shader("tree");
+    auto shader = resource->shader("basic");
 
     auto deadTreeModel = resource->model("dead_tree");
 
@@ -344,7 +359,7 @@ void MainController::update() {
                 if (timeSincePetalStart >= 5.0f) {
                     eventB_triggered = true;
                     eventB_duration = 0.0f;
-                    targetAmbient  = glm::vec3(0.35f, 0.28f, 0.30f);
+                    targetAmbient  = glm::vec3(0.6f, 0.28f, 0.30f);
                     targetDiffuse  = glm::vec3(0.75f, 0.60f, 0.65f);
                     targetSpecular = glm::vec3(0.9f,  0.7f,  0.75f);
                 }
@@ -358,10 +373,11 @@ void MainController::update() {
 }
 
 void MainController::begin_draw() {
-    engine::graphics::OpenGL::clear_buffers();
+    bloom.begin();
 }
 
 void MainController::draw() {
+
     draw_temple();
     draw_lamp();
     draw_petal();
@@ -377,7 +393,8 @@ void MainController::draw_skybox() {
 }
 
 void MainController::end_draw() {
-    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
+    bloom.end({platform->window()->width(), platform->window()->height()});
     platform->swap_buffers();
 }
 

@@ -1,6 +1,7 @@
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/BloomEffect.hpp>
 #include <glm/glm.hpp>
 
 namespace app {
@@ -47,8 +48,12 @@ class MainController  : public engine::core::Controller
     glm::vec3 targetDiffuse = currentDiffuse;
     glm::vec3 targetSpecular = currentSpecular;
 
+    //bloom
+    engine::graphics::BloomEffect bloom;
+
 public:
     std::string_view name() const override { return "app::MainController"; }
+    void on_window_resize(int width, int height);
 
 };
 }

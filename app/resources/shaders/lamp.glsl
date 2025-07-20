@@ -24,15 +24,19 @@ void main()
 //#shader fragment
 #version 330 core
 
-out vec4 FragColor;
+layout(location = 0) out vec4 FragColor;
+layout(location = 1) out vec4 BrightColor;
 
 in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
-uniform vec3 emissionColor;
+uniform vec3      emissionColor;
+uniform float     bloomThreshold;
 
 void main() {
-    vec3 base = texture(texture_diffuse1, TexCoords).rgb;
-    vec3 final = base + emissionColor;
-    FragColor = vec4(final, 1.0);
+    vec3 base      = texture(texture_diffuse1, TexCoords).rgb;
+    vec3 color     = base + emissionColor;
+    FragColor      = vec4(color, 1.0);
+    float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    BrightColor    = brightness > bloomThreshold ? vec4(color, 1.0) : vec4(0.0);
 }
