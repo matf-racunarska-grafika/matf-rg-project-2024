@@ -18,10 +18,24 @@ Exit Codes:
 import sys
 import os
 import re
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from clang.cindex import Index, CursorKind, TypeKind, TranslationUnit
+
+class StatusCodes(Enum):
+    FAILED = 0
+    SUCCESS = 0
+
+
+try:
+    from clang.cindex import Index, CursorKind, TypeKind, TranslationUnit
+except ImportError:
+    print(
+        "Package 'clang' is not installed. Please run: `pip install libclang` to install it. If your system doesn't allow "
+        "system wide libclang installation, please run ./setup.sh to setup python-venv and libclang inside your project and then rerun CMake.")
+    # Optionally handle the missing package (e.g., install it, exit, etc.)
+    sys.exit(StatusCodes.FAILED.value)
 
 
 class BColors:
@@ -401,6 +415,6 @@ if __name__ == "__main__":
         )
         for v in violations:
             print(v)
-        sys.exit(0)
+        sys.exit(StatusCodes.FAILED.value)
     else:
-        sys.exit(0)
+        sys.exit(StatusCodes.SUCCESS.value)
