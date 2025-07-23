@@ -60,7 +60,7 @@ bool MainController::loop() {
 void MainController::poll_events() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
 
-    g_current_time += platform->dt();
+    m_current_time += platform->dt();
 
     // 1)
     if (platform->key(engine::platform::KeyId::KEY_F1)
@@ -70,12 +70,12 @@ void MainController::poll_events() {
     }
 
     // 2)
-    if (!g_action_triggered &&
+    if (!m_action_triggered &&
         platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
-        g_action_triggered = true;
-        g_action_triggered = g_current_time;// beležimo vreme pritiska
+        m_action_triggered = true;
+        m_action_triggered = m_current_time;// beležimo vreme pritiska
         constexpr float M = 2.0f;           // nakon 2 sekunde startujemo flicker
-        g_event_queue.push_back({g_current_time + M, "START_FLICKER"});
+        m_event_queue.schedule_after(m_current_time, M, "START_FLICKER");
         spdlog::info("L pritisnut → zakazujem START_FLICKER za +{:.2f}s", M);
     }
 }
@@ -83,31 +83,38 @@ void MainController::poll_events() {
 void MainController::update() {
     update_camera();
 
-    std::vector<ScheduledEvent> newEvents;
-    for (auto it = g_event_queue.begin(); it != g_event_queue.end();) {
-        if (g_current_time >= it->triggerTime) {
-            const auto name = it->eventName;
-            execute_event(name);
+    // Позивамо EventQueue да изврши све догађаје чије је време стигло
+    m_event_queue.update(
+            m_current_time,
+            [&](const std::string &name) {
+                execute_event(name);
 
-            if (name == "START_FLICKER") {
-                // 1)
-                newEvents.push_back({g_current_time + g_flicker_duration, "STOP_FLICKER"});
-                spdlog::info("  zakazujem STOP_FLICKER za +{:.2f}s", g_flicker_duration);
-            } else if (name == "STOP_FLICKER") {
-                // 2)
-                newEvents.push_back({g_current_time + g_spawn_delay, "SPAWN_MODEL"});
-                spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", g_spawn_delay);
+                if (name == "START_FLICKER") {
+                    // након START_FLICKER заказујемо STOP_FLICKER
+                    m_event_queue.schedule_after(
+                            m_current_time,
+                            g_flicker_duration,
+                            "STOP_FLICKER"
+                            );
+                    spdlog::info("  zakazujem STOP_FLICKER za +{:.2f}s", g_flicker_duration);
+                } else if (name == "STOP_FLICKER") {
+                    // након STOP_FLICKER заказујемо SPAWN_MODEL
+                    m_event_queue.schedule_after(
+                            m_current_time,
+                            g_spawn_delay,
+                            "SPAWN_MODEL"
+                            );
+                    spdlog::info("  zakazujem SPAWN_MODEL za +{:.2f}s", g_spawn_delay);
+                }
             }
+            );
 
-            it = g_event_queue.erase(it);
-        } else { ++it; }
-    }
-    if (!newEvents.empty()) { g_event_queue.insert(g_event_queue.end(), newEvents.begin(), newEvents.end()); }
-
+    // Ако је flicker активан, ажурирајмо интензитет светла
     if (g_flicker_active) {
-        float elapsed = g_current_time - g_flicker_start_time;
+        float elapsed = m_current_time - g_flicker_start_time;
         constexpr float freq = 5.0f;
-        g_point_light_intensity = (sinf(2.0f * 3.14159f * freq * elapsed) + 1.0f) * 0.5f;
+        g_point_light_intensity =
+                (sinf(2.0f * 3.14159f * freq * elapsed) + 1.0f) * 0.5f;
     }
 }
 
@@ -411,7 +418,7 @@ void MainController::update_camera() {
 void MainController::execute_event(const std::string &eventName) {
     if (eventName == "START_FLICKER") {
         g_flicker_active = true;
-        g_flicker_active = g_current_time;
+        g_flicker_active = m_current_time;
         spdlog::info("EVENT START_FLICKER");
     } else if (eventName == "STOP_FLICKER") {
         g_flicker_active = false;

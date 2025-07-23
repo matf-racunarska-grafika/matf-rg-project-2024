@@ -3,17 +3,12 @@
 
 #include <string_view>
 #include <engine/core/Controller.hpp>
-#include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <engine/graphics/MSAA.hpp>
 #include <engine/graphics/Lighting.hpp>
+#include <engine/core/EventQueue.hpp>
 
 namespace engine::myapp {
-
-struct ScheduledEvent {
-    float triggerTime;// vreme kada se event aktivira
-    std::string eventName;
-};
 
 class MainController final : public engine::core::Controller {
 public:
@@ -24,15 +19,7 @@ public:
     float g_point_light_intensity = 7.0f;      // Intenzitet point light svetla
     glm::vec3 g_light_pos{-10.0f, 10.0f, 2.0f};// Pozicija point light svetla
 
-    // -------Scheduled event--------------------------------------------------------
-    // Queue svih zakazanih događaja
-    std::vector<ScheduledEvent> g_event_queue;
-
-    // Flag i vreme za početnu akciju
-    float g_current_time = 0.0f;// u sekundama, broji vreme od starta
-    bool g_action_triggered = false;
-    float g_action_trigger_time = 0.0f;
-
+    // ------- Scheduled event --------------------------------------------------------
     // Za treptanje svetla
     float g_flicker_duration = 2.0f;
     bool g_flicker_active = false;
@@ -62,6 +49,13 @@ private:
 
     // Lighting
     engine::graphics::lighting::LightingSystem m_lighting{2048, 2048};
+
+    // Scheduled event
+    engine::core::EventQueue m_event_queue;
+
+    float m_current_time{0.0f};
+
+    bool m_action_triggered{false};
 
     void initialize() override;
 
