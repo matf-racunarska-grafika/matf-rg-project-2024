@@ -11,6 +11,7 @@ namespace app {
 
 class MainController : public engine::core::Controller {
     void initialize() override;
+    bool loop() override;
 };
 
 }// app
