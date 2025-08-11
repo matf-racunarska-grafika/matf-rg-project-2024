@@ -1,8 +1,8 @@
 {
   "resources": {
     "models": {
-      "cat": {
-        "path": "cat/cat.obj"
+      "basketball": {
+        "path": "backpack/BasketBall.obj"
       }
     }
   },

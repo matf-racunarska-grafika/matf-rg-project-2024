@@ -12,6 +12,8 @@ namespace app {
 class MainController : public engine::core::Controller {
     void initialize() override;
 
+    void draw_skybox();
+
     bool loop() override;
 
     void draw() override;
@@ -20,7 +22,7 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
-    void draw_cat();
+    void draw_basketball();
 
     void update() override;
 
