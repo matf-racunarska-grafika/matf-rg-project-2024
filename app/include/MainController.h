@@ -14,9 +14,13 @@ public:
     void on_key(engine::platform::Key key) override;
 
     void on_mouse_move(engine::platform::MousePosition position) override;
+
+    void on_scroll(engine::platform::MousePosition position);
 };
 
 class MainController final : public engine::core::Controller {
+
+private:
     void initialize() override;
 
     void draw_skybox();
@@ -42,6 +46,9 @@ class MainController final : public engine::core::Controller {
 
 public:
     std::string_view name() const override { return "App::MainController"; }
+
+    float goal_scale{1.0f};
+
 };
 
 }// app

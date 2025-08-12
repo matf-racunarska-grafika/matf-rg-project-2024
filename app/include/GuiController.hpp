@@ -1,5 +1,5 @@
 //
-// Created by aleksa on 12.8.25..
+// Created by aleksa on 12.8.25.
 //
 
 #ifndef GUICONTROLLER_HPP
