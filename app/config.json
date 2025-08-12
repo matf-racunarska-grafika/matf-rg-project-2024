@@ -3,6 +3,9 @@
     "models": {
       "basketball": {
         "path": "backpack/BasketBall.obj"
+      },
+      "pitch": {
+        "path": "football_pitch/gawang.obj"
       }
     }
   },

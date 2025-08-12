@@ -6,10 +6,17 @@
 #define MAINCONTROLLER_H
 
 #include <engine/core/Controller.hpp>
+#include <engine/platform/PlatformController.hpp>
 
 namespace app {
+class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
+public:
+    void on_key(engine::platform::Key key) override;
 
-class MainController : public engine::core::Controller {
+    void on_mouse_move(engine::platform::MousePosition position) override;
+};
+
+class MainController final : public engine::core::Controller {
     void initialize() override;
 
     void draw_skybox();
@@ -24,9 +31,14 @@ class MainController : public engine::core::Controller {
 
     void draw_basketball();
 
+    void draw_football_pitch();
+
     void update() override;
 
     void update_camera();
+
+    bool draw_gui{false};
+    bool cursor_enabled{true};
 
 public:
     std::string_view name() const override { return "App::MainController"; }
