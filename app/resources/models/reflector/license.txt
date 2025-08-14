@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Reflector
+* source:	https://sketchfab.com/3d-models/low-poly-reflector-920292e13f6445db8c66cd62cdf13755
+* author:	AstorMilanese (https://sketchfab.com/AstorMilanese)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Reflector" (https://sketchfab.com/3d-models/low-poly-reflector-920292e13f6445db8c66cd62cdf13755) by AstorMilanese (https://sketchfab.com/AstorMilanese) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
