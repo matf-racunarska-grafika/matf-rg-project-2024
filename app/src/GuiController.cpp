@@ -53,9 +53,9 @@ void GUIController::draw() {
             ImGui::DragFloat("Teren y", &mainController->trava_y, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Teren z", &mainController->trava_z, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Ugao trava", &mainController->ugao_trava, 0.50, -100.0, 100.0);
-            ImGui::DragFloat("Vektor x", &mainController->osa_x, 0.005, -1.0f, 1.0f);
-            ImGui::DragFloat("Vektor y", &mainController->osa_y, 0.005, -1.0f, 1.0f);
-            ImGui::DragFloat("Vektor z", &mainController->osa_z, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor x", &mainController->trava_xv, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor y", &mainController->trava_yv, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor z", &mainController->trava_zv, 0.005, -1.0f, 1.0f);
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("lopta")) {
@@ -73,9 +73,9 @@ void GUIController::draw() {
             ImGui::DragFloat("Goal y", &mainController->gol_y, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Goal z", &mainController->gol_z, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Ugao trava", &mainController->ugao_gol, 0.02, -100.0, 100.0);
-            ImGui::DragFloat("Vektor x", &mainController->gosa_x, 0.005, -1.0f, 1.0f);
-            ImGui::DragFloat("Vektor y", &mainController->gosa_y, 0.005, -1.0f, 1.0f);
-            ImGui::DragFloat("Vektor z", &mainController->gosa_z, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor x", &mainController->gol_xv, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor y", &mainController->gol_yv, 0.005, -1.0f, 1.0f);
+            ImGui::DragFloat("Vektor z", &mainController->gol_zv, 0.005, -1.0f, 1.0f);
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Refletkor1")) {
@@ -84,7 +84,7 @@ void GUIController::draw() {
             ImGui::DragFloat("Goal x", &mainController->ref_x, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Goal y", &mainController->ref_y, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Goal z", &mainController->ref_z, 0.005, -100.0, 100.0);
-            ImGui::DragFloat("Ugao trava", &mainController->ref1_ugao, 0.02, -100.0, 100.0);
+            ImGui::DragFloat("Ugao trava", &mainController->ugao_ref1, 0.02, -100.0, 100.0);
             ImGui::DragFloat("Vektor x", &mainController->ref_xv, 0.005, -1.0f, 1.0f);
             ImGui::DragFloat("Vektor y", &mainController->ref_yv, 0.005, -1.0f, 1.0f);
             ImGui::DragFloat("Vektor z", &mainController->ref_zv, 0.005, -1.0f, 1.0f);
@@ -97,7 +97,7 @@ void GUIController::draw() {
             ImGui::DragFloat("Goal x", &mainController->ref2_x, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Goal y", &mainController->ref2_y, 0.005, -100.0, 100.0);
             ImGui::DragFloat("Goal z", &mainController->ref2_z, 0.005, -100.0, 100.0);
-            ImGui::DragFloat("Ugao trava", &mainController->ref2_ugao, 1.0, -180.0, 180.0);
+            ImGui::DragFloat("Ugao trava", &mainController->ugao_ref2, 1.0, -180.0, 180.0);
             ImGui::DragFloat("Vektor x", &mainController->ref2_xv, 0.005, -5.0f, 5.0f);
             ImGui::DragFloat("Vektor y", &mainController->ref2_yv, 0.005, -5.0f, 5.0f);
             ImGui::DragFloat("Vektor z", &mainController->ref2_zv, 0.005, -5.0f, 5.0f);

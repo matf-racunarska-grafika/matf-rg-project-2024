@@ -98,7 +98,7 @@ void MainController::draw_goal() {
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(gol_x, gol_y, gol_z));
-    model = glm::rotate(model, glm::radians(ugao_gol), glm::vec3(gosa_x, gosa_y, gosa_z));
+    model = glm::rotate(model, glm::radians(ugao_gol), glm::vec3(gol_xv, gol_yv, gol_zv));
     model = glm::scale(model, glm::vec3(gol_skalirano));
     shader->set_mat4("model", model);
 
@@ -122,7 +122,7 @@ void MainController::draw_grass() {
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(trava_x, trava_y, trava_z));
-    model = glm::rotate(model, glm::radians(ugao_trava), glm::vec3(osa_x, osa_y, osa_z));
+    model = glm::rotate(model, glm::radians(ugao_trava), glm::vec3(trava_xv, trava_yv, trava_zv));
     model = glm::scale(model, glm::vec3(trava_skalirano));
     shader->set_mat4("model", model);
     grass->draw(shader);
@@ -190,7 +190,7 @@ void MainController::draw_reflectors() {
     glm::mat4 model1 = glm::mat4(1.0f);// Resetujemo matricu
 
     model1 = glm::translate(model1, glm::vec3(ref_x, ref_y, ref_z));
-    model1 = glm::rotate(model1, glm::radians(ref1_ugao), glm::vec3(ref_xv, ref_yv, ref_zv));
+    model1 = glm::rotate(model1, glm::radians(ugao_ref1), glm::vec3(ref_xv, ref_yv, ref_zv));
     model1 = glm::scale(model1, glm::vec3(ref_skalirano));
     shader->set_mat4("model", model1);
     reflector->draw(shader);
@@ -198,7 +198,7 @@ void MainController::draw_reflectors() {
     // Crtanje DRUGOG reflektora
     glm::mat4 model2 = glm::mat4(1.0f);// Resetujemo matricu
     model2 = glm::translate(model2, glm::vec3(ref2_x, ref2_y, ref2_z));
-    model2 = glm::rotate(model2, glm::radians(ref2_ugao), glm::vec3(ref2_xv, ref2_yv, ref2_zv));
+    model2 = glm::rotate(model2, glm::radians(ugao_ref2), glm::vec3(ref2_xv, ref2_yv, ref2_zv));
     model2 = glm::scale(model2, glm::vec3(ref_skalirano));
     shader->set_mat4("model", model2);
     reflector->draw(shader);
