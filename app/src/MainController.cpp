@@ -42,29 +42,29 @@ void MyController::poll_events() {
     // An event to disable/enable cursor in the application, by default its enabled
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KEY_F1).state_str() == "JustReleased") {
-        enable_cursor = !enable_cursor;
-        platform->set_enable_cursor(enable_cursor);
+        m_enable_cursor = !m_enable_cursor;
+        platform->set_enable_cursor(m_enable_cursor);
     }
 
     // Control directional lighting diffuse strength +, -
-    if (platform->key(engine::platform::KEY_1).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength - glm::vec3(0.1f)); }
-    if (platform->key(engine::platform::KEY_2).state_str() == "JustPressed") { directionalStrength = glm::max(glm::vec3(0.0f), directionalStrength + glm::vec3(0.1f)); }
+    if (platform->key(engine::platform::KEY_1).state_str() == "JustPressed") { m_directional_strength = glm::max(glm::vec3(0.0f), m_directional_strength - glm::vec3(0.1f)); }
+    if (platform->key(engine::platform::KEY_2).state_str() == "JustPressed") { m_directional_strength = glm::max(glm::vec3(0.0f), m_directional_strength + glm::vec3(0.1f)); }
 
     // // EVENT 1
     if (platform->key(engine::platform::KEY_F3).state() == engine::platform::Key::State::JustReleased) {
         // ... wait 5 seconds then execute event1
-        setTimer(5.0f);
-        MyController::event1_in_waiting = true;
+        set_timer(5.0f);
+        MyController::m_event1_in_waiting = true;
     }
-    if (inner_event_timer.has_expired() && event1_in_waiting) {
+    if (inner_event_timer.has_expired() && m_event1_in_waiting) {
         scene_event1();
-        event1_in_waiting = false;
+        m_event1_in_waiting = false;
     }
 }
 
-void MyController::setTimer(float delay_seconds) { MyController::inner_event_timer = Timer(delay_seconds); }
+void MyController::set_timer(float delay_seconds) { MyController::inner_event_timer = Timer(delay_seconds); }
 
-void MyController::scene_event1() { MyController::draw_dog = !MyController::draw_dog; }
+void MyController::scene_event1() { MyController::m_draw_dog = !MyController::m_draw_dog; }
 
 void MyController::update() {
     auto gui_c = engine::core::Controller::get<GUIController>();
@@ -104,7 +104,7 @@ void MyController::draw() {
     this->draw_island_model();
     this->draw_light_source_birds();
     this->draw_skybox();
-    if (MyController::draw_dog) { this->draw_model_dog(); }
+    if (MyController::m_draw_dog) { this->draw_model_dog(); }
     //this->draw_light_cube();
 }
 
@@ -173,7 +173,7 @@ void MyController::draw_model_dog() {
     // Parametars for directional light
     shader->set_vec3("LightDirectional.direction", glm::vec3(0.4f, -0.4f, -1.0f));
     shader->set_vec3("LightDirectional.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("LightDirectional.diffuse", directionalStrength);
+    shader->set_vec3("LightDirectional.diffuse", m_directional_strength);
     dog_model->draw(shader);
 }
 
@@ -213,7 +213,7 @@ void MyController::draw_island_model() {
     // Parametars for directional light
     shader->set_vec3("LightDirectional.direction", glm::vec3(0.4f, -0.4f, -1.0f));
     shader->set_vec3("LightDirectional.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-    shader->set_vec3("LightDirectional.diffuse", directionalStrength);
+    shader->set_vec3("LightDirectional.diffuse", m_directional_strength);
 
     island->draw(shader);
 }

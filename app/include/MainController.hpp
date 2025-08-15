@@ -44,32 +44,32 @@ private:
     // Setting up the initial camera parameters
     void initialize_camera();
 
-    void setTimer(float delay_seconds);
+    void set_timer(float delay_seconds);
 
     void scene_event1();
 
     class Timer {
     public:
-        explicit Timer(float delay_seconds) : delay_time(delay_seconds)
-                                          , start_time(std::chrono::steady_clock::now()) {}
+        explicit Timer(float delay_seconds) : m_delay_time(delay_seconds)
+                                          , m_start_time(std::chrono::steady_clock::now()) {}
 
         bool has_expired() const {
             auto now = std::chrono::steady_clock::now();
-            float elapsed = std::chrono::duration_cast<std::chrono::duration<float> >(now - start_time).count();
-            return elapsed >= delay_time;
+            float elapsed = std::chrono::duration_cast<std::chrono::duration<float> >(now - m_start_time).count();
+            return elapsed >= m_delay_time;
         }
 
     private:
-        float delay_time;
-        std::chrono::steady_clock::time_point start_time;
+        float m_delay_time;
+        std::chrono::steady_clock::time_point m_start_time;
     };
 
-    bool event1_in_waiting{false};
-    bool draw_dog{true};
+    bool m_event1_in_waiting{false};
+    bool m_draw_dog{true};
     static Timer inner_event_timer;
-    glm::vec3 directionalStrength = {0.8f, 0.8f, 0.8f};
-    bool enable_gui{false};
-    bool enable_cursor{true};
+    glm::vec3 m_directional_strength = {0.8f, 0.8f, 0.8f};
+    bool m_enable_gui{false};
+    bool m_enable_cursor{true};
 };
 }
 
