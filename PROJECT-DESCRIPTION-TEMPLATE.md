@@ -5,18 +5,28 @@
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+{W} -> {Napred}  
+{A} -> {Levo}
+{S} -> {Nazad}
+{D} -> {Desno}
+{CTRL} -> {Dole}
+{SPACE} -> {Gore}
+
+{F1} -> {Iskljucuje kursor}
+{F2} -> {Kamera info GUI}
 
 ## Features
 
+{1} --- 0 ---Triggers---> {Pojacava jacinu difuznog zraka}
+{2} --- 0 ---Triggers---> {Smanjuje jacinu difuznog zraka}
+{3} --- par sekundi ---Triggers---> {Bez blokiranja game loop-a model psa ce nestati sa scene, takodje pritiskom na isto
+dugme ce se pas vratiti na scenu(ako nije na njoj)}
+
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[X] Model with lighting
+[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[X]
 
 ### Group A:
 
@@ -26,6 +36,7 @@
 [ ] Parallax Mapping
 
 ### Group B:
+
 [ ] Bloom with the use of HDR  
 [ ] Deferred Shading  
 [ ] Point Shadows  
