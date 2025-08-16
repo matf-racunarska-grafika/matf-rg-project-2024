@@ -1,0 +1,907 @@
+# Blender 4.1.0 MTL File: 'None'
+# www.blender.org
+
+newmtl StonesinitialShadingGroup
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_0
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_1
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_2
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_3
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_4
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_5
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_6
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl StonesinitialShadingGroup_7
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_0
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_1
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_10
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_11
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_12
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_13
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_14
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_15
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Kd 0.478832 0.265619 0.067069
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl initialShadingGroup_16
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_17
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_18
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_19
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_2
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_20
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_21
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_22
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_23
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_24
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_25
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Kd 0.376061 0.220296 0.052800
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl initialShadingGroup_26
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_27
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_28
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_29
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_3
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_30
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Kd 0.370397 0.294617 0.060535
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl initialShadingGroup_31
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_32
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_33
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_34
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_35
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_36
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_37
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_38
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_39
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_4
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_40
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_41
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_42
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_43
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_44
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_45
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_46
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_47
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_48
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_49
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_5
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_50
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_51
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_52
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_53
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_54
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_55
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_56
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_57
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_59
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_6
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_60
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_61
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_62
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_63
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_65
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_66
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_67
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_69
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_7
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_70
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_71
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_72
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+map_Bump -bm 1.000000 initialShadingGroup_normal.png
+
+newmtl initialShadingGroup_8
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg
+
+newmtl initialShadingGroup_9
+Ns 1.788855
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd initialShadingGroup_baseColor.png
+map_Ks specular_map.jpeg

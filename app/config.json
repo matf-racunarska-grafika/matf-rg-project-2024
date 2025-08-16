@@ -1,11 +1,26 @@
 {
   "resources": {
     "models": {
+      "floating_island": {
+        "path": "island/island.obj",
+        "flip_uvs": true
+      },
+      "light_bird": {
+        "path": "Bird/bird1.obj",
+        "flip_uvs": true
+      },
+      "cube": {
+        "path": "cube/cube.obj"
+      },
+      "dog": {
+        "path": "Dog1/Dog1.obj",
+        "flip_uvs": true
+      }
     }
   },
   "window": {
-    "height": 600,
-    "title": "Hello, window!",
-    "width": 800
+    "height": 1080,
+    "title": "Floating safe Haven",
+    "width": 1920
   }
 }
