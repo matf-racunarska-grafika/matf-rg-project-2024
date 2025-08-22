@@ -2,17 +2,16 @@
 // Created by filip on 1/22/25.
 //
 
-#include <engine/graphics/GraphicsController.hpp>
-#include <engine/graphics/OpenGL.hpp>
-#include <engine/platform/PlatformController.hpp>
-#include <engine/resources/ResourcesController.hpp>
-
-#include <MainController.hpp>
-
-#include <spdlog/spdlog.h>
+#include "Utils.hpp"
 
 #include "GUIController.hpp"
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+
+
+void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsController*, const char*);
+
+
+#define SUN_POSITION VECTOR3_A(0.0f, 20.0f, -15.0f)
 
 namespace app{
 
@@ -62,10 +61,9 @@ namespace app{
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *kuca = resources->model("kuca2");
-        engine::resources::Shader *shader = resources->shader("basic");
+        engine::resources::Shader *shader = resources->shader("kuca2");
         shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
+        set_shader(shader, graphics, "HOUSE");
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -4.6f, -2.0f));
         model = glm::scale(model, glm::vec3(1.6f));
@@ -109,12 +107,7 @@ namespace app{
         engine::resources::Model *sun = resources->model("Sun");
         engine::resources::Shader *shader = resources->shader("basic");
         shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 20.0f, -15.0f));
-        model = glm::scale(model, glm::vec3(0.1f));
-        shader->set_mat4("model", model);
+        set_shader(shader, graphics, "SUN");
         sun->draw(shader);
     }
 
@@ -124,12 +117,7 @@ namespace app{
         engine::resources::Model *ufo = resources->model("ufo");
         engine::resources::Shader *shader = resources->shader("basic");
         shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-        model = glm::scale(model, glm::vec3(0.2f));
-        shader->set_mat4("model", model);
+        set_shader(shader,graphics, "UFO");
         ufo->draw(shader);
     }
 
@@ -191,3 +179,27 @@ namespace app{
     }
 
 } // namespace app
+
+
+void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsController* graphics, const char* IDENTIFIER) {
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    if (IDENTIFIER == "HOUSE") {
+        shader->set_vec3("dirLight.direction", SUN_POSITION);
+        shader->set_float("material.shininess", 32);
+        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
+        shader->set_vec3("dirLight.diffuse", VECTOR3_A(1.0f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+    }else if (IDENTIFIER == "SUN") {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, SUN_POSITION);
+        model = glm::scale(model, VECTOR3_A(0.1f,0.1f,0.1f));
+        shader->set_mat4("model", model);
+    }else if (IDENTIFIER == "UFO") {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, VECTOR3_A(0.0f, 0.0f, -3.0f));
+        model = glm::scale(model, VECTOR3_A(0.2f,0.2f,0.2f));
+        shader->set_mat4("model", model);
+    }
+};
