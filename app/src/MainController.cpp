@@ -12,8 +12,11 @@ void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsCon
 
 
 #define SUN_POSITION VECTOR3_A(0.0f, 20.0f, -15.0f)
+#define POINT_LIGHT_NUM 2
 #define POSITIONLAMP1 VECTOR3_A(2.0f, -5.0f, 1.0f)
 #define POSITIONLAMP2 VECTOR3_A(-0.5f, -5.0f, 1.0f)
+
+VECTOR3 POSITIONLAMPS[2] = {POSITIONLAMP1, POSITIONLAMP2};
 
 namespace app{
 
@@ -211,6 +214,19 @@ void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsCon
         shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
         shader->set_vec3("dirLight.diffuse", VECTOR3_A(1.0f, 0.5f, 0.5f));
         shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+
+        for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+            std::string s = "pointLights[" + std::to_string(i) + "].";
+
+            shader->set_vec3(s + "position", POSITIONLAMPS[i]);
+            shader->set_float(s + "constant", 1.0f);
+            shader->set_float(s + "linear", 0.09f);
+            shader->set_float(s + "quadratic", 0.032f);
+
+            shader->set_vec3(s + "ambient", VECTOR3_A(0.1f,0.1f,0.1f));
+            shader->set_vec3(s + "diffuse", VECTOR3_A(0.3f, 0.3f, 0.3f));
+            shader->set_vec3(s + "specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+        }
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -5.05f, -2.0f));
