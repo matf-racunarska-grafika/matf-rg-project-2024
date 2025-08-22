@@ -18,6 +18,9 @@
       },
       "Sun": {
         "path": "Sun/Sun.obj"
+      },
+      "lamp": {
+        "path": "lamp/streetlamp.obj"
       }
     }
   },

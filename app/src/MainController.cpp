@@ -12,6 +12,8 @@ void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsCon
 
 
 #define SUN_POSITION VECTOR3_A(0.0f, 20.0f, -15.0f)
+#define POSITIONLAMP1 VECTOR3_A(2.0f, -5.0f, 1.0f)
+#define POSITIONLAMP2 VECTOR3_A(-0.5f, -5.0f, 1.0f)
 
 namespace app{
 
@@ -64,10 +66,7 @@ namespace app{
         engine::resources::Shader *shader = resources->shader("kuca2");
         shader->use();
         set_shader(shader, graphics, "HOUSE");
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -4.6f, -2.0f));
-        model = glm::scale(model, glm::vec3(1.6f));
-        shader->set_mat4("model", model);
+
         kuca->draw(shader);
     }
 
@@ -111,11 +110,32 @@ namespace app{
         sun->draw(shader);
     }
 
+    void MainController::draw_lamp() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model *lamp = resources->model("lamp");
+        engine::resources::Shader *shader = resources->shader("lamp");
+        shader->use();
+        set_shader(shader, graphics, "LAMP");
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, POSITIONLAMP1);
+        model = glm::scale(model, VECTOR3_A(0.1f,0.1f,0.1f));
+        shader->set_mat4("model", model);
+
+        lamp->draw(shader);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, POSITIONLAMP2);
+        model = glm::scale(model, VECTOR3_A(0.1f,0.1f,0.1f));
+        shader->set_mat4("model", model);
+        lamp->draw(shader);
+    }
+
     void MainController::draw_ufo() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *ufo = resources->model("ufo");
-        engine::resources::Shader *shader = resources->shader("basic");
+        engine::resources::Shader *shader = resources->shader("ufo");
         shader->use();
         set_shader(shader,graphics, "UFO");
         ufo->draw(shader);
@@ -168,7 +188,7 @@ namespace app{
         draw_sun();
         draw_house();
         draw_ufo();
-
+        draw_lamp();
         draw_skyboxes();
 
 
@@ -191,15 +211,33 @@ void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsCon
         shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
         shader->set_vec3("dirLight.diffuse", VECTOR3_A(1.0f, 0.5f, 0.5f));
         shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -5.05f, -2.0f));
+        model = glm::scale(model, glm::vec3(2.6f));
+        shader->set_mat4("model", model);
     }else if (IDENTIFIER == "SUN") {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, SUN_POSITION);
         model = glm::scale(model, VECTOR3_A(0.1f,0.1f,0.1f));
         shader->set_mat4("model", model);
     }else if (IDENTIFIER == "UFO") {
+        shader->set_vec3("dirLight.direction", SUN_POSITION);
+        shader->set_float("material.shininess", 32);
+        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
+        shader->set_vec3("dirLight.diffuse", VECTOR3_A(0.5f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, VECTOR3_A(0.0f, 0.0f, -3.0f));
         model = glm::scale(model, VECTOR3_A(0.2f,0.2f,0.2f));
         shader->set_mat4("model", model);
+    }else if (IDENTIFIER == "LAMP") {
+        shader->set_vec3("dirLight.direction", SUN_POSITION);
+        shader->set_float("material.shininess", 32);
+        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
+        shader->set_vec3("dirLight.diffuse", VECTOR3_A(0.5f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+
     }
 };
