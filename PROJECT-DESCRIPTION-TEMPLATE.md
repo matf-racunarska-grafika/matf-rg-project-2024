@@ -14,8 +14,8 @@
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[X] Model with lighting
+[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
 [ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:

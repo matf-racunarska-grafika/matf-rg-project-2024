@@ -7,14 +7,21 @@
 #include "GUIController.hpp"
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
+#define MAXCNUM 5
 
 void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsController*, const char*);
 
 
-#define SUN_POSITION VECTOR3_A(0.0f, 20.0f, -15.0f)
 #define POINT_LIGHT_NUM 2
-#define POSITIONLAMP1 VECTOR3_A(2.0f, -5.0f, 1.0f)
-#define POSITIONLAMP2 VECTOR3_A(-0.5f, -5.0f, 1.0f)
+#define POSITIONLAMP1 VECTOR3(2.0f, -5.0f, 1.0f)
+#define POSITIONLAMP2 VECTOR3(-0.5f, -5.0f, 1.0f)
+
+VECTOR3 SUN_POSITION = VECTOR3(0.0f,20.f,-15.0f);
+VECTOR3 SUN_DIFFUSE = VECTOR3(1.0f, 0.5f, 0.5f);
+VECTOR3 SUN_AMBIENT = VECTOR3(0.2f,0.2f, 0.2f);
+
+VECTOR3 UFO_POSITON = VECTOR3(0.0f, 0.0f, -3.0f);
+VECTOR3 HOUSE_POSITION = VECTOR3(0.0f, -5.05f, -2.0f);
 
 VECTOR3 POSITIONLAMPS[2] = {POSITIONLAMP1, POSITIONLAMP2};
 
@@ -39,9 +46,25 @@ namespace app{
     }
 
     bool MainController::loop() {
+        static int CNUM = 0;
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         if (platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) {
             return false;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_G).is_down()) {
+            SUN_POSITION = VECTOR3(cos(glfwGetTime())*10.0f, 10.0f, 3.0+(float)sin(glfwGetTime())*7.0f);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_C).is_down()) {
+            if (CNUM >= MAXCNUM) {
+                return true;
+            }
+            SUN_AMBIENT += VECTOR3(0.01f, 0.01f, 0.01f);
+            SUN_DIFFUSE += VECTOR3(0.0f,0.2f,0.1f);
+            ++CNUM;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_T).is_down()) {
+            UFO_POSITON -= VECTOR3(0.0f, -0.15f, 0.0f);
+            HOUSE_POSITION -= VECTOR3(0.0f, -0.1f, 0.0f);
         }
         return true;
     }
@@ -55,7 +78,6 @@ namespace app{
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
-        //model = glm::rotate(model, -glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
@@ -77,10 +99,9 @@ namespace app{
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *tree = resources->model("tree1");
-        engine::resources::Shader *shader = resources->shader("basic");
+        engine::resources::Shader *shader = resources->shader("tree");
         shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
+        set_shader(shader, graphics, "TREE");
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -4.6f, 10.0f));
         model = glm::scale(model, glm::vec3(1.6f));
@@ -92,10 +113,9 @@ namespace app{
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *tree = resources->model("tree2");
-        engine::resources::Shader *shader = resources->shader("basic");
+        engine::resources::Shader *shader = resources->shader("tree");
         shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
+        set_shader(shader, graphics, "TREE");
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -4.6f, -10.0f));
         model = glm::scale(model, glm::vec3(1.6f));
@@ -182,9 +202,7 @@ namespace app{
         graphics->draw_skybox(shader, skybox);
     }
 
-
     void MainController::draw() {
-
         draw_ground();
         draw_tree1();
         draw_tree2();
@@ -193,8 +211,6 @@ namespace app{
         draw_ufo();
         draw_lamp();
         draw_skyboxes();
-
-
     }
     void MainController::end_draw() {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -211,8 +227,8 @@ void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsCon
     if (IDENTIFIER == "HOUSE") {
         shader->set_vec3("dirLight.direction", SUN_POSITION);
         shader->set_float("material.shininess", 32);
-        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
-        shader->set_vec3("dirLight.diffuse", VECTOR3_A(1.0f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.ambient", SUN_AMBIENT);
+        shader->set_vec3("dirLight.diffuse", SUN_DIFFUSE);
         shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
 
         for (int i = 0; i < POINT_LIGHT_NUM; i++) {
@@ -227,9 +243,8 @@ void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsCon
             shader->set_vec3(s + "diffuse", VECTOR3_A(0.3f, 0.3f, 0.3f));
             shader->set_vec3(s + "specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
         }
-
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -5.05f, -2.0f));
+        model = glm::translate(model, HOUSE_POSITION);
         model = glm::scale(model, glm::vec3(2.6f));
         shader->set_mat4("model", model);
     }else if (IDENTIFIER == "SUN") {
@@ -240,20 +255,73 @@ void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsCon
     }else if (IDENTIFIER == "UFO") {
         shader->set_vec3("dirLight.direction", SUN_POSITION);
         shader->set_float("material.shininess", 32);
-        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
-        shader->set_vec3("dirLight.diffuse", VECTOR3_A(0.5f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.ambient", SUN_AMBIENT);
+        shader->set_vec3("dirLight.diffuse", SUN_DIFFUSE);
         shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
 
+        for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+            std::string s = "pointLights[" + std::to_string(i) + "].";
+
+            shader->set_vec3(s + "position", POSITIONLAMPS[i]);
+            shader->set_float(s + "constant", 1.0f);
+            shader->set_float(s + "linear", 0.09f);
+            shader->set_float(s + "quadratic", 0.032f);
+
+            shader->set_vec3(s + "ambient", VECTOR3_A(0.1f,0.1f,0.1f));
+            shader->set_vec3(s + "diffuse", VECTOR3_A(0.3f, 0.3f, 0.3f));
+            shader->set_vec3(s + "specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+        }
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, VECTOR3_A(0.0f, 0.0f, -3.0f));
+        model = glm::translate(model, UFO_POSITON);
         model = glm::scale(model, VECTOR3_A(0.2f,0.2f,0.2f));
         shader->set_mat4("model", model);
     }else if (IDENTIFIER == "LAMP") {
         shader->set_vec3("dirLight.direction", SUN_POSITION);
         shader->set_float("material.shininess", 32);
-        shader->set_vec3("dirLight.ambient", VECTOR3_A(0.2f, 0.2f, 0.2f));
-        shader->set_vec3("dirLight.diffuse", VECTOR3_A(0.5f, 0.5f, 0.5f));
+        shader->set_vec3("dirLight.ambient", SUN_AMBIENT);
+        shader->set_vec3("dirLight.diffuse", SUN_DIFFUSE);
         shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
 
+        for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+            std::string s = "pointLights[" + std::to_string(i) + "].";
+
+            shader->set_vec3(s + "position", POSITIONLAMPS[i]);
+            shader->set_float(s + "constant", 1.0f);
+            shader->set_float(s + "linear", 0.09f);
+            shader->set_float(s + "quadratic", 0.032f);
+
+            shader->set_vec3(s + "ambient", VECTOR3_A(0.1f,0.1f,0.1f));
+            shader->set_vec3(s + "diffuse", VECTOR3_A(0.3f, 0.3f, 0.3f));
+            shader->set_vec3(s + "specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+        }
+    }else if (IDENTIFIER == "TREE") {
+        shader->set_vec3("dirLight.direction", SUN_POSITION);
+        shader->set_float("material.shininess", 32);
+
+        shader->set_vec3("dirLight.ambient", SUN_AMBIENT);
+        shader->set_vec3("dirLight.diffuse", SUN_DIFFUSE);
+        shader->set_vec3("dirLight.specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+
+        for (int i = 0; i < POINT_LIGHT_NUM; i++) {
+            std::string s = "pointLights[" + std::to_string(i) + "].";
+
+            shader->set_vec3(s + "position", POSITIONLAMPS[i]);
+            shader->set_float(s + "constant", 1.0f);
+            shader->set_float(s + "linear", 0.09f);
+            shader->set_float(s + "quadratic", 0.032f);
+
+            shader->set_vec3(s + "ambient", VECTOR3_A(0.1f,0.1f,0.1f));
+            shader->set_vec3(s + "diffuse", VECTOR3_A(0.3f, 0.3f, 0.3f));
+            shader->set_vec3(s + "specular", VECTOR3_A(1.0f, 1.0f, 1.0f));
+        }
     }
 };
+
+
+/*
+ *TODO:
+ *dodaj da se pokupi kuca na slovo c npr
+ *i nlo se dize gore i lampe
+ *drvo ne mora
+ *INSTANCING dodaj samo one komete iz learnopengl sajta
+ */
