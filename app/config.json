@@ -2,7 +2,7 @@
   "resources": {
     "models": {
       "moon": {
-        "path": "moon13/Moon.obj"
+        "path": "moon17/scene.gltf"
       }
     }
   },
