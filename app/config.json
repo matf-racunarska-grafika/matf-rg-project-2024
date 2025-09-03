@@ -1,34 +1,6 @@
 {
   "resources": {
     "models": {
-      "ball": {
-        "path": "football/futbol.obj",
-        "flip_uvs": true
-      },
-      "goal": {
-        "path": "football_goal/gawang.obj",
-        "flip_uvs": true
-      },
-      "grass": {
-        "path": "grass/untitled.obj",
-        "flip_uvs": true
-      },
-      "plavi": {
-        "path": "francuska_igrac/uploads_files_3723789_q.obj",
-        "flip_uvs": true
-      },
-      "crveni": {
-        "path": "portugal_igrac/uploads_files_3674438_dfs.obj",
-        "flip_uvs": true
-      },
-      "goalkeeper": {
-        "path": "goalkeeper/uploads_files_3674438_dfs.obj",
-        "flip_uvs": true
-      },
-      "reflector": {
-        "path": "reflector/scene.gltf",
-        "flip_uvs": true
-      }
     }
   },
   "window": {
