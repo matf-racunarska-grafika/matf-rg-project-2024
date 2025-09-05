@@ -3,6 +3,9 @@
     "models": {
       "moon": {
         "path": "moon17/scene.gltf"
+      },
+      "sun": {
+        "path": "sun10/scene.gltf"
       }
     }
   },
