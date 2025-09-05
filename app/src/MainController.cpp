@@ -84,7 +84,7 @@ void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw_skybox() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto skybox = resources->skybox("skybox_night");
+    auto skybox = resources->skybox("blue");
     auto shader = resources->shader("skybox");
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->draw_skybox(shader, skybox);
