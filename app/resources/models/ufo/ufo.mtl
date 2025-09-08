@@ -1,0 +1,46 @@
+# Material file for ufo.obj
+
+newmtl defaultMat
+	Ns 43
+	d 1
+	illum 2
+	Kd 0.8 0.8 0.8
+	Ks 0.2 0.2 0.2
+	Ka 0.0 0.0 0.0
+
+newmtl ufo_bottom
+	Ns 0
+	d 1
+	illum 2
+	Kd 0.8 0.8 0.8
+	Ks 0.0 0.0 0.0
+	Ka 0.2 0.2 0.2
+	map_Kd 69717.TMAP.png
+
+newmtl ufo_top
+	Ns 0
+	d 1
+	illum 2
+	Kd 0.8 0.8 0.8
+	Ks 0.0 0.0 0.0
+	Ka 0.2 0.2 0.2
+	map_Kd 69718.TMAP.png
+
+newmtl ufo_aliens
+	Ns 0
+	d 1
+	illum 2
+	Kd 0.8 0.8 0.8
+	Ks 0.0 0.0 0.0
+	Ka 0.2 0.2 0.2
+	map_Kd 69719.TMAP.png
+
+newmtl ufo_leg
+	Ns 0
+	d 1
+	illum 2
+	Kd 0.8 0.8 0.8
+	Ks 0.0 0.0 0.0
+	Ka 0.2 0.2 0.2
+	map_Kd 69716.TMAP.png
+
