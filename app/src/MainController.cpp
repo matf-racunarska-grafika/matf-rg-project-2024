@@ -99,7 +99,7 @@ void MainController::draw_sun() {
     engine::resources::Shader *shader = resources->shader("default");
     shader->use();
     shader->set_vec3("emissive", emissive_color);
-   // set_up_shader_uniforms(shader, false, false);
+    set_up_shader_uniforms(shader, false, false);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, sun_pos);
     model = glm::rotate(model, glm::radians(sun_angle), sun_rot);
@@ -119,7 +119,7 @@ void MainController::draw_ufo() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
 
-    // set_up_shader_uniforms(shader, true, true);
+    set_up_shader_uniforms(shader, true, true);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, ufo_pos);
     model = glm::rotate(model, glm::radians(ufo_angle), ufo_rot);
