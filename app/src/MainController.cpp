@@ -110,7 +110,26 @@ void MainController::draw_sun() {
     sun->draw(shader);
 
 }
+void MainController::draw_ufo() {
 
+    auto resources = get<engine::resources::ResourcesController>();
+
+
+    engine::resources::Model *ufo = resources->model("ufo");
+    engine::resources::Shader *shader = resources->shader("basic");
+    shader->use();
+
+    // set_up_shader_uniforms(shader, true, true);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, ufo_pos);
+    model = glm::rotate(model, glm::radians(ufo_angle), ufo_rot);
+
+    model = glm::scale(model, glm::vec3(ufo_scale));
+    shader->set_mat4("model", model);
+
+    ufo->draw(shader);
+
+}
 
 
 void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition position) {
