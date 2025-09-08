@@ -3,7 +3,6 @@
 //
 
 #include "MainController.h"
-#include "../../engine/libs/glad/include/glad/glad.h"
 #include<memory>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
@@ -169,7 +168,9 @@ void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition positi
 }
 
 void MainController::draw() {
-draw_sun();
+    update_camera();
+    draw_sun();
+    draw_ufo();
     draw_skybox();
 }
 }// app
