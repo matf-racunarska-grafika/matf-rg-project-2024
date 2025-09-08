@@ -1,11 +1,21 @@
 {
   "resources": {
     "models": {
+      "ufo": {
+        "path": "ufo/ufo.obj"
+      },
+      "sun": {
+        "path": "sun/Sun.obj",
+        "flip_uvs": true
+      },
+      "asteroid": {
+        "path": "asteroid/asteroid_03_01.obj"
+      }
     }
   },
   "window": {
     "height": 1200,
-    "title": "Hello, window!",
+    "title": "Mission Icarus",
     "width": 1600
   }
 }
