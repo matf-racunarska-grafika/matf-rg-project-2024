@@ -24,14 +24,11 @@ void GUIController::draw() {
     graphics->begin_gui();
     const auto &c = *camera;
 
-    auto goal = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ball");
     static float f = 0.0f;
     ImGui::Begin("INFO");
 
 
-    // Draw camera info
-
-    if (ImGui::BeginTabBar("TABOVI")) {
+    if (ImGui::BeginTabBar("TABS")) {
         if (ImGui::BeginTabItem("Camera")) {
             ImGui::Text("Camera position: (%f, %f, %f)", c.Position
                                                           .x, c.Position
@@ -46,20 +43,31 @@ void GUIController::draw() {
             ImGui::EndTabItem();
         }
 
-        // if (ImGui::BeginTabItem("teren")) {
-        //     // ImGui::Text("Loaded from: %s", goal->path().c_str());
-        //     ImGui::DragFloat("Teren scale", &mainController->trava_skalirano, 0.005, 0.0, 10.0);
-        //     ImGui::DragFloat("Teren x", &mainController->trava_x, 0.005, -100.0, 100.0);
-        //     ImGui::DragFloat("Teren y", &mainController->trava_y, 0.005, -100.0, 100.0);
-        //     ImGui::DragFloat("Teren z", &mainController->trava_z, 0.005, -100.0, 100.0);
-        //     ImGui::DragFloat("Ugao trava", &mainController->ugao_trava, 0.50, -100.0, 100.0);
-        //     ImGui::DragFloat("Vektor x", &mainController->trava_xv, 0.005, -1.0f, 1.0f);
-        //     ImGui::DragFloat("Vektor y", &mainController->trava_yv, 0.005, -1.0f, 1.0f);
-        //     ImGui::DragFloat("Vektor z", &mainController->trava_zv, 0.005, -1.0f, 1.0f);
-        //     ImGui::EndTabItem();
-        // }
+        if (ImGui::BeginTabItem("Directional light")) {
+            ImGui::DragFloat3("Direction", &mainController->dirLightDirection.x, 0.01, 0.0, 1.0);
 
+            ImGui::DragFloat3("Ambient color", &mainController->dirLightColorAmbient.x, 0.01, 0.0, 100.0);
+            ImGui::DragFloat3("Diffuse color", &mainController->dirLightColorDiffuse.x, 0.01, 0.0, 100.0);
+            ImGui::DragFloat3("Specular color", &mainController->dirLightColorSpecular.x, 0.01, 0.0, 100.0);
+
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Point Light")) {
+            ImGui::DragFloat3("Ambient color", &mainController->pointLightColorAmbient.x, 0.01, 0.0, 100.0);
+            ImGui::DragFloat3("Diffuse color", &mainController->pointLightColorDiffuse.x, 0.01, 0.0, 100.0);
+            ImGui::DragFloat3("Specular color", &mainController->pointLightColorSpecular.x, 0.01, 0.0, 100.0);
+            ImGui::DragFloat3("Emission color", &mainController->emissive_color.x, 0.1, 0.0, 100.0);
+            ImGui::DragFloat("Emission strength", &mainController->emission_strength, 0.01, 0.0, 20.0);
+            ImGui::DragFloat("Constant", &mainController->pointLightConstant, 0.001, 0.0, 1.0);
+            ImGui::DragFloat("Linear", &mainController->pointLightLinear, 0.001, 0.0, 1.0, "%.5f");
+            ImGui::DragFloat("Quadratic", &mainController->pointLightQuadratic, 0.000001f, 0.00000f, 1.00000, "%.6f");
+
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
     }
+
 
     ImGui::End();
     graphics->end_gui();
