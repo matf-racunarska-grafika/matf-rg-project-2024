@@ -91,6 +91,28 @@ void MainController::end_draw() {
     platform->swap_buffers();
 }
 
+void MainController::draw_sun() {
+    auto resources = get<engine::resources::ResourcesController>();
+
+
+    engine::resources::Model *sun = resources->model("sun");
+    engine::resources::Shader *shader = resources->shader("default");
+    shader->use();
+    shader->set_vec3("emissive", emissive_color);
+   // set_up_shader_uniforms(shader, false, false);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, sun_pos);
+    model = glm::rotate(model, glm::radians(sun_angle), sun_rot);
+
+    model = glm::scale(model, glm::vec3(sun_scale));
+    shader->set_mat4("model", model);
+
+    sun->draw(shader);
+
+}
+
+
+
 void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition position) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
@@ -99,5 +121,8 @@ void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition positi
     graphics->perspective_params().FOV = glm::radians(camera->Zoom);
 }
 
-void MainController::draw() { draw_skybox(); }
+void MainController::draw() {
+draw_sun();
+    draw_skybox();
+}
 }// app
