@@ -44,7 +44,6 @@ private:
     void update_scene();
     void register_button();
 
-    glm::vec3 sun_pos{5.0f, 1.0f, -80.0f};
     glm::vec3 sun_rot{1.0f, 0.0f, 0.0f};
     float sun_scale{1.81f};
     float sun_angle{45.0f};
@@ -86,6 +85,7 @@ public:
 
 
 
+    glm::vec3 sun_pos{5.0f, 1.0f, -80.0f};
     glm::vec3 pointLightColorDiffuse = glm::vec3(1.0f, 0.6f, 0.2f);
     glm::vec3 pointLightColorSpecular = glm::vec3(1.0f, 0.6f, 0.2f);
     glm::vec3 pointLightColorAmbient = glm::vec3(0.4f, 0.4f, 0.4f);

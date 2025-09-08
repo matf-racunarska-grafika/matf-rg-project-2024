@@ -53,6 +53,7 @@ void GUIController::draw() {
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Point Light")) {
+            ImGui::DragFloat3("Position", &mainController->sun_pos.x, 0.1);
             ImGui::DragFloat3("Ambient color", &mainController->pointLightColorAmbient.x, 0.01, 0.0, 100.0);
             ImGui::DragFloat3("Diffuse color", &mainController->pointLightColorDiffuse.x, 0.01, 0.0, 100.0);
             ImGui::DragFloat3("Specular color", &mainController->pointLightColorSpecular.x, 0.01, 0.0, 100.0);

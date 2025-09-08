@@ -1,22 +1,28 @@
-# {NAME-OF-THE-PROJECT}
+# Mission Icarus
 
-{INDEX} - {STUDENT-FULL-NAME}  
-{PROJECT DESCRIPTION}
+139/2022 - Aleksa Filipovic  
+Simple scene with one UFO and Sun model. When user presses key SPACE the sun starts being brighter
+and begins expanding. UFO object leaves the scene since the Sun became unstable.
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+W -> CAMERA FORWARD  
+A -> CAMERA LEFT
+S -> CAMERA BACKWARDS
+D -> CAMERA RIGHT
+MOUSE SCROLL -> ZOOM IN/OUT
+ESC -> CLOSE APP
+
+SPACE -> BEGIN/RESTART EVENT
+
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[ X ] Model with lighting
+[ X ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[ X ] {SUN LIGHTS UP} --- AFTER 3 SECONDS---Triggers---> {SUN EXPANDING AND UFO LEAVING} ---> AFTER 10 SECONDS---Triggers---> {UFO BECOMES INVISIBLE} --> AFTER 5 SECONDS -> ---Triggers---> {SCENE RESET}
 
 ### Group A:
 
@@ -37,12 +43,9 @@
 
 ## Models:
 
-[link1]   
-[link2]
-
+[https://drive.google.com/drive/folders/1d29msL2hnkOwxCYKeXlxrn6QBOEw40vz]
 ## Textures
 
-[link1]  
-[link2]
+
 
 {OTHER-RESOURCES}

@@ -194,7 +194,7 @@ void MainController::update_scene() {
                 ufo_pos += dir_from_sun * speed * dt;
 
                 float dist = glm::distance(ufo_pos, sun_pos);
-                if (dist > 140.0f) ufo_visible = false;
+                if (timer_for_scaling > 10.0f) ufo_visible = false;
             }
 
 
