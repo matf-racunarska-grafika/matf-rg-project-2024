@@ -8,6 +8,8 @@
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include<glm/vec3.hpp>
+#include <engine/resources/ResourcesController.hpp>
+
 
 namespace app {
 class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
@@ -36,6 +38,10 @@ private:
     void update_camera();
 
     void draw_sun();
+
+    void set_up_shader_uniforms(engine::resources::Shader *shader, bool dirL, bool pointL);
+
+
     glm::vec3 sun_pos{5.0f, 1.0f, -80.0f};
     glm::vec3 sun_rot{1.0f, 0.0f, 0.0f};
     float sun_scale{1.81f};
@@ -57,6 +63,21 @@ public:
 
     float emission_strength = 1.0f;
     glm::vec3 emissive_color = glm::vec3(0.15f, 0.05f, 0.0f);
+
+
+    glm::vec3 dirLightDirection = glm::vec3(-1.0f, -1.0f, -1.0f);
+    glm::vec3 dirLightColorAmbient = glm::vec3(0.03f, 0.03f, 0.03f);
+    glm::vec3 dirLightColorDiffuse = glm::vec3(0.2f, 0.2f, 0.2f);
+    glm::vec3 dirLightColorSpecular = glm::vec3(0.2f, 0.2f, 0.02f);
+
+
+
+    glm::vec3 pointLightColorDiffuse = glm::vec3(1.0f, 0.6f, 0.2f);
+    glm::vec3 pointLightColorSpecular = glm::vec3(1.0f, 0.6f, 0.2f);
+    glm::vec3 pointLightColorAmbient = glm::vec3(0.4f, 0.4f, 0.4f);
+    float pointLightConstant = 1.0f;
+    float pointLightLinear = 0.00001f;
+    float pointLightQuadratic = 0.00005f;
 };
 
 }// app

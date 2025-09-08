@@ -91,6 +91,34 @@ void MainController::end_draw() {
     platform->swap_buffers();
 }
 
+void MainController::set_up_shader_uniforms(engine::resources::Shader *shader, bool dirL, bool pointL) {
+    auto graphics = get<engine::graphics::GraphicsController>();
+
+    shader->set_float("emissiveStrength", emission_strength);
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+
+    if (dirL) {
+        shader->set_vec3("dirLight.direction", dirLightDirection);
+        shader->set_vec3("dirLight.diffuse", dirLightColorDiffuse);
+        shader->set_vec3("dirLight.ambient", dirLightColorAmbient);
+        shader->set_vec3("dirLight.specular", dirLightColorSpecular);
+    }
+
+    if (pointL) {
+        shader->set_vec3("pointLight.position", sun_pos);
+        shader->set_vec3("pointLight.ambient", pointLightColorAmbient);
+        shader->set_vec3("pointLight.specular", pointLightColorSpecular);
+        shader->set_vec3("pointLight.diffuse", pointLightColorDiffuse);
+        shader->set_float("pointLight.constant", pointLightConstant);
+        shader->set_float("pointLight.linear", pointLightLinear);
+        shader->set_float("pointLight.quadratic", pointLightQuadratic);
+    }
+}
+
+
 void MainController::draw_sun() {
     auto resources = get<engine::resources::ResourcesController>();
 
