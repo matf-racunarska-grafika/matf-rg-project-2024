@@ -159,6 +159,66 @@ void MainController::draw_ufo() {
 }
 
 
+
+void MainController::register_button() {
+    auto platform = get<engine::platform::PlatformController>();
+
+    if (platform->key(engine::platform::KEY_SPACE).state() == engine::platform::Key::State::JustPressed) { sequence_active = !sequence_active; }
+
+};
+
+void MainController::update_scene() {
+    auto platform = get<engine::platform::PlatformController>();
+
+    float dt = platform->dt();
+    if (sequence_active) {
+        if (sun_lights_up_timer < 3.0f && ufo_visible) {
+            sun_lights_up_timer += dt;
+            float t = glm::clamp(sun_lights_up_timer / 3.0f, 0.0f, 1.0f);
+
+
+            emission_strength = glm::mix(emission_strength_start, 5.0f, t);
+        } else {
+            sun_starts_expanding_timer += dt;
+
+
+            double pulse = (sin(timer_for_scaling * glm::pi<float>())) / 2.0f;
+            timer_for_scaling += dt;
+            if (sun_scale < 2.1f) { sun_scale += dt / 2.0f; }
+            emission_strength = glm::mix(5.0f, 10.0f, pulse);
+
+
+            if (sun_starts_expanding_timer <= 3.0f) { ufo_angle += 30.0f * dt; } else {
+                glm::vec3 dir_from_sun = glm::normalize(ufo_pos - sun_pos);
+                float speed = 7.0f;
+                ufo_pos += dir_from_sun * speed * dt;
+
+                float dist = glm::distance(ufo_pos, sun_pos);
+                if (dist > 140.0f) ufo_visible = false;
+            }
+
+
+            if (timer_for_scaling >= 15.0f) {
+                timer_for_scaling = 0.0f;
+                sequence_active = false;
+                not_blocked = true;
+            }
+        }
+    } else {
+        ufo_visible = true;
+        sun_scale = sun_scale_start;
+        ufo_angle = -41.0f;
+        ufo_pos = ufo_pos_start;
+        sun_lights_up_timer = 0.0f;
+        sun_starts_expanding_timer = 0.0f;
+
+        if (not_blocked) {
+            emission_strength = emission_strength_start;
+            not_blocked = false;
+        }
+    }
+}
+
 void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition position) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
@@ -169,8 +229,11 @@ void MainPlatformEventObserver::on_scroll(engine::platform::MousePosition positi
 
 void MainController::draw() {
     update_camera();
+    register_button();
+    update_scene();
     draw_sun();
-    draw_ufo();
+    if(ufo_visible)
+        draw_ufo();
     draw_skybox();
 }
 }// app

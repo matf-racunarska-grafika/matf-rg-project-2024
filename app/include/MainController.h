@@ -41,6 +41,8 @@ private:
 
     void set_up_shader_uniforms(engine::resources::Shader *shader, bool dirL, bool pointL);
 
+    void update_scene();
+    void register_button();
 
     glm::vec3 sun_pos{5.0f, 1.0f, -80.0f};
     glm::vec3 sun_rot{1.0f, 0.0f, 0.0f};
@@ -54,6 +56,18 @@ private:
     glm::vec3 ufo_rot{1.0f, 0.0f, 0.0f};
     float ufo_scale{0.43f};
     float ufo_angle{-41.0f};
+
+    float sun_lights_up_timer{0.0f};
+    float sun_starts_expanding_timer{0.0f};
+    bool sequence_active = false;
+    bool ufo_visible = true;
+    bool not_blocked = false;
+    float timer_for_scaling{0.0f};
+
+    float emission_strength_start = 1.0f;
+
+    float sun_scale_start{1.81f};
+
 
     bool draw_gui{false};
     bool cursor_enabled{true};
