@@ -40,7 +40,6 @@ private:
 
 public:
     std::string_view name() const override { return "App::MainController"; }
-
 };
 
 }// app
