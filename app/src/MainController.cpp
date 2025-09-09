@@ -32,6 +32,9 @@ void MainController::draw() { draw_plane(); }
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
 
 
+void MainController::terminate() { destroy_plane(); }
+
+
 void MainController::create_plane() {
     float vertices[] = {
             -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 5.0f,
@@ -85,4 +88,11 @@ void MainController::draw_plane() {
     CHECKED_GL_CALL(glBindVertexArray, 0);
     CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, 0);
 }
+
+void MainController::destroy_plane() {
+    CHECKED_GL_CALL(glDeleteBuffers, 1, &vbo_plane);
+    CHECKED_GL_CALL(glDeleteVertexArrays, 1, &vao_plane);
+}
+
+
 }// app
