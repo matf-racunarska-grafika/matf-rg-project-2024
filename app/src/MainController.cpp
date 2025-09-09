@@ -210,7 +210,7 @@ void MainController::update_scene() {
 
             double pulse = (sin(timer_for_scaling * glm::pi<float>())) / 2.0f;
             timer_for_scaling += dt;
-            if (sun_scale < 2.1f) { sun_scale += dt / 2.0f; }
+            if (sun_scale < 2.1f) { sun_scale += dt / 25.0f; }
             emission_strength = glm::mix(5.0f, 10.0f, pulse);
 
 
