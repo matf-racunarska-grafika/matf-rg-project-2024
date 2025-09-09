@@ -21,6 +21,13 @@ bool MainController::loop() {
     return true;
 }
 
+void MainController::begin_draw() { engine::graphics::OpenGL::enable_depth_testing(); }
+
+void MainController::draw() { draw_plane(); }
+
+void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
+
+
 void MainController::create_plane() {
     float vertices[] = {
             -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 5.0f,
@@ -50,6 +57,8 @@ void MainController::create_plane() {
     CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, 0);
     CHECKED_GL_CALL(glBindVertexArray, 0);
 }
+
+void MainController::draw_plane() {}
 
 
 }// app

@@ -13,7 +13,12 @@ class MainController final : public engine::core::Controller {
     void initialize() override;
     bool loop() override;
 
+    void begin_draw() override;
+    void draw() override;
+    void end_draw() override;
+
     void create_plane();
+    void draw_plane();
 
     unsigned vbo_plane{0};
     unsigned vao_plane{0};
