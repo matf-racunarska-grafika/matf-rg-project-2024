@@ -117,6 +117,32 @@ void MainController::set_up_shader_uniforms(engine::resources::Shader *shader, b
     }
 }
 
+void MainController::draw_asteroids() {
+    auto resources = get<engine::resources::ResourcesController>();
+
+    engine::resources::Model *asteroid = resources->model("asteroid");
+    engine::resources::Shader *shader = resources->shader("asteroid");
+    shader->use();
+
+
+    std::vector<glm::mat4> model_matrices;
+    set_up_shader_uniforms(shader, true, true);
+    for (int i = 0; i < 10; i++) {
+        auto model = glm::mat4(1.0f);
+
+        float x = 25.0f * sin(i * 1.5f);
+        float y = 40.0f * cos(i * 0.8f);
+        float z = 30.0f * sin(i * 2.2f);
+        model = translate(model, asteroid_pos + glm::vec3(x + 5.0f, y + 7.0f, z + 14.0f));
+        model = rotate(model, glm::radians(asteroid_angle), asteroid_rot);
+        model = scale(model, glm::vec3(asteroid_scale));
+        model_matrices.push_back(model);
+    }
+
+
+    asteroid->draw_instanced(shader, model_matrices);
+}
+
 
 void MainController::draw_sun() {
     auto resources = get<engine::resources::ResourcesController>();
@@ -231,6 +257,7 @@ void MainController::draw() {
     update_camera();
     register_button();
     update_scene();
+    draw_asteroids();
     draw_sun();
     if(ufo_visible)
         draw_ufo();

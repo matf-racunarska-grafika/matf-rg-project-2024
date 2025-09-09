@@ -38,6 +38,7 @@ private:
     void update_camera();
 
     void draw_sun();
+    void draw_asteroids();
 
     void set_up_shader_uniforms(engine::resources::Shader *shader, bool dirL, bool pointL);
 
@@ -67,6 +68,10 @@ private:
 
     float sun_scale_start{1.81f};
 
+    glm::vec3 asteroid_pos{-18.0f, -33.0f, -36.0f};
+    glm::vec3 asteroid_rot{1.0f, 0.0f, 0.0f};
+    float asteroid_scale{0.5f};
+    float asteroid_angle{78.0f};
 
     bool draw_gui{false};
     bool cursor_enabled{true};
