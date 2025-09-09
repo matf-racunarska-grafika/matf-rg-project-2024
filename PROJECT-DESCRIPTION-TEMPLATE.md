@@ -27,7 +27,7 @@ SPACE -> BEGIN/RESTART EVENT
 ### Group A:
 
 [ ] Frame-buffers with post-processing   
-[ ] Instancing  
+[ X ] Instancing  
 [ ] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
 
