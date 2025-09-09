@@ -12,6 +12,7 @@ namespace app {
 class MainController final : public engine::core::Controller {
     void initialize() override;
     bool loop() override;
+    void poll_events() override;
 
     void begin_draw() override;
     void draw() override;
@@ -23,8 +24,9 @@ class MainController final : public engine::core::Controller {
     void draw_plane();
     void destroy_plane();
 
-    unsigned vbo_plane{0};
-    unsigned vao_plane{0};
+    unsigned m_vbo_plane{0};
+    unsigned m_vao_plane{0};
+    bool m_cursor_enable{true};
 };
 
 }// app

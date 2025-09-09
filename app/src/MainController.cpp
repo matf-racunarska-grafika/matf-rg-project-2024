@@ -19,9 +19,18 @@ void MainController::initialize() {
     engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);
 }
 
+void MainController::poll_events() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
+        m_cursor_enable = !m_cursor_enable;
+        platform->set_enable_cursor(m_cursor_enable);
+    }
+}
+
+
 bool MainController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_ESCAPE).state() == engine::platform::Key::State::Pressed) { return false; }
+    if (platform->key(engine::platform::KEY_ESCAPE).state() == engine::platform::Key::State::JustPressed) { return false; }
     return true;
 }
 
@@ -46,14 +55,14 @@ void MainController::create_plane() {
             -5.0f, -0.5f, -5.0f, 0.0f, 1.0f, 0.0f, 0.0f, 5.0f
     };
 
-    CHECKED_GL_CALL(glGenBuffers, 1, &vbo_plane);
-    CHECKED_GL_CALL(glGenVertexArrays, 1, &vao_plane);
+    CHECKED_GL_CALL(glGenBuffers, 1, &m_vbo_plane);
+    CHECKED_GL_CALL(glGenVertexArrays, 1, &m_vao_plane);
 
-    CHECKED_GL_CALL(glBindVertexArray, vao_plane);
-    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
+    CHECKED_GL_CALL(glBindVertexArray, m_vao_plane);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_vbo_plane);
 
-    CHECKED_GL_CALL(glGenBuffers, 1, &vbo_plane);
-    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
+    CHECKED_GL_CALL(glGenBuffers, 1, &m_vbo_plane);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_vbo_plane);
     CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
@@ -82,16 +91,16 @@ void MainController::draw_plane() {
     shader->set_mat4("model", glm::mat4(1.0f));
     shader->set_int("texture1", 0);
 
-    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
-    CHECKED_GL_CALL(glBindVertexArray, vao_plane);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_vbo_plane);
+    CHECKED_GL_CALL(glBindVertexArray, m_vao_plane);
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 6);
     CHECKED_GL_CALL(glBindVertexArray, 0);
     CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, 0);
 }
 
 void MainController::destroy_plane() {
-    CHECKED_GL_CALL(glDeleteBuffers, 1, &vbo_plane);
-    CHECKED_GL_CALL(glDeleteVertexArrays, 1, &vao_plane);
+    CHECKED_GL_CALL(glDeleteBuffers, 1, &m_vbo_plane);
+    CHECKED_GL_CALL(glDeleteVertexArrays, 1, &m_vao_plane);
 }
 
 
