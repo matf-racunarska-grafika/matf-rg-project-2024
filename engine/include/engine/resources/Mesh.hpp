@@ -44,6 +44,9 @@ public:
     */
     void destroy();
 
+    uint32_t get_vao() const {return m_vao;}
+
+    void draw_instanced(const engine::resources::Shader *shader,  unsigned int instances_amount);
 private:
     /**
     * @brief Constructs a Mesh object.
