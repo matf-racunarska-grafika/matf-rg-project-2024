@@ -5,7 +5,7 @@
 
 #ifndef MATF_RG_PROJECT_MESH_HPP
 #define MATF_RG_PROJECT_MESH_HPP
-#include "glad/glad.h"
+
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
