@@ -5,7 +5,7 @@
 
 #ifndef MATF_RG_PROJECT_MESH_HPP
 #define MATF_RG_PROJECT_MESH_HPP
-
+#include "glad/glad.h"
 #include <glm/glm.hpp>
 #include <vector>
 #include <engine/resources/Texture.hpp>
@@ -46,7 +46,7 @@ public:
 
     uint32_t get_vao() const {return m_vao;}
 
-    void draw_instanced(const engine::resources::Shader *shader,  unsigned int instances_amount);
+    void draw_instanced(const engine::resources::Shader *shader,  int instances_amount);
 private:
     /**
     * @brief Constructs a Mesh object.
