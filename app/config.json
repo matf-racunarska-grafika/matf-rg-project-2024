@@ -6,6 +6,9 @@
       },
       "sun": {
         "path": "sun10/scene.gltf"
+      },
+      "island": {
+        "path": "island/4.obj"
       }
     }
   },

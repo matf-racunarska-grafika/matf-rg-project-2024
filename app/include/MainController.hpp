@@ -16,6 +16,8 @@ class MainController : public engine::core::Controller {
 
     void draw_sun();
 
+    void draw_island();
+
     void update_camera();
 
     void update() override;
