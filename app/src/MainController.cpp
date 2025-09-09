@@ -3,8 +3,10 @@
 //
 
 #include "../../engine/libs/glad/include/glad/glad.h"
+#include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
 #include "engine/platform/PlatformController.hpp"
+#include "engine/resources/ResourcesController.hpp"
 
 #include <MainController.hpp>
 #include <spdlog/spdlog.h>
@@ -13,6 +15,8 @@ namespace app {
 void MainController::initialize() {
     spdlog::info("Main controller successfully initialized");
     create_plane();
+    engine::graphics::OpenGL::enable_depth_testing();
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);
 }
 
 bool MainController::loop() {
@@ -21,7 +25,7 @@ bool MainController::loop() {
     return true;
 }
 
-void MainController::begin_draw() { engine::graphics::OpenGL::enable_depth_testing(); }
+void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw() { draw_plane(); }
 
@@ -40,9 +44,13 @@ void MainController::create_plane() {
     };
 
     CHECKED_GL_CALL(glGenBuffers, 1, &vbo_plane);
-    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
     CHECKED_GL_CALL(glGenVertexArrays, 1, &vao_plane);
+
     CHECKED_GL_CALL(glBindVertexArray, vao_plane);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
+
+    CHECKED_GL_CALL(glGenBuffers, 1, &vbo_plane);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
     CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
@@ -58,7 +66,23 @@ void MainController::create_plane() {
     CHECKED_GL_CALL(glBindVertexArray, 0);
 }
 
-void MainController::draw_plane() {}
+void MainController::draw_plane() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("plane");
+    auto texture = engine::core::Controller::get<engine::resources::ResourcesController>()->texture("ground");
 
+    texture->bind(GL_TEXTURE0);
 
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_mat4("model", glm::mat4(1.0f));
+    shader->set_int("texture1", 0);
+
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo_plane);
+    CHECKED_GL_CALL(glBindVertexArray, vao_plane);
+    CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 6);
+    CHECKED_GL_CALL(glBindVertexArray, 0);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, 0);
+}
 }// app
