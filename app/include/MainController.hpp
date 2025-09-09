@@ -9,9 +9,14 @@
 
 namespace app {
 
-class MainController : public engine::core::Controller {
+class MainController final : public engine::core::Controller {
     void initialize() override;
     bool loop() override;
+
+    void create_plane();
+
+    unsigned vbo_plane{0};
+    unsigned vao_plane{0};
 };
 
 }// app
