@@ -54,6 +54,8 @@ public:
         return m_name;
     }
 
+
+    void draw_instanced(const engine::resources::Shader *shader, const std::vector<glm::mat4> &model_matrices);
 private:
     /**
     * @brief The meshes in the model.
