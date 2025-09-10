@@ -41,7 +41,10 @@ bool MainController::loop() {
     return true;
 }
 
-void MainController::update() { update_fps_camera(); }
+void MainController::update() {
+    update_fps_camera();
+    update_speed();
+}
 
 
 void MainController::update_camera() {
@@ -76,6 +79,15 @@ void MainController::update_fps_camera() {
 
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
+}
+
+void MainController::update_speed() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+
+    if (platform->key(engine::platform::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::JustPressed) { camera->MovementSpeed = engine::graphics::Camera::RUN; }
+
+    if (platform->key(engine::platform::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::JustReleased) { camera->MovementSpeed = engine::graphics::Camera::WALK; }
 }
 
 
