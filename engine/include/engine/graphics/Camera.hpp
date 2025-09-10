@@ -35,7 +35,7 @@ public:
 
     static constexpr float YAW = -90.0f;
     static constexpr float PITCH = 0.0f;
-    static constexpr float SPEED = 2.5f;
+    static constexpr float SPEED = 2.0f;
     static constexpr float SENSITIVITY = 0.1f;
     static constexpr float ZOOM = 45.0f;
 
@@ -63,6 +63,11 @@ public:
     * @brief Defines the up orientation of the World-Space.
     */
     glm::vec3 WorldUp{};
+
+    /**
+     * @brief Defines direction in which FPS camera can move.
+     */
+    glm::vec3 Move{};
 
     float Yaw{};
     float Pitch{};
@@ -99,6 +104,11 @@ public:
     void move_camera(Movement direction, float delta_time);
 
     /**
+     * @brief Processes input received from keyboard-like input system for FPS-style camera
+     */
+    void move_fps_camera(bool forward, bool backward, bool right, bool left, float delta_time);
+
+    /**
      * @brief Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
      */
     void rotate_camera(float x_offset, float y_offset, bool constrain_pitch = true);
@@ -113,6 +123,11 @@ private:
      * @brief Calculates the front vector from the Camera's (updated) Euler Angles
      */
     void update_camera_vectors();
+
+    /**
+     * @brief Calculates the direction vector for FPS style camera from Camera's (updated) Euler Angles
+     */
+    void update_fps_camera_vectors();
 };
 }
 #endif
