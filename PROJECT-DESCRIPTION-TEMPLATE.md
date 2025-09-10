@@ -1,7 +1,7 @@
 # Mission Icarus
 
 139/2022 - Aleksa Filipovic  
-Simple scene with one UFO and Sun model. When user presses key SPACE the sun starts being brighter
+Simple scene with one UFO, Sun and a few asteroids. When user presses key SPACE the Sun starts being brighter
 and begins expanding. UFO object leaves the scene since the Sun became unstable.
 
 ## Controls
