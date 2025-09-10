@@ -12,8 +12,16 @@
 #include <spdlog/spdlog.h>
 
 namespace app {
+
+void MainPlatformEventObserver::on_key(engine::platform::Key key) { spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str()); }
+
+void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) { spdlog::info("MousePosition: {} {}", position.x, position.y); }
+
+
 void MainController::initialize() {
     spdlog::info("Main controller successfully initialized");
+    auto observer = std::make_unique<MainPlatformEventObserver>();
+    engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
     create_plane();
     engine::graphics::OpenGL::enable_depth_testing();
     engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);

@@ -6,8 +6,16 @@
 #define MAINCONTROLLER_HPP
 
 #include <engine/core/Controller.hpp>
+#include <engine/platform/PlatformEventObserver.hpp>
 
 namespace app {
+
+class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
+public:
+    void on_key(engine::platform::Key key) override;
+
+    void on_mouse_move(engine::platform::MousePosition position) override;
+};
 
 class MainController final : public engine::core::Controller {
     void initialize() override;
