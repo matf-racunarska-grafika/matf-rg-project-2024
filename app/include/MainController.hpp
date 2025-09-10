@@ -22,11 +22,15 @@ class MainController final : public engine::core::Controller {
     bool loop() override;
     void poll_events() override;
 
+    void update() override;
+
     void begin_draw() override;
     void draw() override;
     void end_draw() override;
 
     void terminate() override;
+
+    void update_camera();
 
     void create_plane();
     void draw_plane();
