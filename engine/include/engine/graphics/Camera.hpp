@@ -39,6 +39,18 @@ public:
     static constexpr float RUN = 2.0f;
     static constexpr float SENSITIVITY = 0.1f;
     static constexpr float ZOOM = 45.0f;
+    static constexpr float JUMP_SPEED = 3.0f;
+    static constexpr float G_FORCE = -9.81f;
+
+    /**
+    * @brief Indicates if a jump can happen
+    */
+    bool Jump{};
+
+    /**
+     * @brief Defines speed using for going upwards
+     */
+    float JumpVelocity{};
 
     /**
     * @brief Defines a position in World-Space of where the Camera is located.
@@ -108,6 +120,12 @@ public:
      * @brief Processes input received from keyboard-like input system for FPS-style camera
      */
     void move_fps_camera(bool forward, bool backward, bool right, bool left, float delta_time);
+
+
+    /**
+     * @brief updates height of camera while jumping and coming down due g-force
+     */
+    void update_jump(float delta_time);
 
     /**
      * @brief Processes input received from a mouse input system. Expects the offset value in both the x and y direction.

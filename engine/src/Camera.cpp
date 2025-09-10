@@ -1,4 +1,6 @@
 
+#include "spdlog/spdlog.h"
+
 #include <engine/graphics/Camera.hpp>
 
 namespace engine::graphics {
@@ -10,6 +12,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
     WorldUp = up;
     Yaw = yaw;
     Pitch = pitch;
+    Jump = false;
+    JumpVelocity = JUMP_SPEED;
     update_camera_vectors();
 }
 
@@ -43,6 +47,19 @@ void Camera::move_fps_camera(bool forward, bool backward, bool right, bool left,
     if (glm::length(move_dir) > 0.0f) {
         move_dir = glm::normalize(move_dir);
         Position += move_dir * velocity;
+    }
+}
+
+void Camera::update_jump(float delta_time) {
+    if (Jump || Position.y > 0.0f) {
+        JumpVelocity += G_FORCE * delta_time;
+        float y = Position.y + JumpVelocity * delta_time;
+        Position.y = std::max(0.0f, y);
+    }
+
+    if (Position.y == 0.0f) {
+        JumpVelocity = JUMP_SPEED;
+        Jump = false;
     }
 }
 
