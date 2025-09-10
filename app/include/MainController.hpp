@@ -33,6 +33,7 @@ class MainController final : public engine::core::Controller {
     void update_camera();
     void update_fps_camera();
     void update_speed();
+    void update_jump();
 
     void create_plane();
     void draw_plane();

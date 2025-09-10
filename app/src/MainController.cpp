@@ -44,6 +44,7 @@ bool MainController::loop() {
 void MainController::update() {
     update_fps_camera();
     update_speed();
+    update_jump();
 }
 
 
@@ -88,6 +89,18 @@ void MainController::update_speed() {
     if (platform->key(engine::platform::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::JustPressed) { camera->MovementSpeed = engine::graphics::Camera::RUN; }
 
     if (platform->key(engine::platform::KEY_LEFT_SHIFT).state() == engine::platform::Key::State::JustReleased) { camera->MovementSpeed = engine::graphics::Camera::WALK; }
+}
+
+void MainController::update_jump() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+
+    if (!camera->Jump && platform->key(engine::platform::KEY_SPACE).state() == engine::platform::Key::State::JustPressed) {
+        spdlog::info("JUMPED!!!");
+        camera->Jump = true;
+    }
+
+    camera->update_jump(platform->dt());
 }
 
 
