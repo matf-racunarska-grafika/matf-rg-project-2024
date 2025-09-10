@@ -31,6 +31,7 @@ class MainController final : public engine::core::Controller {
     void terminate() override;
 
     void update_camera();
+    void update_fps_camera();
 
     void create_plane();
     void draw_plane();
