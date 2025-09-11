@@ -103,8 +103,34 @@ void MainController::update_jump() {
     camera->update_jump(platform->dt());
 }
 
+void MainController::set_dirlight() {
+    m_dirlight.direction = glm::vec3(0.2f, -3.0f, 0.3f);
+    m_dirlight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+    m_dirlight.diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
+    m_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+}
 
-void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
+void MainController::set_spotlight() {
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    m_spotlight.position = camera->Position;
+    m_spotlight.direction = camera->Front;
+    m_spotlight.ambient = glm::vec3(0.0f);
+    m_spotlight.diffuse = glm::vec3(1.0f);
+    m_spotlight.specular = glm::vec3(1.0f);
+    m_spotlight.inner_cut_off = glm::cos(glm::radians(10.5f));
+    m_spotlight.outer_cut_off = glm::cos(glm::radians(12.0f));
+    m_spotlight.constant = 1.0f;
+    m_spotlight.linear = 0.09f;
+    m_spotlight.quadratic = 0.032f;
+    m_spotlight.lamp_on = 1;
+}
+
+
+void MainController::begin_draw() {
+    engine::graphics::OpenGL::clear_buffers();
+    set_dirlight();
+    set_spotlight();
+}
 
 void MainController::draw() { draw_plane(); }
 
@@ -159,7 +185,11 @@ void MainController::draw_plane() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("model", glm::mat4(1.0f));
-    shader->set_int("texture1", 0);
+    shader->set_int("texture_diffuse", 0);
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
 
     CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, m_vbo_plane);
     CHECKED_GL_CALL(glBindVertexArray, m_vao_plane);

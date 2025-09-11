@@ -7,6 +7,7 @@
 
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <Lights.hpp>
 
 namespace app {
 
@@ -42,8 +43,13 @@ class MainController final : public engine::core::Controller {
     unsigned m_vbo_plane{0};
     unsigned m_vao_plane{0};
     bool m_cursor_enable{true};
-};
 
+    DirectionalLight m_dirlight{};
+    void set_dirlight();
+
+    SpotLight m_spotlight{};
+    void set_spotlight();
+};
 }// app
 
 #endif //MAINCONTROLLER_HPP
