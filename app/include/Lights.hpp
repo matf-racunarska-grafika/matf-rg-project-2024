@@ -14,7 +14,13 @@ struct DirectionalLight {
     glm::vec3 diffuse;
     glm::vec3 specular;
 
-    void apply(engine::resources::Shader *shader) {}
+    void apply(const engine::resources::Shader *shader, const std::string &name) const {
+        shader->use();
+        shader->set_vec3(name + ".direction", direction);
+        shader->set_vec3(name + ".ambient", ambient);
+        shader->set_vec3(name + ".diffuse", diffuse);
+        shader->set_vec3(name + ".specular", specular);
+    }
 };
 
 struct PointLight {
@@ -28,7 +34,16 @@ struct PointLight {
     float linear;
     float quadratic;
 
-    void apply(engine::resources::Shader *shader) {}
+    void apply(const engine::resources::Shader *shader, const std::string &name) const {
+        shader->use();
+        shader->set_vec3(name + ".position", position);
+        shader->set_vec3(name + ".ambient", ambient);
+        shader->set_vec3(name + ".diffuse", diffuse);
+        shader->set_vec3(name + ".specular", specular);
+        shader->set_float(name + ".constant", constant);
+        shader->set_float(name + ".linear", linear);
+        shader->set_float(name + ".quadratic", quadratic);
+    }
 };
 
 struct SpotLight {
@@ -46,9 +61,22 @@ struct SpotLight {
     float linear;
     float quadratic;
 
-    bool lamp_on;
+    int lamp_on;
 
-    void apply(engine::resources::Shader *shader) {}
+    void apply(const engine::resources::Shader *shader, const std::string &name) const {
+        shader->use();
+        shader->set_vec3(name + ".direction", direction);
+        shader->set_vec3(name + ".position", position);
+        shader->set_vec3(name + ".ambient", ambient);
+        shader->set_vec3(name + ".diffuse", diffuse);
+        shader->set_vec3(name + ".specular", specular);
+        shader->set_float(name + ".constant", constant);
+        shader->set_float(name + ".linear", linear);
+        shader->set_float(name + ".quadratic", quadratic);
+        shader->set_float(name + ".inner_cut_off", inner_cut_off);
+        shader->set_float(name + ".outer_cut_off", outer_cut_off);
+        shader->set_int(name + ".lamp_on", lamp_on);
+    }
 };
 
 #endif //LIGHTS_HPP
