@@ -49,6 +49,7 @@ class MainController final : public engine::core::Controller {
 
     SpotLight m_spotlight{};
     void set_spotlight();
+    void turn_spotlight();
 };
 }// app
 

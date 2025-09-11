@@ -45,6 +45,10 @@ void MainController::update() {
     update_fps_camera();
     update_speed();
     update_jump();
+
+    set_dirlight();
+    set_spotlight();
+    turn_spotlight();
 }
 
 
@@ -122,15 +126,15 @@ void MainController::set_spotlight() {
     m_spotlight.constant = 1.0f;
     m_spotlight.linear = 0.09f;
     m_spotlight.quadratic = 0.032f;
-    m_spotlight.lamp_on = 1;
+}
+
+void MainController::turn_spotlight() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KEY_V).state() == engine::platform::Key::State::JustPressed) { m_spotlight.lamp_on = 1 - m_spotlight.lamp_on; }
 }
 
 
-void MainController::begin_draw() {
-    engine::graphics::OpenGL::clear_buffers();
-    set_dirlight();
-    set_spotlight();
-}
+void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw() { draw_plane(); }
 

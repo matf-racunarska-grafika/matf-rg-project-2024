@@ -61,7 +61,7 @@ struct SpotLight {
     float linear;
     float quadratic;
 
-    int lamp_on;
+    int lamp_on{0};
 
     void apply(const engine::resources::Shader *shader, const std::string &name) const {
         shader->use();
