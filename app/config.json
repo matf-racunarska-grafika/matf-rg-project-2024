@@ -4,6 +4,10 @@
       "tree": {
         "path": "tree/tree.obj",
         "flip_uvs": true
+      },
+      "cabin1": {
+        "path": "cabin1/cabin.obj",
+        "flip_uvs": true
       }
     }
   },

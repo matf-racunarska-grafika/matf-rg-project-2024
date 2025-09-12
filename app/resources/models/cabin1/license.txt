@@ -1,0 +1,11 @@
+Model Information:
+* title:	Log Cabin Wooden
+* source:	https://sketchfab.com/3d-models/log-cabin-wooden-94ed8fca6efa48eaabe37b62da2fd333
+* author:	Tylertyler (https://sketchfab.com/tylertyler)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Log Cabin Wooden" (https://sketchfab.com/3d-models/log-cabin-wooden-94ed8fca6efa48eaabe37b62da2fd333) by Tylertyler (https://sketchfab.com/tylertyler) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
