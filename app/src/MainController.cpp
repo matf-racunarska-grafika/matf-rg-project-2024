@@ -9,6 +9,7 @@
 #include "engine/resources/ResourcesController.hpp"
 
 #include <MainController.hpp>
+#include <complex>
 #include <spdlog/spdlog.h>
 
 namespace app {
@@ -108,9 +109,9 @@ void MainController::update_jump() {
 }
 
 void MainController::set_dirlight() {
-    m_dirlight.direction = glm::vec3(1.5f, -10.0f, 1.3f);
-    m_dirlight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
-    m_dirlight.diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
+    m_dirlight.direction = glm::vec3(2.0f, -5.0f, -3.0f);
+    m_dirlight.ambient = glm::vec3(0.08f, 0.08f, 0.08f);
+    m_dirlight.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
     m_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
 }
 
@@ -139,6 +140,7 @@ void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 void MainController::draw() {
     draw_plane();
     draw_tree();
+    draw_cabin();
 }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
@@ -229,6 +231,30 @@ void MainController::draw_tree() {
     shader->set_float("shininess", 8.0f);
 
     tree->draw(shader);
+}
+
+void MainController::draw_cabin() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("cabin");
+    auto cabin = engine::core::Controller::get<engine::resources::ResourcesController>()->model("cabin1");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-3.0f, -0.5f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_mat4("model", model);
+    shader->set_float("shininess", 32.0f);
+
+    glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model)));
+    shader->set_mat3("invNormal", normal_matrix);
+
+    cabin->draw(shader);
 }
 
 

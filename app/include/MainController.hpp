@@ -52,6 +52,7 @@ class MainController final : public engine::core::Controller {
     void turn_spotlight();
 
     void draw_tree();
+    void draw_cabin();
 };
 }// app
 
