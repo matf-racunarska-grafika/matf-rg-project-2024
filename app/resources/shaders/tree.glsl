@@ -81,6 +81,11 @@ uniform float shininess;
 out vec4 fragColor;
 
 void main() {
+    vec4 test = texture(texture_diffuse1, texCoord);
+    if (test.a < 0.1) {
+        discard;
+    }
+
     vec3 norm = normalize(normal);
     vec3 view_dir = normalize(viewPos - fragPos);
 
