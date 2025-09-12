@@ -108,7 +108,7 @@ void MainController::update_jump() {
 }
 
 void MainController::set_dirlight() {
-    m_dirlight.direction = glm::vec3(0.2f, -3.0f, 0.3f);
+    m_dirlight.direction = glm::vec3(1.5f, -10.0f, 1.3f);
     m_dirlight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
     m_dirlight.diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
     m_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -136,7 +136,10 @@ void MainController::turn_spotlight() {
 
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
-void MainController::draw() { draw_plane(); }
+void MainController::draw() {
+    draw_plane();
+    draw_tree();
+}
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
 
@@ -205,6 +208,27 @@ void MainController::draw_plane() {
 void MainController::destroy_plane() {
     CHECKED_GL_CALL(glDeleteBuffers, 1, &m_vbo_plane);
     CHECKED_GL_CALL(glDeleteVertexArrays, 1, &m_vao_plane);
+}
+
+void MainController::draw_tree() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("tree");
+    auto tree = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(1.0f, -0.5f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_mat4("model", model);
+    shader->set_float("shininess", 8.0f);
+
+    tree->draw(shader);
 }
 
 

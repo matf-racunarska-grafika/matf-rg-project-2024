@@ -3,7 +3,7 @@
     "models": {
       "tree": {
         "path": "tree/tree.obj",
-        "flip_uvs": false
+        "flip_uvs": true
       }
     }
   },
