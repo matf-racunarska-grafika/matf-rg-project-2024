@@ -141,6 +141,8 @@ void MainController::draw() {
     draw_plane();
     draw_tree();
     draw_cabin();
+    draw_target();
+
     draw_rifle();
 }
 
@@ -288,6 +290,33 @@ void MainController::draw_rifle() {
     glDepthRange(0.0, 0.01);
     rifle->draw(shader);
     glDepthRange(0.0, 1.0);
+}
+
+void MainController::draw_target() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("target");
+    auto target = engine::core::Controller::get<engine::resources::ResourcesController>()->model("target");
+
+    shader->use();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-0.2f, -0.5f, 0.3f));
+    model = glm::scale(model, glm::vec3(0.11f, 0.11f, 0.11f));
+
+    shader->set_mat4("model", model);
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_float("shininess", 32.0f);
+
+    glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model)));
+    shader->set_mat3("invNormal", normal_matrix);
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
+
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    target->draw(shader);
 }
 
 
