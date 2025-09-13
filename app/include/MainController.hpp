@@ -53,6 +53,7 @@ class MainController final : public engine::core::Controller {
 
     void draw_tree();
     void draw_cabin();
+    void draw_rifle();
 };
 }// app
 

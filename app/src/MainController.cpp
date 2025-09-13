@@ -109,7 +109,7 @@ void MainController::update_jump() {
 }
 
 void MainController::set_dirlight() {
-    m_dirlight.direction = glm::vec3(2.0f, -5.0f, -3.0f);
+    m_dirlight.direction = glm::vec3(-0.5f, -2.5f, -5.0f);
     m_dirlight.ambient = glm::vec3(0.08f, 0.08f, 0.08f);
     m_dirlight.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
     m_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -141,6 +141,7 @@ void MainController::draw() {
     draw_plane();
     draw_tree();
     draw_cabin();
+    draw_rifle();
 }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
@@ -229,6 +230,7 @@ void MainController::draw_tree() {
     model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
     shader->set_mat4("model", model);
     shader->set_float("shininess", 8.0f);
+    shader->set_vec3("viewPos", graphics->camera()->Position);
 
     tree->draw(shader);
 }
@@ -250,11 +252,42 @@ void MainController::draw_cabin() {
     model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
     shader->set_mat4("model", model);
     shader->set_float("shininess", 32.0f);
+    shader->set_vec3("viewPos", graphics->camera()->Position);
 
     glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model)));
     shader->set_mat3("invNormal", normal_matrix);
 
     cabin->draw(shader);
+}
+
+void MainController::draw_rifle() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("item");
+    auto rifle = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ak_47");
+
+    glm::vec3 offset = glm::vec3(0.22f, -0.28f, -0.85f);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, offset);
+    model = glm::rotate(model, glm::radians(110.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.5f));
+
+    shader->use();
+    shader->set_mat4("model", model);
+    shader->set_float("shininess", 32.0f);
+
+    shader->set_mat4("projection", graphics->projection_matrix());
+
+    glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model)));
+    shader->set_mat3("invNormal", normal_matrix);
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
+
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    glDepthRange(0.0, 0.01);
+    rifle->draw(shader);
+    glDepthRange(0.0, 1.0);
 }
 
 
