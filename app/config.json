@@ -8,6 +8,10 @@
       "cabin1": {
         "path": "cabin1/cabin.obj",
         "flip_uvs": true
+      },
+      "ak_47": {
+        "path": "ak_47/ak47.obj",
+        "flip_uvs": true
       }
     }
   },
