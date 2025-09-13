@@ -12,6 +12,10 @@
       "ak_47": {
         "path": "ak_47/ak47.obj",
         "flip_uvs": true
+      },
+      "target": {
+        "path": "target/target.obj",
+        "flip_uvs": true
       }
     }
   },
