@@ -8,6 +8,7 @@
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <engine/resources/Model.hpp>
 
 namespace engine::graphics {
 
@@ -64,9 +65,7 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Top = static_cast<float>(height);
 }
 
-std::string_view GraphicsController::name() const {
-    return "GraphicsController";
-}
+std::string_view GraphicsController::name() const { return "GraphicsController"; }
 
 void GraphicsController::begin_gui() {
     ImGui_ImplOpenGL3_NewFrame();
@@ -90,7 +89,14 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, skybox->texture());
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 36);
     CHECKED_GL_CALL(glBindVertexArray, 0);
-    CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
+    CHECKED_GL_CALL(glDepthFunc, GL_LESS);// set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
+
+void GraphicsController::instanced_draw(resources::Model *model, const resources::Shader *shader, glm::mat4 *model_matrix, int amount) {
+    model->set_instanced_draw(model_matrix, amount);
+    model->instanced_draw(shader, amount);
+}
+
+
 }
