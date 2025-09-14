@@ -8,6 +8,7 @@
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <Lights.hpp>
+#include <Target.hpp>
 
 namespace app {
 
@@ -55,6 +56,10 @@ class MainController final : public engine::core::Controller {
     glm::mat4 *m_model_tree{};
     void set_instanced_tree();
     void draw_instanced_tree();
+
+    std::vector<Target> m_targets{};
+    void set_targets();
+    void draw_targets();
 
     void draw_tree();
     void draw_cabin();

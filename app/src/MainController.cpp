@@ -28,6 +28,7 @@ void MainController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);
     set_instanced_tree();
+    set_targets();
 }
 
 void MainController::poll_events() {
@@ -143,9 +144,10 @@ void MainController::draw() {
     draw_instanced_tree();
     draw_plane();
     draw_cabin();
-    draw_target();
-    draw_rifle();
+    //draw_target();
+    draw_targets();
 
+    draw_rifle();
     draw_skybox();
 }
 
@@ -155,6 +157,21 @@ void MainController::end_draw() { engine::core::Controller::get<engine::platform
 void MainController::terminate() {
     destroy_plane();
     delete m_model_tree;
+}
+
+
+void MainController::set_targets() {
+    auto model = engine::core::Controller::get<engine::resources::ResourcesController>()->model("target");
+    m_targets.emplace_back(model, glm::vec3(-0.2f, -0.5f, 0.3f));
+    m_targets.emplace_back(model, glm::vec3(2.0f, -0.5f, 1.2f));
+    m_targets.emplace_back(model, glm::vec3(0.6f, -0.5f, 2.0f));
+    m_targets.emplace_back(model, glm::vec3(-1.2f, -0.5f, -1.0f));
+    m_targets.emplace_back(model, glm::vec3(1.3f, -0.5f, -1.5f));
+}
+
+void MainController::draw_targets() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("target");
+    for (auto &target: m_targets) { target.draw(shader, m_dirlight, m_spotlight); }
 }
 
 
@@ -307,6 +324,7 @@ void MainController::draw_target() {
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-0.2f, -0.5f, 0.3f));
+    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.11f, 0.11f, 0.11f));
 
     shader->set_mat4("model", model);
