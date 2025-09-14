@@ -55,6 +55,7 @@ class MainController final : public engine::core::Controller {
     void draw_cabin();
     void draw_rifle();
     void draw_target();
+    void draw_skybox();
 };
 }// app
 

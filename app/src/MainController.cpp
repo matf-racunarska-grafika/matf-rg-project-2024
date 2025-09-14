@@ -144,6 +144,8 @@ void MainController::draw() {
     draw_target();
 
     draw_rifle();
+
+    draw_skybox();
 }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
@@ -317,6 +319,12 @@ void MainController::draw_target() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     target->draw(shader);
+}
+
+void MainController::draw_skybox() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
+    auto skybox = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_night");
+    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox);
 }
 
 
