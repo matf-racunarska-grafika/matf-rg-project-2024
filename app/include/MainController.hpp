@@ -10,6 +10,11 @@
 #include <Lights.hpp>
 #include <Target.hpp>
 
+struct RayCast {
+    glm::vec3 origin;
+    glm::vec3 dir;
+};
+
 namespace app {
 
 class MainPlatformEventObserver final : public engine::platform::PlatformEventObserver {
@@ -36,6 +41,9 @@ class MainController final : public engine::core::Controller {
     void update_fps_camera();
     void update_speed();
     void update_jump();
+
+    RayCast m_raycast{};
+    void update_raycast();
 
     void create_plane();
     void draw_plane();

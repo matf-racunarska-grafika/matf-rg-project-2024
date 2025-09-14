@@ -49,10 +49,17 @@ void MainController::update() {
     update_fps_camera();
     update_speed();
     update_jump();
+    update_raycast();
 
     set_dirlight();
     set_spotlight();
     turn_spotlight();
+}
+
+void MainController::update_raycast() {
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    m_raycast.origin = camera->Position;
+    m_raycast.dir = camera->Front;
 }
 
 
