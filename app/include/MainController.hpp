@@ -51,6 +51,11 @@ class MainController final : public engine::core::Controller {
     void set_spotlight();
     void turn_spotlight();
 
+    int m_amount_tree{};
+    glm::mat4 *m_model_tree{};
+    void set_instanced_tree();
+    void draw_instanced_tree();
+
     void draw_tree();
     void draw_cabin();
     void draw_rifle();

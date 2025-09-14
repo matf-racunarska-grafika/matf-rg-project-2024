@@ -23,9 +23,11 @@ void MainController::initialize() {
     spdlog::info("Main controller successfully initialized");
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+
     create_plane();
     engine::graphics::OpenGL::enable_depth_testing();
     engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);
+    set_instanced_tree();
 }
 
 void MainController::poll_events() {
@@ -138,11 +140,10 @@ void MainController::turn_spotlight() {
 void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
 
 void MainController::draw() {
+    draw_instanced_tree();
     draw_plane();
-    draw_tree();
     draw_cabin();
     draw_target();
-
     draw_rifle();
 
     draw_skybox();
@@ -151,7 +152,10 @@ void MainController::draw() {
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
 
 
-void MainController::terminate() { destroy_plane(); }
+void MainController::terminate() {
+    destroy_plane();
+    delete m_model_tree;
+}
 
 
 void MainController::create_plane() {
@@ -325,6 +329,55 @@ void MainController::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
     auto skybox = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox_night");
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox);
+}
+
+void MainController::set_instanced_tree() {
+    glm::vec3 offsets[] = {
+            glm::vec3(1.0f, -0.5f, 0.0f),
+            glm::vec3(1.2f, -0.5f, 0.2f),
+            glm::vec3(1.2f, -0.5f, -0.4f),
+            glm::vec3(1.6f, -0.5f, -1.0f),
+            glm::vec3(1.5f, -0.5f, -0.8f),
+            glm::vec3(1.6f, -0.5f, -1.3f),
+            glm::vec3(2.0f, -0.5f, 1.1f),
+            glm::vec3(2.2f, -0.5f, 1.4f),
+            glm::vec3(2.5f, -0.5f, 1.8f),
+            glm::vec3(2.3f, -0.5f, 2.2f),
+            glm::vec3(2.1f, -0.5f, -1.7f),
+            glm::vec3(2.7f, -0.5f, -2.0f),
+            glm::vec3(0.6f, -0.5f, -2.3),
+            glm::vec3(0.8f, -0.5f, -1.8f),
+            glm::vec3(0.2f, -0.5f, -2.9f)
+    };
+
+    m_amount_tree = 15;
+    m_model_tree = new glm::mat4[m_amount_tree];
+    glm::vec3 scale_factor = glm::vec3(0.5f, 0.5f, 0.5f);
+
+    for (unsigned int i = 0; i < m_amount_tree; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, offsets[i]);
+        model = glm::scale(model, scale_factor);
+        m_model_tree[i] = model;
+    }
+}
+
+void MainController::draw_instanced_tree() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("tree");
+    auto tree = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    m_dirlight.apply(shader, "dirlight");
+    m_spotlight.apply(shader, "spotlight");
+
+    shader->set_float("shininess", 8.0f);
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    graphics->instanced_draw(tree, shader, m_model_tree, m_amount_tree);
 }
 
 
