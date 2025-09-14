@@ -44,6 +44,31 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
     m_textures = std::move(textures);
 }
 
+void Mesh::set_instanced_draw(glm::mat4 *model_matrix, int amount) {
+    unsigned int instanced_vbo;
+    glGenBuffers(1, &instanced_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, instanced_vbo);
+    glBufferData(GL_ARRAY_BUFFER, amount * sizeof(glm::mat4), &model_matrix[0], GL_STATIC_DRAW);
+
+    glBindVertexArray(m_vao);
+
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void *) 0);
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void *) (sizeof(glm::vec4)));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void *) (2 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(5);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void *) (3 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(6);
+
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
+
+    glBindVertexArray(0);
+}
+
 void Mesh::draw(const Shader *shader) {
     std::unordered_map<std::string_view, uint32_t> counts;
     std::string uniform_name;
@@ -62,6 +87,26 @@ void Mesh::draw(const Shader *shader) {
     glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
+
+void Mesh::instanced_draw(const Shader *shader, int amount) {
+    std::unordered_map<std::string_view, uint32_t> counts;
+    std::string uniform_name;
+    uniform_name.reserve(32);
+    for (int i = 0; i < m_textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        const auto &texture_type = Texture::uniform_name_convention(m_textures[i]->type());
+        uniform_name.append(texture_type);
+        const auto count = (counts[texture_type] += 1);
+        uniform_name.append(std::to_string(count));
+        shader->set_int(uniform_name, i);
+        glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
+        uniform_name.clear();
+    }
+    glBindVertexArray(m_vao);
+    glDrawElementsInstanced(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0, amount);
+    glBindVertexArray(0);
+}
+
 
 void Mesh::destroy() {
     glDeleteVertexArrays(1, &m_vao);

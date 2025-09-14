@@ -31,28 +31,32 @@ public:
     void destroy();
 
     /**
+     * @brief setting up for instanced drawing
+     */
+    void set_instanced_draw(glm::mat4 *model_matrix, int amount);
+
+    /**
+     * @brief instanced drawing the model using a given shader
+     */
+    void instanced_draw(const Shader *shader, int amount);
+
+    /**
     * @brief Returns the meshes in the model.
     * @returns The meshes in the model.
     */
-    const std::vector<Mesh> &meshes() const {
-        return m_meshes;
-    }
+    const std::vector<Mesh> &meshes() const { return m_meshes; }
 
     /**
     * @brief Returns the path to the model file from which the model was loaded.
     * @returns The path to the model.
     */
-    const std::filesystem::path &path() const {
-        return m_path;
-    }
+    const std::filesystem::path &path() const { return m_path; }
 
     /**
     * @brief Returns the name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
     * @returns The name of the model.
     */
-    const std::string &name() const {
-        return m_name;
-    }
+    const std::string &name() const { return m_name; }
 
 private:
     /**
@@ -79,9 +83,8 @@ private:
     Model(std::vector<Mesh> meshes, std::filesystem::path path,
           std::string name) : m_meshes(std::move(meshes))
                               , m_path(std::move(path))
-                              , m_name(std::move(name)) {
-    }
+                              , m_name(std::move(name)) {}
 };
-} // namespace engine
+}// namespace engine
 
 #endif//MATF_RG_PROJECT_MODEL_HPP
