@@ -333,24 +333,44 @@ void MainController::draw_skybox() {
 
 void MainController::set_instanced_tree() {
     glm::vec3 offsets[] = {
-            glm::vec3(1.0f, -0.5f, 0.0f),
-            glm::vec3(1.2f, -0.5f, 0.2f),
-            glm::vec3(1.2f, -0.5f, -0.4f),
-            glm::vec3(1.6f, -0.5f, -1.0f),
-            glm::vec3(1.5f, -0.5f, -0.8f),
-            glm::vec3(1.6f, -0.5f, -1.3f),
-            glm::vec3(2.0f, -0.5f, 1.1f),
-            glm::vec3(2.2f, -0.5f, 1.4f),
-            glm::vec3(2.5f, -0.5f, 1.8f),
-            glm::vec3(2.3f, -0.5f, 2.2f),
-            glm::vec3(2.1f, -0.5f, -1.7f),
-            glm::vec3(2.7f, -0.5f, -2.0f),
-            glm::vec3(0.6f, -0.5f, -2.3),
-            glm::vec3(0.8f, -0.5f, -1.8f),
-            glm::vec3(0.2f, -0.5f, -2.9f)
+            glm::vec3(2.8f, -0.5f, 0.0f),
+            glm::vec3(3.7f, -0.5f, 0.2f),
+            glm::vec3(3.7f, -0.5f, -0.4f),
+            glm::vec3(4.1f, -0.5f, -1.0f),
+            glm::vec3(4.2f, -0.5f, -0.8f),
+            glm::vec3(4.3f, -0.5f, -1.3f),
+            glm::vec3(3.3f, -0.5f, 1.1f),
+            glm::vec3(3.8f, -0.5f, 1.4f),
+            glm::vec3(3.9f, -0.5f, 1.8f),
+            glm::vec3(3.8f, -0.5f, 2.2f),
+            glm::vec3(4.1f, -0.5f, -1.7f),
+            glm::vec3(4.2f, -0.5f, -2.0f),
+            glm::vec3(4.0f, -0.5f, -2.3),
+            glm::vec3(4.0f, -0.5f, -1.8f),
+            glm::vec3(3.7f, -0.5f, -2.9f),
+            glm::vec3(3.5f, -0.5f, 3.1f),
+            glm::vec3(4.1f, -0.5f, 3.5f),
+            glm::vec3(3.8f, -0.5f, 3.9f),
+            glm::vec3(3.1f, -0.5f, -3.6f),
+            glm::vec3(2.6f, -0.5f, -4.0f),
+            glm::vec3(2.1f, -0.5f, -4.1f),
+            glm::vec3(1.6f, -0.5f, -3.7f),
+            glm::vec3(1.3f, -0.5f, -3.9f),
+            glm::vec3(1.2f, -0.5f, -2.9f),
+            glm::vec3(0.7f, -0.5f, -4.0f),
+            glm::vec3(0.1f, -0.5f, -3.4f),
+            glm::vec3(-0.4f, -0.5f, -3.7f),
+            glm::vec3(-0.8f, -0.5f, -4.0f),
+            glm::vec3(-1.5f, -0.5f, -3.3f),
+            glm::vec3(-2.2f, -0.5f, -3.8f),
+            glm::vec3(-2.8f, -0.5f, -3.4f),
+            glm::vec3(-3.3f, -0.5f, -3.4f),
+            glm::vec3(-4.0f, -0.5f, -4.0f),
+            glm::vec3(-4.4f, -0.5f, -3.5f),
+            glm::vec3(-4.9f, -0.5f, -3.1f)
     };
 
-    m_amount_tree = 15;
+    m_amount_tree = 34;
     m_model_tree = new glm::mat4[m_amount_tree];
     glm::vec3 scale_factor = glm::vec3(0.5f, 0.5f, 0.5f);
 
