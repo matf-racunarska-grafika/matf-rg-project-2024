@@ -12,6 +12,11 @@ namespace app {
 
 class Target {
 public:
+    static constexpr float ANGLE_LOWER = -88.0f;
+    static constexpr float ANGLE_UPPER = 0.0f;
+    static constexpr float ANGLE_SPEED = 29.0f;
+    static constexpr float SCALE = 0.11f;
+
     bool m_active{false};
     glm::vec3 box_min{};
     glm::vec3 box_max{};
@@ -21,11 +26,9 @@ public:
 
 private:
     engine::resources::Model *m_model;
-    float m_angle{-88.0f};
-    float m_scale{0.11f};
+    float m_angle{ANGLE_LOWER};
+    float m_scale{SCALE};
     glm::vec3 m_position{};
-
-
 };
 }// app
 
