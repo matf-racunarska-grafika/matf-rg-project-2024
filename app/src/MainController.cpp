@@ -32,6 +32,7 @@ void MainController::initialize() {
     set_crosshair();
     set_dirlight();
     set_spotlight();
+    set_rifle_dirlight();
 }
 
 void MainController::poll_events() {
@@ -117,10 +118,7 @@ void MainController::update_jump() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
 
-    if (!camera->Jump && platform->key(engine::platform::KEY_SPACE).state() == engine::platform::Key::State::JustPressed) {
-        spdlog::info("JUMPED!!!");
-        camera->Jump = true;
-    }
+    if (!camera->Jump && platform->key(engine::platform::KEY_SPACE).state() == engine::platform::Key::State::JustPressed) { camera->Jump = true; }
 
     camera->update_jump(platform->dt());
 }
@@ -131,6 +129,14 @@ void MainController::set_dirlight() {
     m_dirlight.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
     m_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
 }
+
+void MainController::set_rifle_dirlight() {
+    m_rifle_dirlight.direction = glm::vec3(0.5f, -0.7f, -0.3f);
+    m_rifle_dirlight.ambient = glm::vec3(0.1f, 0.1f, 0.1f);
+    m_rifle_dirlight.diffuse = glm::vec3(0.55f, 0.55f, 0.55f);
+    m_rifle_dirlight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+}
+
 
 void MainController::set_spotlight() {
     m_spotlight.ambient = glm::vec3(0.0f);
@@ -330,8 +336,6 @@ void MainController::draw_rifle() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("item");
     auto rifle = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ak_47");
 
-    // 0.3f -0.24f -0.43f
-    //  0.3f -0.24f -0.88f
     glm::vec3 offset = glm::vec3(0.3f, -0.24f, -0.875f);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, offset);
@@ -349,8 +353,8 @@ void MainController::draw_rifle() {
     glm::mat3 normal_matrix = glm::mat3(glm::transpose(glm::inverse(model)));
     shader->set_mat3("invNormal", normal_matrix);
 
-    m_dirlight.apply(shader, "dirlight");
-    m_spotlight.apply(shader, "spotlight");
+    m_dirlight.apply(shader, "scene_dirlight");
+    m_rifle_dirlight.apply(shader, "rifle_dirlight");
 
     shader->set_vec3("viewPos", graphics->camera()->Position);
 

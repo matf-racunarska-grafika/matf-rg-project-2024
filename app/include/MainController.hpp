@@ -56,6 +56,9 @@ class MainController final : public engine::core::Controller {
     DirectionalLight m_dirlight{};
     void set_dirlight();
 
+    DirectionalLight m_rifle_dirlight{};
+    void set_rifle_dirlight();
+
     SpotLight m_spotlight{};
     void set_spotlight();
     void update_spotlight();

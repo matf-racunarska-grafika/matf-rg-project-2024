@@ -70,7 +70,8 @@ in vec3 fragPos;
 in vec3 normal;
 in vec2 texCoord;
 
-uniform DirLight dirlight;
+uniform DirLight scene_dirlight;
+uniform DirLight rifle_dirlight;
 uniform SpotLight spotlight;
 uniform vec3 viewPos;
 
@@ -84,8 +85,8 @@ void main() {
     vec3 norm = normalize(normal);
     vec3 view_dir = normalize(viewPos - fragPos);
 
-    vec3 result = CalculateDirLight(dirlight, norm, view_dir);
-    result += CalculateSpotLight(spotlight, norm, fragPos, view_dir);
+    vec3 result = CalculateDirLight(scene_dirlight, norm, view_dir)
+    + CalculateDirLight(rifle_dirlight, norm, view_dir);
 
     fragColor = vec4(result, 1.0f);
 }
