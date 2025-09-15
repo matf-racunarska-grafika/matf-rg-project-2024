@@ -306,11 +306,15 @@ void MainController::draw_rifle() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("item");
     auto rifle = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ak_47");
 
-    glm::vec3 offset = glm::vec3(0.22f, -0.28f, -0.85f);
+    // 0.3f -0.24f -0.43f
+    //  0.3f -0.24f -0.88f
+    glm::vec3 offset = glm::vec3(0.3f, -0.24f, -0.875f);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, offset);
-    model = glm::rotate(model, glm::radians(110.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.5f));
+    model = glm::rotate(model, glm::radians(98.5f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(-3.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(3.3f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.7f));
 
     shader->use();
     shader->set_mat4("model", model);
