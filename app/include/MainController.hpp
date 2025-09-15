@@ -68,6 +68,8 @@ class MainController final : public engine::core::Controller {
     std::vector<Target> m_targets{};
     void set_targets();
     void draw_targets();
+    void awake_targets();
+    void update_targets();
 
     void draw_tree();
     void draw_cabin();

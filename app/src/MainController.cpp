@@ -37,6 +37,8 @@ void MainController::poll_events() {
         m_cursor_enable = !m_cursor_enable;
         platform->set_enable_cursor(m_cursor_enable);
     }
+
+    if (platform->key(engine::platform::KEY_P).state() == engine::platform::Key::State::JustPressed) { awake_targets(); }
 }
 
 bool MainController::loop() {
@@ -50,6 +52,7 @@ void MainController::update() {
     update_speed();
     update_jump();
     update_raycast();
+    update_targets();
 
     set_dirlight();
     set_spotlight();
@@ -180,6 +183,10 @@ void MainController::draw_targets() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("target");
     for (auto &target: m_targets) { target.draw(shader, m_dirlight, m_spotlight); }
 }
+
+void MainController::awake_targets() { for (auto &target: m_targets) { target.m_active = true; } }
+
+void MainController::update_targets() { for (auto &target: m_targets) { target.update(engine::core::Controller::get<engine::platform::PlatformController>()->dt()); } }
 
 
 void MainController::create_plane() {
