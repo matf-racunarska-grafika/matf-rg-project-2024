@@ -58,7 +58,7 @@ class MainController final : public engine::core::Controller {
 
     SpotLight m_spotlight{};
     void set_spotlight();
-    void turn_spotlight();
+    void update_spotlight();
 
     int m_amount_tree{};
     glm::mat4 *m_model_tree{};
