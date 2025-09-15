@@ -53,6 +53,13 @@ public:
      */
     void instanced_draw(const Shader *shader, int amount);
 
+
+    /**
+     * @brief used later for calculating bounding box of model
+     */
+    glm::vec3 min_vertex;
+    glm::vec3 max_vertex;
+
 private:
     /**
     * @brief Constructs a Mesh object.
@@ -62,6 +69,11 @@ private:
      */
     Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
          std::vector<Texture *> textures);
+
+    /**
+     * @brief calculating min_vertex and max_vertex
+     */
+    void calculate_minmax_vertex(const std::vector<Vertex> &vertices);
 
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};

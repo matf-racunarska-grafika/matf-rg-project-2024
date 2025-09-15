@@ -6,6 +6,23 @@
 
 namespace engine::resources {
 
+void Mesh::calculate_minmax_vertex(const std::vector<Vertex> &vertices) {
+    unsigned int n = vertices.size();
+    min_vertex = glm::vec3(vertices[0].Position.x, vertices[0].Position.y, vertices[0].Position.z);
+    max_vertex = glm::vec3(vertices[0].Position.x, vertices[0].Position.y, vertices[0].Position.z);
+
+    for (unsigned int i = 1; i < n; i++) {
+        auto &position = vertices[i].Position;
+        min_vertex.x = std::min(min_vertex.x, position.x);
+        min_vertex.y = std::min(min_vertex.y, position.y);
+        min_vertex.z = std::min(min_vertex.z, position.z);
+        max_vertex.x = std::max(max_vertex.x, position.x);
+        max_vertex.y = std::max(max_vertex.y, position.y);
+        max_vertex.z = std::max(max_vertex.z, position.z);
+    }
+}
+
+
 Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
            std::vector<Texture *> textures) {
     // NOLINTBEGIN
@@ -42,6 +59,7 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
     m_vao = VAO;
     m_num_indices = indices.size();
     m_textures = std::move(textures);
+    calculate_minmax_vertex(vertices);
 }
 
 void Mesh::set_instanced_draw(glm::mat4 *model_matrix, int amount) {
