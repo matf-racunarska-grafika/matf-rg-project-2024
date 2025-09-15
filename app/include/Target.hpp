@@ -28,6 +28,10 @@ public:
     void put_down(float dt);
     void update(float dt);
 
+    void calculate_bounding_box();
+
+    bool check_boundingbox_intersect(const glm::vec3 &raycast_origin, const glm::vec3 &raycast_dir);
+
 private:
     engine::resources::Model *m_model;
     float m_angle{ANGLE_LOWER};
