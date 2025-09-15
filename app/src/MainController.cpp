@@ -29,6 +29,7 @@ void MainController::initialize() {
     engine::core::Controller::get<engine::graphics::GraphicsController>()->camera()->Position = glm::vec3(0.0f, 0.0f, 5.0f);
     set_instanced_tree();
     set_targets();
+    set_crosshair();
 }
 
 void MainController::poll_events() {
@@ -159,6 +160,7 @@ void MainController::draw() {
 
     draw_rifle();
     draw_skybox();
+    draw_crosshair();
 }
 
 void MainController::end_draw() { engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers(); }
@@ -430,6 +432,51 @@ void MainController::draw_instanced_tree() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     graphics->instanced_draw(tree, shader, m_model_tree, m_amount_tree);
+}
+
+void MainController::set_crosshair() {
+    float vertices[] = {
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            -1.0f, -1.0f, 0.0f
+    };
+
+    unsigned vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &m_chrosshair_vao);
+    glBindVertexArray(m_chrosshair_vao);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+
+void MainController::draw_crosshair() {
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("crosshair");
+    shader->use();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(0.01f));
+    shader->set_mat4("model", model);
+    shader->set_vec3("color", glm::vec3(0.0f, 1.0f, 0.0f));
+
+    engine::graphics::OpenGL::disable_depth_testing();
+
+    glBindVertexArray(m_chrosshair_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    engine::graphics::OpenGL::enable_depth_testing();
 }
 
 

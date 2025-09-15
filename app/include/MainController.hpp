@@ -76,6 +76,10 @@ class MainController final : public engine::core::Controller {
     void draw_rifle();
     void draw_target();
     void draw_skybox();
+
+    unsigned m_chrosshair_vao{};
+    void set_crosshair();
+    void draw_crosshair();
 };
 }// app
 
