@@ -39,7 +39,10 @@ void MainController::poll_events() {
         platform->set_enable_cursor(m_cursor_enable);
     }
 
-    if (platform->key(engine::platform::KEY_P).state() == engine::platform::Key::State::JustPressed) { awake_targets(); }
+    if (platform->key(engine::platform::KEY_P).state() == engine::platform::Key::State::JustPressed) {
+        awake_targets();
+        create_boundingbox_targets();
+    }
 }
 
 bool MainController::loop() {
@@ -54,6 +57,7 @@ void MainController::update() {
     update_jump();
     update_raycast();
     update_targets();
+    check_boundingbox_intersects();
 
     set_dirlight();
     set_spotlight();
@@ -190,6 +194,12 @@ void MainController::awake_targets() { for (auto &target: m_targets) { target.m_
 
 void MainController::update_targets() { for (auto &target: m_targets) { target.update(engine::core::Controller::get<engine::platform::PlatformController>()->dt()); } }
 
+void MainController::create_boundingbox_targets() { for (auto &target: m_targets) { if (target.m_active) { target.calculate_bounding_box(); } } }
+
+void MainController::check_boundingbox_intersects() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::MOUSE_BUTTON_LEFT).state() == engine::platform::Key::State::JustPressed) { for (auto &target: m_targets) { if (target.check_boundingbox_intersect(m_raycast.origin, m_raycast.dir)) { target.m_active = false; } } }
+}
 
 void MainController::create_plane() {
     float vertices[] = {

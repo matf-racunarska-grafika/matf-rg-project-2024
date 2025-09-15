@@ -70,6 +70,9 @@ class MainController final : public engine::core::Controller {
     void draw_targets();
     void awake_targets();
     void update_targets();
+    void create_boundingbox_targets();
+    void check_boundingbox_intersects();
+
 
     void draw_tree();
     void draw_cabin();
