@@ -16,7 +16,6 @@ Target::Target(engine::resources::Model *model, const glm::vec3 &position) {
     m_position = position;
 }
 
-
 void Target::draw(const engine::resources::Shader *shader, const DirectionalLight &dirlight, const SpotLight &spotlight) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
@@ -41,5 +40,20 @@ void Target::draw(const engine::resources::Shader *shader, const DirectionalLigh
     m_model->draw(shader);
 }
 
+void Target::put_up(float dt) {
+    if (m_angle < ANGLE_UPPER) {
+        float angle = m_angle + ANGLE_SPEED * dt;
+        m_angle = std::min(angle, ANGLE_UPPER);
+    }
+}
+
+void Target::put_down(float dt) {
+    if (m_angle > ANGLE_LOWER) {
+        float angle = m_angle - ANGLE_SPEED * dt;
+        m_angle = std::max(angle, ANGLE_LOWER);
+    }
+}
+
+void Target::update(float dt) { if (m_active) { put_up(dt); } else { put_down(dt); } }
 
 }// app

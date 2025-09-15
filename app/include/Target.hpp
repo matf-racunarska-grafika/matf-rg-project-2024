@@ -14,7 +14,7 @@ class Target {
 public:
     static constexpr float ANGLE_LOWER = -88.0f;
     static constexpr float ANGLE_UPPER = 0.0f;
-    static constexpr float ANGLE_SPEED = 29.0f;
+    static constexpr float ANGLE_SPEED = 75.0f;
     static constexpr float SCALE = 0.11f;
 
     bool m_active{false};
@@ -23,6 +23,10 @@ public:
 
     Target(engine::resources::Model *model, const glm::vec3 &position);
     void draw(const engine::resources::Shader *shader, const DirectionalLight &dirlight, const SpotLight &spotlight);
+
+    void put_up(float dt);
+    void put_down(float dt);
+    void update(float dt);
 
 private:
     engine::resources::Model *m_model;
