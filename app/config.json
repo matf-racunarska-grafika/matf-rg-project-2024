@@ -9,6 +9,9 @@
       },
       "island": {
         "path": "island/4.obj"
+      },
+      "tree": {
+        "path": "drvo/untitled.obj"
       }
     }
   },

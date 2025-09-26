@@ -26,6 +26,8 @@ class MainController : public engine::core::Controller {
 
     void draw_skybox();
 
+    void draw_tree();
+
     void draw() override;
 
     void end_draw() override;
