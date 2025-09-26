@@ -139,6 +139,26 @@ void MainController::draw_bench() {
     bench->draw(shader);
 }
 
+void MainController::draw_lamp() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *lamp = resources->model("lamp");
+
+
+    //Shader
+    engine::resources::Shader *shader = resources->shader("basic");
+    shader->use();
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -1.0f));
+    model = glm::scale(model, glm::vec3(0.2f));
+
+    shader->set_mat4("model", model);
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_mat4("projection", graphics->projection_matrix());
+
+    lamp->draw(shader);
+}
+
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GuiController>();
     if (gui_controller->is_enabled()) { return; }
@@ -176,6 +196,7 @@ void MainController::draw() {
     draw_island();
     draw_tree();
     draw_bench();
+    draw_lamp();
     draw_skybox();
 }
 

@@ -15,6 +15,9 @@
       },
       "bench": {
         "path": "bench2/Bench.obj"
+      },
+      "lamp": {
+        "path": "streetlamp2/StreetLamp.obj"
       }
     }
   },

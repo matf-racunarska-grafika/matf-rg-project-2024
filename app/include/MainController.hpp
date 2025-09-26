@@ -30,6 +30,8 @@ class MainController : public engine::core::Controller {
 
     void draw_bench();
 
+    void draw_lamp();
+
     void draw() override;
 
     void end_draw() override;
