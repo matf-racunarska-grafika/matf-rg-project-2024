@@ -89,7 +89,7 @@ void MainController::draw_island() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
+    model = glm::translate(model, glm::vec3(-4.0f, 14.37f, -4.5f));
     model = glm::scale(model, glm::vec3(0.1f));
 
     shader->set_mat4("model", model);
