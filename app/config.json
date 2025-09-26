@@ -12,6 +12,9 @@
       },
       "tree": {
         "path": "tree/untitled.obj"
+      },
+      "bench": {
+        "path": "bench2/Bench.obj"
       }
     }
   },

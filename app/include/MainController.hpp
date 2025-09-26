@@ -28,6 +28,8 @@ class MainController : public engine::core::Controller {
 
     void draw_tree();
 
+    void draw_bench();
+
     void draw() override;
 
     void end_draw() override;

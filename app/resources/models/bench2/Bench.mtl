@@ -1,0 +1,127 @@
+# Blender MTL File: 'Bench.blend'
+# Material Count: 9
+
+newmtl Flower_ornament
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Flower_ornament_Base_Color.png
+map_Ns Flower_ornament_Roughness.png
+map_Ks Flower_ornament_Metallic.png
+map_Bump Flower_ornament_Normal_DirectX.png
+
+newmtl Foot.001
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Foot.001_Base_Color.png
+map_Ns Foot.001_Roughness.png
+map_Ks Foot.001_Metallic.png
+map_Bump Foot.001_Normal_DirectX.png
+                                 
+newmtl None
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd None_Base_Color.png
+map_Ns None_Roughness.png
+map_Ks None_Metallic.png
+map_Bump None_Normal_DirectX.png
+
+newmtl Sidebar
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Sidebar_Base_Color.png
+map_Ns Sidebar_Roughness.png
+map_Ks Sidebar_Metallic.png
+map_Bump Sidebar_Normal_DirectX.png
+
+newmtl Sidebar?ornament
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Sidebar_ornament_Base_Color.png
+map_Ns Sidebar_ornament_Roughness.png
+map_Ks Sidebar_ornament_Metallic.png
+map_Bump Sidebar_ornament_Normal_DirectX.png
+
+newmtl Sidebar?ornament_Untitled
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Sidebar_ornament_Untitled_Base_Color.png
+map_Ns Sidebar_ornament_Untitled_Roughness.png
+map_Ks Sidebar_ornament_Untitled_Metallic.png
+map_Bump Sidebar_ornament_Untitled_Normal_DirectX.png
+
+newmtl Stöd
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Stöd_Base_Color.png
+map_Ns Stöd_Roughness.png
+map_Ks Stöd_Metallic.png
+map_Bump Stöd_Normal_DirectX.png
+
+newmtl Svets
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Svets_Base_Color.png
+map_Ns Svets_Roughness.png
+map_Ks Svets_Metallic.png
+map_Bump Svets_Normal_DirectX.png
+
+newmtl fot?ornaments
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd fot_ornaments_Base_Color.png
+map_Ns fot_ornaments_Roughness.png
+map_Ks fot_ornaments_Metallic.png
+map_Bump fot_ornaments_Normal_DirectX.png
+
