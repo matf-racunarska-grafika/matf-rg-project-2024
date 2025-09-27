@@ -34,6 +34,8 @@ class MainController : public engine::core::Controller {
 
     void draw_bush();
 
+    void draw_path();
+
     void draw() override;
 
     void end_draw() override;

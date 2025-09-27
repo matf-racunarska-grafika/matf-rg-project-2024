@@ -21,6 +21,9 @@
       },
       "bush": {
         "path": "bush/hedge.obj"
+      },
+      "path": {
+        "path": "road/source/road.obj"
       }
     }
   },
