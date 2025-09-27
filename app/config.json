@@ -18,6 +18,9 @@
       },
       "lamp": {
         "path": "streetlamp2/StreetLamp.obj"
+      },
+      "bush": {
+        "path": "bush/hedge.obj"
       }
     }
   },

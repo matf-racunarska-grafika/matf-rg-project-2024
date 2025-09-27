@@ -32,6 +32,8 @@ class MainController : public engine::core::Controller {
 
     void draw_lamp();
 
+    void draw_bush();
+
     void draw() override;
 
     void end_draw() override;
