@@ -37,11 +37,15 @@ namespace engine::resources {
         * @param shader The shader to use for drawing.
         */
         void draw(const Shader *shader);
+        // overloaded
+        int draw(const Shader *shader, const int size);
 
         /**
         * @brief Destroys the mesh in the OpenGL context.
         */
         void destroy();
+
+        int initialization_mesh_instances(const std::vector<glm::mat4> &instances);
 
     private:
         /**

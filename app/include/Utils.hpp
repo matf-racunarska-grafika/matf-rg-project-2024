@@ -14,39 +14,49 @@
 
 #include <spdlog/spdlog.h>
 
-#define VECTOR3_A(x,y,z) glm::vec3(x,y,z)
 #define VECTOR3 glm::vec3
-#define VECTOR4_A(x,y,z,w) glm::vec4(x,y,z,w)
 #define VECTOR4 glm::vec4
 
-struct dirLight{
-        VECTOR3 direction;
-        VECTOR3 diffuse;
-        VECTOR3 ambient;
-        VECTOR3 specular;
-};
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
 
-struct pointLight{
-      VECTOR3 position;
-      VECTOR3 diffuse;
-      VECTOR3 ambient;
-      VECTOR3 specular;
-      VECTOR3 attenuation;
-      float constantAttenuation;
-      float linearAttenuation;
-      float quadraticAttenuation;
-};
+#define offsetof(type, member) __builtin_offsetof(type, member)
+#define typeof_member(T, m)	typeof(((T*)0)->m)
+
+#define container_of(ptr, type, member) ({				        \
+    void *__mptr = (void *)(ptr);					            \
+    ((type *)(__mptr - offsetof(type, member))); })
 
 
-struct spotLight{
-    VECTOR3 position;
-    VECTOR3 direction;
-    VECTOR3 ambient;
-    VECTOR3 specular;
-    VECTOR3 diffuse;
-    float constantAttenuation;
-    float linearAttenuation;
-    float quadraticAttenuation;
+struct list_head{
+    struct list_head *prev, *next;
 };
+
+static inline void list_init(struct list_head* ptr){
+    ptr->prev = ptr;
+    ptr->next = ptr;
+}
+
+static inline void list_del(struct list_head* ptr){
+    ptr->next->prev = ptr->prev;
+    ptr->prev->next = ptr->next;
+    ptr->next = NULL;
+    ptr->prev = NULL;
+}
+
+static inline void list_add(struct list_head* list, struct list_head* add){
+    list->next = add;
+    add->prev = list;
+}
+
+#define extract_from_list(_list, structure, member)     \
+        container_of(_list, structure, member)
+
+#define extract_next_from_list(_list, structure, member)    \
+        extract_from_list((_list)->next, structure, member)
+
+#define list_for_each(_list, head)  \
+    for(_list = (head); _list != NULL; _list = _list->next)
+
 
 #endif //UTILS_HPP
