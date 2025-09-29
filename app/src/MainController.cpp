@@ -100,12 +100,12 @@ namespace app{
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *tree = resources->model("tree1");
-        engine::resources::Shader *shader = resources->shader("tree");
+        engine::resources::Shader *shader = resources->shader("tree1");
         shader->use();
         set_shader(shader, graphics, "TREE");
 
 
-        const long instanced = 100;
+        const long instanced = 10;
         std::vector<glm::mat4> tree1_models(instanced);
 
         float y = TREE1POSITION.y;
@@ -117,21 +117,19 @@ namespace app{
             model = glm::scale(model, glm::vec3(1.6f));
             tree1_models[i] = model;
         }
-
-        
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -4.6f, 10.0f));
-        model = glm::scale(model, glm::vec3(1.6f));
-        shader->set_mat4("model", model);
-        tree->draw(shader);
+        if (tree->initialization_instances(tree1_models) != 0) {
+            throw std::runtime_error("Failed to initialize instances");
+        }
+        if (tree->draw_instanced(shader, instanced) != 0) {
+            throw std::runtime_error("Failed to draw instances");
+        }
     }
 
     void MainController::draw_tree2() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model *tree = resources->model("tree2");
-        engine::resources::Shader *shader = resources->shader("tree");
+        engine::resources::Shader *shader = resources->shader("tree2");
         shader->use();
         set_shader(shader, graphics, "TREE");
         glm::mat4 model = glm::mat4(1.0f);
@@ -204,7 +202,6 @@ namespace app{
             camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
         }
     }
-
 
     void MainController::update() {
         update_camera();

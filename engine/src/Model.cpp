@@ -29,12 +29,10 @@ namespace engine::resources {
             if (ret != 0) {
                 throw std::runtime_error("failed to draw instanced meshes");
             }
-            ret = mesh.draw_instanced(shader, size);
+            ret = mesh.draw(shader, size);
         }
         return ret;
     }
-
-
 
     void Model::destroy() {
         for (auto &mesh: m_meshes) {

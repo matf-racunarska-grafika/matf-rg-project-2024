@@ -1,4 +1,4 @@
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/util/Utils.hpp>
 #include <engine/resources/Mesh.hpp>
@@ -86,18 +86,16 @@ namespace engine::resources {
     }
 
     int Mesh::initialization_mesh_instances(const std::vector<glm::mat4> &instances) {
-
-
-        int ptr;
-        CHECKED_GL_CALL(glGenBuffers, 1, &ptr);
+        GLuint buf;
+        glGenBuffers(1, &buf);
         CHECKED_GL_CALL(glBindVertexArray, m_vao);
-        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, ptr);
+        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, buf);
         CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, instances.size() * sizeof(glm::mat4), instances.data() ,GL_STATIC_DRAW);
 
         int sizeofvector = sizeof(glm::mat4);
-        for (int i = 0; i < instances.size(); i++) {
+        for (int i = 0; i < 4; i++) {
             CHECKED_GL_CALL(glEnableVertexAttribArray, 3+i);
-            CHECKED_GL_CALL(glVertexAttribPointer, 3+i, 4, GL_FLOAT, GL_FALSE, sizeofvector, (void *)(i*sizeofvector));
+            CHECKED_GL_CALL(glVertexAttribPointer, 3+i, 4, GL_FLOAT, GL_FALSE, sizeofvector, (void *)(i * sizeofvector));
             CHECKED_GL_CALL(glVertexAttribDivisor, 3+i, 1);
         }
 
