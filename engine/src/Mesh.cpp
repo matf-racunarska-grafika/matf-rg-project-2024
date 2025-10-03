@@ -86,21 +86,21 @@ namespace engine::resources {
     }
 
     int Mesh::initialization_mesh_instances(const std::vector<glm::mat4> &instances) {
-        GLuint buf;
+        GLuint buf = 0;
         glGenBuffers(1, &buf);
-        CHECKED_GL_CALL(glBindVertexArray, m_vao);
-        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, buf);
-        CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, instances.size() * sizeof(glm::mat4), instances.data() ,GL_STATIC_DRAW);
+        glBindVertexArray(m_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, buf);
+        glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(glm::mat4),
+                     instances.data(), GL_STATIC_DRAW);
 
-        int sizeofvector = sizeof(glm::mat4);
-        for (int i = 0; i < 4; i++) {
-            CHECKED_GL_CALL(glEnableVertexAttribArray, 3+i);
-            CHECKED_GL_CALL(glVertexAttribPointer, 3+i, 4, GL_FLOAT, GL_FALSE, sizeofvector, (void *)(i * sizeofvector));
-            CHECKED_GL_CALL(glVertexAttribDivisor, 3+i, 1);
+        std::size_t vec4Size = sizeof(glm::vec4);
+        for (int i = 0; i < 4; ++i) {
+            int index = 3+i;
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+                                        (const void*)(sizeof(glm::vec4) * i));
+            glVertexAttribDivisor(index, 1);
         }
-
-        CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, 0);
-        CHECKED_GL_CALL(glBindVertexArray, 0);
 
         return 0;
     }

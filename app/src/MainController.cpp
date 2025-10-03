@@ -3,12 +3,14 @@
 //
 
 #include "Utils.hpp"
+#include "MainController.hpp"
+
+#include <iostream>
 
 #include "GUIController.hpp"
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
 void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsController*, const char*);
-
 
 
 #define MAXCNUM 5
@@ -104,19 +106,23 @@ namespace app{
         shader->use();
         set_shader(shader, graphics, "TREE");
 
+        const long instanced = 5;
 
-        const long instanced = 10;
-        std::vector<glm::mat4> tree1_models(instanced);
+        if (tree1_models.empty()) {
 
-        float y = TREE1POSITION.y;
-        for (int i = 0; i < instanced; i++) {
-            float x = TREE1POSITION.x+(int)(1.0f+sin(glfwGetTime())*2.0);
-            float z = TREE1POSITION.z+(int)(1.0f+sin(glfwGetTime())*2.0);
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, glm::vec3(x, y, z));
-            model = glm::scale(model, glm::vec3(1.6f));
-            tree1_models[i] = model;
+            float y = TREE1POSITION.y;
+            for (int i = 0; i < instanced; i++) {
+                float x = TREE1POSITION.x+(float)(5.0f+sin(glfwGetTime())*i);
+                float z = TREE1POSITION.z+(float)(5.0f+cos(glfwGetTime())*i);
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y, z));
+                printf("uso\n");
+
+                model = glm::scale(model, glm::vec3(2.6f));
+                tree1_models.push_back(model);
+            }
         }
+
         if (tree->initialization_instances(tree1_models) != 0) {
             throw std::runtime_error("Failed to initialize instances");
         }
@@ -225,7 +231,7 @@ namespace app{
         draw_house();
         draw_ufo();
         draw_lamp();
-        draw_skyboxes();
+        //draw_skyboxes();
     }
     void MainController::end_draw() {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();

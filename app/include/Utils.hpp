@@ -20,7 +20,6 @@
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
 
-#define offsetof(type, member) __builtin_offsetof(type, member)
 #define typeof_member(T, m)	typeof(((T*)0)->m)
 
 #define container_of(ptr, type, member) ({				        \
