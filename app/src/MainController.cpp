@@ -4,17 +4,15 @@
 
 #include "Utils.hpp"
 #include "MainController.hpp"
-
+#include <math.h>
 #include <iostream>
 
 #include "GUIController.hpp"
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
-void set_shader(engine::resources::Shader* shader, engine::graphics::GraphicsController*, const char*);
-
-
 #define MAXCNUM 5
 #define POINT_LIGHT_NUM 2
+#define RADIUS 3
 #define POSITIONLAMP1 VECTOR3(2.0f, -5.0f, 1.0f)
 #define POSITIONLAMP2 VECTOR3(-0.5f, -5.0f, 1.0f)
 #define TREE1POSITION VECTOR3(0.0f, -4.6f, 10.0f)
@@ -27,6 +25,8 @@ VECTOR3 UFO_POSITON = VECTOR3(0.0f, 0.0f, -3.0f);
 VECTOR3 HOUSE_POSITION = VECTOR3(0.0f, -5.05f, -2.0f);
 
 VECTOR3 POSITIONLAMPS[2] = {POSITIONLAMP1, POSITIONLAMP2};
+
+void set_shader(engine::resources::Shader *shader, engine::graphics::GraphicsController* graphics, const char* IDENTIFIER);
 
 namespace app{
 
@@ -106,19 +106,28 @@ namespace app{
         shader->use();
         set_shader(shader, graphics, "TREE");
 
-        const long instanced = 5;
+        const long instanced = 60;
 
         if (tree1_models.empty()) {
-
             float y = TREE1POSITION.y;
-            for (int i = 0; i < instanced; i++) {
-                float x = TREE1POSITION.x+(float)(5.0f+sin(glfwGetTime())*i);
-                float z = TREE1POSITION.z+(float)(5.0f+cos(glfwGetTime())*i);
+            /*
+             * x_i = RADIUS*cos(2pi*i/n)
+             * y_i = RADIUS*sin(2pi*i/n)
+             */
+            for (int i = 0; i < 30; i++) {
+                float x = 10.0 * sin((2*M_PI*i)/(instanced/2));
+                float z = 10.0 * cos((2*M_PI*i)/(instanced/2));
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(x, y, z));
-                printf("uso\n");
-
-                model = glm::scale(model, glm::vec3(2.6f));
+                model = glm::scale(model, glm::vec3(0.6f));
+                tree1_models.push_back(model);
+            }
+            for (int i = 0; i < 30; i++) {
+                float x = 16.0 * sin((2*M_PI*i)/(instanced/2));
+                float z = 16.0 * cos((2*M_PI*i)/(instanced/2));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y, z));
+                model = glm::scale(model, glm::vec3(0.6f));
                 tree1_models.push_back(model);
             }
         }
@@ -138,11 +147,38 @@ namespace app{
         engine::resources::Shader *shader = resources->shader("tree2");
         shader->use();
         set_shader(shader, graphics, "TREE");
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -4.6f, -10.0f));
-        model = glm::scale(model, glm::vec3(1.6f));
-        shader->set_mat4("model", model);
-        tree->draw(shader);
+
+        const long instanced = 60;
+
+        if (tree2_models.empty()) {
+            float y = TREE1POSITION.y;
+            /*
+             * x_i = RADIUS*cos(2pi*i/n)
+             * y_i = RADIUS*sin(2pi*i/n)
+             */
+            for (int i = 0; i < 30; i++) {
+                float x = 13.0 * sin((2*M_PI*i)/(instanced/2));
+                float z = 13.0 * cos((2*M_PI*i)/(instanced/2));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y, z));
+                model = glm::scale(model, glm::vec3(1.6f));
+                tree2_models.push_back(model);
+            }
+            for (int i = 0; i < 30; i++) {
+                float x = 19.0 * sin((2*M_PI*i)/(instanced/2));
+                float z = 19.0 * cos((2*M_PI*i)/(instanced/2));
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, glm::vec3(x, y, z));
+                model = glm::scale(model, glm::vec3(1.4f));
+                tree2_models.push_back(model);
+            }
+        }
+        if (tree->initialization_instances(tree2_models) != 0) {
+            throw std::runtime_error("Failed to initialize instances");
+        }
+        if (tree->draw_instanced(shader, instanced) != 0) {
+            throw std::runtime_error("Failed to draw instances");
+        }
     }
 
     void MainController::draw_sun() {

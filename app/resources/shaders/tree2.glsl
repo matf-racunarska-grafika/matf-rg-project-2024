@@ -5,6 +5,11 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
+layout (location = 3) in vec4 instancecol1;
+layout (location = 4) in vec4 instancecol2;
+layout (location = 5) in vec4 instancecol3;
+layout (location = 6) in vec4 instancecol4;
+
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
@@ -14,7 +19,9 @@ uniform mat4 view;
 uniform mat4 projection;
 
 void main(){
-    FragPos = vec3(model * vec4(aPos, 1.0));
+
+    mat4 celamatrica = mat4(instancecol1,instancecol2,instancecol3,instancecol4);
+    FragPos = vec3(celamatrica * vec4(aPos, 1.0));
     Normal = aNormal;
     TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);

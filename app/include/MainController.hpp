@@ -6,6 +6,7 @@
 #define MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
 #include "Utils.hpp"
+#include "../../engine/libs/assimp/contrib/rapidjson/include/rapidjson/document.h"
 
 namespace app {
 
@@ -39,7 +40,7 @@ public:
         return "app::MainController";
     }
     std::vector<glm::mat4> tree1_models;
-
+    std::vector<glm::mat4> tree2_models;
 };
 
 }
