@@ -50,7 +50,7 @@ void MainController::begin_draw() {
 }
 
 void MainController::draw() {
-    draw_backpack();
+    draw_spongebob();
     draw_skybox();
 }
 
@@ -58,16 +58,21 @@ void MainController::end_draw() {
     engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
 }
 
-void MainController::draw_backpack() {
+void MainController::draw_spongebob() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+    auto spongebob = engine::core::Controller::get<engine::resources::ResourcesController>()->model("spongebob");
+
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-    shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
-    backpack->draw(shader);
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
+    model = glm::scale(model, glm::vec3(0.5f * m_spongebob_scale));
+
+    shader->set_mat4("model", model);
+    spongebob->draw(shader);
 }
 
 void MainController::draw_skybox() {

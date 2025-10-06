@@ -33,11 +33,11 @@ private:
 
     void draw_skybox();
 
-    void draw_backpack();
+    void draw_spongebob();
 
     void update_camera();
 
-    float m_backpack_scale{1.0f};
+    float m_spongebob_scale{1.0f};
     bool m_draw_gui{false};
     bool m_cursor_enabled{true};
 };
