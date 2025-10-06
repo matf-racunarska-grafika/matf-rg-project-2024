@@ -189,12 +189,37 @@ void MainController::draw_path() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -0.5f));
+    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -1.5f));
     model = glm::scale(model, glm::vec3(0.3f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
+
+    path->draw(shader);
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -1.5f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.3f));
+    shader->set_mat4("model", model);
+
+    path->draw(shader);
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -1.075f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.3f));
+    shader->set_mat4("model", model);
+
+    path->draw(shader);
+
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -1.075f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.3f));
+    shader->set_mat4("model", model);
 
     path->draw(shader);
 }
