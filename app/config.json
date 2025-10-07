@@ -12,6 +12,9 @@
       },
       "suv": {
         "path": "suv/suv.obj"
+      },
+      "house1": {
+        "path": "house1/house_10.obj"
       }
     }
   },

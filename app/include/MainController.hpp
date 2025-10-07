@@ -20,6 +20,8 @@ class MainController : public engine::core::Controller {
 
     void draw_truck();
 
+    void draw_house();
+
     void update_camera();
 
     void update() override;
