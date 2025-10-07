@@ -41,15 +41,15 @@ namespace app  {
 
 	    void update() override;
 
-        void drawLightGUI();
-
-        static void drawBackpack();
-
 	    static void drawCar();
 
 	    static void drawHouse();
 
 	    static void drawBird();
+
+	    static void drawDog();
+
+	    static void drawCat();
 
 	    void begin_draw() override;
 

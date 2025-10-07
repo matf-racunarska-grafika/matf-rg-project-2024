@@ -23,6 +23,9 @@ namespace app {
     float birdHeight = 2.0f;
     bool birdFlying = false;
 
+    bool catVisible = true;
+    bool dogVisible = true;
+
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
         void on_mouse_move(engine::platform::MousePosition position) override;
     };
@@ -144,24 +147,6 @@ namespace app {
         updateBird(dt);
     }
 
-    void MainController::drawLightGUI() {
-       /* if (ImGui::Begin("Light Control")) {
-            ImGui::Text("Point Light");
-            ImGui::ColorEdit3("Point Color", &pointLight.color[0]);
-            ImGui::DragFloat3("Point Position", &pointLight.position[0], 0.1f);
-            ImGui::DragFloat("Linear", &pointLight.l, 0.01f, 0.0f, 1.0f);
-            ImGui::DragFloat("Quadratic", &pointLight.q, 0.01f, 0.0f, 1.0f);
-
-            ImGui::Separator();
-
-            ImGui::Text("Directional Light");
-            ImGui::ColorEdit3("Dir Color", &dirLight.color[0]);
-            ImGui::DragFloat3("Direction", &dirLight.direction[0], 0.1f);
-        }
-
-        ImGui::End();*/
-    }
-
     void MainController::drawCar() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -256,14 +241,61 @@ namespace app {
         graphics->draw_skybox(shader, skybox);
     }
 
+    void MainController::drawCat() {
+        if (!catVisible) {
+            return;
+        }
+
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *cat = resources->model("cat");
+        engine::resources::Shader *shader  = resources->shader("basic");
+        shader->use();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(1.0f, 0.0f, -4.0f));
+        model           = glm::scale(model, glm::vec3(0.009f));
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+        shader->set_mat4("model", model);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat3("normalMatrix", normalMatrix);
+
+        cat->draw(shader);
+    }
+
+    void MainController::drawDog() {
+        if (!dogVisible) {
+            return;
+        }
+
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *dog = resources->model("dog");
+        engine::resources::Shader *shader  = resources->shader("basic");
+        shader->use();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::translate(model, glm::vec3(-1.0f, 0.0f, -4.0f));
+        model           = glm::scale(model, glm::vec3(0.005f));
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+        shader->set_mat4("model", model);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat3("normalMatrix", normalMatrix);
+
+        dog->draw(shader);
+    }
+
     void MainController::draw() {
-        // drawBackpack();
         drawCar();
         drawHouse();
         drawSkybox();
         drawBird();
-        drawLightGUI();
-
+        drawCat();
+        drawDog();
     }
 
     void MainController::end_draw() {

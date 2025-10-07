@@ -15,6 +15,14 @@
       "bird": {
         "path": "bird/Hummingbird.obj",
         "flip_uvs": true
+      },
+      "dog": {
+        "path": "Beagle/Mesh_Beagle.obj",
+        "flip_uvs": true
+      },
+      "cat": {
+        "path": "Kitten/Mesh_Kitten.obj",
+        "flip_uvs": true
       }
     }
   },
