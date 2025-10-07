@@ -217,7 +217,7 @@ void MainController::draw_bush() {
             glm::vec3(1.7f, 0.13f, -1.1f),
             glm::vec3(-3.0f, -1.38f, -1.0f),
             glm::vec3(-2.3f, -1.38f, 0.1f),
-            glm::vec3(-1.5f, -1.38f, -1.7f),
+            glm::vec3(-1.7f, -1.38f, -1.5f),
             glm::vec3(-0.7f, -3.11f, -1.9f),
             glm::vec3(0.5f, -3.11f, -2.1f),
             glm::vec3(-0.9f, -3.11f, -2.6f),
