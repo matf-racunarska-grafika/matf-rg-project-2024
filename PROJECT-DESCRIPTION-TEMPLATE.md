@@ -1,8 +1,10 @@
 # {NAME-OF-THE-PROJECT}
 
 {mi22133} - {Miona Sretenovic}  
-{Projekt prikazuje 3D scenu sa automobilom i kućom, osvetljenu sa directional i point svetlom. Boje svetla i njihova
-pozicija mogu se podešavati preko GUI-ja ili tastature, dok se događaji u sceni aktiviraju nakon definisanog vremena.}
+{Projekt prikazuje 3D scenu sa automobilom, kućom, psom, mačkom i pticom.
+Scena je osvetljena sa directional i point svetlom. Pozicija svetla 
+se može podešavati preko tastature, dok se neki događaji u sceni aktiviraju nakon
+definisanog vremena.}
 
 ## Controls
 
@@ -22,7 +24,7 @@ pozicija mogu se podešavati preko GUI-ja ili tastature, dok se događaji u scen
 [+] Model with lighting
 [+] Two types of lighting with customizable colors and movement through GUI or ACTIONS
 [+] {ACTION_START_BIRD} --- AFTER_10_SECONDS ---Triggers---> {BIRD_STARTS_FLYING}
-
+[+] {ACTION_KEY_C} --- IMMEDIATELY ---Triggers---> {DOG_DISAPPEARS_CAT_APPEARS} --- AFTER_3_SECONDS ---> {DOG_REAPPEARS_CAT_DISAPPEARS}
 
 ### Group A:
 
@@ -43,8 +45,11 @@ pozicija mogu se podešavati preko GUI-ja ili tastature, dok se događaji u scen
 
 ## Models:
 
-[link1]   
-[link2]
+[Car model] https://poly.pizza/m/5zUWP5UsLg-
+[House model] https://poly.pizza/m/bHyQe5jzdiQ
+[Bird model] https://poly.pizza/m/70NyKFt-vLF
+[Cat model] https://poly.pizza/m/dBJgGEu5bHW
+[Dog model] https://poly.pizza/m/0BnDT3T1wTE
 
 ## Textures
 

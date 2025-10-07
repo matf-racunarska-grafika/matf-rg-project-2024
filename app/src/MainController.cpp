@@ -23,8 +23,10 @@ namespace app {
     float birdHeight = 2.0f;
     bool birdFlying = false;
 
-    bool catVisible = true;
+    bool catVisible = false;
     bool dogVisible = true;
+
+    bool cPressedLastFrame = false;
 
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
         void on_mouse_move(engine::platform::MousePosition position) override;
@@ -67,6 +69,7 @@ namespace app {
                 spdlog::info("Bird started flying!");
                 birdFlying = true;
             },10.0f, false});
+
     }
 
     bool MainController::loop() {
@@ -113,6 +116,19 @@ namespace app {
             pointLight.position.x -= 0.15f;
         }
 
+        bool cPressed = platform->key(engine::platform::KeyId::KEY_C).is_down();
+        if (cPressed && !cPressedLastFrame) {
+            spdlog::info("C pressed: Dog disappears, cat appears...");
+            catVisible = true;
+            dogVisible = false;
+            events.push_back({
+                []() {
+                    spdlog::info("Dog appears again, cat disappears...");
+                    dogVisible = true;
+                    catVisible = false;
+                }, 3.0f, false});
+        }
+        cPressedLastFrame = cPressed;
     }
 
     void MainController::updateEvents(float dt) {
