@@ -89,7 +89,7 @@ void MainController::draw_island() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-4.0f, 14.37f, -4.5f));
+    model = glm::translate(model, glm::vec3(-4.0f, 14.37f, -3.5f));
     model = glm::scale(model, glm::vec3(0.1f));
 
     shader->set_mat4("model", model);
@@ -109,7 +109,7 @@ void MainController::draw_tree() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -1.5f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f));
     model = glm::scale(model, glm::vec3(0.3f));
 
     shader->set_mat4("model", model);
@@ -119,7 +119,7 @@ void MainController::draw_tree() {
     tree->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -2.0f));
+    model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -1.0f));
     model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -127,7 +127,7 @@ void MainController::draw_tree() {
     tree->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 1.0f));
     model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -135,7 +135,7 @@ void MainController::draw_tree() {
     tree->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f, 0.0f, -0.2f));
+    model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.8f));
     model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -143,7 +143,7 @@ void MainController::draw_tree() {
     tree->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(1.5f, 0.0f, -0.8f));
+    model = glm::translate(model, glm::vec3(1.5f, 0.0f, 0.2f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -151,7 +151,7 @@ void MainController::draw_tree() {
     tree->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(1.0f, 0.0f, -2.5f));
+    model = glm::translate(model, glm::vec3(1.0f, 0.0f, -1.5f));
     model = glm::rotate(model, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -169,7 +169,7 @@ void MainController::draw_bench() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -1.28f));
+    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -0.28f));
     model = glm::scale(model, glm::vec3(0.05f));
 
     shader->set_mat4("model", model);
@@ -179,7 +179,7 @@ void MainController::draw_bench() {
     bench->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f, 0.0f, -1.28f));
+    model = glm::translate(model, glm::vec3(0.5f, 0.0f, -0.28f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.05f));
     shader->set_mat4("model", model);
@@ -197,7 +197,7 @@ void MainController::draw_lamp() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -1.0f));
+    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -0.0f));
     model = glm::scale(model, glm::vec3(0.2f));
 
     shader->set_mat4("model", model);
@@ -217,7 +217,7 @@ void MainController::draw_bush() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.13f, -0.5f));
+    model = glm::translate(model, glm::vec3(-0.5f, 0.13f, 1.5f));
     model = glm::scale(model, glm::vec3(0.0025f));
 
     shader->set_mat4("model", model);
@@ -237,7 +237,7 @@ void MainController::draw_path() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -1.5f));
+    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -0.5f));
     model = glm::scale(model, glm::vec3(0.3f));
 
     shader->set_mat4("model", model);
@@ -247,7 +247,7 @@ void MainController::draw_path() {
     path->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -1.5f));
+    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -0.5f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -255,7 +255,7 @@ void MainController::draw_path() {
     path->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -1.075f));
+    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -0.075f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
     shader->set_mat4("model", model);
@@ -263,7 +263,7 @@ void MainController::draw_path() {
     path->draw(shader);
 
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -1.075f));
+    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -0.075f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(0.3f));
