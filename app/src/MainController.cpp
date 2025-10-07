@@ -49,8 +49,8 @@ void MainController::draw_moon() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-    model = glm::scale(model, glm::vec3(0.4f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -20.0f));
+    model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -69,8 +69,8 @@ void MainController::draw_sun() {
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 3.0f, -3.0f));
-    model = glm::scale(model, glm::vec3(0.4f));
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 20.0f));
+    model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
