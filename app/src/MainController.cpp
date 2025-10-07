@@ -196,15 +196,26 @@ void MainController::draw_lamp() {
     //Shader
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -0.0f));
-    model = glm::scale(model, glm::vec3(0.2f));
 
-    shader->set_mat4("model", model);
+    glm::vec3 positions[] = {
+            glm::vec3(-1.0f, 0.0f, -0.28f),
+            glm::vec3(0.0f, 0.0f, 0.67f),
+            glm::vec3(1.0f, 0.0f, -0.28f),
+            glm::vec3(0.0f, 0.0f, -1.23f)
+    };
+
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    lamp->draw(shader);
+    for (int i = 0; i < 4; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, positions[i]);
+        model = glm::rotate(model, glm::radians(i * 90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f));
+        shader->set_mat4("model", model);
+
+        lamp->draw(shader);
+    }
 }
 
 void MainController::draw_bush() {
