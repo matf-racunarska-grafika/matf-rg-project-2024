@@ -117,14 +117,15 @@ void MainController::draw_tree() {
             glm::vec3(1.5f, 0.0f, 0.2f),
             glm::vec3(1.0f, 0.0f, -1.5f),
             glm::vec3(-0.6f, 0.0f, -2.1f),
-            glm::vec3(-2.5f, -1.515f, -0.8f),
+            glm::vec3(-2.5f, -1.515f, -0.6f),
+            glm::vec3(-2.4f, -1.515f, -1.8f),
             glm::vec3(0.0f, -3.25f, -2.5f)
     };
 
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 10; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, positions[i]);
         model = glm::rotate(model, glm::radians(i * 45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
