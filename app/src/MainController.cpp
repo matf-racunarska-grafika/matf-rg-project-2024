@@ -37,18 +37,6 @@ namespace app {
         return true;
     }
 
-    static glm::vec3 circle_pos(float radius, float angleDeg, glm::vec3 center) {
-            float a = glm::radians(angleDeg);
-            return center + glm::vec3(radius * cos(a), 0.0f, radius * sin(a));
-        }
-    static float yaw_to_face(glm::vec3 from, glm::vec3 to) {
-            glm::vec3 d = glm::normalize(glm::vec3(to.x - from.x, 0.0f, to.z - from.z));
-            return atan2(d.x, d.z); // rotacija oko Y da gleda ka 'to'
-        }
-    static void set_normal_matrix(engine::resources::Shader* shader, const glm::mat4& model) {
-            glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(model)));
-            shader->set_mat3("normalMatrix", N);
-        }
 
     void MainController::draw_backpack() {
         //Model
@@ -77,6 +65,9 @@ namespace app {
          engine::resources::Shader* shader = resources->shader("basic");
 
          shader->use();
+         shader->set_vec3("lightDir", glm::vec3(-0.2f, -1.0f, -0.3f)); // smera odozgo
+         shader->set_vec3("lightColor", glm::vec3(1.0f));              // belo svetlo
+         shader->set_float("ambient", 0.25f);
          shader->set_mat4("projection", graphics->projection_matrix());
          shader->set_mat4("view", graphics->camera()->view_matrix());
          glm::mat4 model = glm::mat4(1.0f);
@@ -97,6 +88,9 @@ namespace app {
         engine::resources::Shader* shader = resources->shader("basic");
 
         shader->use();
+        shader->set_vec3("lightDir", glm::vec3(-0.2f, -1.0f, -0.3f)); // smera odozgo
+        shader->set_vec3("lightColor", glm::vec3(1.0f));              // belo svetlo
+        shader->set_float("ambient", 0.25f);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
@@ -115,6 +109,9 @@ namespace app {
         engine::resources::Shader* shader = resources->shader("basic");
 
         shader->use();
+        shader->set_vec3("lightDir", glm::vec3(-0.2f, -1.0f, -0.3f)); // smera odozgo
+        shader->set_vec3("lightColor", glm::vec3(1.0f));              // belo svetlo
+        shader->set_float("ambient", 0.25f);
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
@@ -187,6 +184,7 @@ namespace app {
     }
 
     void MainController::draw() {
+
         //draw_backpack();
         draw_house1();
         draw_house2();

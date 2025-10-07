@@ -20,16 +20,29 @@ void main()
     TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
-
 //#shader fragment
 #version 330 core
 
 out vec4 FragColor;
 
 in vec2 TexCoords;
+in vec3 Normal;
+in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
 
+// jednostavno direkciono svetlo
+uniform vec3 lightDir;   // smer svetla (ka objektu)
+uniform vec3 lightColor; // boja svetla
+uniform float ambient;   // ambientni intenzitet
+
 void main() {
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
+    vec3 base = texture(texture_diffuse1, TexCoords).rgb;
+
+    vec3 norm = normalize(Normal);
+    vec3 L = normalize(-lightDir);
+    float diff = max(dot(norm, L), 0.0);
+
+    vec3 color = base * (ambient + diff * lightColor);
+    FragColor = vec4(color, 1.0);
 }
