@@ -108,55 +108,31 @@ void MainController::draw_tree() {
     //Shader
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f));
-    model = glm::scale(model, glm::vec3(0.3f));
 
-    shader->set_mat4("model", model);
+    glm::vec3 positions[] = {
+            glm::vec3(0.0f, 0.0f, -0.5f),
+            glm::vec3(-1.5f, 0.0f, -1.0f),
+            glm::vec3(-1.0f, 0.0f, 1.0f),
+            glm::vec3(0.5f, 0.0f, 0.8f),
+            glm::vec3(1.5f, 0.0f, 0.2f),
+            glm::vec3(1.0f, 0.0f, -1.5f),
+            glm::vec3(-0.6f, 0.0f, -2.1f),
+            glm::vec3(-2.5f, -1.515f, -0.8f),
+            glm::vec3(0.0f, -3.25f, -2.5f)
+    };
+
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    tree->draw(shader);
+    for (int i = 0; i < 9; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, positions[i]);
+        model = glm::rotate(model, glm::radians(i * 45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.3f));
+        shader->set_mat4("model", model);
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.5f, 0.0f, -1.0f));
-    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    tree->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 1.0f));
-    model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    tree->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f, 0.0f, 0.8f));
-    model = glm::rotate(model, glm::radians(135.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    tree->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(1.5f, 0.0f, 0.2f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    tree->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(1.0f, 0.0f, -1.5f));
-    model = glm::rotate(model, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    tree->draw(shader);
+        tree->draw(shader);
+    }
 }
 
 void MainController::draw_bench() {
