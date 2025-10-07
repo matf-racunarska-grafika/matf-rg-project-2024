@@ -51,6 +51,10 @@ void MainController::begin_draw() {
 
 void MainController::draw() {
     draw_spongebob();
+    draw_SBHouse();
+    draw_gary();
+    draw_bus();
+    draw_ground();
     draw_skybox();
 }
 
@@ -67,12 +71,109 @@ void MainController::draw_spongebob() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
+    // Directional Light uniforms
+    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
+    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
-    model = glm::scale(model, glm::vec3(0.5f * m_spongebob_scale));
+    model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
     spongebob->draw(shader);
+}
+
+    void MainController::draw_SBHouse() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto house = engine::core::Controller::get<engine::resources::ResourcesController>()->model("SBHouse");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    // Directional Light uniforms
+    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
+    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(1.5f, -0.6f, -6.0f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.1f));
+
+    shader->set_mat4("model", model);
+    house->draw(shader);
+}
+
+    void MainController::draw_gary() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto gary = engine::core::Controller::get<engine::resources::ResourcesController>()->model("gary");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    // Directional Light uniforms
+    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
+    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(1.5f, -0.48f, -3.5f));
+    model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.0015f));
+
+    shader->set_mat4("model", model);
+    gary->draw(shader);
+}
+
+    void MainController::draw_bus() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto bus = engine::core::Controller::get<engine::resources::ResourcesController>()->model("SBBus");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    // Directional Light uniforms
+    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
+    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-2.0f, -0.47f, -3.0f));
+    model = glm::rotate(model, glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.25f));
+
+    shader->set_mat4("model", model);
+    bus->draw(shader);
+}
+
+    void MainController::draw_ground() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto ground = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ground");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    // Directional Light uniforms
+    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
+    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
+    model = glm::scale(model, glm::vec3(20.0f, 1.0f, 20.0f));
+
+    shader->set_mat4("model", model);
+    ground->draw(shader);
 }
 
 void MainController::draw_skybox() {

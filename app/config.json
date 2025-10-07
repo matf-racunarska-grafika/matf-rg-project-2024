@@ -4,7 +4,24 @@
       "spongebob": {
         "path": "spongebob/spongebob_bind.obj",
         "flip_uvs": true
+      },
+      "SBHouse": {
+        "path": "SBHouse/pineapple house Bfbbr.obj",
+        "flip_uvs": true
+      },
+      "gary": {
+        "path": "Gary/scene.gltf",
+        "flip_uvs": true
+      },
+      "SBBus": {
+        "path": "SBBus/scene.gltf",
+        "flip_uvs": true
+      },
+      "ground": {
+        "path": "ground/ground.obj",
+        "flip_uvs": true
       }
+
     }
   },
   "window": {

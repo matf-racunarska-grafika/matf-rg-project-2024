@@ -33,7 +33,15 @@ private:
 
     void draw_skybox();
 
+    void draw_ground();
+
     void draw_spongebob();
+
+    void draw_SBHouse();
+
+    void draw_gary();
+
+    void draw_bus();
 
     void update_camera();
 

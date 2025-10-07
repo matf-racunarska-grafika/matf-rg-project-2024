@@ -1,0 +1,11 @@
+Model Information:
+* title:	Bus - Spongebob bfbbr
+* source:	https://sketchfab.com/3d-models/bus-spongebob-bfbbr-ab8d7d3061044cf0a7d6e2cac48c21d2
+* author:	romyblox (https://sketchfab.com/romyblox)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bus - Spongebob bfbbr" (https://sketchfab.com/3d-models/bus-spongebob-bfbbr-ab8d7d3061044cf0a7d6e2cac48c21d2) by romyblox (https://sketchfab.com/romyblox) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

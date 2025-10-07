@@ -1,0 +1,24 @@
+# Ground plane
+
+mtllib ground.mtl
+
+o Ground
+
+# Vertices
+v -0.5 0.0 -0.5
+v  0.5 0.0 -0.5
+v  0.5 0.0  0.5
+v -0.5 0.0  0.5
+
+# Texture coordinates
+vt 0.0 0.0
+vt 1.0 0.0
+vt 1.0 1.0
+vt 0.0 1.0
+
+# Normals
+vn 0.0 1.0 0.0
+
+# Faces
+f 1/1/1 2/2/1 3/3/1
+f 1/1/1 3/3/1 4/4/1
