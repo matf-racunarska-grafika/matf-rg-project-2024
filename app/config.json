@@ -20,6 +20,10 @@
       "ground": {
         "path": "ground/ground.obj",
         "flip_uvs": true
+      },
+      "busStop": {
+        "path": "busStop/scene.gltf",
+        "flip_uvs": true
       }
 
     }

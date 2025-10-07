@@ -13,7 +13,7 @@ public:
 class MainController final : public engine::core::Controller {
 public:
     std::string_view name() const override {
-        return "test::app::MainController";
+        return "main::app::MainController";
     }
 
 private:
@@ -43,9 +43,11 @@ private:
 
     void draw_bus();
 
+    void draw_busStop();
+
     void update_camera();
 
-    float m_spongebob_scale{1.0f};
+    bool m_isDay{true};
     bool m_draw_gui{false};
     bool m_cursor_enabled{true};
 };

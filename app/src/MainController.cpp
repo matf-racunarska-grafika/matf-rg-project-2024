@@ -39,6 +39,11 @@ void MainController::poll_events() {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
+
+    if (platform->key(engine::platform::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+        m_isDay = !m_isDay;
+       // spdlog::info("Day/Night switched: {}", m_isDay ? "Day" : "Night");
+    }
 }
 
 void MainController::update() {
@@ -54,6 +59,7 @@ void MainController::draw() {
     draw_SBHouse();
     draw_gary();
     draw_bus();
+    draw_busStop();
     draw_ground();
     draw_skybox();
 }
@@ -61,20 +67,32 @@ void MainController::draw() {
 void MainController::end_draw() {
     engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
 }
-
-void MainController::draw_spongebob() {
+    void MainController::draw_spongebob() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                      ->shader(m_isDay ? "basic" : "basic_point_light");
     auto spongebob = engine::core::Controller::get<engine::resources::ResourcesController>()->model("spongebob");
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Directional Light uniforms
+   /* // Directional Light uniforms
     shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
     shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
     shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+*/
+
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
@@ -86,17 +104,24 @@ void MainController::draw_spongebob() {
 
     void MainController::draw_SBHouse() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                      ->shader(m_isDay ? "basic" : "basic_point_light");
     auto house = engine::core::Controller::get<engine::resources::ResourcesController>()->model("SBHouse");
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Directional Light uniforms
-    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
-    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
-    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(1.5f, -0.6f, -6.0f));
@@ -109,17 +134,24 @@ void MainController::draw_spongebob() {
 
     void MainController::draw_gary() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                   ->shader(m_isDay ? "basic" : "basic_point_light");
     auto gary = engine::core::Controller::get<engine::resources::ResourcesController>()->model("gary");
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Directional Light uniforms
-    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
-    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
-    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(1.5f, -0.48f, -3.5f));
@@ -133,17 +165,24 @@ void MainController::draw_spongebob() {
 
     void MainController::draw_bus() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                   ->shader(m_isDay ? "basic" : "basic_point_light");
     auto bus = engine::core::Controller::get<engine::resources::ResourcesController>()->model("SBBus");
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Directional Light uniforms
-    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
-    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
-    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-2.0f, -0.47f, -3.0f));
@@ -154,19 +193,55 @@ void MainController::draw_spongebob() {
     bus->draw(shader);
 }
 
+    void MainController::draw_busStop() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                  ->shader(m_isDay ? "basic" : "basic_point_light");
+    auto busStop = engine::core::Controller::get<engine::resources::ResourcesController>()->model("busStop");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
+
+    auto model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-3.0f, -0.5f, -2.0f));
+    model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(0.4f));
+
+    shader->set_mat4("model", model);
+    busStop->draw(shader);
+}
+
     void MainController::draw_ground() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                   ->shader(m_isDay ? "basic" : "basic_point_light");
     auto ground = engine::core::Controller::get<engine::resources::ResourcesController>()->model("ground");
 
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-    // Directional Light uniforms
-    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
-    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
-    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -0.5f, -3.0f));
