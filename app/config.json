@@ -11,6 +11,10 @@
       "farmHouse": {
         "path": "farmHouse/FarmHouse.obj",
         "flip_uvs": true
+      },
+      "bird": {
+        "path": "bird/Hummingbird.obj",
+        "flip_uvs": true
       }
     }
   },

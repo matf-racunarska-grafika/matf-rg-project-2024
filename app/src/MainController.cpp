@@ -16,6 +16,13 @@ namespace app {
     Light dirLight;
     std::vector<Event> events;
 
+    glm::vec3 birdPosition = glm::vec3(0.0f, 2.0f, -4.0f);
+    float birdRadius = 2.0f;
+    float birdSpeed = 1.0f;
+    float birdAngle = 0.0f;
+    float birdHeight = 2.0f;
+    bool birdFlying = false;
+
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
         void on_mouse_move(engine::platform::MousePosition position) override;
     };
@@ -51,6 +58,12 @@ namespace app {
             1.0f, 0.0f, 0.0f,
             true
         };
+
+        events.push_back({
+            []() {
+                spdlog::info("Bird started flying!");
+                birdFlying = true;
+            },10.0f, false});
     }
 
     bool MainController::loop() {
@@ -109,10 +122,26 @@ namespace app {
         }
     }
 
+    void MainController::updateBird(float dt) {
+        if (!birdFlying) {
+            return;
+        }
+
+        birdAngle += birdSpeed * dt;
+        if(birdAngle > 2 * glm::pi<float>()) {
+            birdAngle -= 2 * glm::pi<float>();
+        }
+
+        birdPosition.x = birdRadius * cos(birdAngle);
+        birdPosition.z = birdRadius * sin(birdAngle) - 4.0f;
+        birdPosition.y = birdHeight;
+    }
+
     void MainController::update() {
         updateCamera();
         auto dt = engine::core::Controller::get<engine::platform::PlatformController>()->dt();
         updateEvents(dt);
+        updateBird(dt);
     }
 
     void MainController::drawLightGUI() {
@@ -189,6 +218,32 @@ namespace app {
         house->draw(shader);
     }
 
+    void MainController::drawBird() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model *bird = resources->model("bird");
+        engine::resources::Shader *shader  = resources->shader("basic");
+        shader->use();
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model           = glm::translate(model, birdPosition);
+        model           = glm::scale(model, glm::vec3(0.3f));
+        // float yaw = glm::radians(35.0f);
+        float modelForwardOffset = glm::radians(90.0f);
+        float yaw = -birdAngle + glm::half_pi<float>() + modelForwardOffset;
+        float pitch = glm::radians(35.0f);
+        model = glm::rotate(model, yaw, glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, pitch, glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+        shader->set_mat4("model", model);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat3("normalMatrix", normalMatrix);
+
+        bird->draw(shader);
+    }
+
     void MainController::begin_draw() {
         engine::graphics::OpenGL::clear_buffers();
     }
@@ -206,6 +261,7 @@ namespace app {
         drawCar();
         drawHouse();
         drawSkybox();
+        drawBird();
         drawLightGUI();
 
     }

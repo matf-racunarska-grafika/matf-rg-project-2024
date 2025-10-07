@@ -21,7 +21,8 @@ pozicija mogu se podešavati preko GUI-ja ili tastature, dok se događaji u scen
 
 [+] Model with lighting
 [+] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[+] {ACTION_START_BIRD} --- AFTER_10_SECONDS ---Triggers---> {BIRD_STARTS_FLYING}
+
 
 ### Group A:
 

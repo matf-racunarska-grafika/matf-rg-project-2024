@@ -37,6 +37,8 @@ namespace app  {
 
 	    void updateEvents(float dt);
 
+	    void updateBird(float dt);
+
 	    void update() override;
 
         void drawLightGUI();
@@ -46,6 +48,8 @@ namespace app  {
 	    static void drawCar();
 
 	    static void drawHouse();
+
+	    static void drawBird();
 
 	    void begin_draw() override;
 
