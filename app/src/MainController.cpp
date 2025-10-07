@@ -90,12 +90,26 @@ namespace app {
         engine::resources::Model *car = resources->model("car");
         engine::resources::Shader *shader  = resources->shader("basic");
         shader->use();
+
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
         model           = glm::scale(model, glm::vec3(0.003f));
         shader->set_mat4("model", model);
+
+
+        glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
+        glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
+        glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
+
+        shader->set_vec3("dirLightDir", dirLightDir);
+        shader->set_vec3("dirLightCol", dirLightCol);
+        shader->set_vec3("dirLightAmb", dirLightAmb);
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+        shader->set_mat3("normalMatrix", normalMatrix);
+
+
         car->draw(shader);
     }
 
@@ -106,12 +120,24 @@ namespace app {
         engine::resources::Model *house = resources->model("farmHouse");
         engine::resources::Shader *shader  = resources->shader("basic");
         shader->use();
+
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.0f));
         model           = glm::scale(model, glm::vec3(0.1f));
         shader->set_mat4("model", model);
+
+        glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
+        glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
+        glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
+
+        shader->set_vec3("dirLightDir", dirLightDir);
+        shader->set_vec3("dirLightCol", dirLightCol);
+        shader->set_vec3("dirLightAmb", dirLightAmb);
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
+        shader->set_mat3("normalMatrix", normalMatrix);
+
         house->draw(shader);
     }
 
