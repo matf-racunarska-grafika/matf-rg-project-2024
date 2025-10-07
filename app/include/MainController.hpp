@@ -22,6 +22,8 @@ namespace app  {
 
 	    static void drawCar();
 
+	    static void drawHouse();
+
 	    void begin_draw() override;
 
         void drawSkybox();

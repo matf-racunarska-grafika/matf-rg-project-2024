@@ -7,6 +7,10 @@
       "car": {
         "path": "car/Lamborghini_Aventador.obj",
         "flip_uvs": true
+      },
+      "farmHouse": {
+        "path": "farmHouse/FarmHouse.obj",
+        "flip_uvs": true
       }
     }
   },
