@@ -216,15 +216,31 @@ void MainController::draw_bush() {
     //Shader
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.13f, 1.5f));
-    model = glm::scale(model, glm::vec3(0.0025f));
 
-    shader->set_mat4("model", model);
+    glm::vec3 positions[] = {
+            glm::vec3(-0.2f, 0.13f, 0.1f),
+            glm::vec3(0.2f, 0.13f, -2.0f),
+            glm::vec3(-0.5f, 0.13f, 1.2f),
+            glm::vec3(-0.7f, 0.13f, -1.5f),
+            glm::vec3(0.9f, 0.13f, 1.0f),
+            glm::vec3(-1.3f, 0.13f, 0.5f),
+            glm::vec3(1.1f, 0.13f, -0.5f),
+            glm::vec3(-1.6f, 0.13f, -0.3f),
+            glm::vec3(1.7f, 0.13f, -1.1f)
+    };
+
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    bush->draw(shader);
+    for (int i = 0; i < 9; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, positions[i]);
+        model = glm::rotate(model, glm::radians(i * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.0025f));
+        shader->set_mat4("model", model);
+
+        bush->draw(shader);
+    }
 }
 
 void MainController::draw_path() {
