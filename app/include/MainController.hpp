@@ -18,13 +18,12 @@ class MainController : public engine::core::Controller {
 
     void draw_army_truck();
 
-    void draw_truck();
 
     void draw_house1();
 
     void draw_house2();
 
-    void draw_house3();
+    void draw_lamp();
 
     void update_camera();
 

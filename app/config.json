@@ -15,7 +15,7 @@
         "path": "suv/suv.obj"
       },
       "house1": {
-        "path": "house1/house_10.obj"
+        "path": "house1/Chalet.obj"
       },
       "house2": {
         "path": "house2/Cottage_FREE.obj",
@@ -24,7 +24,10 @@
       "house3": {
         "path": "house3/Cottage.obj",
         "flip_uvs" : true
-
+      },
+      "lamp": {
+        "path": "lamp/StreetLamp.obj",
+        "flip_uvs" : true
       }
     }
   },
