@@ -16,7 +16,7 @@ class MainController : public engine::core::Controller {
 
     void draw_backpack();
 
-    void draw_army_truck();
+    //void draw_army_truck();
 
     void draw_truck();
 

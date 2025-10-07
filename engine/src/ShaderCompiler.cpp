@@ -61,7 +61,7 @@ ShaderParsingResult ShaderCompiler::parse_source() {
     std::string line;
     std::string *current_shader = nullptr;
     while (std::getline(ss, line)) {
-        if (line.starts_with("//#shader") || line.starts_with("// #shader")) {
+        if (line.find("#shader") != std::string::npos) {
             current_shader = now_parsing(parsing_result, line);
         } else if (current_shader) {
             current_shader->append(line);
@@ -95,15 +95,13 @@ Shader ShaderCompiler::compile_from_file(std::string shader_name,
 }
 
 std::string *ShaderCompiler::now_parsing(ShaderParsingResult &result, const std::string &line) {
-    if (line.ends_with(to_string(ShaderType::Vertex))) {
-        return &result.vertex_shader;
-    }
-    if (line.ends_with(to_string(ShaderType::Fragment))) {
-        return &result.fragment_shader;
-    }
-    if (line.ends_with(to_string(ShaderType::Geometry))) {
-        return &result.geometry_shader;
-    }
+    std::string trimmed = line;
+    trimmed.erase(remove(trimmed.begin(), trimmed.end(), '\r'), trimmed.end());
+    trimmed.erase(remove(trimmed.begin(), trimmed.end(), ' '), trimmed.end());
+
+    if (trimmed.ends_with("vertex"))  return &result.vertex_shader;
+    if (trimmed.ends_with("fragment")) return &result.fragment_shader;
+    if (trimmed.ends_with("geometry")) return &result.geometry_shader;
     RG_SHOULD_NOT_REACH_HERE("Unknown type of shader prefix: {}. Did you mean: #shader {}|{}|{}", line,
                              to_string(ShaderType::Vertex), to_string(ShaderType::Fragment),
                              to_string(ShaderType::Geometry));
