@@ -1,21 +1,26 @@
 # {NAME-OF-THE-PROJECT}
 
 {mi22133} - {Miona Sretenovic}  
-{PROJECT DESCRIPTION}
+{Projekt prikazuje 3D scenu sa automobilom i kućom, osvetljenu sa directional i point svetlom. Boje svetla i njihova
+pozicija mogu se podešavati preko GUI-ja ili tastature, dok se događaji u sceni aktiviraju nakon definisanog vremena.}
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+{W} -> {Move camera forward}  
+{S} -> {Move camera backward}  
+{A} -> {Move camera left}  
+{D} -> {Move camera right}
+{Arrow Up} -> {Increase point light intensity}
+{Arrow Down} -> {Decrease point light intensity}
+{Arrow Right} -> {Move point light to the right}
+{Arrow Left} -> {Move point light to the left}
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[+] Model with lighting
+[+] Two types of lighting with customizable colors and movement through GUI or ACTIONS
 [ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:

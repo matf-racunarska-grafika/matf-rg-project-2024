@@ -6,8 +6,27 @@
 #define MAINCONTROLLER_HPP
 
 #include <engine/core/Controller.hpp>
+#include <glm/glm.hpp>
+#include <functional>
+#include <vector>
 
 namespace app  {
+
+    struct Light {
+        glm::vec3 position;
+        glm::vec3 color;
+        glm::vec3 ambient;
+        glm::vec3 direction;
+        float c, l, q;
+        bool enabled;
+    };
+
+    struct Event {
+        std::function<void()> action;
+        float triggerTime;
+        bool triggered;
+    };
+
 	class MainController : public engine::core::Controller {
 
         void initialize() override;
@@ -16,7 +35,11 @@ namespace app  {
 
 	    void updateCamera();
 
+	    void updateEvents(float dt);
+
 	    void update() override;
+
+        void drawLightGUI();
 
         static void drawBackpack();
 

@@ -7,8 +7,14 @@
 #include "../include/MainController.hpp"
 #include <spdlog/spdlog.h>
 #include "GUIController.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "imgui.h"
 
 namespace app {
+
+    Light pointLight;
+    Light dirLight;
+    std::vector<Event> events;
 
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
         void on_mouse_move(engine::platform::MousePosition position) override;
@@ -27,6 +33,24 @@ namespace app {
         platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
         engine::graphics::OpenGL::enable_depth_testing();
         spdlog::info("MainController initialized");
+
+        pointLight = {
+            glm::vec3(0.0f, 1.0f, -5.0f),
+            glm::vec3(2.0f, 1.8f, 1.6f),
+            glm::vec3(0.1f),
+            glm::vec3(0.0f, -1.0f, 0.0f),
+            1.0f, 0.22f, 0.2f,
+            true
+        };
+
+        dirLight = {
+            glm::vec3(0.0f),
+            glm::vec3(1.0f, 1.0f, 0.95f),
+            glm::vec3(0.3f, 0.3f, 0.35f),
+            glm::vec3(-1.0f, -1.0f, -1.0f),
+            1.0f, 0.0f, 0.0f,
+            true
+        };
     }
 
     bool MainController::loop() {
@@ -60,28 +84,53 @@ namespace app {
             camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
         }
 
+        if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
+            pointLight.color *= 1.05f;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
+            pointLight.color *= 0.95f;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_RIGHT).is_down()) {
+            pointLight.position.x += 0.1f;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_LEFT).is_down()) {
+            pointLight.position.x -= 0.15f;
+        }
+
+    }
+
+    void MainController::updateEvents(float dt) {
+        for (auto& event : events) {
+            event.triggerTime -= dt;
+            if (event.triggerTime <= 0.0f && !event.triggered) {
+                event.action();
+                event.triggered = true;
+            }
+        }
     }
 
     void MainController::update() {
         updateCamera();
+        auto dt = engine::core::Controller::get<engine::platform::PlatformController>()->dt();
+        updateEvents(dt);
     }
 
-    void MainController::drawBackpack() {
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    void MainController::drawLightGUI() {
+       /* if (ImGui::Begin("Light Control")) {
+            ImGui::Text("Point Light");
+            ImGui::ColorEdit3("Point Color", &pointLight.color[0]);
+            ImGui::DragFloat3("Point Position", &pointLight.position[0], 0.1f);
+            ImGui::DragFloat("Linear", &pointLight.l, 0.01f, 0.0f, 1.0f);
+            ImGui::DragFloat("Quadratic", &pointLight.q, 0.01f, 0.0f, 1.0f);
 
-        engine::resources::Model *backpack = resources->model("backpack");
-        engine::resources::Shader *shader  = resources->shader("basic");
+            ImGui::Separator();
 
-        shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
-        glm::mat4 model = glm::mat4(1.0f);
-        model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-        model           = glm::scale(model, glm::vec3(0.3f));
-        shader->set_mat4("model", model);
+            ImGui::Text("Directional Light");
+            ImGui::ColorEdit3("Dir Color", &dirLight.color[0]);
+            ImGui::DragFloat3("Direction", &dirLight.direction[0], 0.1f);
+        }
 
-        backpack->draw(shader);
+        ImGui::End();*/
     }
 
     void MainController::drawCar() {
@@ -102,25 +151,16 @@ namespace app {
         shader->set_mat3("normalMatrix", normalMatrix);
 
 
-        glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
-        glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
-        glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
-        shader->set_vec3("dirLightDir", dirLightDir);
-        shader->set_vec3("dirLightCol", dirLightCol);
-        shader->set_vec3("dirLightAmb", dirLightAmb);
+        shader->set_vec3("dirLightDir", dirLight.direction);
+        shader->set_vec3("dirLightCol", dirLight.color);
+        shader->set_vec3("dirLightAmb", dirLight.ambient);
 
-        glm::vec3 pointLightPos = glm::vec3(0.0f, 1.0f, -5.0f);
-        glm::vec3 pointLightCol = glm::vec3(2.0f, 1.8f, 1.6f);
-        glm::vec3 pointLightAmb = glm::vec3(0.1f, 0.1f, 0.1f);
-        shader->set_vec3("pointLightPos", pointLightPos);
-        shader->set_vec3("pointLightCol", pointLightCol);
-        shader->set_vec3("pointLightAmb", pointLightAmb);
-        shader->set_float("c", 1.0f);
-        shader->set_float("l", 0.22f);
-        shader->set_float("q", 0.2f);
-
-        shader->set_vec3("carMin", glm::vec3(-0.5f, 0.0f, -3.5f));
-        shader->set_vec3("carMax", glm::vec3(0.5f, 0.5f, -2.5f));
+        shader->set_vec3("pointLightPos", pointLight.position);
+        shader->set_vec3("pointLightCol", pointLight.color);
+        shader->set_vec3("pointLightAmb", pointLight.ambient);
+        shader->set_float("c", pointLight.c);
+        shader->set_float("l", pointLight.l);
+        shader->set_float("q", pointLight.q);
 
         car->draw(shader);
     }
@@ -142,12 +182,9 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat3("normalMatrix", normalMatrix);
 
-        glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
-        glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
-        glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
-        shader->set_vec3("dirLightDir", dirLightDir);
-        shader->set_vec3("dirLightCol", dirLightCol);
-        shader->set_vec3("dirLightAmb", dirLightAmb);
+        shader->set_vec3("dirLightDir", dirLight.direction);
+        shader->set_vec3("dirLightCol", dirLight.color);
+        shader->set_vec3("dirLightAmb", dirLight.ambient);
 
         house->draw(shader);
     }
@@ -169,6 +206,8 @@ namespace app {
         drawCar();
         drawHouse();
         drawSkybox();
+        drawLightGUI();
+
     }
 
     void MainController::end_draw() {
