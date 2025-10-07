@@ -80,6 +80,7 @@ namespace app {
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
         model           = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
+
         backpack->draw(shader);
     }
 
@@ -88,27 +89,38 @@ namespace app {
         auto graphics  = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
         engine::resources::Model *car = resources->model("car");
-        engine::resources::Shader *shader  = resources->shader("basic");
+        engine::resources::Shader *shader  = resources->shader("car");
         shader->use();
 
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
         model           = glm::scale(model, glm::vec3(0.003f));
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
         shader->set_mat4("model", model);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat3("normalMatrix", normalMatrix);
 
 
         glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
         glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
         glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
-
         shader->set_vec3("dirLightDir", dirLightDir);
         shader->set_vec3("dirLightCol", dirLightCol);
         shader->set_vec3("dirLightAmb", dirLightAmb);
-        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-        shader->set_mat3("normalMatrix", normalMatrix);
 
+        glm::vec3 pointLightPos = glm::vec3(0.0f, 1.0f, -5.0f);
+        glm::vec3 pointLightCol = glm::vec3(2.0f, 1.8f, 1.6f);
+        glm::vec3 pointLightAmb = glm::vec3(0.1f, 0.1f, 0.1f);
+        shader->set_vec3("pointLightPos", pointLightPos);
+        shader->set_vec3("pointLightCol", pointLightCol);
+        shader->set_vec3("pointLightAmb", pointLightAmb);
+        shader->set_float("c", 1.0f);
+        shader->set_float("l", 0.22f);
+        shader->set_float("q", 0.2f);
+
+        shader->set_vec3("carMin", glm::vec3(-0.5f, 0.0f, -3.5f));
+        shader->set_vec3("carMax", glm::vec3(0.5f, 0.5f, -2.5f));
 
         car->draw(shader);
     }
@@ -121,22 +133,21 @@ namespace app {
         engine::resources::Shader *shader  = resources->shader("basic");
         shader->use();
 
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.0f));
         model           = glm::scale(model, glm::vec3(0.1f));
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
         shader->set_mat4("model", model);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat3("normalMatrix", normalMatrix);
 
         glm::vec3 dirLightDir = glm::normalize(glm::vec3(-1.0f, -1.0f, -1.0f));
         glm::vec3 dirLightCol = glm::vec3(1.0f, 1.0f, 0.95f);
         glm::vec3 dirLightAmb = glm::vec3(0.3f, 0.3f, 0.35f);
-
         shader->set_vec3("dirLightDir", dirLightDir);
         shader->set_vec3("dirLightCol", dirLightCol);
         shader->set_vec3("dirLightAmb", dirLightAmb);
-        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-        shader->set_mat3("normalMatrix", normalMatrix);
 
         house->draw(shader);
     }
