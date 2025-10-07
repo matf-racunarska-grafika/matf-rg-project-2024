@@ -3,6 +3,10 @@
     "models": {
         "backpack": {
           "path": "backpack/backpack.obj"
+      },
+      "car": {
+        "path": "car/Lamborghini_Aventador.obj",
+        "flip_uvs": true
       }
     }
   },
