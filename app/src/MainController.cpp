@@ -213,13 +213,19 @@ void MainController::draw_bush() {
             glm::vec3(-1.3f, 0.13f, 0.5f),
             glm::vec3(1.1f, 0.13f, -0.5f),
             glm::vec3(-1.6f, 0.13f, -0.3f),
-            glm::vec3(1.7f, 0.13f, -1.1f)
+            glm::vec3(1.7f, 0.13f, -1.1f),
+            glm::vec3(-3.0f, -1.38f, -1.0f),
+            glm::vec3(-2.3f, -1.38f, 0.1f),
+            glm::vec3(-1.5f, -1.38f, -1.7f),
+            glm::vec3(-0.7f, -3.11f, -1.9f),
+            glm::vec3(0.5f, -3.11f, -2.1f),
+            glm::vec3(-0.9f, -3.11f, -2.6f),
     };
 
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 15; i++) {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, positions[i]);
         model = glm::rotate(model, glm::radians(i * 50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
