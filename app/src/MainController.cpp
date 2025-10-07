@@ -121,7 +121,7 @@ namespace app {
 
     void MainController::drawSkybox() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto skybox = resources->skybox("m_skybox");
+        auto skybox = resources->skybox("l_skybox");
         auto shader = resources->shader("skybox");
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->draw_skybox(shader, skybox);
