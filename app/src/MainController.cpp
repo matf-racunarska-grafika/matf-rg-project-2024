@@ -2,6 +2,8 @@
 // Created by filipn on 9/1/25.
 //
 
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+
 #include <GuiController.hpp>
 #include <MainController.hpp>
 
@@ -48,8 +50,13 @@ void MainController::draw_moon() {
     //Shader
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
+
+    float current_time = glfwGetTime();
+    float delta_time = 0.05f;
+
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -20.0f));
+    model = glm::translate(model,
+        glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), -20.0f * cos(current_time * delta_time)));
     model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
@@ -68,8 +75,13 @@ void MainController::draw_sun() {
     //Shader
     engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
+
+    float current_time = glfwGetTime();
+    float delta_time = 0.05f;
+
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 20.0f));
+    model = glm::translate(model,
+        glm::vec3(0.0f, -20.0f * sin(current_time * delta_time), 20.0f * cos(current_time * delta_time)));
     model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
