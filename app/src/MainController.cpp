@@ -56,24 +56,24 @@ namespace app {
         backpack->draw(shader);
     }
 
-    // void MainController::draw_army_truck() {
-    //     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    //     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    //
-    //     engine::resources::Model* truck = resources->model("army_truck");
-    //     engine::resources::Shader* shader = resources->shader("basic");
-    //
-    //     shader->use();
-    //     shader->set_mat4("projection", graphics->projection_matrix());
-    //     shader->set_mat4("view", graphics->camera()->view_matrix());
-    //     glm::mat4 model = glm::mat4(1.0f);
-    //     model = glm::translate(model, glm::vec3(12.0f, -0.5f, -2.0f));
-    //     model = glm::rotate(model, -0.5f, glm::vec3(0.f,1.f,0.f));
-    //     model = glm::scale(model, glm::vec3(0.009f));
-    //     shader->set_mat4("model", model );
-    //     truck->draw(shader);
-    //
-    // }
+     void MainController::draw_army_truck() {
+         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+         engine::resources::Model* truck = resources->model("army_truck");
+         engine::resources::Shader* shader = resources->shader("basic");
+
+         shader->use();
+         shader->set_mat4("projection", graphics->projection_matrix());
+         shader->set_mat4("view", graphics->camera()->view_matrix());
+         glm::mat4 model = glm::mat4(1.0f);
+         model = glm::translate(model, glm::vec3(12.0f, -0.5f, -2.0f));
+         model = glm::rotate(model, -0.5f, glm::vec3(0.f,1.f,0.f));
+         model = glm::scale(model, glm::vec3(0.009f));
+         shader->set_mat4("model", model );
+         truck->draw(shader);
+
+     }
 
     void MainController::draw_truck() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
@@ -94,11 +94,11 @@ namespace app {
 
     }
 
-    void MainController::draw_house() {
+    void MainController::draw_house1() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-        engine::resources::Model* house = resources->model("house1");
+        engine::resources::Model* house = resources->model("house2");
         engine::resources::Shader* shader = resources->shader("basic");
 
         shader->use();
@@ -107,7 +107,43 @@ namespace app {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-8.0f, -0.5f, -2.0f));
         //model = glm::rotate(model, -0.5f, glm::vec3(0.f,1.f,0.f));
-        model = glm::scale(model, glm::vec3(1.f));
+        model = glm::scale(model, glm::vec3(0.3f));
+        shader->set_mat4("model", model );
+        house->draw(shader);
+    }
+
+    void MainController::draw_house2() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model* house = resources->model("house2");
+        engine::resources::Shader* shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-8.0f, -0.5f, -20.0f));
+        model = glm::rotate(model, 1.f, glm::vec3(0.f,1.f,0.f));
+        model = glm::scale(model, glm::vec3(0.3f));
+        shader->set_mat4("model", model );
+        house->draw(shader);
+    }
+
+    void MainController::draw_house3() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model* house = resources->model("house3");
+        engine::resources::Shader* shader = resources->shader("basic");
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-8.0f, -0.5f, -5.0f));
+        model = glm::rotate(model, -0.1f, glm::vec3(0.f,1.f,0.f));
+        model = glm::scale(model, glm::vec3(0.003f));
         shader->set_mat4("model", model );
         house->draw(shader);
     }
@@ -156,8 +192,10 @@ namespace app {
     void MainController::draw() {
         draw_backpack();
         draw_truck();
-        draw_house();
-        //draw_army_truck();
+        draw_house1();
+        draw_house2();
+        draw_house3();
+        draw_army_truck();
         draw_skybox();
     }
 

@@ -16,11 +16,15 @@ class MainController : public engine::core::Controller {
 
     void draw_backpack();
 
-    //void draw_army_truck();
+    void draw_army_truck();
 
     void draw_truck();
 
-    void draw_house();
+    void draw_house1();
+
+    void draw_house2();
+
+    void draw_house3();
 
     void update_camera();
 

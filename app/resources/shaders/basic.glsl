@@ -27,22 +27,9 @@ void main()
 out vec4 FragColor;
 
 in vec2 TexCoords;
-in vec3 Normal;
-in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
-uniform bool hasTexture;
-uniform vec3 materialDiffuseColor;
 
 void main() {
-    vec3 base;
-    if (hasTexture)
-    base = texture(texture_diffuse1, TexCoords).rgb;
-    else
-    base = materialDiffuseColor;
-
-    vec3 lightDir = normalize(vec3(0.5, 1, 0.3));
-    float diff = max(dot(normalize(Normal), lightDir), 0.0);
-    vec3 color = base * diff;
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
 }

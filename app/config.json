@@ -8,13 +8,23 @@
         "path" : "truck/truck.obj"
       },
       "army_truck" : {
-        "path" : "army_truck/armytruck.obj"
+        "path" : "army_truck/armytruck.obj",
+        "flip_uvs" : true
       },
       "suv": {
         "path": "suv/suv.obj"
       },
       "house1": {
         "path": "house1/house_10.obj"
+      },
+      "house2": {
+        "path": "house2/Cottage_FREE.obj",
+        "flip_uvs" : true
+      },
+      "house3": {
+        "path": "house3/Cottage.obj",
+        "flip_uvs" : true
+
       }
     }
   },
