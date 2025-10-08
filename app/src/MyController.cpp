@@ -4,6 +4,7 @@
 
 #include "../include/MyController.hpp"
 
+#include <GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -19,9 +20,11 @@ public:
 };
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
-    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-    camera->rotate_camera(position.dx,position.dy);
-
+    auto gui_controller = engine::core::Controller::get<GUIController>();
+    if (!gui_controller->is_enabled()) {
+        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        camera->rotate_camera(position.dx,position.dy);
+    }
 }
 
 void MyController::initialize() {
@@ -55,25 +58,29 @@ void MyController::draw() {
     draw_backpack();
 }
 void MyController::update_camera() {
-    auto platform = get<engine::platform::PlatformController>();
-    auto graphics = get<engine::graphics::GraphicsController>();
-    auto camera = graphics->camera();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
+    if (!gui_controller->is_enabled()) {
+        auto platform = get<engine::platform::PlatformController>();
+        auto graphics = get<engine::graphics::GraphicsController>();
+        auto camera = graphics->camera();
 
-    float dt = platform->dt();
-    if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-        camera->move_camera(engine::graphics::Camera::FORWARD,dt);
+        float dt = platform->dt();
+        if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+            camera->move_camera(engine::graphics::Camera::FORWARD,dt);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
+            camera->move_camera(engine::graphics::Camera::LEFT,dt);
+
+        }  if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
+            camera->move_camera(engine::graphics::Camera::BACKWARD,dt);
+
+
+        }  if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
+            camera->move_camera(engine::graphics::Camera::RIGHT,dt);
+
+        }
     }
-    if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
-        camera->move_camera(engine::graphics::Camera::LEFT,dt);
 
-    }  if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
-        camera->move_camera(engine::graphics::Camera::BACKWARD,dt);
-
-
-    }  if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
-        camera->move_camera(engine::graphics::Camera::RIGHT,dt);
-
-    }
 }
 void MyController::update() {
     update_camera();
