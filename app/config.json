@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "backpack": {
+        "path" : "backpack/backpack.obj"
+      }
     }
   },
   "window": {
