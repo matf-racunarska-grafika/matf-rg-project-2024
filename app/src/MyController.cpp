@@ -11,7 +11,6 @@
 #include "engine/resources/ResourcesController.hpp"
 
 namespace app {
-
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
 public:
     void on_mouse_move(engine::platform::MousePosition position) override;
@@ -75,16 +74,22 @@ void MyController::update_camera() {
 void MyController::update() {
     update_camera();
 }
+void MyController::draw_skybox() {
+    auto resources = get<engine::resources::ResourcesController>();
+    auto skybox = resources->skybox("mountain_skybox");
+    auto shader = resources->shader("skybox");
+    auto graphics = get<engine::graphics::GraphicsController>();
+    graphics->draw_skybox(shader, skybox);
+}
 void MyController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 
 void MyController::draw() {
     draw_backpack();
+    draw_skybox();
 }
 void MyController::end_draw() {
     get<engine::platform::PlatformController>()->swap_buffers();
 }
-
-
 }// namespace app
