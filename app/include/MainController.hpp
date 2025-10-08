@@ -8,6 +8,17 @@
 #include <glm/vec3.hpp>
 
 namespace app {
+struct PointLight {
+    glm::vec3 position;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
 class MainController : public engine::core::Controller {
     void initialize() override;
 
@@ -41,11 +52,12 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
-    glm::vec3 moon_position = glm::vec3(0.0f);
-    glm::vec3 sun_position = glm::vec3(0.0f);
+    PointLight moonlight;
+    PointLight sunlight;
 
 public:
     std::string_view name() const override { return "MainController"; }
 };
+
 }
 #endif //MAINCONTROLER_HPP
