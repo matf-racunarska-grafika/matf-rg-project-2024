@@ -5,6 +5,7 @@
 #ifndef MATF_RG_PROJECT_MYCONTROLLER_HPP
 #define MATF_RG_PROJECT_MYCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <engine/platform/PlatformEventObserver.hpp>
 
 namespace app {
 
@@ -13,7 +14,10 @@ class MyController : public engine::core::Controller {
     bool loop() override;
     void draw_backpack();
     void draw() override;
-void begin_draw() override;
+
+    void update_camera();
+    void update() override;
+    void begin_draw() override;
     void end_draw() override;
 
 public:

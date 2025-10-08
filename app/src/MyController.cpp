@@ -4,18 +4,31 @@
 
 #include "../include/MyController.hpp"
 
-#include "../../engine/libs/assimp/code/AssetLib/MDC/MDCFileData.h"
-
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/resources/ResourcesController.hpp>
+#include <spdlog/spdlog.h>
 
 namespace app {
+
+class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
+public:
+    void on_mouse_move(engine::platform::MousePosition position) override;
+};
+
+void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    camera->rotate_camera(position.dx,position.dy);
+
+}
+
 void MyController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
-
+    auto platform = get<engine::platform::PlatformController>();
+    platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+    engine::graphics::OpenGL::enable_depth_testing();
 }
 bool MyController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -41,6 +54,30 @@ void MyController::draw_backpack() {
 void MyController::draw() {
     draw_backpack();
 }
+void MyController::update_camera() {
+    auto platform = get<engine::platform::PlatformController>();
+    auto graphics = get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+
+    float dt = platform->dt();
+    if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
+        camera->move_camera(engine::graphics::Camera::FORWARD,dt);
+    }
+    if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
+        camera->move_camera(engine::graphics::Camera::LEFT,dt);
+
+    }  if (platform->key(engine::platform::KeyId::KEY_S).is_down()) {
+        camera->move_camera(engine::graphics::Camera::BACKWARD,dt);
+
+
+    }  if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
+        camera->move_camera(engine::graphics::Camera::RIGHT,dt);
+
+    }
+}
+void MyController::update() {
+    update_camera();
+}
 void MyController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
@@ -48,6 +85,8 @@ void MyController::end_draw() {
     auto platform = get<engine::platform::PlatformController>();
     platform->swap_buffers();
 }
+
+
 
 
 }// namespace app
