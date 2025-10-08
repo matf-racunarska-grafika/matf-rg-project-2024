@@ -5,6 +5,7 @@
 #ifndef MAINCONTROLER_HPP
 #define MAINCONTROLER_HPP
 #include <engine/core/Controller.hpp>
+#include <engine/resources/Shader.hpp>
 #include <glm/vec3.hpp>
 
 namespace app {
@@ -27,6 +28,8 @@ class MainController : public engine::core::Controller {
     void draw_moon();
 
     void draw_sun();
+
+    void set_point_light(engine::resources::Shader *shader, const PointLight &pointLight, const std::string &lightName);
 
     void draw_island();
 

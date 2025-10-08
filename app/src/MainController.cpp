@@ -55,12 +55,12 @@ void MainController::draw_moon() {
     float delta_time = 0.05f;
 
     moonlight.position = glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), 20.0f * -cos(current_time * delta_time));
-    sunlight.ambient = glm::vec3(0.4f, 0.4f, 0.2f);
-    sunlight.diffuse = glm::vec3(0.6f, 0.5f, 0.6f);
-    sunlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
-    sunlight.constant = 1.0f;
-    sunlight.linear = 0.09f;
-    sunlight.quadratic = 0.032f;
+    moonlight.ambient = glm::vec3(0.4f, 0.4f, 0.4f);
+    moonlight.diffuse = glm::vec3(0.6f, 0.5f, 0.6f);
+    moonlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    moonlight.constant = 1.0f;
+    moonlight.linear = 0.09f;
+    moonlight.quadratic = 0.032f;
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, moonlight.position);
@@ -121,6 +121,10 @@ void MainController::draw_island() {
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
+
+    shader->set_vec3("viewPosition", graphics->camera()->Position);
+
+    set_point_light(shader, moonlight, "moon");
 
     island->draw(shader);
 }
@@ -306,6 +310,19 @@ void MainController::draw_path() {
     shader->set_mat4("model", model);
 
     path->draw(shader);
+}
+
+void MainController::set_point_light(engine::resources::Shader *shader, const PointLight &pointLight, const std::string &lightName) {
+    shader->use();
+    shader->set_vec3(lightName + ".position", pointLight.position);
+
+    shader->set_vec3(lightName + ".ambient", pointLight.ambient);
+    shader->set_vec3(lightName + ".diffuse", pointLight.diffuse);
+    shader->set_vec3(lightName + ".specular", pointLight.specular);
+
+    shader->set_float(lightName + ".constant", pointLight.constant);
+    shader->set_float(lightName + ".linear", pointLight.linear);
+    shader->set_float(lightName + ".quadratic", pointLight.quadratic);
 }
 
 void MainController::update_camera() {
