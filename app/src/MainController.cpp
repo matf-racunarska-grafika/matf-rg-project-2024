@@ -47,9 +47,9 @@ namespace app {
          engine::resources::Shader* shader = resources->shader("basic");
 
          shader->use();
-         shader->set_bool("isTruck", true);
-         shader->set_float("headGlowRadius", 0.07f);
-         shader->set_float("headGlowStrength", 1.4f);
+         shader->set_bool("isTruck", m_headlightsOn);
+         shader->set_float("headGlowRadius",   0.07f);
+         shader->set_float("headGlowStrength", m_headlightsOn ? 1.4f : 0.0f);
 
          shader->set_mat4("projection", graphics->projection_matrix());
          shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -149,6 +149,31 @@ namespace app {
         chair->draw(shader);
     }
 
+    void MainController::draw_rocking_chair() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+        engine::resources::Model* chair = resources->model("chair");
+        engine::resources::Shader* shader = resources->shader("basic");
+
+        shader->use();
+        //shader->set_vec3("lightDir", glm::vec3(-0.2f, -1.0f, -0.3f));
+        //shader->set_vec3("lightColor", glm::vec3(1.0f));
+        //shader->set_float("ambient", 0.25f);
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+
+        float angle = glm::radians(12.0f) * sinf(m_chairPhase);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-7.0f, -0.1f, -20.0f));
+        model = glm::rotate(model, 1.2f, glm::vec3(0.f,1.f,0.f));
+        model = glm::rotate(model, angle, glm::vec3(1.f, 0.f, 0.f));
+        model = glm::scale(model, glm::vec3(0.8f));
+        shader->set_mat4("model", model );
+        chair->draw(shader);
+    }
+
 
     void MainController::update_camera() {
         auto gui_controller = engine::core::Controller::get<GUIController>();
@@ -177,6 +202,16 @@ namespace app {
 
     void MainController::update() {
         update_camera();
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+        bool tDown = platform->key(engine::platform::KeyId::KEY_T).is_down();
+        if (tDown && !m_prevT) {
+            m_headlightsOn = !m_headlightsOn;
+            //spdlog::info("Headlights: {}", m_headlightsOn ? "ON" : "OFF");
+        }
+        m_prevT = tDown;
+        m_chairPhase += 1.8f * platform->dt();
+
     }
 
     void MainController::begin_draw() {
@@ -228,12 +263,19 @@ namespace app {
         shader->set_vec3("spotPos2",  spotPos2);
         shader->set_vec3("spotDir2",  aim);
 
-        shader->set_vec3("spotColor",  glm::vec3(2.0f, 1.45f, 0.50f));
         shader->set_float("spotInner", glm::cos(glm::radians(11.0f)));
         shader->set_float("spotOuter", glm::cos(glm::radians(15.0f)));
         shader->set_float("spotConst", 0.4f);
-        shader->set_float("spotLin",   0.08f);
-        shader->set_float("spotQuad",  0.01f);
+
+        if (m_headlightsOn) {
+            shader->set_vec3("spotColor",  glm::vec3(2.0f, 1.45f, 0.50f));
+            shader->set_float("spotLin",   0.08f);
+            shader->set_float("spotQuad",  0.01f);
+        }else {
+            shader->set_vec3("spotColor",  glm::vec3(0.0f));
+            shader->set_float("spotLin",   1.0f);
+            shader->set_float("spotQuad",  1.0f);
+        }
 
         shader->set_float("ambient",   0.003f);
         shader->set_vec3("lightDir",   glm::vec3(-0.25f, -1.0f, -0.35f));
@@ -242,10 +284,10 @@ namespace app {
         shader->set_bool("isTruck", false);
 
         draw_floor();
-        draw_chair();
         draw_house1();
         draw_house2();
         draw_army_truck();
+        draw_rocking_chair();
 
         draw_skybox();
     }

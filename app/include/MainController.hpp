@@ -10,6 +10,11 @@
 namespace app {
 
 class MainController : public engine::core::Controller {
+
+    bool m_headlightsOn = true;
+    bool m_prevT = false;
+    float m_chairPhase = 0.0f;
+
     void initialize() override;
 
     bool loop() override;
@@ -17,7 +22,6 @@ class MainController : public engine::core::Controller {
     void draw_backpack();
 
     void draw_army_truck();
-
 
     void draw_house1();
 
@@ -30,6 +34,8 @@ class MainController : public engine::core::Controller {
     void draw_lamp();
 
     void draw_chair();
+
+    void draw_rocking_chair();
 
     void update_camera();
 
