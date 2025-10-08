@@ -1,4 +1,4 @@
-#include "MyApp.h"
+#include "MyApp.hpp"
 
 #include <engine/core/Engine.hpp>
 

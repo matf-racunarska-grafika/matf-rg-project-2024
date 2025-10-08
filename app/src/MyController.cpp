@@ -2,7 +2,7 @@
 // Created by nikola on 10/8/25.
 //
 
-#include "../include/MyController.h"
+#include "../include/MyController.hpp"
 
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"

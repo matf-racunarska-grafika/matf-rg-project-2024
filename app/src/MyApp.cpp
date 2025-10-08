@@ -2,10 +2,10 @@
 // Created by nikola on 10/8/25.
 //
 
-#include <MyApp.h>
+#include <MyApp.hpp>
 
-#include <MyController.h>
 #include "spdlog/spdlog.h"
+#include <MyController.hpp>
 
 namespace app {
 
