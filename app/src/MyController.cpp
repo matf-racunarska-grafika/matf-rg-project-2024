@@ -54,9 +54,7 @@ void MyController::draw_backpack() {
     model->draw(shader);
 }
 
-void MyController::draw() {
-    draw_backpack();
-}
+
 void MyController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (!gui_controller->is_enabled()) {
@@ -87,7 +85,24 @@ void MyController::update() {
 }
 void MyController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
+
 }
+
+void MyController::draw_skybox() {
+    auto resources = get<engine::resources::ResourcesController>();
+    auto skybox = resources->skybox("mountain_skybox");
+    auto shader = resources->shader("skybox");
+    auto graphics = get<engine::graphics::GraphicsController>();
+    graphics->draw_skybox(shader,skybox);
+
+}
+
+
+void MyController::draw() {
+    draw_backpack();
+    draw_skybox();
+}
+
 void MyController::end_draw() {
     auto platform = get<engine::platform::PlatformController>();
     platform->swap_buffers();
