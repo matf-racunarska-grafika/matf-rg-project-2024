@@ -5,6 +5,7 @@
 #ifndef MAINCONTROLER_HPP
 #define MAINCONTROLER_HPP
 #include <engine/core/Controller.hpp>
+#include <glm/vec3.hpp>
 
 namespace app {
 class MainController : public engine::core::Controller {
@@ -39,6 +40,9 @@ class MainController : public engine::core::Controller {
     void draw() override;
 
     void end_draw() override;
+
+    glm::vec3 moon_position = glm::vec3(0.0f);
+    glm::vec3 sun_position = glm::vec3(0.0f);
 
 public:
     std::string_view name() const override { return "MainController"; }

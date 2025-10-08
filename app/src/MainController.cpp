@@ -55,8 +55,8 @@ void MainController::draw_moon() {
     float delta_time = 0.05f;
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model,
-                           glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), -20.0f * cos(current_time * delta_time)));
+    moon_position = glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), -20.0f * cos(current_time * delta_time));
+    model = glm::translate(model, moon_position);
     model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
@@ -80,8 +80,8 @@ void MainController::draw_sun() {
     float delta_time = 0.05f;
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model,
-                           glm::vec3(0.0f, -20.0f * sin(current_time * delta_time), 20.0f * cos(current_time * delta_time)));
+    sun_position = glm::vec3(0.0f, -20.0f * sin(current_time * delta_time), 20.0f * cos(current_time * delta_time));
+    model = glm::translate(model, sun_position);
     model = glm::scale(model, glm::vec3(0.7f));
 
     shader->set_mat4("model", model);
