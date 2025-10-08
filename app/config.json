@@ -1,9 +1,6 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path": "backpack/backpack.obj"
-      },
       "truck" : {
         "path" : "truck/truck.obj"
       },
@@ -11,29 +8,19 @@
         "path" : "army_truck/armytruck.obj",
         "flip_uvs" : true
       },
-      "suv": {
-        "path": "suv/suv.obj"
-      },
-      "house1": {
-        "path": "house1/Chalet.obj"
-      },
       "house2": {
         "path": "house2/Cottage_FREE.obj",
         "flip_uvs" : true
       },
-      "house3": {
-        "path": "house3/Cottage.obj",
-        "flip_uvs" : true
-      },
-      "lamp": {
-        "path": "lamp/StreetLamp.obj",
+      "floor": {
+        "path": "floor/Floor.obj",
         "flip_uvs" : true
       }
     }
   },
   "window": {
     "height": 600,
-    "title": "Hello, window!",
+    "title": "Spooky night",
     "width": 800
   }
 }

@@ -23,6 +23,10 @@ class MainController : public engine::core::Controller {
 
     void draw_house2();
 
+    void draw_fence();
+
+    void draw_floor();
+
     void draw_lamp();
 
     void update_camera();
