@@ -55,7 +55,7 @@ void MainController::draw_moon() {
     float delta_time = 0.05f;
 
     moonlight.position = glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), 20.0f * -cos(current_time * delta_time));
-    moonlight.ambient = glm::vec3(0.4f, 0.4f, 0.4f);
+    moonlight.ambient = glm::vec3(0.4f, 0.4f, 0.2f);
     moonlight.diffuse = glm::vec3(0.6f, 0.5f, 0.6f);
     moonlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
     moonlight.constant = 1.0f;
@@ -125,6 +125,7 @@ void MainController::draw_island() {
     shader->set_vec3("viewPosition", graphics->camera()->Position);
 
     set_point_light(shader, moonlight, "moon");
+    set_point_light(shader, sunlight, "sun");
 
     island->draw(shader);
 }
