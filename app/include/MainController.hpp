@@ -29,6 +29,8 @@ class MainController : public engine::core::Controller {
 
     void draw_lamp();
 
+    void draw_chair();
+
     void update_camera();
 
     void update() override;

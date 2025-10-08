@@ -1,9 +1,6 @@
 {
   "resources": {
     "models": {
-      "truck" : {
-        "path" : "truck/truck.obj"
-      },
       "army_truck" : {
         "path" : "army_truck/armytruck.obj",
         "flip_uvs" : true
@@ -14,6 +11,10 @@
       },
       "floor": {
         "path": "floor/Floor.obj",
+        "flip_uvs" : true
+      },
+      "chair": {
+        "path": "chair/stolica.obj",
         "flip_uvs" : true
       }
     }
