@@ -48,7 +48,7 @@ void MainController::draw_moon() {
 
 
     //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
+    engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
     float current_time = glfwGetTime();
@@ -73,7 +73,7 @@ void MainController::draw_sun() {
 
 
     //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
+    engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
     float current_time = glfwGetTime();
