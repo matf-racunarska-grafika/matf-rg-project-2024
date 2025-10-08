@@ -58,7 +58,7 @@ struct SpotLight {
 };
 
 #define NUM_OF_LAMPS 4
-float shininess = 32.0;
+float shininess = 8.0;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
@@ -78,9 +78,11 @@ void main() {
     vec3 result = CalcPointLight(moon, normal, FragPos, viewDir);
     result += CalcPointLight(sun, normal, FragPos, viewDir);
 
-    //    for (int i = 0; i < NUM_OF_LAMPS; i++) {
-    //        result += CalcSpotLight(lamps[i], normal, FragPos, viewDir);
-    //    }
+    if (sun.position.y < 5) {
+        for (int i = 0; i < NUM_OF_LAMPS; i++) {
+            result += CalcSpotLight(lamps[i], normal, FragPos, viewDir);
+        }
+    }
 
     FragColor = vec4(result, 1.0);
 }

@@ -209,13 +209,21 @@ void MainController::draw_lamp() {
             glm::vec3(-1.0f, 0.0f, -0.28f),
             glm::vec3(0.0f, 0.0f, 0.67f),
             glm::vec3(1.0f, 0.0f, -0.28f),
-            glm::vec3(0.0f, 0.0f, -1.23f)
+            glm::vec3(0.0f, 0.0f, -1.23f),//0.67, 0.1
+    };
+
+    glm::vec3 lightPositions[] = {
+            glm::vec3(-0.9f, 0.67f, -0.28f),
+            glm::vec3(0.0f, 0.67f, 0.57f),
+            glm::vec3(0.9f, 0.67f, -0.28f),
+            glm::vec3(0.0f, 0.67f, -1.13f),//0.67, 0.1
     };
 
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
     for (int i = 0; i < 4; i++) {
+        set_spot_light(shader, i, lightPositions[i]);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, positions[i]);
         model = glm::rotate(model, glm::radians(i * 90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -326,6 +334,23 @@ void MainController::set_point_light(engine::resources::Shader *shader, const Po
     shader->set_float(lightName + ".quadratic", pointLight.quadratic);
 }
 
+void MainController::set_spot_light(engine::resources::Shader *shader, int i, glm::vec3 lightPosition) {
+    shader->use();
+    shader->set_vec3("lamps[" + std::to_string(i) + "].ambient", glm::vec3(0.0f));
+    shader->set_vec3("lamps[" + std::to_string(i) + "].diffuse", glm::vec3(1.0f));
+    shader->set_vec3("lamps[" + std::to_string(i) + "].specular", glm::vec3(0.5f));
+
+    shader->set_vec3("lamps[" + std::to_string(i) + "].position", lightPosition);
+    shader->set_vec3("lamps[" + std::to_string(i) + "].direction", glm::vec3(0.0f, -1.0f, 0.0f));
+
+    shader->set_float("lamps[" + std::to_string(i) + "].cutOff", glm::cos(glm::radians(25.0f)));
+    shader->set_float("lamps[" + std::to_string(i) + "].outerCutOff", glm::cos(glm::radians(45.0f)));
+
+    shader->set_float("lamps[" + std::to_string(i) + "].constant", 1.0f);
+    shader->set_float("lamps[" + std::to_string(i) + "].linear", 0.1f);
+    shader->set_float("lamps[" + std::to_string(i) + "].quadratic", 0.03f);
+}
+
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GuiController>();
     if (gui_controller->is_enabled()) { return; }
@@ -360,10 +385,10 @@ void MainController::draw_skybox() {
 void MainController::draw() {
     draw_moon();
     draw_sun();
+    draw_lamp();
     draw_island();
     draw_tree();
     draw_bench();
-    draw_lamp();
     draw_bush();
     draw_path();
     draw_skybox();

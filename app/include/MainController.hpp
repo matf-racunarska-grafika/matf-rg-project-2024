@@ -31,6 +31,8 @@ class MainController : public engine::core::Controller {
 
     void set_point_light(engine::resources::Shader *shader, const PointLight &pointLight, const std::string &lightName);
 
+    void set_spot_light(engine::resources::Shader *shader, int i, glm::vec3 lightPosition);
+
     void draw_island();
 
     void update_camera();
