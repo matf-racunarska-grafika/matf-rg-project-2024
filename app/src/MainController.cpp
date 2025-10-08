@@ -7,8 +7,6 @@
 #include "../include/MainController.hpp"
 #include <spdlog/spdlog.h>
 #include "GUIController.hpp"
-#include "glm/gtc/type_ptr.hpp"
-#include "imgui.h"
 
 namespace app {
 
@@ -68,7 +66,7 @@ namespace app {
             []() {
                 spdlog::info("Bird started flying!");
                 birdFlying = true;
-            },10.0f, false});
+            },0.0f, false});
 
     }
 
@@ -85,6 +83,7 @@ namespace app {
         if (guiController->is_enabled()) {
             return;
         }
+
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         auto camera = graphics->camera();
@@ -180,7 +179,6 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat3("normalMatrix", normalMatrix);
 
-
         shader->set_vec3("dirLightDir", dirLight.direction);
         shader->set_vec3("dirLightCol", dirLight.color);
         shader->set_vec3("dirLightAmb", dirLight.ambient);
@@ -229,8 +227,7 @@ namespace app {
 
         glm::mat4 model = glm::mat4(1.0f);
         model           = glm::translate(model, birdPosition);
-        model           = glm::scale(model, glm::vec3(0.3f));
-        // float yaw = glm::radians(35.0f);
+        model           = glm::scale(model, glm::vec3(0.1f));
         float modelForwardOffset = glm::radians(90.0f);
         float yaw = -birdAngle + glm::half_pi<float>() + modelForwardOffset;
         float pitch = glm::radians(35.0f);

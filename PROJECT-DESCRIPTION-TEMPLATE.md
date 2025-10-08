@@ -1,10 +1,10 @@
-# {NAME-OF-THE-PROJECT}
+# {Farmstead}
 
 {mi22133} - {Miona Sretenovic}  
-{Projekt prikazuje 3D scenu sa automobilom, kućom, psom, mačkom i pticom.
-Scena je osvetljena sa directional i point svetlom. Pozicija svetla 
-se može podešavati preko tastature, dok se neki događaji u sceni aktiviraju nakon
-definisanog vremena.}
+{The project shows a 3D scene with a car, a house, a dog, a cat and a bird.
+House is lit with directional light, while the car is lit with directional and point light. 
+The position and intensity of the point light can be adjusted via a keyboard.
+Certain actions in the scene trigger events after a defined time.}
 
 ## Controls
 
@@ -16,6 +16,7 @@ definisanog vremena.}
 {Arrow Down} -> {Decrease point light intensity}
 {Arrow Right} -> {Move point light to the right}
 {Arrow Left} -> {Move point light to the left}
+{C} -> {Dog disappears, cat appears (after 3 seconds dog reappears, cat disappears)}
 
 ## Features
 
@@ -23,8 +24,8 @@ definisanog vremena.}
 
 [+] Model with lighting
 [+] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[+] {ACTION_START_BIRD} --- AFTER_10_SECONDS ---Triggers---> {BIRD_STARTS_FLYING}
 [+] {ACTION_KEY_C} --- IMMEDIATELY ---Triggers---> {DOG_DISAPPEARS_CAT_APPEARS} --- AFTER_3_SECONDS ---> {DOG_REAPPEARS_CAT_DISAPPEARS}
+[+] Bird flies automatically in the scene
 
 ### Group A:
 
@@ -56,4 +57,4 @@ definisanog vremena.}
 [link1]  
 [link2]
 
-{OTHER-RESOURCES}
+[Skybox] https://opengameart.org/content/elyvisions-skyboxes
