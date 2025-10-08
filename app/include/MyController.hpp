@@ -13,6 +13,9 @@ class MyController : public engine::core::Controller {
     bool loop() override;
     void draw_backpack();
 
+    void update_camera();
+    void update() override;
+
     void begin_draw() override;
     void draw() override;
     void end_draw() override;
