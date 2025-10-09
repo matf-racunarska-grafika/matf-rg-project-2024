@@ -6,6 +6,7 @@
 
 #include <GuiController.hpp>
 #include <MainController.hpp>
+#include <engine/graphics/Framebuffer.hpp>
 
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -31,6 +32,10 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 void MainController::initialize() {
     auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+
+    auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
+    graphics->init_msaa_framebuffer(platform->window()->width(), platform->window()->height());
+
     engine::graphics::OpenGL::enable_depth_testing();
 }
 
@@ -372,7 +377,13 @@ void MainController::update_camera() {
 
 void MainController::update() { update_camera(); }
 
-void MainController::begin_draw() { engine::graphics::OpenGL::clear_buffers(); }
+void MainController::begin_draw() {
+    engine::graphics::OpenGL::clear_buffers();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    graphics->bind_msaa_framebuffer();
+    engine::graphics::OpenGL::clear_buffers();
+    engine::graphics::OpenGL::enable_depth_testing();
+}
 
 void MainController::draw_skybox() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
@@ -380,6 +391,21 @@ void MainController::draw_skybox() {
     auto shader = resources->shader("skybox");
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->draw_skybox(shader, skybox);
+}
+
+void MainController::draw_quad() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    graphics->resolve_msaa(platform->window()->width(), platform->window()->height());
+    graphics->unbind_msaa_framebuffer();
+    engine::graphics::OpenGL::clear_buffers();
+    engine::graphics::OpenGL::disable_depth_testing();
+
+    auto shader = resources->shader("aa_post");
+
+    graphics->draw_quad(shader);
 }
 
 void MainController::draw() {
@@ -392,6 +418,7 @@ void MainController::draw() {
     draw_bush();
     draw_path();
     draw_skybox();
+    draw_quad();
 }
 
 void MainController::end_draw() {

@@ -8,8 +8,19 @@
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <engine/graphics/Framebuffer.hpp>
+#include <spdlog/spdlog.h>
 
 namespace engine::graphics {
+
+uint32_t Framebuffer::m_quadVAO = 0;
+
+uint32_t Framebuffer::m_fbo = 0;
+uint32_t Framebuffer::m_textureColorBufferMultiSampled = 0;
+uint32_t Framebuffer::m_rbo = 0;
+
+uint32_t Framebuffer::m_intermediateFBO = 0;
+uint32_t Framebuffer::m_screenTexture = 0;
 
 void GraphicsController::initialize() {
     const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
@@ -64,9 +75,7 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Top = static_cast<float>(height);
 }
 
-std::string_view GraphicsController::name() const {
-    return "GraphicsController";
-}
+std::string_view GraphicsController::name() const { return "GraphicsController"; }
 
 void GraphicsController::begin_gui() {
     ImGui_ImplOpenGL3_NewFrame();
@@ -90,7 +99,91 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, skybox->texture());
     CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 36);
     CHECKED_GL_CALL(glBindVertexArray, 0);
-    CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
+    CHECKED_GL_CALL(glDepthFunc, GL_LESS);// set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
+
+void GraphicsController::init_msaa_framebuffer(int width, int height, int samples) {
+    float quadVertices[] = {
+            // positions   // texCoords
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 1.0f
+    };
+
+    uint32_t quadVBO;
+    glGenVertexArrays(1, &Framebuffer::m_quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(Framebuffer::m_quadVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) 0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) (2 * sizeof(float)));
+
+    glGenFramebuffers(1, &Framebuffer::m_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_fbo);
+    glGenTextures(1, &Framebuffer::m_textureColorBufferMultiSampled);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, Framebuffer::m_textureColorBufferMultiSampled);
+
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width, height, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_2D_MULTISAMPLE, Framebuffer::m_textureColorBufferMultiSampled, 0);
+
+    glGenRenderbuffers(1, &Framebuffer::m_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, Framebuffer::m_rbo);
+
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH24_STENCIL8, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, Framebuffer::m_rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::info("Framebuffer is not complete"); }
+
+    glGenFramebuffers(1, &Framebuffer::m_intermediateFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_intermediateFBO);
+
+    glGenTextures(1, &Framebuffer::m_screenTexture);
+    glBindTexture(GL_TEXTURE_2D, Framebuffer::m_screenTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Framebuffer::m_screenTexture, 0);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::info("Framebuffer is not complete"); }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GraphicsController::bind_msaa_framebuffer() {
+    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_fbo);
+}
+
+void GraphicsController::unbind_msaa_framebuffer() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GraphicsController::resolve_msaa(int width, int height) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, Framebuffer::m_fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, Framebuffer::m_intermediateFBO);
+    glBlitFramebuffer(0, 0, width, height, 0, 0,
+                      width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+}
+
+void GraphicsController::draw_quad(const resources::Shader *shader) {
+    shader->use();
+    glBindVertexArray(Framebuffer::m_quadVAO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Framebuffer::m_screenTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 }

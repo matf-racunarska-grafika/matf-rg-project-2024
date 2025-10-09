@@ -53,6 +53,8 @@ class MainController : public engine::core::Controller {
 
     void draw_path();
 
+    void draw_quad();
+
     void draw() override;
 
     void end_draw() override;
