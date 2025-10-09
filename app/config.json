@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "bed" : {
+        "path" : "bed/bed.obj"
+      }
     }
   },
   "window": {
