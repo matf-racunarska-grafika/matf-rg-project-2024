@@ -22,7 +22,8 @@ namespace app {
         auto gui_controller = engine::core::Controller::get<GUIController>();
         if (!gui_controller->is_enabled()) {
             auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-            camera->rotate_camera(position.dx, position.dy);
+            const float SENS = 2.1f;
+            camera->rotate_camera(position.dx * SENS, position.dy);
         }
     }
 
@@ -220,7 +221,7 @@ namespace app {
 
     void MainController::draw_skybox() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto skybox = resources->skybox("used_skybox");
+        auto skybox = resources->skybox("another_skybox");
         auto shader = resources->shader("skybox");
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         graphics->draw_skybox(shader, skybox);
