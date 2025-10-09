@@ -24,6 +24,10 @@
       "busStop": {
         "path": "busStop/scene.gltf",
         "flip_uvs": true
+      },
+      "jellyFish": {
+        "path": "jellyFish/scene.gltf",
+        "flip_uvs": true
       }
 
     }

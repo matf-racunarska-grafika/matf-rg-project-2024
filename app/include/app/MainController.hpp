@@ -45,7 +45,11 @@ private:
 
     void draw_busStop();
 
+    void draw_jellyFish();
+
     void update_camera();
+
+    std::vector<glm::vec3> m_jellyFishPositions;
 
     bool m_isDay{true};
     bool m_draw_gui{false};

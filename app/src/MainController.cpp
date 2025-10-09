@@ -21,6 +21,15 @@ void MainController::initialize() {
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(
             std::move(observer));
+
+    m_jellyFishPositions.clear();
+    for (int i = 0; i < 10; i++) {
+        float x = -5.0f + (float)(rand() % 1000) / 100.0f; // x u opsegu [-5, 5]
+        float y = 0.5f + (float)(rand() % 150) / 100.0f;      // y u opsegu [1.5, 6.5]
+        float z = -10.0f + (float)(rand() % 1000) / 100.0f; // z u opsegu [-10, 0]
+        m_jellyFishPositions.push_back(glm::vec3(x, y, z));
+    }
+
 }
 
 bool MainController::loop() {
@@ -60,6 +69,7 @@ void MainController::draw() {
     draw_gary();
     draw_bus();
     draw_busStop();
+    draw_jellyFish();
     draw_ground();
     draw_skybox();
 }
@@ -77,11 +87,6 @@ void MainController::end_draw() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
-   /* // Directional Light uniforms
-    shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f)); // smer svetla (Sunce)
-    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));   // bela svetlost
-    shader->set_vec3("viewPos", graphics->camera()->Position);    // pozicija kamere
-*/
 
     if (m_isDay) {
         shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
@@ -89,7 +94,7 @@ void MainController::end_draw() {
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
         // Point light iz busStop-a
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
@@ -118,7 +123,7 @@ void MainController::end_draw() {
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
         // Point light iz busStop-a
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
@@ -148,7 +153,7 @@ void MainController::end_draw() {
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
         // Point light iz busStop-a
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
@@ -179,7 +184,7 @@ void MainController::end_draw() {
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
         // Point light iz busStop-a
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
@@ -208,7 +213,7 @@ void MainController::end_draw() {
         shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
@@ -220,6 +225,40 @@ void MainController::end_draw() {
 
     shader->set_mat4("model", model);
     busStop->draw(shader);
+}
+
+    void MainController::draw_jellyFish() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()
+                      ->shader(m_isDay ? "basic" : "basic_point_light");
+    auto jellyFish = engine::core::Controller::get<engine::resources::ResourcesController>()->model("jellyFish");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+
+    if (m_isDay) {
+        shader->set_vec3("lightDir", glm::vec3(0.5f, -1.0f, -0.5f));
+        shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    } else {
+        // Point light iz busStop-a
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+    }
+
+    for (int i = 0; i < 10; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, m_jellyFishPositions[i]);
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(0.0015f));
+
+        shader->set_mat4("model", model);
+        jellyFish->draw(shader);
+    }
 }
 
     void MainController::draw_ground() {
@@ -238,7 +277,7 @@ void MainController::end_draw() {
         shader->set_vec3("viewPos", graphics->camera()->Position);
     } else {
         // Point light iz busStop-a
-        shader->set_vec3("lightPos", glm::vec3(-2.5f, 2.0f, -3.0f)); // više u visinu i malo ulevo
+        shader->set_vec3("lightPos", glm::vec3(-3.0f, 0.0f, -2.0f)); // više u visinu i malo ulevo
         shader->set_vec3("lightColor", glm::vec3(2.0f, 1.6f, 1.2f)); // jača svetlost
         shader->set_vec3("viewPos", graphics->camera()->Position);
     }
