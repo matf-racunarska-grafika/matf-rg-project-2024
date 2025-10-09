@@ -258,6 +258,10 @@ namespace app {
 
         glm::vec3 aim = glm::normalize(fwd + glm::vec3(0.0f, -0.08f, 0.0f));
 
+        shader->set_vec3 ("viewPos", graphics->camera()->Position);
+        shader->set_float("materialShininess", 32.0f);
+        shader->set_float("specularStrength", 0.6f);
+
         shader->set_vec3("spotPos1",  spotPos1);
         shader->set_vec3("spotDir1",  aim);
         shader->set_vec3("spotPos2",  spotPos2);

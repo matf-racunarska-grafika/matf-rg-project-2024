@@ -47,6 +47,10 @@ uniform bool  isTruck;
 uniform float headGlowRadius;
 uniform float headGlowStrength;
 
+uniform vec3  viewPos;
+uniform float materialShininess;
+uniform float specularStrength;
+
 vec3 spotTerm(vec3 pos, vec3 dir, vec3 N){
     vec3 L_toFragment = normalize(FragPos - pos);
     vec3 L = -L_toFragment;
@@ -67,13 +71,54 @@ vec3 spotTerm(vec3 pos, vec3 dir, vec3 N){
 void main() {
     vec3 base = texture(texture_diffuse1, TexCoords).rgb;
     vec3 N = normalize(Normal);
+    vec3 V = normalize(viewPos - FragPos);
 
     vec3 Lm = normalize(-lightDir);
     float diff = max(dot(N, Lm), 0.0);
     vec3 ambientLight = lightColor * diff + vec3(ambient);
 
+    float specDir = 0.0;
+    if (diff > 0.0) {
+        vec3 Rm = reflect(-Lm, N);
+        specDir = pow(max(dot(V, Rm), 0.0), materialShininess);
+    }
+
+    vec3 dirSpec = lightColor * (specularStrength * specDir);
+
     vec3 s1 = spotTerm(spotPos1, spotDir1, N);
     vec3 s2 = spotTerm(spotPos2, spotDir2, N);
+
+    // mora odvojeno za oba fara spekularna komponenta
+    vec3  L1 = normalize(spotPos1 - FragPos);
+    float th1 = dot(normalize(spotDir1), normalize(FragPos - spotPos1));
+    float eps1 = max(spotInner - spotOuter, 1e-5);
+    float t1 = clamp((th1 - spotOuter) / eps1, 0.0, 1.0);
+    float spotF1 = pow(t1, 4.0);
+    float d1 = length(FragPos - spotPos1);
+    float att1  = 1.0 / (spotConst + spotLin * d1 + spotQuad * d1 * d1);
+
+    //isto kao gore
+    float spec1 = 0.0;
+    if (dot(N, L1) > 0.0) {
+        vec3 R1 = reflect(-L1, N);
+        spec1 = pow(max(dot(V, R1), 0.0), materialShininess);
+    }
+    vec3 spotSpec1 = spotColor * (specularStrength * spec1) * spotF1 * att1;
+
+    vec3  L2 = normalize(spotPos2 - FragPos);
+    float th2 = dot(normalize(spotDir2), normalize(FragPos - spotPos2));
+    float eps2 = max(spotInner - spotOuter, 1e-5);
+    float t2 = clamp((th2 - spotOuter) / eps2, 0.0, 1.0);
+    float spotF2 = pow(t2, 4.0);
+    float d2 = length(FragPos - spotPos2);
+    float att2 = 1.0 / (spotConst + spotLin * d2 + spotQuad * d2 * d2);
+
+    float spec2 = 0.0;
+    if (dot(N, L2) > 0.0) {
+        vec3 R2 = reflect(-L2, N);
+        spec2 = pow(max(dot(V, R2), 0.0), materialShininess);
+    }
+    vec3 spotSpec2 = spotColor * (specularStrength * spec2) * spotF2 * att2;
 
     float emissiveGlow = 0.0;
     if(isTruck){
@@ -85,6 +130,6 @@ void main() {
         emissiveGlow = headGlowStrength * (g1 + g2);
     }
 
-    vec3 color = base * (ambientLight + s1 + s2) + spotColor * emissiveGlow;
+    vec3 color = base * (ambientLight + s1 + s2) + dirSpec + spotSpec1 + spotSpec2 + spotColor * emissiveGlow;
     FragColor = vec4(color, 1.0);
 }
