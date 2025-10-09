@@ -1,8 +1,9 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path" : "backpack/backpack.obj"
+      "cottage": {
+        "path" : "cottage/Cottage_1.obj",
+        "flip_uvs" : true
       }
     }
   },

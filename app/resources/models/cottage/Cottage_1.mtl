@@ -1,0 +1,194 @@
+# Blender MTL File: 'Cottage_1.blend'
+# Material Count: 16
+
+newmtl Back_column
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Back_column_Base_Color.png
+bump Back_column_Normal_OpenGL.png
+
+newmtl Corners_onlay
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Corners_onlay_Base_Color.png
+bump Corners_onlay_Normal_OpenGL.png
+
+newmtl Decorative_items
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Decorative_items_Base_Color.png
+bump Decorative_items_Normal_OpenGL.png
+
+newmtl Door_handle
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Door_handle_Base_Color.png
+bump Door_handle_Normal_OpenGL.png
+
+newmtl Gutters
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Gutters_Base_Color.png
+bump Gutters_Normal_OpenGL.png
+
+newmtl House
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd House_Base_Color_4K.png
+bump House_Normal_OpenGL_4K.png
+
+newmtl Lamps
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Lamps_Base_Color.png
+bump Lamps_Normal_OpenGL.png
+
+newmtl Main_porch_with_columns
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Main_porch_with_columns_Base_Color.png
+bump Main_porch_with_columns_Normal_OpenGL.png
+
+newmtl Monterrey_metal_tile
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Monterrey_Base_Color.png
+bump Monterrey_Normal_OpenGL.png
+
+newmtl Ridge_tiles
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Ridge_tiles_Base_Color.png
+bump Ridge_tiles_Normal_OpenGL.png
+
+newmtl Roof_onlay
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Roof_onlay_Base_Color.png
+bump Roof_onlay_Normal_OpenGL.png
+
+newmtl Secondary_porch
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Secondary_porch_Base_Color.png
+bump Secondary_porch_Normal_OpenGL.png
+
+newmtl Smoke_shaft
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Smoke_shaft_Base_Color.png
+bump Smoke_shaft_Normal_OpenGL.png
+
+newmtl Smoke_shaft_onlay
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Smoke_shaft_onlay_Base_Color.png
+bump Smoke_shaft_onlay_Normal_OpenGL.png
+
+newmtl Snow_holders
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Snow_holders_Base_Color.png
+bump Snow_holders_Normal_OpenGL.png
+
+newmtl Ventilation_shaft
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd Ventilation_shaft_Base_Color.png
+bump Ventilation_shaft_Normal_OpenGL.png

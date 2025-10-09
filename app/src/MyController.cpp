@@ -40,10 +40,10 @@ bool MyController::loop() {
     }
     return true;
 }
-void MyController::draw_backpack() {
+void MyController::draw_cottage() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
-    engine::resources::Model* model = resources->model("backpack");
+    engine::resources::Model* model = resources->model("cottage");
 
     engine::resources::Shader* shader = resources->shader("basic");
     shader->use();
@@ -99,7 +99,7 @@ void MyController::draw_skybox() {
 
 
 void MyController::draw() {
-    draw_backpack();
+    draw_cottage();
     draw_skybox();
 }
 
