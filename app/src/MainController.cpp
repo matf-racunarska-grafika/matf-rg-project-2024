@@ -190,6 +190,8 @@ namespace app {
         shader->set_float("l", pointLight.l);
         shader->set_float("q", pointLight.q);
 
+        shader->set_vec3("viewPos", graphics->camera()->Position);
+
         car->draw(shader);
     }
 
@@ -213,6 +215,8 @@ namespace app {
         shader->set_vec3("dirLightDir", dirLight.direction);
         shader->set_vec3("dirLightCol", dirLight.color);
         shader->set_vec3("dirLightAmb", dirLight.ambient);
+
+        shader->set_vec3("viewPos", graphics->camera()->Position);
 
         house->draw(shader);
     }

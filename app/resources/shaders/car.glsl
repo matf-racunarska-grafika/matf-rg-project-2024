@@ -43,20 +43,31 @@ uniform float c;
 uniform float l;
 uniform float q;
 
+uniform vec3 viewPos;
+
 void main() {
     vec3 col = texture(texture_diffuse1, TexCoords).rgb;
     vec3 norm = normalize(Normal);
 
     vec3 dir = normalize(-dirLightDir);
     float n = max(dot(norm, dir), 0.0);
-    vec3 dirTerm = dirLightCol * (dirLightAmb + n);
+    vec3 dirTerm = dirLightCol * (dirLightAmb + n) * col;
 
     vec3 lightDir = normalize(pointLightPos - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     float d = length(pointLightPos - FragPos);
     float att = 1.0 / (c + l*d + q*d*d);
-    vec3 pointTerm = pointLightCol * (pointLightAmb + diff) * att;
+    vec3 pointTerm = pointLightCol * (pointLightAmb + diff) * att * col;
 
-    vec3 result = col * (dirTerm + pointTerm);
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-dir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    vec3 specular = dirLightCol * spec;
+
+    vec3 reflectPoint = reflect(-lightDir, norm);
+    float specPoint = pow(max(dot(viewDir, reflectPoint), 0.0), 32.0);
+    vec3 specularPoint = pointLightCol * specPoint * att;
+
+    vec3 result = dirTerm + pointTerm + specular + specularPoint;
     FragColor = vec4(result, 1.0);
 }

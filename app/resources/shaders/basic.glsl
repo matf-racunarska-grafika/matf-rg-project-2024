@@ -36,14 +36,23 @@ uniform vec3 dirLightDir;
 uniform vec3 dirLightCol;
 uniform vec3 dirLightAmb;
 
+uniform vec3 viewPos;
+
 void main() {
     vec3 col = texture(texture_diffuse1, TexCoords).rgb;
     vec3 norm = normalize(Normal);
 
-    vec3 dir = normalize(-dirLightDir);
-    float n = max(dot(norm, dir), 0.0);
-    vec3 dirTerm = dirLightCol * (dirLightAmb + n);
+    vec3 ambient = dirLightAmb * col;
 
-    vec3 result = col * dirTerm;
+    vec3 dir = normalize(-dirLightDir);
+    float diff = max(dot(norm, dir), 0.0);
+    vec3 diffuse = dirLightCol * diff * col;
+
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-dir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+    vec3 specular = dirLightCol * spec;
+
+    vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
 }
