@@ -2,7 +2,7 @@
 // Created by filipn on 9/1/25.
 //
 
-#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 #include <GuiController.hpp>
 #include <MainController.hpp>
