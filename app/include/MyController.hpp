@@ -12,7 +12,7 @@ namespace app {
 class MyController : public engine::core::Controller {
     void initialize() override;
     bool loop() override;
-    void draw_backpack();
+    void draw_cottage();
     void draw_skybox();
     void draw() override;
 
