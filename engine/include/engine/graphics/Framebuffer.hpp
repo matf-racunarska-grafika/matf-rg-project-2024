@@ -9,22 +9,17 @@
 namespace engine::graphics {
 
 class Framebuffer {
-public:
-    void init_msaa(uint32_t width, uint32_t height, uint32_t samples = 4);
-
-    void bind() const;
-
-    void unbind() const;
-
-    void resolve() const;
+    friend class GraphicsController;
 
 private:
-    uint32_t m_fbo{0};
-    uint32_t m_textureColorBufferMultiSampled{0};
-    uint32_t m_rbo{0};
+    static uint32_t m_quadVAO;
 
-    uint32_t m_intermediateFBO{0};
-    uint32_t m_screenTexture{0};
+    static uint32_t m_fbo;
+    static uint32_t m_textureColorBufferMultiSampled;
+    static uint32_t m_rbo;
+
+    static uint32_t m_intermediateFBO;
+    static uint32_t m_screenTexture;
 };
 
 }
