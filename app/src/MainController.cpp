@@ -211,6 +211,17 @@ namespace app {
             //spdlog::info("Headlights: {}", m_headlightsOn ? "ON" : "OFF");
         }
         m_prevT = tDown;
+
+        if (m_headlightsOn) {
+            m_showChair = false;
+            m_headlightsOffTimer = 0.0f;
+        } else {
+            m_headlightsOffTimer += platform->dt();
+            if (m_headlightsOffTimer >= 2.0f) {
+                m_showChair = true;
+            }
+        }
+
         m_chairPhase += 1.8f * platform->dt();
 
     }
@@ -292,7 +303,9 @@ namespace app {
         draw_house1();
         draw_house2();
         draw_army_truck();
-        draw_rocking_chair();
+        if (m_showChair) {
+            draw_rocking_chair();
+        }
 
         draw_skybox();
     }

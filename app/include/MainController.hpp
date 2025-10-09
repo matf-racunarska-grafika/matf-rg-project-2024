@@ -15,6 +15,9 @@ class MainController : public engine::core::Controller {
     bool m_prevT = false;
     float m_chairPhase = 0.0f;
 
+    bool m_showChair = false;
+    float m_headlightsOffTimer = 0.0f;
+
     void initialize() override;
 
     bool loop() override;
