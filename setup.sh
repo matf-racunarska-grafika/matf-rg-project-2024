@@ -1,3 +1,4 @@
+#!/bin/bash
 sudo add-apt-repository universe ppa:ubuntu-toolchain-r/test
 sudo apt update
 sudo apt install pkg-config g++-13 clang-format clang-tidy cmake git build-essential libwayland-dev libxkbcommon-dev xorg-dev libgl1-mesa-dev mesa-common-dev mesa-utils doxygen graphviz
@@ -9,5 +10,10 @@ sudo update-alternatives --set c++ /usr/bin/g++
 
 sudo update-alternatives --config gcc
 sudo update-alternatives --config g++
+
+sudo apt install python3-pip python3-venv -y
+
+python3 -m venv .venv
+source ".venv/bin/activate" && pip3 install libclang
 
 glxinfo | grep OpenGL

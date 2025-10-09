@@ -147,7 +147,7 @@ private:
     /**
     * @brief The OpenGL ID of the shader program.
     */
-    unsigned m_shaderId;
+    unsigned m_shader_id;
 
     /**
     * @brief The name of the shader program

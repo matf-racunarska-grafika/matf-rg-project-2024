@@ -16,14 +16,6 @@
 #include <type_traits>
 
 /// @cond
-template<class... Ts>
-struct overloaded : Ts ... {
-    using Ts::operator()...;
-};
-
-template<class... Ts>
-overloaded(Ts...) -> overloaded<Ts...>;
-
 template<typename Func>
 struct DeferImpl {
     DeferImpl(Func f) : f(f) {
