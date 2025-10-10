@@ -37,6 +37,9 @@ void MainController::initialize() {
     graphics->init_msaa_framebuffer(platform->window()->width(), platform->window()->height());
 
     engine::graphics::OpenGL::enable_depth_testing();
+
+    graphics->add_point_shadow_caster();// moon
+    graphics->add_point_shadow_caster();// sun
 }
 
 bool MainController::loop() {
@@ -76,6 +79,11 @@ void MainController::draw_moon() {
     shader->set_mat4("projection", graphics->projection_matrix());
 
     moon->draw(shader);
+
+    engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
+    graphics->set_shadow_caster_position(moonlight.position, 0);
+    graphics->render_point_light_shadows(shaderShadow, 0);
+    graphics->bind_point_light_shadows_to_shader(shader, 0, "moon");
 }
 
 void MainController::draw_sun() {
@@ -108,6 +116,11 @@ void MainController::draw_sun() {
     shader->set_mat4("projection", graphics->projection_matrix());
 
     sun->draw(shader);
+
+    engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
+    graphics->set_shadow_caster_position(moonlight.position, 0);
+    graphics->render_point_light_shadows(shaderShadow, 1);
+    graphics->bind_point_light_shadows_to_shader(shader, 1, "sun");
 }
 
 void MainController::draw_island() {
