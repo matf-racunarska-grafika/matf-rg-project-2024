@@ -101,7 +101,7 @@ public:
 
     void render_point_light_shadows(resources::Shader *shader);
 
-    void bind_point_light_shadows_to_shader(resources::Shader *shader);
+    void bind_point_light_shadows_to_shader(resources::Shader *shader, int i, const std::string &name);
 
     void set_shadow_caster_position(glm::vec3 &position, int i = -1);
 

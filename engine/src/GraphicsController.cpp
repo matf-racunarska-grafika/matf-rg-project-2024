@@ -202,15 +202,14 @@ void GraphicsController::render_point_light_shadows(resources::Shader *shader) {
     }
 }
 
-void GraphicsController::bind_point_light_shadows_to_shader(resources::Shader *shader) {
+void GraphicsController::bind_point_light_shadows_to_shader(resources::Shader *shader, int i, const std::string &name) {
     int texUnitBase = 5;
 
-    for (int i = 0; i < m_shadowCasters.size(); i++) {
-        std::string namePos = "pointLights[" + std::to_string(i) + "].position";
-        std::string nameFar = "pointLights[" + std::to_string(i) + "].farPlane";
-        std::string nameMap = "pointLights[" + std::to_string(i) + "].shadowMap";
-        m_shadowCasters[i].bind_to_shader(shader, namePos, nameFar, nameMap, texUnitBase + i);
-    }
+    std::string namePos = name + ".position";
+    std::string nameFar = name + ".farPlane";
+    std::string nameMap = name + ".shadowMap";
+
+    m_shadowCasters[i].bind_to_shader(shader, namePos, nameFar, nameMap, texUnitBase + i);
 }
 
 void GraphicsController::set_shadow_caster_position(glm::vec3 &position, int i) { if (i != -1) { m_shadowCasters[i].set_position(position); } else { m_shadowCasters.back().set_position(position); } }
