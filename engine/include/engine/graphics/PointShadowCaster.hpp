@@ -23,9 +23,9 @@ public:
 
     void render_pass();
 
-    void set_shader(engine::resources::Shader *shader);
+    void set_shader(resources::Shader *shader);
 
-    void bind_to_shader(engine::resources::Shader *mainShader, const std::string &uniformNamePos,
+    void bind_to_shader(resources::Shader *mainShader, const std::string &uniformNamePos,
                         const std::string &uniformNameFarPlane, const std::string &uniformNameShadowMap, int textureUnit);
 
 private:

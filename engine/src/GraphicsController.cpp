@@ -9,6 +9,7 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/Skybox.hpp>
 #include <engine/graphics/Framebuffer.hpp>
+#include <engine/graphics/PointShadowCaster.hpp>
 #include <spdlog/spdlog.h>
 
 namespace engine::graphics {
@@ -21,6 +22,8 @@ uint32_t Framebuffer::m_rbo = 0;
 
 uint32_t Framebuffer::m_intermediateFBO = 0;
 uint32_t Framebuffer::m_screenTexture = 0;
+
+std::vector<PointShadowCaster> m_shadowCasters;
 
 void GraphicsController::initialize() {
     const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
@@ -185,5 +188,31 @@ void GraphicsController::draw_quad(const resources::Shader *shader) {
     glBindTexture(GL_TEXTURE_2D, Framebuffer::m_screenTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
+
+void GraphicsController::add_point_shadow_caster(int shadowWidth, int shadowHeight, float nearPlane, float farPlane) {
+    auto caster = PointShadowCaster();
+    caster.init(shadowWidth, shadowHeight, nearPlane, farPlane);
+    m_shadowCasters.push_back(PointShadowCaster());
+}
+
+void GraphicsController::render_point_light_shadows(resources::Shader *shader) {
+    for (auto caster: m_shadowCasters) {
+        caster.set_shader(shader);
+        caster.render_pass();
+    }
+}
+
+void GraphicsController::bind_point_light_shadows_to_shader(resources::Shader *shader) {
+    int texUnitBase = 5;
+
+    for (int i = 0; i < m_shadowCasters.size(); i++) {
+        std::string namePos = "pointLights[" + std::to_string(i) + "].position";
+        std::string nameFar = "pointLights[" + std::to_string(i) + "].farPlane";
+        std::string nameMap = "pointLights[" + std::to_string(i) + "].shadowMap";
+        m_shadowCasters[i].bind_to_shader(shader, namePos, nameFar, nameMap, texUnitBase + i);
+    }
+}
+
+void GraphicsController::set_shadow_caster_position(glm::vec3 &position, int i) { if (i != -1) { m_shadowCasters[i].set_position(position); } else { m_shadowCasters.back().set_position(position); } }
 
 }

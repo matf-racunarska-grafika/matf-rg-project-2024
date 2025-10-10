@@ -8,6 +8,7 @@
 
 #include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/PointShadowCaster.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
 struct ImGuiContext;
@@ -95,6 +96,14 @@ public:
     void resolve_msaa(int width, int height);
 
     void draw_quad(const resources::Shader *shader);
+
+    void add_point_shadow_caster(int shadowWidth = 1024, int shadowHeight = 1024, float nearPlane = 0.1f, float farPlane = 25.0f);
+
+    void render_point_light_shadows(resources::Shader *shader);
+
+    void bind_point_light_shadows_to_shader(resources::Shader *shader);
+
+    void set_shadow_caster_position(glm::vec3 &position, int i = -1);
 
     Camera *camera() { return &m_camera; }
 

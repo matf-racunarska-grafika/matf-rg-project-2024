@@ -20,7 +20,7 @@ PointShadowCaster::PointShadowCaster()
 , m_shadowWidth(0)
 , m_shadowHeight(0)
 , m_nearPlane(0.1f)
-, m_farPlane(50.0f)
+, m_farPlane(25.0f)
 , m_position(0.0f)
 , m_shader(nullptr)
 , m_cubeVAO(0)
@@ -55,7 +55,7 @@ void PointShadowCaster::init(int shadowWidth, int shadowHeight, float nearPlane,
 void PointShadowCaster::set_position(glm::vec3 &position) { m_position = position; }
 
 void PointShadowCaster::render_pass() {
-    glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float) m_shadowWidth / m_shadowHeight, m_nearPlane, m_farPlane);
+    glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float) m_shadowWidth / (float) m_shadowHeight, m_nearPlane, m_farPlane);
     std::vector<glm::mat4> shadowTransforms;
     shadowTransforms.push_back(shadowProj * glm::lookAt(m_position, m_position + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
     shadowTransforms.push_back(shadowProj * glm::lookAt(m_position, m_position + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
@@ -78,9 +78,9 @@ void PointShadowCaster::render_pass() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void PointShadowCaster::set_shader(engine::resources::Shader *shader) { m_shader = shader; }
+void PointShadowCaster::set_shader(resources::Shader *shader) { m_shader = shader; }
 
-void PointShadowCaster::bind_to_shader(engine::resources::Shader *mainShader, const std::string &uniformNamePos,
+void PointShadowCaster::bind_to_shader(resources::Shader *mainShader, const std::string &uniformNamePos,
                                        const std::string &uniformNameFarPlane, const std::string &uniformNameShadowMap, int textureUnit) {
     mainShader->use();
     mainShader->set_vec3(uniformNamePos, m_position);
@@ -200,4 +200,3 @@ void PointShadowCaster::renderCube() {
 }
 
 }
-
