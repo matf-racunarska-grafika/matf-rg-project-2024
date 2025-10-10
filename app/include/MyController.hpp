@@ -5,10 +5,13 @@
 #ifndef MATF_RG_PROJECT_MYCONTROLLER_H
 #define MATF_RG_PROJECT_MYCONTROLLER_H
 #include "engine/core/Controller.hpp"
+#include <vector>
 
+#include <Drawable.hpp>
 #include <glm/vec3.hpp>
 
 namespace app {
+class Drawable;
 
 struct PointLight {
     glm::vec3 ambient = glm::vec3(1,0,0);
@@ -31,9 +34,10 @@ struct DirectionalLight {
 };
 
 class MyController : public engine::core::Controller {
+    std::vector<Drawable*> m_drawables;
+
     void initialize() override;
     bool loop() override;
-    void draw_backpack();
 
     void update_camera();
     void update() override;
@@ -44,10 +48,12 @@ class MyController : public engine::core::Controller {
     void end_draw() override;
 
 public:
-    std::string_view name() const override {return "app::MyController";}
     PointLight point_light;
     DirectionalLight directional_light;
+    ~MyController();
+    std::string_view name() const override {return "app::MyController";}
 
+    void addDrawable(Drawable* drawable);
 };
 
 }// namespace app

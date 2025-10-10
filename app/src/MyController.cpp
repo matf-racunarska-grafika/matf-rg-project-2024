@@ -10,6 +10,8 @@
 #include "engine/platform/PlatformController.hpp"
 #include "engine/resources/ResourcesController.hpp"
 
+#define BUILDING_COUNT (5)
+
 namespace app {
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
 public:
@@ -26,6 +28,11 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 
 
 void MyController::initialize() {
+
+    for (int i = 0; i < BUILDING_COUNT; i++) {
+        addDrawable(new Drawable("building", "basic", glm::vec3(i*5,0,0), glm::vec3(0.03)));
+    }
+
     auto platform = get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
@@ -36,35 +43,6 @@ bool MyController::loop() {
         return false;
     }
     return true;
-}
-void MyController::draw_backpack() {
-    //Model
-    auto resources = get<engine::resources::ResourcesController>();
-    auto graphics = get<engine::graphics::GraphicsController>();
-    engine::resources::Model* model = resources->model("building");
-    //Shader
-    engine::resources::Shader* shader = resources->shader("basic");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-    shader->set_mat4("model", glm::scale(glm::mat4(1.0f), glm::vec3(0.05f)));
-
-    shader->set_vec3("directional_light.direction", directional_light.direction);
-    shader->set_vec3("directional_light.ambient", directional_light.ambient);
-    shader->set_vec3("directional_light.diffuse", directional_light.diffuse);
-    shader->set_vec3("directional_light.specular", directional_light.specular);
-    shader->set_float("directional_light.shininess", directional_light.shininess);
-    shader->set_vec3("directional_light.intensity", directional_light.intensity);
-
-    shader->set_vec3("point_light.position", point_light.position);
-    shader->set_vec3("point_light.ambient", point_light.ambient);
-    shader->set_vec3("point_light.diffuse", point_light.diffuse);
-    shader->set_vec3("point_light.specular", point_light.specular);
-    shader->set_float("point_light.linear", point_light.linear);
-    shader->set_float("point_light.quadratic", point_light.quadratic);
-    shader->set_vec3("point_light.intensity", point_light.intensity);
-
-    model->draw(shader);
 }
 void MyController::update_camera() {
     auto gui_controller = get<GUIController>();
@@ -102,10 +80,23 @@ void MyController::begin_draw() {
 }
 
 void MyController::draw() {
-    draw_backpack();
+    for (auto drawable: m_drawables) {
+        drawable->draw(directional_light, point_light);
+    }
     draw_skybox();
 }
 void MyController::end_draw() {
     get<engine::platform::PlatformController>()->swap_buffers();
+}
+
+MyController::~MyController() {
+    for (auto drawable : m_drawables) {
+        delete drawable;
+    }
+    m_drawables.clear();
+}
+
+void MyController::addDrawable(Drawable *drawable) {
+    m_drawables.push_back(drawable);
 }
 }// namespace app
