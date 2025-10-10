@@ -195,11 +195,9 @@ void GraphicsController::add_point_shadow_caster(int shadowWidth, int shadowHeig
     m_shadowCasters.push_back(PointShadowCaster());
 }
 
-void GraphicsController::render_point_light_shadows(resources::Shader *shader) {
-    for (auto caster: m_shadowCasters) {
-        caster.set_shader(shader);
-        caster.render_pass();
-    }
+void GraphicsController::render_point_light_shadows(resources::Shader *shader, int i) {
+    m_shadowCasters[i].set_shader(shader);
+    m_shadowCasters[i].render_pass();
 }
 
 void GraphicsController::bind_point_light_shadows_to_shader(resources::Shader *shader, int i, const std::string &name) {
