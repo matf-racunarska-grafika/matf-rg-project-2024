@@ -51,6 +51,24 @@ void MyController::draw_cottage() {
     shader->set_mat4("view",graphics->camera()->view_matrix());
     shader->set_mat4("model",glm::mat4(1.0f));
 
+    // Camera position
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+
+    // Directional light
+    shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+
+    // Point light
+    shader->set_vec3("pointLight.position", glm::vec3(0.0f, 5.0f, 0.0f));
+    shader->set_vec3("pointLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_float("pointLight.constant", 1.0f);
+    shader->set_float("pointLight.linear", 0.09f);
+    shader->set_float("pointLight.quadratic", 0.032f);
+
     model->draw(shader);
 }
 
