@@ -89,7 +89,7 @@ void MyController::end_draw() {
     get<engine::platform::PlatformController>()->swap_buffers();
 }
 
-MyController::~MyController() {
+void MyController::terminate() {
     for (auto drawable : m_drawables) {
         delete drawable;
     }

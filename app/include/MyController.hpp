@@ -50,10 +50,11 @@ class MyController : public engine::core::Controller {
 public:
     PointLight point_light;
     DirectionalLight directional_light;
-    ~MyController();
     std::string_view name() const override {return "app::MyController";}
 
     void addDrawable(Drawable* drawable);
+
+    void terminate() override;
 };
 
 }// namespace app
