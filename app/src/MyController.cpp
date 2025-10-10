@@ -4,6 +4,10 @@
 
 #include "../include/MyController.hpp"
 
+#include "../../engine/libs/glad/include/glad/glad.h"
+
+
+#include <GL/gl.h>
 #include <GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -11,6 +15,8 @@
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <spdlog/spdlog.h>
+#include <GLFW/glfw3.h>
+
 
 namespace app {
 
@@ -61,13 +67,15 @@ void MyController::draw_cottage() {
     shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
 
     // Point light
-    shader->set_vec3("pointLight.position", glm::vec3(0.0f, 5.0f, 0.0f));
+    shader->set_vec3("pointLight.position", point_light_position());
     shader->set_vec3("pointLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
     shader->set_vec3("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
     shader->set_vec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
     shader->set_float("pointLight.constant", 1.0f);
-    shader->set_float("pointLight.linear", 0.09f);
-    shader->set_float("pointLight.quadratic", 0.032f);
+    shader->set_float("pointLight.linear", 0.5);
+    shader->set_float("pointLight.quadratic", 0.32);
+
+    shader->set_bool("isLightSource", false);
 
     model->draw(shader);
 }
@@ -115,9 +123,31 @@ void MyController::draw_skybox() {
 
 }
 
+void MyController::draw_light_cube() {
+    auto resources = get<engine::resources::ResourcesController>();
+    auto graphics = get<engine::graphics::GraphicsController>();
+
+    auto shader = resources->shader("basic");
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, point_light_position());
+    model = glm::scale(model, glm::vec3(0.4f));
+    shader->set_mat4("model", model);
+
+    shader->set_bool("isLightSource", true);
+    shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+    uint32_t cubeVAO = engine::graphics::OpenGL::init_simple_cube();
+    CHECKED_GL_CALL(glBindVertexArray, cubeVAO);
+    CHECKED_GL_CALL(glDrawArrays, GL_TRIANGLES, 0, 36);
+}
 
 void MyController::draw() {
     draw_cottage();
+    draw_light_cube();
     draw_skybox();
 }
 
@@ -125,8 +155,9 @@ void MyController::end_draw() {
     auto platform = get<engine::platform::PlatformController>();
     platform->swap_buffers();
 }
-
-
+glm::vec3 MyController::point_light_position() {
+    return glm::vec3(0,5,0);
+}
 
 
 }// namespace app

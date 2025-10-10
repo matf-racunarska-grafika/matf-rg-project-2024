@@ -11,6 +11,8 @@ public:
         return "test::app::GUIController";
     }
 
+    float pointLightIntensity = 1.0f;
+
 private:
     void initialize() override;
 
