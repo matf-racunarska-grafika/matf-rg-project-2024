@@ -3,6 +3,9 @@
     "models": {
       "bed" : {
         "path" : "bed/bed.obj"
+      },
+      "backpack" : {
+        "path" : "backpack/backpack.obj"
       }
     }
   },
