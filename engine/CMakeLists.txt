@@ -27,7 +27,6 @@ add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
 add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers}
         include/engine/graphics/Framebuffer.hpp
-        include/engine/graphics/PointShadowCaster.cpp
         include/engine/graphics/PointShadowCaster.hpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
