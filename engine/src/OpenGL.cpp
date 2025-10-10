@@ -77,6 +77,65 @@ uint32_t OpenGL::init_skybox_cube() {
     return skybox_vao;
 }
 
+uint32_t OpenGL::init_simple_cube() {
+    static unsigned int cube_vao = 0;
+    if (cube_vao != 0) {
+        return cube_vao;
+    }
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+
+        -0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f, -0.5f,
+         0.5f, -0.5f,  0.5f,
+         0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f, -0.5f,
+         0.5f,  0.5f,  0.5f,
+         0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f
+    };
+    uint32_t cube_vbo = 0;
+    CHECKED_GL_CALL(glGenVertexArrays, 1, &cube_vao);
+    CHECKED_GL_CALL(glGenBuffers, 1, &cube_vbo);
+    CHECKED_GL_CALL(glBindVertexArray, cube_vao);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, cube_vbo);
+    CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+    CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
+    CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0); // NOLINT
+    return cube_vao;
+}
+
 bool OpenGL::shader_compiled_successfully(uint32_t shader_id) {
     int success;
     CHECKED_GL_CALL(glGetShaderiv, shader_id, GL_COMPILE_STATUS, &success);

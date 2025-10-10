@@ -6,6 +6,7 @@
 #define MATF_RG_PROJECT_MYCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <glm/vec3.hpp>
 
 namespace app {
 
@@ -14,6 +15,7 @@ class MyController : public engine::core::Controller {
     bool loop() override;
     void draw_cottage();
     void draw_skybox();
+    void draw_light_cube();
     void draw() override;
 
     void update_camera();
@@ -25,6 +27,7 @@ public:
     std::string_view name() const override {
         return "MyController";
     }
+    glm::vec3 point_light_position();
 };
 
 }// namespace app

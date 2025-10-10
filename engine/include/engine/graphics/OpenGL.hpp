@@ -94,6 +94,12 @@ public:
     static uint32_t init_skybox_cube();
 
     /**
+    * @brief Initializes a simple cube Vertex Array Object. Caches the vao result.
+    * @returns VAO of a simple cube.
+    */
+    static uint32_t init_simple_cube();
+
+    /**
     * @brief Check if the shader with the `shader_id` compiled successfully.
     * @returns true if the shader compilation succeeded, false otherwise.
     */
