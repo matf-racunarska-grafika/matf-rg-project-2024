@@ -41,7 +41,7 @@ void MyController::draw_backpack() {
     //Model
     auto resources = get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
-    engine::resources::Model* model = resources->model("backpack");
+    engine::resources::Model* model = resources->model("building");
     //Shader
     engine::resources::Shader* shader = resources->shader("basic");
     shader->use();
