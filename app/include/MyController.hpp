@@ -8,31 +8,16 @@
 #include <vector>
 
 #include <Drawable.hpp>
-#include <glm/vec3.hpp>
+#include <PointLight.hpp>
+#include <DirectionalLight.hpp>
 
 namespace app {
 class Drawable;
-
-struct PointLight {
-    glm::vec3 ambient = glm::vec3(0.3,0,0);
-    glm::vec3 diffuse = glm::vec3(0.6f);
-    glm::vec3 specular = glm::vec3(0.4f);
-    glm::vec3 position = glm::vec3(-2.0f, 0.0f, -2.0f);
-    float linear = 0.02f;
-    float quadratic = 0.01f;
-    float shininess = 32.0f;
-};
-
-struct DirectionalLight {
-    glm::vec3 direction = glm::vec3(0.0f, 1.0f, 1.0f);
-    glm::vec3 ambient = glm::vec3(0.1f);
-    glm::vec3 diffuse = glm::vec3(0.7f);
-    glm::vec3 specular = glm::vec3(0.5f);
-    float shininess = 8.0f;
-};
+class PointLight;
 
 class MyController : public engine::core::Controller {
     std::vector<Drawable*> m_drawables;
+    std::vector<PointLight*> m_point_lights;
 
     void initialize() override;
     bool loop() override;
@@ -46,11 +31,11 @@ class MyController : public engine::core::Controller {
     void end_draw() override;
 
 public:
-    PointLight point_light;
     DirectionalLight directional_light;
     std::string_view name() const override {return "app::MyController";}
 
     void addDrawable(Drawable* drawable);
+    void addPointLight(PointLight* point_light);
 
     void terminate() override;
 };

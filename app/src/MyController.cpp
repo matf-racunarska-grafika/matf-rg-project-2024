@@ -5,10 +5,12 @@
 #include <MyController.hpp>
 
 #include "GUIController.hpp"
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
 #include "engine/platform/PlatformController.hpp"
 #include "engine/resources/ResourcesController.hpp"
+#include <random>
 
 #define BUILDING_COUNT (5)
 
@@ -28,10 +30,29 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 
 
 void MyController::initialize() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
+    float angle = 0;
+    glm::vec3 scale = glm::vec3(1.0f);
+    glm::vec3 rotation_axis = glm::vec3(0,1,0);
+    glm::vec3 diffuse = glm::vec3(0.6f);
+    glm::vec3 specular = glm::vec3(0.4f);
+    glm::vec3 relative_position = glm::vec3(0.0f, 2.0f, 0.0f);
+    float linear = 0.05f;
+    float quadratic = 0.05f;
+    float shininess = 32.0f;
     for (int i = 0; i < BUILDING_COUNT; i++) {
-        addDrawable(new Drawable("building", "basic", glm::vec3(i*5,0,-1), glm::vec3(0.03)));
-        addDrawable(new Drawable("road", "basic", glm::vec3(i*5+1.5,0,2), glm::vec3(0.2, 0.2, 0.5), 90, glm::vec3(0,1,0)));
+        glm::vec3 ambient;
+        int rotation = i % 3;
+        if (rotation == 0) ambient = glm::vec3(0.6f, 0.0f, 0.0f);
+        else if (rotation == 1) ambient = glm::vec3(0.0f, 0.6f, 0.0f);
+        else ambient = glm::vec3(0.0f, 0.0f, 0.6f);
+
+        addPointLight(new PointLight("lamp", glm::vec3(i*5-0.825f,0.185f,0), scale, angle, rotation_axis, ambient, diffuse, specular, relative_position, linear, quadratic, shininess));
+        addDrawable(new ModelDrawable("building",  glm::vec3(i*5,0,-1), glm::vec3(0.03)));
+        addDrawable(new ModelDrawable("road",  glm::vec3(i*5+1.5,0,2), glm::vec3(0.2, 0.2, 0.5), 90, glm::vec3(0,1,0)));
     }
 
     auto platform = get<engine::platform::PlatformController>();
@@ -82,7 +103,7 @@ void MyController::begin_draw() {
 
 void MyController::draw() {
     for (auto drawable: m_drawables) {
-        drawable->draw(directional_light, point_light);
+        drawable->draw(directional_light, m_point_lights);
     }
     draw_skybox();
 }
@@ -94,10 +115,17 @@ void MyController::terminate() {
     for (auto drawable : m_drawables) {
         delete drawable;
     }
+    //m_point_lights elemnts have already existed in m_drawables so no need to deallocate them
     m_drawables.clear();
+    m_point_lights.clear();
 }
 
 void MyController::addDrawable(Drawable *drawable) {
     m_drawables.push_back(drawable);
+}
+
+void MyController::addPointLight(PointLight* point_light) {
+    m_point_lights.push_back(point_light);
+    m_drawables.push_back(point_light);
 }
 }// namespace app

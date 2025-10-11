@@ -1,32 +1,29 @@
 //
-// Created by nikola on 10/10/25.
+// Created by nikola on 10/11/25.
 //
 
 #ifndef MATF_RG_PROJECT_DRAWABLE_HPP
 #define MATF_RG_PROJECT_DRAWABLE_HPP
-
-#include <MyController.hpp>
-#include <string>
-#include <glm/vec3.hpp>
+#include <DirectionalLight.hpp>
+#include <engine/resources/Model.hpp>
+#include <vector>
 
 namespace app {
-struct DirectionalLight;
-struct PointLight;
+
+class PointLight;
 
 class Drawable {
     public:
-        std::string model_name;
-        std::string shader_name;
-        glm::vec3 coordinates;
-        glm::vec3 scale;
-        float angle;
-        glm::vec3 rotation_axis;
+        virtual ~Drawable() {}
 
-        Drawable(const std::string& model_name, const std::string& shader_name,
-                 const glm::vec3& coordinates, const glm::vec3& scale = glm::vec3(1.0f),
-                 float angle = 0, const glm::vec3& rotation_axis = glm::vec3(1,0,0));
+        engine::resources::Model* model;
 
-        void draw(DirectionalLight directional_light, PointLight point_light);
+        Drawable();
+        Drawable(engine::resources::Model* model, engine::resources::Shader* shader);
+
+        virtual engine::resources::Shader* getShader(const DirectionalLight& directional_light, const std::vector<PointLight*>& point_lights) = 0;
+
+        void draw(const DirectionalLight& directional_light, const std::vector<PointLight*>& point_lights);
     };
 } // app
 
