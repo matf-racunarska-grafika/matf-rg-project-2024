@@ -302,42 +302,33 @@ void MainController::draw_path(engine::resources::Shader *shader) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *path = resources->model("path");
 
-    shader->use();
+    shader->use();// (-0.8f, 0.0f, -0.5f) // (0.8f, 0.0f, -0.5f) // (-0.8f, 0.0f, -0.075f) // (0.8f, 0.0f, -0.075f)
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -0.5f));
-    model = glm::scale(model, glm::vec3(0.3f));
+    glm::vec3 positions[] = {
+            glm::vec3(-0.8f, 0.0f, -0.5f),
+            glm::vec3(0.8f, 0.0f, -0.5f),
+            glm::vec3(-0.8f, 0.0f, -0.075f),
+            glm::vec3(0.8f, 0.0f, -0.075f),
+    };
 
-    shader->set_mat4("model", model);
+    glm::vec3 axes[] = {
+            glm::vec3(0.0f, 0.0f, 1.0f),
+            glm::vec3(1.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f),
+    };
+
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    path->draw(shader);
+    for (int i = 0; i < 4; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, positions[i]);
+        if (i > 0) { model = glm::rotate(model, glm::radians(180.0f), axes[i - 1]); }
+        model = glm::scale(model, glm::vec3(0.3f));
+        shader->set_mat4("model", model);
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -0.5f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    path->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -0.075f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    path->draw(shader);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.8f, 0.0f, -0.075f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::rotate(model, glm::radians(-180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-
-    path->draw(shader);
+        path->draw(shader);
+    }
 }
 
 void MainController::set_point_light(engine::resources::Shader *shader, const PointLight &pointLight, const std::string &lightName) {
