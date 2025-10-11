@@ -62,7 +62,7 @@ void MainController::draw_moon() {
     float current_time = glfwGetTime();
     float delta_time = 0.05f;
 
-    moonlight.position = glm::vec3(0.0f, 20.0f * sin(current_time * delta_time), 20.0f * -cos(current_time * delta_time));
+    moonlight.position = glm::vec3(0.0f, 6.0f * sin(current_time * delta_time) - 2, -6.0f * cos(current_time * delta_time));
     moonlight.ambient = glm::vec3(0.3f, 0.3f, 0.3f);
     moonlight.diffuse = glm::vec3(0.6f, 0.6f, 0.6f);
     moonlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -72,7 +72,7 @@ void MainController::draw_moon() {
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, moonlight.position);
-    model = glm::scale(model, glm::vec3(0.7f));
+    model = glm::scale(model, glm::vec3(0.3f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
@@ -110,7 +110,7 @@ void MainController::draw_sun() {
     float current_time = glfwGetTime();
     float delta_time = 0.05f;
 
-    sunlight.position = glm::vec3(0.0f, -20.0f * sin(current_time * delta_time), 20.0f * cos(current_time * delta_time));
+    sunlight.position = glm::vec3(0.0f, -6.0f * sin(current_time * delta_time) - 2, 6.0f * cos(current_time * delta_time));
     sunlight.ambient = glm::vec3(0.1f, 0.1f, 0.1f);
     sunlight.diffuse = glm::vec3(0.9f, 0.9f, 0.9f);
     sunlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -120,7 +120,7 @@ void MainController::draw_sun() {
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, sunlight.position);
-    model = glm::scale(model, glm::vec3(0.7f));
+    model = glm::scale(model, glm::vec3(0.3f));
 
     shader->set_mat4("model", model);
     shader->set_mat4("view", graphics->camera()->view_matrix());
