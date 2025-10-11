@@ -360,10 +360,13 @@ void MainController::set_point_light(engine::resources::Shader *shader, const Po
 }
 
 void MainController::set_spot_light(engine::resources::Shader *shader, int i, glm::vec3 lightPosition) {
+    auto gui_controller = engine::core::Controller::get<GuiController>();
+    glm::vec3 lampColor = gui_controller->get_lamp_color();
+
     shader->use();
     shader->set_vec3("lamps[" + std::to_string(i) + "].ambient", glm::vec3(0.0f));
-    shader->set_vec3("lamps[" + std::to_string(i) + "].diffuse", glm::vec3(0.8f));
-    shader->set_vec3("lamps[" + std::to_string(i) + "].specular", glm::vec3(0.5f));
+    shader->set_vec3("lamps[" + std::to_string(i) + "].diffuse", 0.8f * lampColor);
+    shader->set_vec3("lamps[" + std::to_string(i) + "].specular", 0.5f * lampColor);
 
     shader->set_vec3("lamps[" + std::to_string(i) + "].position", lightPosition);
     shader->set_vec3("lamps[" + std::to_string(i) + "].direction", glm::vec3(0.0f, -1.0f, 0.0f));

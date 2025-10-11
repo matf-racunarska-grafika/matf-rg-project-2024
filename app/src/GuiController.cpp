@@ -25,6 +25,7 @@ void GuiController::draw() {
 
     ImGui::Begin("Camera info");
     ImGui::Text("Camera Position: (%f, %f, %f)", camera->Position.x, camera->Position.y, camera->Position.z);
+    ImGui::ColorPicker3("Lamp Light Color: ", lampColor);
     ImGui::End();
 
     graphics->end_gui();
