@@ -19,9 +19,12 @@ class Drawable {
         std::string shader_name;
         glm::vec3 coordinates;
         glm::vec3 scale;
+        float angle;
+        glm::vec3 rotation_axis;
 
         Drawable(const std::string& model_name, const std::string& shader_name,
-                 const glm::vec3& coordinates, const glm::vec3& scale = glm::vec3(1.0f));
+                 const glm::vec3& coordinates, const glm::vec3& scale = glm::vec3(1.0f),
+                 float angle = 0, const glm::vec3& rotation_axis = glm::vec3(1,0,0));
 
         void draw(DirectionalLight directional_light, PointLight point_light);
     };
