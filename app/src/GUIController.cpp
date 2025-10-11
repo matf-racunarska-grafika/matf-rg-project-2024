@@ -14,6 +14,17 @@ void GUIController::poll_events() {
                 .state() == engine::platform::Key::State::JustPressed) {
         set_enable(!is_enabled());
     }
+
+    float dt = platform->dt();
+    if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
+        pointLightIntensity += 0.5f * dt;
+    }
+    if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
+        pointLightIntensity -= 0.5f * dt;
+        if (pointLightIntensity < 0.0f) {
+            pointLightIntensity = 0.0f;
+        }
+    }
 }
 
 void GUIController::draw() {

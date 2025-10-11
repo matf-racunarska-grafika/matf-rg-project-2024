@@ -54,6 +54,7 @@ bool MyController::loop() {
 void MyController::draw_cottage() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
     engine::resources::Model* model = resources->model("cottage");
 
     engine::resources::Shader* shader = resources->shader("basic");
@@ -66,10 +67,11 @@ void MyController::draw_cottage() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     // Directional light
+    float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
     // Point light
     shader->set_vec3("pointLight.position", point_light_position());
@@ -153,6 +155,7 @@ void MyController::draw_light_cube() {
 void MyController::draw_tree() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
     engine::resources::Model* tree = resources->model("tree");
 
     engine::resources::Shader* shader = resources->shader("basic");
@@ -169,10 +172,11 @@ void MyController::draw_tree() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     // Directional light
+    float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
     // Point light
     shader->set_vec3("pointLight.position", point_light_position());
@@ -191,6 +195,7 @@ void MyController::draw_tree() {
 void MyController::draw_tree2() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
     engine::resources::Model* tree = resources->model("tree2");
 
     engine::resources::Shader* shader = resources->shader("basic");
@@ -208,10 +213,11 @@ void MyController::draw_tree2() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     // Directional light
+    float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
     // Point light
     shader->set_vec3("pointLight.position", point_light_position());
@@ -230,6 +236,7 @@ void MyController::draw_tree2() {
 void MyController::draw_tree3() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = get<engine::graphics::GraphicsController>();
+    auto gui_controller = engine::core::Controller::get<GUIController>();
     engine::resources::Model* tree = resources->model("tree3");
 
     engine::resources::Shader* shader = resources->shader("basic");
@@ -247,10 +254,11 @@ void MyController::draw_tree3() {
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
     // Directional light
+    float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f, 0.3f, 0.3f));
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.6f));
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
     // Point light
     shader->set_vec3("pointLight.position", point_light_position());
