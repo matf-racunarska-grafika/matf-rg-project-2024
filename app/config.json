@@ -8,6 +8,10 @@
       "road": {
         "path": "road/road.obj",
         "flip_uvs": false
+      },
+      "lamp": {
+        "path": "lamp/Street_lamp_1.obj",
+        "flip_uvs": true
       }
     }
   },
