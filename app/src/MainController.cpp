@@ -82,8 +82,19 @@ void MainController::draw_moon() {
 
     engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
     graphics->set_shadow_caster_position(moonlight.position, 0);
-    graphics->render_point_light_shadows(shaderShadow, 0);
-    graphics->bind_point_light_shadows_to_shader(shader, 0, "moon");
+    graphics->render_point_light_shadows(shaderShadow, 0, [&](engine::resources::Shader *shadowPassShader) {
+        draw_island(shadowPassShader, true);
+        draw_bench(shadowPassShader);
+        draw_bush(shadowPassShader);
+        draw_lamp(shadowPassShader, true);
+        draw_path(shadowPassShader);
+        draw_tree(shadowPassShader);
+    });
+
+    engine::resources::Shader *shaderMain = resources->shader("basic");
+    graphics->bind_point_light_shadows_to_shader(shaderMain, 0, "moon");
+
+    graphics->bind_msaa_framebuffer();
 }
 
 void MainController::draw_sun() {
@@ -118,19 +129,26 @@ void MainController::draw_sun() {
     sun->draw(shader);
 
     engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
-    graphics->set_shadow_caster_position(moonlight.position, 0);
-    graphics->render_point_light_shadows(shaderShadow, 1);
-    graphics->bind_point_light_shadows_to_shader(shader, 1, "sun");
+    graphics->set_shadow_caster_position(sunlight.position, 1);
+    graphics->render_point_light_shadows(shaderShadow, 1, [&](engine::resources::Shader *shadowPassShader) {
+        draw_island(shadowPassShader, true);
+        draw_bench(shadowPassShader);
+        draw_bush(shadowPassShader);
+        draw_lamp(shadowPassShader, true);
+        draw_path(shadowPassShader);
+        draw_tree(shadowPassShader);
+    });
+
+    engine::resources::Shader *shaderMain = resources->shader("basic");
+    graphics->bind_point_light_shadows_to_shader(shaderMain, 1, "sun");
+
+    graphics->bind_msaa_framebuffer();
 }
 
-void MainController::draw_island() {
+void MainController::draw_island(engine::resources::Shader *shader, bool shadowPass) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *island = resources->model("island");
-
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-4.0f, 14.37f, -3.5f));
@@ -142,20 +160,17 @@ void MainController::draw_island() {
 
     shader->set_vec3("viewPosition", graphics->camera()->Position);
 
-    set_point_light(shader, moonlight, "moon");
-    set_point_light(shader, sunlight, "sun");
-
+    if (!shadowPass) {
+        set_point_light(shader, moonlight, "moon");
+        set_point_light(shader, sunlight, "sun");
+    }
     island->draw(shader);
 }
 
-void MainController::draw_tree() {
+void MainController::draw_tree(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *tree = resources->model("tree");
-
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
 
     glm::vec3 positions[] = {
@@ -185,15 +200,13 @@ void MainController::draw_tree() {
     }
 }
 
-void MainController::draw_bench() {
+void MainController::draw_bench(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *bench = resources->model("bench");
 
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -0.28f));
     model = glm::scale(model, glm::vec3(0.05f));
@@ -213,14 +226,10 @@ void MainController::draw_bench() {
     bench->draw(shader);
 }
 
-void MainController::draw_lamp() {
+void MainController::draw_lamp(engine::resources::Shader *shader, bool shadowPass) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *lamp = resources->model("lamp");
-
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
 
     glm::vec3 positions[] = {
@@ -241,7 +250,8 @@ void MainController::draw_lamp() {
     shader->set_mat4("projection", graphics->projection_matrix());
 
     for (int i = 0; i < 4; i++) {
-        set_spot_light(shader, i, lightPositions[i]);
+        if (!shadowPass) { set_spot_light(shader, i, lightPositions[i]); }
+
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, positions[i]);
         model = glm::rotate(model, glm::radians(i * 90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -252,14 +262,11 @@ void MainController::draw_lamp() {
     }
 }
 
-void MainController::draw_bush() {
+void MainController::draw_bush(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *bush = resources->model("bush");
 
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
 
     glm::vec3 positions[] = {
@@ -294,15 +301,13 @@ void MainController::draw_bush() {
     }
 }
 
-void MainController::draw_path() {
+void MainController::draw_path(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *path = resources->model("path");
 
-
-    //Shader
-    engine::resources::Shader *shader = resources->shader("basic");
     shader->use();
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(-0.8f, 0.0f, -0.5f));
     model = glm::scale(model, glm::vec3(0.3f));
@@ -424,12 +429,15 @@ void MainController::draw_quad() {
 void MainController::draw() {
     draw_moon();
     draw_sun();
-    draw_lamp();
-    draw_island();
-    draw_tree();
-    draw_bench();
-    draw_bush();
-    draw_path();
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto shader = resources->shader("basic");
+
+    draw_lamp(shader);
+    draw_island(shader);
+    draw_tree(shader);
+    draw_bench(shader);
+    draw_bush(shader);
+    draw_path(shader);
     draw_skybox();
     draw_quad();
 }

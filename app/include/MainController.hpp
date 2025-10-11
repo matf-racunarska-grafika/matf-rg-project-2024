@@ -33,7 +33,7 @@ class MainController : public engine::core::Controller {
 
     void set_spot_light(engine::resources::Shader *shader, int i, glm::vec3 lightPosition);
 
-    void draw_island();
+    void draw_island(engine::resources::Shader *shader, bool shadowPass = false);
 
     void update_camera();
 
@@ -43,15 +43,15 @@ class MainController : public engine::core::Controller {
 
     void draw_skybox();
 
-    void draw_tree();
+    void draw_tree(engine::resources::Shader *shader);
 
-    void draw_bench();
+    void draw_bench(engine::resources::Shader *shader);
 
-    void draw_lamp();
+    void draw_lamp(engine::resources::Shader *shader, bool shadowPass = false);
 
-    void draw_bush();
+    void draw_bush(engine::resources::Shader *shader);
 
-    void draw_path();
+    void draw_path(engine::resources::Shader *shader);
 
     void draw_quad();
 
