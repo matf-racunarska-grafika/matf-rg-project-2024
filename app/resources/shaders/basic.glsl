@@ -96,7 +96,7 @@ void main() {
     vec3 result = CalcPointLight(moon, normal, FragPos, viewDir);
     result += CalcPointLight(sun, normal, FragPos, viewDir);
 
-    if (sun.position.y < 1.5) {
+    if (sun.position.y < 2.5) {
         for (int i = 0; i < NUM_OF_LAMPS; i++) {
             result += CalcSpotLight(lamps[i], normal, FragPos, viewDir);
         }
