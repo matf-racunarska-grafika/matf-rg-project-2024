@@ -7,11 +7,18 @@
 #include "../libs/glad/include/glad/glad.h"
 
 #include <GL/gl.h>
+#include <engine/core/Controller.hpp>
+#include <engine/platform/PlatformController.hpp>
+#include <engine/resources/Model.hpp>
 #include <engine/resources/Shader.hpp>
 #include <glm/glm.hpp>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <spdlog/spdlog.h>
+
+namespace engine::platform {
+class PlatformController;
+}
 
 namespace engine::graphics {
 PointShadowCaster::PointShadowCaster()
@@ -22,9 +29,7 @@ PointShadowCaster::PointShadowCaster()
 , m_nearPlane(0.1f)
 , m_farPlane(25.0f)
 , m_position(0.0f)
-, m_shader(nullptr)
-, m_cubeVAO(0)
-, m_cubeVBO(0) {}
+, m_shader(nullptr) {}
 
 void PointShadowCaster::init(int shadowWidth, int shadowHeight, float nearPlane, float farPlane) {
     m_shadowWidth = shadowWidth;
@@ -65,7 +70,7 @@ void PointShadowCaster::render_pass() {
     shadowTransforms.push_back(shadowProj * glm::lookAt(m_position, m_position + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
 
     glViewport(0, 0, m_shadowWidth, m_shadowHeight);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_depthCubeMap);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_depthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
 
     m_shader->use();
@@ -73,9 +78,12 @@ void PointShadowCaster::render_pass() {
     m_shader->set_float("far_plane", m_farPlane);
     m_shader->set_vec3("lightPos", m_position);
 
-    renderScene();
+    if (m_renderSceneCallback) { m_renderSceneCallback(m_shader); } else { spdlog::warn("PointShadowCaster: No render scene callback set."); }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    glViewport(0, 0, platform->window()->width(), platform->window()->height());
 }
 
 void PointShadowCaster::set_shader(resources::Shader *shader) { m_shader = shader; }
@@ -91,112 +99,6 @@ void PointShadowCaster::bind_to_shader(resources::Shader *mainShader, const std:
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_depthCubeMap);
 }
 
-void PointShadowCaster::renderScene() {
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(5.0f));
-    m_shader->set_mat4("model", model);
-
-    glDisable(GL_CULL_FACE);
-    m_shader->set_int("reverse_normals", 1);
-    renderCube();
-    m_shader->set_mat4("reverse_normals", 0);
-    glEnable(GL_CULL_FACE);
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0));
-    model = glm::scale(model, glm::vec3(0.5f));
-    m_shader->set_mat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 3.0f, 1.0));
-    model = glm::scale(model, glm::vec3(0.75f));
-    m_shader->set_mat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0));
-    model = glm::scale(model, glm::vec3(0.5f));
-    m_shader->set_mat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.5f, 1.0f, 1.5));
-    model = glm::scale(model, glm::vec3(0.5f));
-    m_shader->set_mat4("model", model);
-    renderCube();
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.5f, 2.0f, -3.0));
-    model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-    model = glm::scale(model, glm::vec3(0.75f));
-    m_shader->set_mat4("model", model);
-    renderCube();
-}
-
-void PointShadowCaster::renderCube() {
-    if (m_cubeVAO == 0) {
-        float vertices[] = {
-                // back face
-                -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,// bottom-left
-                1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,  // top-right
-                1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, // bottom-right
-                1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,  // top-right
-                -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,// bottom-left
-                -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, // top-left
-                // front face
-                -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,// bottom-left
-                1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom-right
-                1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // top-right
-                1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // top-right
-                -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // top-left
-                -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,// bottom-left
-                // left face
-                -1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-right
-                -1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
-                -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,// bottom-left
-                -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,// bottom-left
-                -1.0f, -1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-right
-                -1.0f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-right
-                // right face
-                1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-left
-                1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,// bottom-right
-                1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right
-                1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,// bottom-right
-                1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-left
-                1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left
-                // bottom face
-                -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,// top-right
-                1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, // top-left
-                1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom-left
-                1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // bottom-left
-                -1.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom-right
-                -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,// top-right
-                // top face
-                -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
-                1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom-right
-                1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right
-                1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom-right
-                -1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
-                -1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f  // bottom-left
-        };
-
-        glGenVertexArrays(1, &m_cubeVAO);
-        glGenBuffers(1, &m_cubeVBO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_cubeVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        glBindVertexArray(m_cubeVAO);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-
-    glBindVertexArray(m_cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
-}
+void PointShadowCaster::set_render_scene_callback(std::function<void(resources::Shader *)> callback) { m_renderSceneCallback = std::move(callback); }
 
 }

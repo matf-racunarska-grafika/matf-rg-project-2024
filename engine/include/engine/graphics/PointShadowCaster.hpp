@@ -4,6 +4,7 @@
 
 #ifndef POINTSHADOWCASTER_HPP
 #define POINTSHADOWCASTER_HPP
+#include <functional>
 #include <string>
 #include <glm/vec3.hpp>
 
@@ -28,20 +29,16 @@ public:
     void bind_to_shader(resources::Shader *mainShader, const std::string &uniformNamePos,
                         const std::string &uniformNameFarPlane, const std::string &uniformNameShadowMap, int textureUnit);
 
+    void set_render_scene_callback(std::function<void(resources::Shader *)> callback);
+
 private:
-    void renderScene();
-
-    void renderCube();
-
     uint32_t m_depthMapFBO;
     uint32_t m_depthCubeMap;
     int m_shadowWidth, m_shadowHeight;
     float m_nearPlane, m_farPlane;
     glm::vec3 m_position;
     engine::resources::Shader *m_shader;
-
-    uint32_t m_cubeVAO;
-    uint32_t m_cubeVBO;
+    std::function<void(resources::Shader *)> m_renderSceneCallback;
 };
 
 }
