@@ -13,8 +13,13 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform bool reverse_normals;
+
 void main() {
     FragPos = vec3(model * vec4(aPos, 1.0));
+    if (reverse_normals)
+    Normal = mat3(transpose(inverse(model))) * (-1 * aNormal);
+    else
     Normal = mat3(transpose(inverse(model))) * aNormal;
     TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
@@ -39,6 +44,9 @@ struct PointLight {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    samplerCube shadowMap;
+    float far_plane;
 };
 
 struct SpotLight {
@@ -70,6 +78,7 @@ uniform SpotLight lamps[NUM_OF_LAMPS];
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float ShadowCalculation(vec3 fragPos, PointLight pointLight);
 
 void main() {
     vec3 normal = normalize(Normal);
@@ -105,7 +114,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     diffuse *= attenuation;
     specular *= attenuation;
 
-    return (ambient + diffuse + specular);
+    float shadow = ShadowCalculation(fragPos, light);
+
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -131,4 +142,17 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     specular *= attenuation * intensity;
 
     return (ambient + diffuse + specular);
+}
+
+float ShadowCalculation(vec3 fragPos, PointLight pointLight) {
+    vec3 fragToLight = fragPos - pointLight.position;
+    float closestDepth = texture(pointLight.shadowMap, fragToLight).r;
+    closestDepth *= pointLight.far_plane;
+    float currentDepth = length(fragToLight);
+
+    float bias = 0.05;
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+    // FragColor = vec4(vec3(closestDepth / far_plane), 1.0);
+
+    return shadow;
 }
