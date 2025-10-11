@@ -2,7 +2,7 @@
 // Created by nikola on 10/10/25.
 //
 
-#include "../include/Drawable.hpp"
+#include <Drawable.hpp>
 
 #include <MyController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
@@ -11,8 +11,9 @@
 
 namespace app {
     Drawable::Drawable(const std::string& model_name, const std::string& shader_name,
-                       const glm::vec3& coordinates, const glm::vec3& scale)
-        : model_name(model_name), shader_name(shader_name), coordinates(coordinates), scale(scale) {}
+                       const glm::vec3& coordinates, const glm::vec3& scale,
+                       float angle, const glm::vec3& rotation_axis)
+        : model_name(model_name), shader_name(shader_name), coordinates(coordinates), scale(scale), angle(angle), rotation_axis(rotation_axis){}
 
     void Drawable::draw(DirectionalLight directional_light, PointLight point_light) {
         //Model
@@ -25,6 +26,7 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
         glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f), coordinates);
+        model_matrix = glm::rotate(model_matrix, glm::radians(angle), rotation_axis);
         model_matrix = glm::scale(model_matrix, scale);
         shader->set_mat4("model", model_matrix);
 

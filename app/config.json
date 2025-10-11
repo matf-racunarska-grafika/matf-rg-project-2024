@@ -4,6 +4,10 @@
       "building": {
         "path" : "building/cartoon_building.obj",
         "flip_uvs": true
+      },
+      "road": {
+        "path": "road/road.obj",
+        "flip_uvs": false
       }
     }
   },

@@ -2,7 +2,7 @@
 // Created by nikola on 10/8/25.
 //
 
-#include "../include/MyController.hpp"
+#include <MyController.hpp>
 
 #include "GUIController.hpp"
 #include "engine/graphics/GraphicsController.hpp"
@@ -30,7 +30,8 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 void MyController::initialize() {
 
     for (int i = 0; i < BUILDING_COUNT; i++) {
-        addDrawable(new Drawable("building", "basic", glm::vec3(i*5,0,0), glm::vec3(0.03)));
+        addDrawable(new Drawable("building", "basic", glm::vec3(i*5,0,-1), glm::vec3(0.03)));
+        addDrawable(new Drawable("road", "basic", glm::vec3(i*5+1.5,0,2), glm::vec3(0.2, 0.2, 0.5), 90, glm::vec3(0,1,0)));
     }
 
     auto platform = get<engine::platform::PlatformController>();
