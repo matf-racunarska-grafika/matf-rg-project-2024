@@ -33,7 +33,7 @@ class MainController : public engine::core::Controller {
 
     void set_spot_light(engine::resources::Shader *shader, int i, glm::vec3 lightPosition);
 
-    void draw_island(engine::resources::Shader *shader, bool shadowPass = false);
+    void draw_island(engine::resources::Shader *shader);
 
     void update_camera();
 

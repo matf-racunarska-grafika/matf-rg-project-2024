@@ -83,7 +83,7 @@ void MainController::draw_moon() {
     engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
     graphics->set_shadow_caster_position(moonlight.position, 0);
     graphics->render_point_light_shadows(shaderShadow, 0, [&](engine::resources::Shader *shadowPassShader) {
-        draw_island(shadowPassShader, true);
+        draw_island(shadowPassShader);
         draw_bench(shadowPassShader);
         draw_bush(shadowPassShader);
         draw_lamp(shadowPassShader, true);
@@ -93,6 +93,7 @@ void MainController::draw_moon() {
 
     engine::resources::Shader *shaderMain = resources->shader("basic");
     graphics->bind_point_light_shadows_to_shader(shaderMain, 0, "moon");
+    set_point_light(shaderMain, moonlight, "moon");
 
     graphics->bind_msaa_framebuffer();
 }
@@ -130,7 +131,7 @@ void MainController::draw_sun() {
     engine::resources::Shader *shaderShadow = resources->shader("point_light_shadows");
     graphics->set_shadow_caster_position(sunlight.position, 1);
     graphics->render_point_light_shadows(shaderShadow, 1, [&](engine::resources::Shader *shadowPassShader) {
-        draw_island(shadowPassShader, true);
+        draw_island(shadowPassShader);
         draw_bench(shadowPassShader);
         draw_bush(shadowPassShader);
         draw_lamp(shadowPassShader, true);
@@ -140,11 +141,12 @@ void MainController::draw_sun() {
 
     engine::resources::Shader *shaderMain = resources->shader("basic");
     graphics->bind_point_light_shadows_to_shader(shaderMain, 1, "sun");
+    set_point_light(shaderMain, sunlight, "sun");
 
     graphics->bind_msaa_framebuffer();
 }
 
-void MainController::draw_island(engine::resources::Shader *shader, bool shadowPass) {
+void MainController::draw_island(engine::resources::Shader *shader) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *island = resources->model("island");
@@ -159,10 +161,6 @@ void MainController::draw_island(engine::resources::Shader *shader, bool shadowP
 
     shader->set_vec3("viewPosition", graphics->camera()->Position);
 
-    if (!shadowPass) {
-        set_point_light(shader, moonlight, "moon");
-        set_point_light(shader, sunlight, "sun");
-    }
     island->draw(shader);
 }
 
