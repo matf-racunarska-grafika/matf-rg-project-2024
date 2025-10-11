@@ -15,9 +15,18 @@ namespace app {
 class Drawable;
 class PointLight;
 
+enum SwitchState {
+    LEFT,
+    RIGHT,
+    NO_SWITCH
+};
+
 class MyController : public engine::core::Controller {
     std::vector<Drawable*> m_drawables;
     std::vector<PointLight*> m_point_lights;
+
+    SwitchState m_light_switching = NO_SWITCH;
+    double m_next_switch = 0;
 
     void initialize() override;
     bool loop() override;

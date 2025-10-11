@@ -5,12 +5,14 @@
 #include <MyController.hpp>
 
 #include "GUIController.hpp"
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
 #include "engine/platform/PlatformController.hpp"
 #include "engine/resources/ResourcesController.hpp"
 
 #define BUILDING_COUNT (10)
+#define TIME_SWITCH_SECONDS (0.5)
 
 namespace app {
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -88,6 +90,28 @@ void MyController::update_lights() {
     if (platform->key(engine::platform::KeyId::KEY_P).state() == engine::platform::Key::State::JustPressed) {
         for (auto point_light: m_point_lights) {
             point_light->enabled = !point_light->enabled;
+        }
+    }
+    if (platform->key(engine::platform::KeyId::KEY_J).state() == engine::platform::Key::State::JustPressed) {
+        m_light_switching = LEFT;
+    }
+    if (platform->key(engine::platform::KeyId::KEY_K).state() == engine::platform::Key::State::JustPressed) {
+        m_light_switching = NO_SWITCH;
+    }
+    if (platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+        m_light_switching = RIGHT;
+    }
+    auto current_time = glfwGetTime();
+    if (m_light_switching != NO_SWITCH && m_next_switch < current_time) {
+        m_next_switch = current_time + TIME_SWITCH_SECONDS;
+        for (auto point_light: m_point_lights) {
+            auto& amb = point_light->ambient;
+            if (m_light_switching == LEFT) {
+                point_light->ambient = glm::vec3(amb.z, amb.x, amb.y);
+            }
+            else {
+                point_light->ambient = glm::vec3(amb.y, amb.z, amb.x);
+            }
         }
     }
 }
