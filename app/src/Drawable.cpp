@@ -35,7 +35,6 @@ namespace app {
         shader->set_vec3("directional_light.diffuse", directional_light.diffuse);
         shader->set_vec3("directional_light.specular", directional_light.specular);
         shader->set_float("directional_light.shininess", directional_light.shininess);
-        shader->set_vec3("directional_light.intensity", directional_light.intensity);
 
         shader->set_vec3("point_light.position", point_light.position);
         shader->set_vec3("point_light.ambient", point_light.ambient);
@@ -43,7 +42,6 @@ namespace app {
         shader->set_vec3("point_light.specular", point_light.specular);
         shader->set_float("point_light.linear", point_light.linear);
         shader->set_float("point_light.quadratic", point_light.quadratic);
-        shader->set_vec3("point_light.intensity", point_light.intensity);
 
         model->draw(shader);
     }

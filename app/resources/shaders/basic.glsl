@@ -29,7 +29,6 @@ struct DirectionalLight {
     vec3 diffuse;
     vec3 specular;
     float shininess;
-    vec3 intensity;
 };
 
 struct PointLight {
@@ -40,7 +39,6 @@ struct PointLight {
     float linear;
     float quadratic;
     float shininess;
-    vec3 intensity;
 };
 out vec4 FragColor;
 
@@ -60,24 +58,24 @@ void main() {
 
     // ----- Directional Light -----
     vec3 lightDir = normalize(directional_light.direction);
-    vec3 ambient = directional_light.ambient * directional_light.intensity;
+    vec3 ambientDir = directional_light.ambient;
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * directional_light.diffuse * directional_light.intensity;
+    vec3 diffuseDir = diff * directional_light.diffuse;
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), directional_light.shininess);
-    vec3 specular = spec * directional_light.specular * directional_light.intensity;
-    vec3 dirLighting = ambient + diffuse + specular;
+    vec3 specularDir = spec * directional_light.specular;
+    vec3 dirLighting = ambientDir + diffuseDir + specularDir;
 
     // ----- Point Light -----
     vec3 pointDir = normalize(point_light.position - FragPos);
     float distance = length(point_light.position - FragPos);
     float attenuation = 1.0 / (1.0 + point_light.linear * distance + point_light.quadratic * distance * distance);
-    vec3 ambientPoint = point_light.ambient * point_light.intensity;
+    vec3 ambientPoint = point_light.ambient;
     float diffPoint = max(dot(norm, pointDir), 0.0);
-    vec3 diffusePoint = diffPoint * point_light.diffuse * point_light.intensity;
+    vec3 diffusePoint = diffPoint * point_light.diffuse;
     vec3 reflectDirPoint = reflect(-pointDir, norm);
     float specPoint = pow(max(dot(viewDir, reflectDirPoint), 0.0), point_light.shininess);
-    vec3 specularPoint = specPoint * point_light.specular * point_light.intensity;
+    vec3 specularPoint = specPoint * point_light.specular;
     vec3 pointLighting = (ambientPoint + diffusePoint + specularPoint) * attenuation;
 
     // Combine

@@ -21,7 +21,6 @@ struct PointLight {
     float linear = 0.02f;
     float quadratic = 0.01f;
     float shininess = 32.0f;
-    glm::vec3 intensity = glm::vec3(1);
 };
 
 struct DirectionalLight {
@@ -30,7 +29,6 @@ struct DirectionalLight {
     glm::vec3 diffuse = glm::vec3(0.7f);
     glm::vec3 specular = glm::vec3(0.5f);
     float shininess = 8.0f;
-    glm::vec3 intensity = glm::vec3(1);
 };
 
 class MyController : public engine::core::Controller {
