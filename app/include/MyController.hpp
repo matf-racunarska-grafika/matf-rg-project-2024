@@ -16,6 +16,12 @@ class MyController : public engine::core::Controller {
     void draw_cottage();
     void draw_skybox();
     void draw_light_cube();
+    void draw_tree();
+    void draw_tree2();
+    void draw_tree3();
+    void draw_tree4();
+    void draw_tree5();
+    void draw_tree6();
     void draw() override;
 
     void update_camera();
