@@ -15,14 +15,7 @@
 
 namespace engine::graphics {
 
-uint32_t Framebuffer::m_quadVAO = 0;
-
-uint32_t Framebuffer::m_fbo = 0;
-uint32_t Framebuffer::m_textureColorBufferMultiSampled = 0;
-uint32_t Framebuffer::m_rbo = 0;
-
-uint32_t Framebuffer::m_intermediateFBO = 0;
-uint32_t Framebuffer::m_screenTexture = 0;
+auto framebuffer = Framebuffer();
 
 std::vector<PointShadowCaster> m_shadowCasters;
 
@@ -120,9 +113,9 @@ void GraphicsController::init_msaa_framebuffer(int width, int height, int sample
     };
 
     uint32_t quadVBO;
-    glGenVertexArrays(1, &Framebuffer::m_quadVAO);
+    glGenVertexArrays(1, &framebuffer.m_quadVAO);
     glGenBuffers(1, &quadVBO);
-    glBindVertexArray(Framebuffer::m_quadVAO);
+    glBindVertexArray(framebuffer.m_quadVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
@@ -133,42 +126,42 @@ void GraphicsController::init_msaa_framebuffer(int width, int height, int sample
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) (2 * sizeof(float)));
 
-    glGenFramebuffers(1, &Framebuffer::m_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_fbo);
-    glGenTextures(1, &Framebuffer::m_textureColorBufferMultiSampled);
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, Framebuffer::m_textureColorBufferMultiSampled);
+    glGenFramebuffers(1, &framebuffer.m_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.m_fbo);
+    glGenTextures(1, &framebuffer.m_textureColorBufferMultiSampled);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, framebuffer.m_textureColorBufferMultiSampled);
 
     glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGB, width, height, GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                           GL_TEXTURE_2D_MULTISAMPLE, Framebuffer::m_textureColorBufferMultiSampled, 0);
+                           GL_TEXTURE_2D_MULTISAMPLE, framebuffer.m_textureColorBufferMultiSampled, 0);
 
-    glGenRenderbuffers(1, &Framebuffer::m_rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, Framebuffer::m_rbo);
+    glGenRenderbuffers(1, &framebuffer.m_rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, framebuffer.m_rbo);
 
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH24_STENCIL8, width, height);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, Framebuffer::m_rbo);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, framebuffer.m_rbo);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::info("Framebuffer is not complete"); }
 
-    glGenFramebuffers(1, &Framebuffer::m_intermediateFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_intermediateFBO);
+    glGenFramebuffers(1, &framebuffer.m_intermediateFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.m_intermediateFBO);
 
-    glGenTextures(1, &Framebuffer::m_screenTexture);
-    glBindTexture(GL_TEXTURE_2D, Framebuffer::m_screenTexture);
+    glGenTextures(1, &framebuffer.m_screenTexture);
+    glBindTexture(GL_TEXTURE_2D, framebuffer.m_screenTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Framebuffer::m_screenTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebuffer.m_screenTexture, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { spdlog::info("Framebuffer is not complete"); }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void GraphicsController::bind_msaa_framebuffer() {
-    glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer::m_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.m_fbo);
 }
 
 void GraphicsController::unbind_msaa_framebuffer() {
@@ -176,17 +169,17 @@ void GraphicsController::unbind_msaa_framebuffer() {
 }
 
 void GraphicsController::resolve_msaa(int width, int height) {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, Framebuffer::m_fbo);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, Framebuffer::m_intermediateFBO);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer.m_fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.m_intermediateFBO);
     glBlitFramebuffer(0, 0, width, height, 0, 0,
                       width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 }
 
 void GraphicsController::draw_quad(const resources::Shader *shader) {
     shader->use();
-    glBindVertexArray(Framebuffer::m_quadVAO);
+    glBindVertexArray(framebuffer.m_quadVAO);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Framebuffer::m_screenTexture);
+    glBindTexture(GL_TEXTURE_2D, framebuffer.m_screenTexture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

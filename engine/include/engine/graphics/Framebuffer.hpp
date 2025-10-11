@@ -11,15 +11,23 @@ namespace engine::graphics {
 class Framebuffer {
     friend class GraphicsController;
 
+public:
+    Framebuffer(): m_quadVAO(0)
+               , m_fbo(0)
+               , m_textureColorBufferMultiSampled(0)
+               , m_rbo(0)
+               , m_intermediateFBO(0)
+               , m_screenTexture(0) {}
+
 private:
-    static uint32_t m_quadVAO;
+    uint32_t m_quadVAO;
 
-    static uint32_t m_fbo;
-    static uint32_t m_textureColorBufferMultiSampled;
-    static uint32_t m_rbo;
+    uint32_t m_fbo;
+    uint32_t m_textureColorBufferMultiSampled;
+    uint32_t m_rbo;
 
-    static uint32_t m_intermediateFBO;
-    static uint32_t m_screenTexture;
+    uint32_t m_intermediateFBO;
+    uint32_t m_screenTexture;
 };
 
 }
