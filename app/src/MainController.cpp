@@ -202,25 +202,24 @@ void MainController::draw_bench(engine::resources::Shader *shader) {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *bench = resources->model("bench");
 
-    shader->use();
+    shader->use();// (-0.5f, 0.0f, -0.28f) // (0.5f, 0.0f, -0.28f)
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-0.5f, 0.0f, -0.28f));
-    model = glm::scale(model, glm::vec3(0.05f));
-
-    shader->set_mat4("model", model);
+    glm::vec3 positions[] = {
+            glm::vec3(-0.5f, 0.0f, -0.28f),
+            glm::vec3(0.5f, 0.0f, -0.28f)
+    };
     shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("projection", graphics->projection_matrix());
 
-    bench->draw(shader);
+    for (int i = 0; i < 2; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, positions[i]);
+        model = glm::rotate(model, glm::radians(180.0f * i), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.05f));
+        shader->set_mat4("model", model);
 
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.5f, 0.0f, -0.28f));
-    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(0.05f));
-    shader->set_mat4("model", model);
-
-    bench->draw(shader);
+        bench->draw(shader);
+    }
 }
 
 void MainController::draw_lamp(engine::resources::Shader *shader, bool shadowPass) {
