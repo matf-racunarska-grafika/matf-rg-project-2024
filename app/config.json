@@ -4,6 +4,16 @@
       "cottage": {
         "path" : "cottage/Cottage_1.obj",
         "flip_uvs" : true
+      },
+      "tree": {
+        "path": "trees/Gledista_Triacanthos.obj",
+        "flip_uvs": true
+      },  "tree2": {
+        "path": "trees/Gledista_Triacanthos.obj",
+        "flip_uvs": true
+      },  "tree3": {
+        "path": "trees/Gledista_Triacanthos.obj",
+        "flip_uvs": true
       }
     }
   },
