@@ -15,6 +15,8 @@ public:
 
     glm::vec3 get_lamp_color() { return glm::vec3(lampColor[0], lampColor[1], lampColor[2]); }
 
+    int get_revolution_speed() { return revolutionSpeed; }
+
 private:
     void initialize() override;
 
@@ -23,6 +25,7 @@ private:
     void draw() override;
 
     float lampColor[3] = {1.0f, 1.0f, 1.0f};
+    int revolutionSpeed = 1;
 };
 
 }// app

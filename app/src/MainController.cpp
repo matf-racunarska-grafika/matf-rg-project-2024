@@ -51,20 +51,18 @@ bool MainController::loop() {
 }
 
 void MainController::draw_moon() {
-    //Model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *moon = resources->model("moon");
 
-
-    //Shader
     engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
     float current_time = glfwGetTime();
-    float delta_time = 0.05f;
+    auto gui_controller = engine::core::Controller::get<GuiController>();
+    float delta = 0.05f * gui_controller->get_revolution_speed();
 
-    moonlight.position = glm::vec3(0.0f, 6.0f * sin(current_time * delta_time) - 2, -6.0f * cos(current_time * delta_time));
+    moonlight.position = glm::vec3(0.0f, 6.0f * sin(current_time * delta) - 2, -6.0f * cos(current_time * delta));
     moonlight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
     moonlight.diffuse = glm::vec3(0.2f, 0.2f, 0.6f);
     moonlight.specular = glm::vec3(0.8f, 0.8f, 0.8f);
@@ -104,15 +102,14 @@ void MainController::draw_sun() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *sun = resources->model("sun");
 
-
-    //Shader
     engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
     float current_time = glfwGetTime();
-    float delta_time = 0.05f;
+    auto gui_controller = engine::core::Controller::get<GuiController>();
+    float delta = 0.05f * gui_controller->get_revolution_speed();
 
-    sunlight.position = glm::vec3(0.0f, -6.0f * sin(current_time * delta_time) - 2, 6.0f * cos(current_time * delta_time));
+    sunlight.position = glm::vec3(0.0f, -6.0f * sin(current_time * delta) - 2, 6.0f * cos(current_time * delta));
     sunlight.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
     sunlight.diffuse = glm::vec3(1.0f, 0.6f, 0.9f);
     sunlight.specular = glm::vec3(0.8f, 0.8f, 0.8f);

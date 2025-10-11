@@ -26,6 +26,8 @@ void GuiController::draw() {
     ImGui::Begin("Camera info");
     ImGui::Text("Camera Position: (%f, %f, %f)", camera->Position.x, camera->Position.y, camera->Position.z);
     ImGui::ColorPicker3("Lamp Light Color: ", lampColor);
+    ImGui::InputInt("Revolution Speed", &revolutionSpeed, 1, 10);
+    revolutionSpeed = std::clamp(revolutionSpeed, 1, 20);
     ImGui::End();
 
     graphics->end_gui();
