@@ -23,10 +23,16 @@ void GuiController::draw() {
     auto camera = graphics->camera();
     graphics->begin_gui();
 
-    ImGui::Begin("Camera info");
+    ImGui::SetNextWindowSize(ImVec2(400, 100));
+    ImGui::Begin("Camera info", nullptr, ImGuiWindowFlags_NoResize);
     ImGui::Text("Camera Position: (%f, %f, %f)", camera->Position.x, camera->Position.y, camera->Position.z);
-    ImGui::ColorPicker3("Lamp Light Color: ", lampColor);
-    ImGui::InputInt("Revolution Speed", &revolutionSpeed, 1, 10);
+    ImGui::Text("Lamp Light Color:");
+    ImGui::SameLine();
+    ImGui::ColorEdit3("##LampLightColor", lampColor);
+    ImGui::Text("Revolution Speed:");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(100);
+    ImGui::InputInt("##RevolutionSpeed", &revolutionSpeed, 1, 10);
     revolutionSpeed = std::clamp(revolutionSpeed, 1, 20);
     ImGui::End();
 
