@@ -99,7 +99,7 @@ public:
 
     void add_point_shadow_caster(int shadowWidth = 1024, int shadowHeight = 1024, float nearPlane = 0.1f, float farPlane = 25.0f);
 
-    void render_point_light_shadows(resources::Shader *shader, int i);
+    void render_point_light_shadows(resources::Shader *shader, int i, const std::function<void(resources::Shader *)> &callback);
 
     void bind_point_light_shadows_to_shader(resources::Shader *shader, int i, const std::string &name);
 

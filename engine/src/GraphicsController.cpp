@@ -10,6 +10,7 @@
 #include <engine/resources/Skybox.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 #include <engine/graphics/PointShadowCaster.hpp>
+#include <utility>
 #include <spdlog/spdlog.h>
 
 namespace engine::graphics {
@@ -192,10 +193,11 @@ void GraphicsController::draw_quad(const resources::Shader *shader) {
 void GraphicsController::add_point_shadow_caster(int shadowWidth, int shadowHeight, float nearPlane, float farPlane) {
     auto caster = PointShadowCaster();
     caster.init(shadowWidth, shadowHeight, nearPlane, farPlane);
-    m_shadowCasters.push_back(PointShadowCaster());
+    m_shadowCasters.push_back(caster);
 }
 
-void GraphicsController::render_point_light_shadows(resources::Shader *shader, int i) {
+void GraphicsController::render_point_light_shadows(resources::Shader *shader, int i, const std::function<void(resources::Shader *)> &callback) {
+    m_shadowCasters[i].set_render_scene_callback(callback);
     m_shadowCasters[i].set_shader(shader);
     m_shadowCasters[i].render_pass();
 }
@@ -204,7 +206,7 @@ void GraphicsController::bind_point_light_shadows_to_shader(resources::Shader *s
     int texUnitBase = 5;
 
     std::string namePos = name + ".position";
-    std::string nameFar = name + ".farPlane";
+    std::string nameFar = name + ".far_plane";
     std::string nameMap = name + ".shadowMap";
 
     m_shadowCasters[i].bind_to_shader(shader, namePos, nameFar, nameMap, texUnitBase + i);
