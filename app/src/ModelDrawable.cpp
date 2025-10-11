@@ -44,9 +44,9 @@ engine::resources::Shader *ModelDrawable::getShader(
     shader->set_int("point_light_count", point_lights.size());
     for (int i = 0; i < point_lights.size(); i++) {
         shader->set_vec3("point_lights[" + std::to_string(i) + "].position", point_lights[i]->light_position());
-        shader->set_vec3("point_lights[" + std::to_string(i) + "].ambient", point_lights[i]->ambient);
-        shader->set_vec3("point_lights[" + std::to_string(i) + "].diffuse", point_lights[i]->diffuse);
-        shader->set_vec3("point_lights[" + std::to_string(i) + "].specular", point_lights[i]->specular);
+        shader->set_vec3("point_lights[" + std::to_string(i) + "].ambient", point_lights[i]->get_ambient());
+        shader->set_vec3("point_lights[" + std::to_string(i) + "].diffuse", point_lights[i]->get_diffuse());
+        shader->set_vec3("point_lights[" + std::to_string(i) + "].specular", point_lights[i]->get_specular());
         shader->set_float("point_lights[" + std::to_string(i) + "].linear", point_lights[i]->linear);
         shader->set_float("point_lights[" + std::to_string(i) + "].quadratic", point_lights[i]->quadratic);
         shader->set_float("point_lights[" + std::to_string(i) + "].shininess", point_lights[i]->shininess);

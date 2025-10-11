@@ -5,14 +5,12 @@
 #include <MyController.hpp>
 
 #include "GUIController.hpp"
-#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
 #include "engine/platform/PlatformController.hpp"
 #include "engine/resources/ResourcesController.hpp"
-#include <random>
 
-#define BUILDING_COUNT (5)
+#define BUILDING_COUNT (10)
 
 namespace app {
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -30,15 +28,12 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 
 
 void MyController::initialize() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
     float angle = 0;
-    glm::vec3 scale = glm::vec3(1.0f);
+    auto scale = glm::vec3(1.0f);
     glm::vec3 rotation_axis = glm::vec3(0,1,0);
-    glm::vec3 diffuse = glm::vec3(0.6f);
-    glm::vec3 specular = glm::vec3(0.4f);
+    auto diffuse = glm::vec3(0.6f);
+    auto specular = glm::vec3(0.4f);
     glm::vec3 relative_position = glm::vec3(0.0f, 2.0f, 0.0f);
     float linear = 0.05f;
     float quadratic = 0.05f;
@@ -87,8 +82,19 @@ void MyController::update_camera() {
         }
     }
 }
+
+void MyController::update_lights() {
+    auto platform = get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KeyId::KEY_P).state() == engine::platform::Key::State::JustPressed) {
+        for (auto point_light: m_point_lights) {
+            point_light->enabled = !point_light->enabled;
+        }
+    }
+}
+
 void MyController::update() {
     update_camera();
+    update_lights();
 }
 void MyController::draw_skybox() {
     auto resources = get<engine::resources::ResourcesController>();
