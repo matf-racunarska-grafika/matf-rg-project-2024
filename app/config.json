@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "ostrvo" : {
+        "path" : "ostrvo/Island.obj"
+      }
     }
   },
   "window": {
