@@ -56,8 +56,6 @@ void PlatformController::initialize() {
     glfwSetMouseButtonCallback(m_window.handle_(), glfw_mouse_button_callback);
     glfwSetWindowCloseCallback(m_window.handle_(), glfw_window_close_callback);
 
-    glfwSetInputMode(m_window.handle_(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     int major, minor, revision;
     glfwGetVersion(&major, &minor, &revision);
     spdlog::info("Platform[GLFW {}.{}.{}]", major, minor, revision);

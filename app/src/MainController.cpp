@@ -33,6 +33,8 @@ void MainController::initialize() {
     auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
 
+    platform->set_enable_cursor(false);
+
     auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
     graphics->init_msaa_framebuffer(platform->window()->width(), platform->window()->height());
 

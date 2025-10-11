@@ -12,7 +12,10 @@ void GuiController::initialize() { set_enable(false); }
 
 void GuiController::poll_events() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_M).state() == engine::platform::Key::State::JustPressed) { set_enable(!is_enabled()); }
+    if (platform->key(engine::platform::KEY_M).state() == engine::platform::Key::State::JustPressed) {
+        set_enable(!is_enabled());
+        platform->set_enable_cursor(is_enabled());
+    }
 }
 
 void GuiController::draw() {
