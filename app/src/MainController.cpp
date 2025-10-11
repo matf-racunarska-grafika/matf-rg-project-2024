@@ -62,6 +62,8 @@ void MainController::draw_moon() {
     auto gui_controller = engine::core::Controller::get<GuiController>();
     float delta = 0.05f * gui_controller->get_revolution_speed();
 
+    PointLight moonlight;
+
     moonlight.position = glm::vec3(0.0f, 6.0f * sin(current_time * delta) - 2, -6.0f * cos(current_time * delta));
     moonlight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
     moonlight.diffuse = glm::vec3(0.2f, 0.2f, 0.6f);
@@ -109,6 +111,8 @@ void MainController::draw_sun() {
     float current_time = glfwGetTime();
     auto gui_controller = engine::core::Controller::get<GuiController>();
     float delta = 0.05f * gui_controller->get_revolution_speed();
+
+    PointLight sunlight;
 
     sunlight.position = glm::vec3(0.0f, -6.0f * sin(current_time * delta) - 2, 6.0f * cos(current_time * delta));
     sunlight.ambient = glm::vec3(0.2f, 0.2f, 0.2f);

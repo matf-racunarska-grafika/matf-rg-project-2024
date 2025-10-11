@@ -59,9 +59,6 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
-    PointLight moonlight;
-    PointLight sunlight;
-
 public:
     std::string_view name() const override { return "MainController"; }
 };
