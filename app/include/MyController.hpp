@@ -14,23 +14,23 @@ namespace app {
 class Drawable;
 
 struct PointLight {
-    glm::vec3 ambient = glm::vec3(1,0,0);
+    glm::vec3 ambient = glm::vec3(0.3,0,0);
     glm::vec3 diffuse = glm::vec3(0.6f);
     glm::vec3 specular = glm::vec3(0.4f);
-    glm::vec3 position = glm::vec3(-7.0f, 0.0f, -9.0f);
-    float linear = 0.004f;
-    float quadratic = 0.0001f;
+    glm::vec3 position = glm::vec3(-2.0f, 0.0f, -2.0f);
+    float linear = 0.02f;
+    float quadratic = 0.01f;
     float shininess = 32.0f;
-    glm::vec3 intensity = glm::vec3(0.1f);
+    glm::vec3 intensity = glm::vec3(1);
 };
 
 struct DirectionalLight {
-    glm::vec3 direction = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 ambient = glm::vec3(0.3f);
+    glm::vec3 direction = glm::vec3(0.0f, 1.0f, 1.0f);
+    glm::vec3 ambient = glm::vec3(0.1f);
     glm::vec3 diffuse = glm::vec3(0.7f);
     glm::vec3 specular = glm::vec3(0.5f);
     float shininess = 8.0f;
-    glm::vec3 intensity = glm::vec3(1.0f);
+    glm::vec3 intensity = glm::vec3(1);
 };
 
 class MyController : public engine::core::Controller {
