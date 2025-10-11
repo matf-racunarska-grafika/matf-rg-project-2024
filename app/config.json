@@ -28,8 +28,8 @@
     }
   },
   "window": {
-    "height": 600,
+    "height": 900,
     "title": "Hello, window!",
-    "width": 800
+    "width": 1200
   }
 }
