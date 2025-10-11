@@ -38,6 +38,11 @@ void MyController::initialize() {
     auto platform = get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
+
+    // Position camera to see cottage from front with trees beside it
+    auto graphics = get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+    camera->Position = glm::vec3(0.0f, 3.0f, 25.0f);
 }
 bool MyController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
