@@ -2,8 +2,6 @@
 // Created by filipn on 9/1/25.
 //
 
-#include <GLFW/glfw3.h>
-
 #include <GuiController.hpp>
 #include <MainController.hpp>
 #include <engine/graphics/Framebuffer.hpp>
@@ -53,12 +51,13 @@ bool MainController::loop() {
 void MainController::draw_moon() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
     engine::resources::Model *moon = resources->model("moon");
 
     engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
-    float current_time = glfwGetTime();
+    float current_time = platform->frame_time().current;
     auto gui_controller = engine::core::Controller::get<GuiController>();
     float delta = 0.05f * gui_controller->get_revolution_speed();
 
@@ -103,12 +102,14 @@ void MainController::draw_moon() {
 void MainController::draw_sun() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    auto platform = engine::platform::PlatformController::get<engine::platform::PlatformController>();
+
     engine::resources::Model *sun = resources->model("sun");
 
     engine::resources::Shader *shader = resources->shader("sun_moon");
     shader->use();
 
-    float current_time = glfwGetTime();
+    float current_time = platform->frame_time().current;
     auto gui_controller = engine::core::Controller::get<GuiController>();
     float delta = 0.05f * gui_controller->get_revolution_speed();
 

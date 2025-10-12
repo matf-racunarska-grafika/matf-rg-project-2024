@@ -2,9 +2,9 @@
 // Created by filipn on 10/10/25.
 //
 
-#include "../include/engine/graphics/PointShadowCaster.hpp"
+#include <engine/graphics/PointShadowCaster.hpp>
 
-#include "../libs/glad/include/glad/glad.h"
+#include <glad/glad.h>
 
 #include <GL/gl.h>
 #include <engine/core/Controller.hpp>
