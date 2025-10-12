@@ -1,0 +1,78 @@
+//
+// Created by matija on 10/12/25.
+//
+
+#include <algorithm>
+#include <engine/graphics/Light.hpp>
+
+namespace engine::graphics {
+
+
+Light::Light(LightType type,glm::vec3 position, glm::vec3 direction, glm::vec3 color)
+    :m_position(position), m_direction(direction), m_color(color){
+    m_type = type;
+}
+
+Light::Light(LightType type, glm::vec3 position, glm::vec3 direction, glm::vec3 color,
+           float ambient_factor, float diffuse_factor, float specular_factor,
+           float cutOff, float outerCutOff,
+           float constant, float linear, float quadratic)
+    :m_position(position), m_direction(direction), m_color(color),
+     m_cutoff(cutOff), m_outerCutoff(outerCutOff),
+     m_constant(constant), m_linear(linear), m_quadratic(quadratic),
+     m_diffuse(diffuse_factor),m_ambient(ambient_factor),m_specular(specular_factor) {
+    m_type = type;
+}
+
+void Light::change_brightness(float alpha) {
+    m_intensity = std::clamp(m_intensity * alpha, 0.0f, 1.0f);
+}
+
+void Light::set_brightness(float brightness) { m_intensity = brightness; }
+
+void Light::set_color(const glm::vec3 &color) {
+    m_color = color;
+}
+
+void Light::set_attenuation(float constant, float linear, float quadratic) {
+    m_constant = constant;
+    m_linear = linear;
+    m_quadratic = quadratic;
+
+}
+
+void Light::set_cutoff(float cutOff, float outerCutOff) {
+    m_outerCutoff = std::clamp(m_outerCutoff * cutOff, 1.0f, 360.0f);
+}
+
+bool Light::is_spotlight() { return m_type == LightType::Spot; }
+
+LightType Light::light_type() const {
+    return m_type;
+}
+
+LightData Light::light_data() const {
+    return LightData {
+        .position = m_position,
+        .direction = m_direction,
+        .cutoff = m_cutoff,
+        .outercutoff = m_outerCutoff,
+        .constant = m_constant,
+        .linear = m_linear,
+        .quadratic = m_quadratic,
+        .ambient = m_color * m_ambient * m_intensity,
+        .diffuse = m_color * m_diffuse * m_intensity,
+        .specular = m_color * m_specular * m_intensity
+    };
+}
+
+std::string_view Light::uniform_name_convention(LightType type)  {
+    switch (type) {
+        case LightType::Directional: return "light_directional";
+        case LightType::Point: return "light_point";
+        case LightType::Spot: return "light_spot";
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
+    }
+}
+
+}
