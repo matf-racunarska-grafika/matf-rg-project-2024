@@ -2,7 +2,10 @@
   "resources": {
     "models": {
       "ostrvo" : {
-        "path" : "ostrvo/Island.obj"
+        "path" : "ostrvo/Ostrvo.obj"
+      },
+      "backpack" : {
+        "path" : "backpack/backpack.obj"
       }
     }
   },
