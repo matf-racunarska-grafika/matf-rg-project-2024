@@ -1,4 +1,6 @@
 #!/bin/bash
+git submodule update --init --recursive #gets external libraries, fails to build otherwise
+
 sudo add-apt-repository universe ppa:ubuntu-toolchain-r/test
 sudo apt update
 sudo apt install pkg-config g++-13 clang-format clang-tidy cmake git build-essential libwayland-dev libxkbcommon-dev xorg-dev libgl1-mesa-dev mesa-common-dev mesa-utils doxygen graphviz
