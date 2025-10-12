@@ -6,6 +6,36 @@
 
 namespace engine::resources {
 
+void Mesh::draw(const Shader *shader) {
+    std::unordered_map<std::string_view, uint32_t> counts;
+    std::string uniform_name;
+    uniform_name.reserve(32);
+    for (int i = 0; i < m_textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        const auto &texture_type = Texture::uniform_name_convention(m_textures[i]->type());
+        uniform_name.append(texture_type);
+        const auto count = (counts[texture_type] += 1);
+        uniform_name.append(std::to_string(count));
+        shader->set_int(uniform_name, i);
+        glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
+        uniform_name.clear();
+    }
+    shader->set_int("shininess", m_shininess);
+
+    glBindVertexArray(m_vao);
+    glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::destroy() {
+    glDeleteVertexArrays(1, &m_vao);
+}
+
+//set shininess to clipped value between 1 and 256
+void Mesh::setShininess(uint32_t shininess) {
+    m_shininess = std::max(1u, std::min(shininess, 256u));
+}
+
 Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
            std::vector<Texture *> textures) {
     // NOLINTBEGIN
@@ -43,28 +73,4 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
     m_num_indices = indices.size();
     m_textures = std::move(textures);
 }
-
-void Mesh::draw(const Shader *shader) {
-    std::unordered_map<std::string_view, uint32_t> counts;
-    std::string uniform_name;
-    uniform_name.reserve(32);
-    for (int i = 0; i < m_textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
-        const auto &texture_type = Texture::uniform_name_convention(m_textures[i]->type());
-        uniform_name.append(texture_type);
-        const auto count = (counts[texture_type] += 1);
-        uniform_name.append(std::to_string(count));
-        shader->set_int(uniform_name, i);
-        glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
-        uniform_name.clear();
-    }
-    glBindVertexArray(m_vao);
-    glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-}
-
-void Mesh::destroy() {
-    glDeleteVertexArrays(1, &m_vao);
-}
-
 }

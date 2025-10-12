@@ -8,7 +8,9 @@
 
 #include <engine/util/Utils.hpp>
 #include <string>
+#include <engine/graphics/Light.hpp>
 #include <glm/glm.hpp>
+
 
 namespace engine::resources {
 using ShaderName = std::string;
@@ -110,6 +112,7 @@ public:
     */
     void set_mat4(const std::string &name, const glm::mat4 &mat) const;
 
+    void set_lights(const std::vector<engine::graphics::Light> &lights) const;
     /**
     * @brief Returns the name of the shader program by which it can be referenced using the @ref engine::resources::ResourcesController::shader function.
     * @returns The name of the shader.

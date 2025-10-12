@@ -8,6 +8,7 @@
 
 #include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/Light.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
 struct ImGuiContext;
@@ -153,6 +154,14 @@ public:
         return m_ortho_params;
     }
 
+    void add_light(const Light &light) {
+        m_lights.push_back(light);
+    }
+
+    const std::vector<Light> &lights() const {
+        return m_lights;
+    }
+
 private:
     /**
     * @brief Initializes OpenGL, ImGUI, and projection matrix params;
@@ -167,6 +176,8 @@ private:
     glm::mat4 m_projection_matrix{};
     Camera m_camera{};
     ImGuiContext *m_imgui_context{};
+    std::vector<Light> m_lights;
+
 };
 
 /**

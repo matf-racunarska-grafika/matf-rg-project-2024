@@ -60,12 +60,37 @@ void Shader::set_mat4(const std::string &name, const glm::mat4 &mat) const {
     uint32_t location = CHECKED_GL_CALL(glGetUniformLocation, m_shader_id, name.c_str());
     CHECKED_GL_CALL(glUniformMatrix4fv, location, 1, GL_FALSE, &mat[0][0]);
 }
+void Shader::set_lights(const std::vector<engine::graphics::Light> &lights) const {
+    std::string uniform_name;
+    uniform_name.reserve(32);
+    std::unordered_map<std::string_view, uint32_t> counts;
+
+    for (size_t i = 0; i < lights.size(); i++) {
+        const auto &light = lights[i];
+        uniform_name = graphics::Light::uniform_name_convention(light.light_type());
+        const auto count = (counts[uniform_name] += 1);
+
+        uniform_name += "[" + std::to_string(count) + "].";
+        graphics::LightData data = light.light_data();
+        set_vec3(uniform_name + "position", data.position);
+        set_vec3(uniform_name + "direction", data.direction);
+        set_vec3(uniform_name + "ambient", data.ambient);
+        set_vec3(uniform_name + "diffuse", data.diffuse);
+        set_vec3(uniform_name + "specular", data.specular);
+        set_float(uniform_name + "cutoff", data.cutoff);
+        set_float(uniform_name + "outercutoff", data.outercutoff);
+        set_float(uniform_name + "constant", data.constant);
+        set_float(uniform_name + "linear", data.linear);
+        set_float(uniform_name + "quadratic", data.quadratic);
+    }
+}
+
 
 Shader::Shader(unsigned shader_id, std::string name, std::string source, std::filesystem::path source_path) :
-        m_shader_id(shader_id)
-        , m_name(std::move(name))
-        , m_source(std::move(source))
-        , m_source_path(std::move(source_path)) {
+                                                                                                            m_shader_id(shader_id)
+                                                                                                          , m_name(std::move(name))
+                                                                                                          , m_source(std::move(source))
+                                                                                                          , m_source_path(std::move(source_path)) {
 }
 
 }

@@ -44,6 +44,8 @@ public:
     */
     void destroy();
 
+    void setShininess(uint32_t shininess) ;
+
 private:
     /**
     * @brief Constructs a Mesh object.
@@ -57,6 +59,8 @@ private:
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
+
+    uint32_t m_shininess{32};
 };
 } // namespace engine
 
