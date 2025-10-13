@@ -4,6 +4,8 @@
 
 #include "MainController.hpp"
 
+#include "AppUtils.hpp"
+#include "GuiController.hpp"
 #include "spdlog/spdlog.h"
 
 #include <engine/graphics/GraphicsController.hpp>
@@ -20,6 +22,9 @@ public:
 };
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+    if(is_gui_active()) {
+        return;
+    }
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     camera->rotate_camera(position.dx,position.dy);
 }
@@ -61,6 +66,11 @@ void MainController::draw_island() {
 }
 
 void MainController::update_camera() {
+
+    if(is_gui_active()) {
+        return;
+    }
+
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
