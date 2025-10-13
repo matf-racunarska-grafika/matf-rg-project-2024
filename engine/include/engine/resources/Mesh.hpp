@@ -32,19 +32,22 @@ class Mesh {
     friend class AssimpSceneProcessor;
 
 public:
-
+    static const uint32_t NUM_OF_ATTRIBUTES = 5;
     /**
     * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
     * @param shader The shader to use for drawing.
     */
     void draw(const Shader *shader);
-
+    void draw_instanced(const Shader * shader);
     /**
     * @brief Destroys the mesh in the OpenGL context.
     */
     void destroy();
 
     void setShininess(uint32_t shininess) ;
+    bool is_instanced() const ;
+
+    void instanciate(glm::mat4* transform, uint32_t count);
 
 private:
     /**
@@ -56,11 +59,16 @@ private:
     Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
          std::vector<Texture *> textures);
 
+    void prepare_for_draw(const Shader *shader);
+
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
+    uint32_t m_num_instances{1};
     std::vector<Texture *> m_textures;
 
     uint32_t m_shininess{32};
+    bool isinstanced{false};
+
 };
 } // namespace engine
 

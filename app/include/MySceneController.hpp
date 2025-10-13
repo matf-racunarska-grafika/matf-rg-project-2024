@@ -6,6 +6,7 @@
 #define MATF_RG_PROJECT_MYSCENECONTROLLER_HPP
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <glm/fwd.hpp>
 
 namespace app {
 class ScenePlatformEventObserver final : public engine::platform::PlatformEventObserver {
@@ -36,6 +37,12 @@ private:
     void end_draw() override;
 
     void draw_skybox();
+
+    void prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count);
+
+    void draw_grass();
+
+    void draw_floor();
 
 
 

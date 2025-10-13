@@ -30,6 +30,7 @@ public:
     */
     void destroy();
 
+    void instancite(glm::mat4* transform, uint32_t count);
     /**
     * @brief Returns the meshes in the model.
     * @returns The meshes in the model.

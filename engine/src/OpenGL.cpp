@@ -98,6 +98,28 @@ std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
     return infoLog;
 }
 
+void OpenGL::set_instancing_matrices(uint32_t vao, glm::mat4 *model_matrices, size_t count, uint32_t start_attribute_index) {
+    glBindVertexArray(vao);
+
+    glEnableVertexAttribArray(start_attribute_index);
+    glVertexAttribPointer(start_attribute_index++, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+    glEnableVertexAttribArray(start_attribute_index);
+    glVertexAttribPointer(start_attribute_index++, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4)));
+    glEnableVertexAttribArray(start_attribute_index);
+    glVertexAttribPointer(start_attribute_index++, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
+    glEnableVertexAttribArray(start_attribute_index);
+    glVertexAttribPointer(start_attribute_index, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+
+    glVertexAttribDivisor(start_attribute_index, 1);
+    glVertexAttribDivisor(--start_attribute_index, 1);
+    glVertexAttribDivisor(--start_attribute_index, 1);
+    glVertexAttribDivisor(--start_attribute_index, 1);
+
+    glBindVertexArray(0);
+
+
+}
+
 std::string_view gl_call_error_description(GLenum error) {
     switch (error) {
         case GL_NO_ERROR:

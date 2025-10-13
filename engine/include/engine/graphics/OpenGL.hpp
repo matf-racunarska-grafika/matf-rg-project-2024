@@ -141,6 +141,7 @@ public:
     */
     static std::string get_compilation_error_message(uint32_t shader_id);
 
+    static void set_instancing_matrices(uint32_t vao, glm::mat4* model_matrices, size_t count, uint32_t start_attribute_index = 5);
 private:
     /**
     * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.
