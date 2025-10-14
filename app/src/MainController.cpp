@@ -50,18 +50,52 @@ void MainController::draw_island() {
     //Model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model* island=resources->model("ostrvo");
+    engine::resources::Model *island = resources->model("ostrvo");
     //Shader
-    engine::resources::Shader* shader = resources->shader("basic");
+    engine::resources::Shader *shader = resources->shader("basic");
 
     shader->use();
-    shader->set_mat4("projection",graphics->projection_matrix());
-    shader->set_mat4("view",graphics->camera()->view_matrix());
-    glm::mat4 model = glm::translate(glm::mat4(1.0f),glm::vec3(0,0,-5));
-    model = glm::scale(model,glm::vec3(0.3f));
-    shader->set_mat4("model",model);
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, -2, 1));
+    //-0.95 1.27 2.02
+    model = glm::scale(model, glm::vec3(0.7f));
+    shader->set_mat4("model", model);
 
     island->draw(shader);
+}
+
+void MainController::draw_model(const std::string &model_name,
+    const std::string &shader_name,
+    const glm::vec3 &position,
+    const glm::vec3 &scale,
+    const glm::vec3 &rotation_axis,
+    float rotation_angle) {
+
+    //Model
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *model = resources->model(model_name);
+    //Shader
+    engine::resources::Shader *shader = resources->shader(shader_name);
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f), position);
+    //-0.95 1.27-1.2 2.02
+
+    if(rotation_angle!=0.0f && glm::length(rotation_axis)>0.0f) {
+        model_matrix = glm::rotate(model_matrix,glm::radians(rotation_angle),rotation_axis);
+    }
+
+    model_matrix = glm::scale(model_matrix, scale);
+    shader->set_mat4("model", model_matrix);
+
+    model->draw(shader);
+
+
+
 
 }
 
@@ -110,6 +144,10 @@ void MainController::draw_skybox() {
 
 void MainController::draw() {
     draw_island();
+
+    draw_model("zvezda","zvezda",glm::vec3(-0.93,1.44,2.02)
+        ,glm::vec3(0.1f));
+
     draw_skybox();
 
 }

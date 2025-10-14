@@ -6,6 +6,9 @@
       },
       "backpack" : {
         "path" : "backpack/backpack.obj"
+      },
+      "zvezda" : {
+        "path" : "zvezda/ChristmasStar.obj"
       }
     }
   },
