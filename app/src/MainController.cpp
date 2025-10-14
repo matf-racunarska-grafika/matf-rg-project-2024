@@ -147,7 +147,12 @@ void MainController::draw() {
 
     draw_model("zvezda","zvezda",glm::vec3(-0.93,1.44,2.02)
         ,glm::vec3(0.1f));
-
+    draw_model("kuca","basic",glm::vec3(1.1,0,0.37)
+        ,glm::vec3(0.1f),glm::vec3(0,1,0),-45.0);
+    draw_model("snesko","basic",glm::vec3(-0.27,0.1,2.87)
+        ,glm::vec3(0.1f),glm::vec3(0,1,0),165.0);
+    draw_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
+        ,glm::vec3(0.05f));
     draw_skybox();
 
 }

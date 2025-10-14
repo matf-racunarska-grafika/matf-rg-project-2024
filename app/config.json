@@ -9,6 +9,15 @@
       },
       "zvezda" : {
         "path" : "zvezda/ChristmasStar.obj"
+      },
+      "kuca" : {
+        "path" : "kuca/kuca.obj"
+      },
+      "bonfire" : {
+        "path" : "bonfire/campfire.obj"
+      },
+      "snesko" : {
+        "path" : "snesko/untitled.obj"
       }
     }
   },
