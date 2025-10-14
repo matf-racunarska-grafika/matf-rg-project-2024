@@ -42,7 +42,7 @@ void MyController::initialize() {
     // Position camera to see cottage from front with trees beside it
     auto graphics = get<engine::graphics::GraphicsController>();
     auto camera = graphics->camera();
-    camera->Position = glm::vec3(0.0f, 3.0f, 25.0f);
+    camera->Position = glm::vec3(-2.0f, 3.0f, 25.0f);
 }
 bool MyController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -69,7 +69,7 @@ void MyController::draw_cottage() {
     // Directional light
     float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.ambient", glm::vec3(directional_light_ambient.r * intensity, directional_light_ambient.g * intensity, directional_light_ambient.b * intensity));
     shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
     shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
@@ -113,8 +113,20 @@ void MyController::update_camera() {
     }
 
 }
+void MyController::update_light() {
+    auto platform = get<engine::platform::PlatformController>();
+    if (turn_off_time == -1 && platform->key(engine::platform::KeyId::KEY_X).state() == engine::platform::Key::State::JustPressed) {
+        directional_light_ambient = glm::vec3(1.0f, 0.0f, 0.0f);
+        turn_off_time = glfwGetTime() + 6;
+    }
+    if (turn_off_time != -1 && glfwGetTime() > turn_off_time) {
+        directional_light_ambient = glm::vec3(1.0f, 1.0f, 1.0f);
+        turn_off_time = -1;
+    }
+}
 void MyController::update() {
     update_camera();
+    update_light();
 }
 void MyController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
@@ -174,7 +186,7 @@ void MyController::draw_tree() {
     // Directional light
     float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.ambient", glm::vec3(directional_light_ambient.r * intensity, directional_light_ambient.g * intensity, directional_light_ambient.b * intensity));
     shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
     shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
@@ -215,7 +227,7 @@ void MyController::draw_tree2() {
     // Directional light
     float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.ambient", glm::vec3(directional_light_ambient.r * intensity, directional_light_ambient.g * intensity, directional_light_ambient.b * intensity));
     shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
     shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 
@@ -256,7 +268,7 @@ void MyController::draw_tree3() {
     // Directional light
     float intensity = gui_controller->pointLightIntensity;
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.3f * intensity, 0.3f * intensity, 0.3f * intensity));
+    shader->set_vec3("dirLight.ambient", glm::vec3(directional_light_ambient.r * intensity, directional_light_ambient.g * intensity, directional_light_ambient.b * intensity));
     shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
     shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
 

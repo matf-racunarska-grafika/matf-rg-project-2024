@@ -19,17 +19,17 @@ class MyController : public engine::core::Controller {
     void draw_tree();
     void draw_tree2();
     void draw_tree3();
-    void draw_tree4();
-    void draw_tree5();
-    void draw_tree6();
     void draw() override;
 
     void update_camera();
+    void update_light();
     void update() override;
     void begin_draw() override;
     void end_draw() override;
 
 public:
+    double turn_off_time = -1;
+    glm::vec3 directional_light_ambient = glm::vec3(1.0f, 1.0f, 1.0f);
     std::string_view name() const override {
         return "MyController";
     }
