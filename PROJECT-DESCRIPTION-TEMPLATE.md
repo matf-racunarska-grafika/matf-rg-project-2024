@@ -13,7 +13,7 @@ ESC -> Exit
 
 
 ## Features
-Models: Cottage,3 Tree models
+Models: Cottage,2 Tree models
 
 ### Fundamental:
 

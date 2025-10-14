@@ -9,12 +9,9 @@
         "path": "trees/Gledista_Triacanthos.obj",
         "flip_uvs": true
       },  "tree2": {
-        "path": "trees/Gledista_Triacanthos.obj",
+        "path": "trees/Gledista_Triacanthos_2.obj",
         "flip_uvs": true
-      },  "tree3": {
-        "path": "trees/Gledista_Triacanthos.obj",
-        "flip_uvs": true
-      }
+    }
     }
   },
   "window": {

@@ -245,53 +245,12 @@ void MyController::draw_tree2() {
     tree->draw(shader);
 }
 
-void MyController::draw_tree3() {
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto graphics = get<engine::graphics::GraphicsController>();
-    auto gui_controller = engine::core::Controller::get<GUIController>();
-    engine::resources::Model* tree = resources->model("tree3");
-
-    engine::resources::Shader* shader = resources->shader("basic");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-12.0f, -2.0f, 6.0f));
-    model = glm::scale(model, glm::vec3(0.05f));
-
-    shader->set_mat4("model", model);
-
-    // Camera position
-    shader->set_vec3("viewPos", graphics->camera()->Position);
-
-    // Directional light
-    float intensity = gui_controller->pointLightIntensity;
-    shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(directional_light_ambient.r * intensity, directional_light_ambient.g * intensity, directional_light_ambient.b * intensity));
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f * intensity, 0.6f * intensity, 0.6f * intensity));
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f * intensity, 0.5f * intensity, 0.5f * intensity));
-
-    // Point light
-    shader->set_vec3("pointLight.position", point_light_position());
-    shader->set_vec3("pointLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-    shader->set_vec3("pointLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-    shader->set_vec3("pointLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader->set_float("pointLight.constant", 1.0f);
-    shader->set_float("pointLight.linear", 0.5);
-    shader->set_float("pointLight.quadratic", 0.32);
-
-    shader->set_bool("isLightSource", false);
-
-    tree->draw(shader);
-}
 
 
 void MyController::draw() {
     draw_cottage();
     draw_tree();
     draw_tree2();
-    draw_tree3();
     draw_light_cube();
     draw_skybox();
 }
