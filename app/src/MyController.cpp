@@ -122,7 +122,7 @@ void MyController::update() {
 }
 void MyController::draw_skybox() {
     auto resources = get<engine::resources::ResourcesController>();
-    auto skybox = resources->skybox("mountain_skybox");
+    auto skybox = resources->skybox("night");
     auto shader = resources->shader("skybox");
     auto graphics = get<engine::graphics::GraphicsController>();
     graphics->draw_skybox(shader, skybox);
