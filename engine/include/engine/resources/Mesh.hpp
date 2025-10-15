@@ -44,6 +44,10 @@ public:
     */
     void destroy();
 
+    void setup_instance_matrices(const std::vector<glm::mat4> &model_matrices);
+
+    void draw_instanced(const Shader * shader);
+
 private:
     /**
     * @brief Constructs a Mesh object.
@@ -54,9 +58,12 @@ private:
     Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
          std::vector<Texture *> textures);
 
+    uint32_t m_instance_vbo{0};
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
+
+    int m_instance_count{0};
 };
 } // namespace engine
 

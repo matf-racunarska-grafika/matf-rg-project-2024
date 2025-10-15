@@ -24,6 +24,8 @@ public:
     * @param shader The shader to use for drawing.
     */
     void draw(const Shader *shader);
+    void set_instance_matrices(const std::vector<glm::mat4> &model_matrices);
+    void draw_instanced(const Shader* shader);
 
     /**
     * @brief Destroys the model in the OpenGL context.

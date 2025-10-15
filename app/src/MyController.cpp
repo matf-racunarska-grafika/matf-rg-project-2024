@@ -5,6 +5,7 @@
 #include <MyController.hpp>
 
 #include "GUIController.hpp"
+#include "InstancedModelDrawable.hpp"
 #include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
@@ -40,6 +41,11 @@ void MyController::initialize() {
     float linear = 0.05f;
     float quadratic = 0.05f;
     float shininess = 32.0f;
+
+    std::vector<glm::mat4> lamp_matrices;
+    std::vector<glm::mat4> building_matrices;
+    std::vector<glm::mat4> road_matrices;
+
     for (int i = 0; i < BUILDING_COUNT; i++) {
         glm::vec3 ambient;
         int rotation = i % 3;
@@ -48,9 +54,26 @@ void MyController::initialize() {
         else ambient = glm::vec3(0.0f, 0.0f, 0.6f);
 
         addPointLight(new PointLight("lamp", glm::vec3(i*5-0.825f,0.185f,0), scale, angle, rotation_axis, ambient, diffuse, specular, relative_position, linear, quadratic, shininess));
-        addDrawable(new ModelDrawable("building",  glm::vec3(i*5,0,-1), glm::vec3(0.03)));
-        addDrawable(new ModelDrawable("road",  glm::vec3(i*5+1.5,0,2), glm::vec3(0.2, 0.2, 0.5), 90, glm::vec3(0,1,0)));
+
+        glm::mat4 lamp_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(i*5-0.825f,0.185f,0));
+        lamp_matrix = glm::rotate(lamp_matrix, glm::radians(angle), rotation_axis);
+        lamp_matrix = glm::scale(lamp_matrix, scale);
+        lamp_matrices.push_back(lamp_matrix);
+
+        glm::mat4 building_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(i*5,0,-1));
+        building_matrix = glm::rotate(building_matrix, glm::radians(0.0f), rotation_axis);
+        building_matrix = glm::scale(building_matrix, glm::vec3(0.03));
+        building_matrices.push_back(building_matrix);
+
+        glm::mat4 road_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(i*5+1.5,0,2));
+        road_matrix = glm::rotate(road_matrix, glm::radians(90.0f), glm::vec3(0,1,0));
+        road_matrix = glm::scale(road_matrix, glm::vec3(0.2, 0.2, 0.5));
+        road_matrices.push_back(road_matrix);
     }
+
+    //addDrawable(new InstancedModelDrawable("lamp", lamp_matrices));
+    addDrawable(new InstancedModelDrawable("building", building_matrices));
+    addDrawable(new InstancedModelDrawable("road", road_matrices));
 
     auto platform = get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
