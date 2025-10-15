@@ -149,8 +149,14 @@ void MainController::draw() {
         ,glm::vec3(0.1f));
     draw_model("kuca","basic",glm::vec3(1.1,0,0.37)
         ,glm::vec3(0.1f),glm::vec3(0,1,0),-45.0);
-    draw_model("snesko","basic",glm::vec3(-0.27,0.1,2.87)
+    draw_model("snesko","basic",glm::vec3(-0.27,0.04,2.87)
         ,glm::vec3(0.1f),glm::vec3(0,1,0),165.0);
+    draw_model("sanke","basic",glm::vec3(-1.33,-0.01,0.64)
+        ,glm::vec3(0.1f));
+    draw_model("poklon","basic",glm::vec3(-0.88,-0.01,1.42)
+        ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
+    draw_model("poklon","basic",glm::vec3(-1.2,-0.01,1.71)
+        ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
     draw_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
     draw_skybox();

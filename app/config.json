@@ -4,9 +4,6 @@
       "ostrvo" : {
         "path" : "ostrvo/Ostrvo.obj"
       },
-      "backpack" : {
-        "path" : "backpack/backpack.obj"
-      },
       "zvezda" : {
         "path" : "zvezda/ChristmasStar.obj"
       },
@@ -18,6 +15,12 @@
       },
       "snesko" : {
         "path" : "snesko/untitled.obj"
+      },
+      "sanke" : {
+        "path" : "sanke/sanke.obj"
+      },
+      "poklon" : {
+        "path" : "poklon/11563_gift_box_V3.obj"
       }
     }
   },
