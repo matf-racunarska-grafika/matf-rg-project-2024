@@ -8,7 +8,7 @@
 
 namespace app {
 
-PointLight::~PointLight() {}
+PointLight::~PointLight() = default;
 
 glm::vec3 PointLight::light_position() const { return coordinates + relative_light_position; }
 

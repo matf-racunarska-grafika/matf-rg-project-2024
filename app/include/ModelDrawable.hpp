@@ -15,7 +15,7 @@ class PointLight;
 
 class ModelDrawable: public Drawable {
     public:
-        std::string model_name;
+        engine::resources::Model* model;
         glm::vec3 coordinates;
         glm::vec3 scale;
         float angle;
@@ -24,7 +24,9 @@ class ModelDrawable: public Drawable {
         ModelDrawable(const std::string& model_name, const glm::vec3& coordinates, const glm::vec3& scale = glm::vec3(1.0f),
                  float angle = 0, const glm::vec3& rotation_axis = glm::vec3(1,0,0));
 
-        engine::resources::Shader * getShader(const DirectionalLight &directional_light, const std::vector<PointLight*> &point_lights) override;
+        engine::resources::Shader * getShader(const DirectionalLight &directional_light, const std::vector<PointLight*> &point_lights) const;
+
+        void draw(const DirectionalLight &directional_light, const std::vector<PointLight *> &point_lights) override;
 
         ~ModelDrawable() override;
 };

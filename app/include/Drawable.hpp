@@ -14,16 +14,11 @@ class PointLight;
 
 class Drawable {
     public:
-        virtual ~Drawable() {}
-
-        engine::resources::Model* model;
+        virtual ~Drawable() = default;
 
         Drawable();
-        Drawable(engine::resources::Model* model, engine::resources::Shader* shader);
 
-        virtual engine::resources::Shader* getShader(const DirectionalLight& directional_light, const std::vector<PointLight*>& point_lights) = 0;
-
-        void draw(const DirectionalLight& directional_light, const std::vector<PointLight*>& point_lights);
+        virtual void draw(const DirectionalLight& directional_light, const std::vector<PointLight*>& point_lights) = 0;
     };
 } // app
 

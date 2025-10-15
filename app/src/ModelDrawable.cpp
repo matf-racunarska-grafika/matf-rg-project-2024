@@ -12,7 +12,7 @@
 namespace app {
 
 ModelDrawable::ModelDrawable(const std::string &model_name, const glm::vec3 &coordinates, const glm::vec3 &scale,
-                             float angle, const glm::vec3 &rotation_axis) : model_name(model_name)
+                             float angle, const glm::vec3 &rotation_axis) : model(nullptr)
                                                                         , coordinates(coordinates)
                                                                         , scale(scale)
                                                                         , angle(angle)
@@ -23,7 +23,7 @@ ModelDrawable::ModelDrawable(const std::string &model_name, const glm::vec3 &coo
 
 engine::resources::Shader *ModelDrawable::getShader(
         const DirectionalLight &directional_light, const std::vector<PointLight *> &point_lights
-        ) {
+        ) const {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Shader *shader = resources->shader("basic");
@@ -54,5 +54,9 @@ engine::resources::Shader *ModelDrawable::getShader(
     return shader;
 }
 
-ModelDrawable::~ModelDrawable() {}
+void ModelDrawable::draw(const DirectionalLight &directional_light, const std::vector<PointLight *> &point_lights) {
+    model->draw(getShader(directional_light, point_lights));
+}
+
+ModelDrawable::~ModelDrawable() = default;
 }// app
