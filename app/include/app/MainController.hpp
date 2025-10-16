@@ -54,6 +54,19 @@ private:
     bool m_isDay{true};
     bool m_draw_gui{false};
     bool m_cursor_enabled{true};
+
+    glm::vec3 m_busStartPos{-2.0f, -0.47f, -3.0f};
+    float m_busOffset = 0.0f;
+    float m_busDistance = 10.0f;
+    float m_busSpeed = 0.05f;
+    bool m_busMoving = false;
+
+    std::array<std::string, 6> m_daySkyboxTextures;
+    std::array<std::string, 6> m_nightSkyboxTextures;
+
+    void reload_skybox_textures(); // funkcija koja menja teksture u letu
+
+
 };
 }
 #endif //MAINCONTROLLER_HPP
