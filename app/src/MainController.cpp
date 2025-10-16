@@ -129,7 +129,7 @@ void MainController::draw_lit_model(const std::string &model_name,
     shader->set_vec3("dirLight.specular",glm::vec3(0.5));
 
     //point zvezda
-    glm::vec3 star_color = glm::vec3(0.992f,0.875f,0.49f);
+    glm::vec3 star_color = m_star_color;//glm::vec3(0.992f,0.875f,0.49f);
     shader->set_vec3("pointLights[0].position",glm::vec3(-0.93,1.48,2.02));
     shader->set_vec3("pointLights[0].ambient",glm::vec3(0.1f*star_color));
     shader->set_vec3("pointLights[0].diffuse",glm::vec3(0.6f*star_color));

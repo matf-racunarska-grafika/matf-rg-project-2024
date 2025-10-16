@@ -15,6 +15,8 @@ namespace app {
         auto gui_controller = register_controller<app::GUIController>();
         main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
         main_controller->before(gui_controller);
+
+        gui_controller->set_main_controller(main_controller);
     }
 
 } // app
