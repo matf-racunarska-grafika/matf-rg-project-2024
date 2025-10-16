@@ -58,14 +58,44 @@ void MainController::draw_island() {
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, -2, 1));
-    //-0.95 1.27 2.02
+
     model = glm::scale(model, glm::vec3(0.7f));
     shader->set_mat4("model", model);
 
     island->draw(shader);
 }
 
-void MainController::draw_model(const std::string &model_name,
+void MainController::draw_emissive_model(const std::string &model_name,
+    const std::string &shader_name,
+    const glm::vec3 &position,
+    const glm::vec3 &scale,
+    const glm::vec3 &rotation_axis,
+    float rotation_angle) {
+
+    //Model
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    engine::resources::Model *model = resources->model(model_name);
+    //Shader
+    engine::resources::Shader *shader = resources->shader(shader_name);
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+    glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f), position);
+
+    if(rotation_angle!=0.0f && glm::length(rotation_axis)>0.0f) {
+        model_matrix = glm::rotate(model_matrix,glm::radians(rotation_angle),rotation_axis);
+    }
+
+    model_matrix = glm::scale(model_matrix, scale);
+    shader->set_mat4("model", model_matrix);
+
+    model->draw(shader);
+}
+
+
+void MainController::draw_lit_model(const std::string &model_name,
     const std::string &shader_name,
     const glm::vec3 &position,
     const glm::vec3 &scale,
@@ -92,10 +122,37 @@ void MainController::draw_model(const std::string &model_name,
     model_matrix = glm::scale(model_matrix, scale);
     shader->set_mat4("model", model_matrix);
 
+    //direkciono svetlo
+    shader->set_vec3("dirLight.direction",glm::vec3(0.03f,-0.76,-1.99));
+    shader->set_vec3("dirLight.ambient",glm::vec3(0.05));
+    shader->set_vec3("dirLight.diffuse",glm::vec3(0.45));
+    shader->set_vec3("dirLight.specular",glm::vec3(0.5));
+
+    //point zvezda
+    glm::vec3 star_color = glm::vec3(0.992f,0.875f,0.49f);
+    shader->set_vec3("pointLights[0].position",glm::vec3(-0.93,1.48,2.02));
+    shader->set_vec3("pointLights[0].ambient",glm::vec3(0.1f*star_color));
+    shader->set_vec3("pointLights[0].diffuse",glm::vec3(0.6f*star_color));
+    shader->set_vec3("pointLights[0].specular",glm::min(glm::vec3(1.0f),0.8f*star_color));
+    shader->set_float("pointLights[0].constant",1.0f);
+    shader->set_float("pointLights[0].linear",0.44f);
+    shader->set_float("pointLights[0].quadratic",0.41f);
+
+    //point logaorska vatra
+    glm::vec3 fire_color = glm::vec3(0.8706f,0.5451f,0.0863f);
+    float korektor_daljine = 1.3f; //>1 smanjuje daljinu svetla <1 povecava
+    shader->set_vec3("pointLights[1].position",glm::vec3(-0.5,0.06,0.18));
+    shader->set_vec3("pointLights[1].ambient",glm::vec3(0.1f*fire_color));
+    shader->set_vec3("pointLights[1].diffuse",glm::vec3(0.6f*fire_color));
+    shader->set_vec3("pointLights[1].specular",glm::min(glm::vec3(1.0f),0.8f*fire_color));
+    shader->set_float("pointLights[1].constant",1.0f);
+    shader->set_float("pointLights[1].linear",0.44f*korektor_daljine);
+    shader->set_float("pointLights[1].quadratic",0.41f*korektor_daljine);
+
+    shader->set_float("material.shininess",32);
+    shader->set_vec3("viewPos",graphics->camera()->Position);
+
     model->draw(shader);
-
-
-
 
 }
 
@@ -143,21 +200,23 @@ void MainController::draw_skybox() {
 
 
 void MainController::draw() {
-    draw_island();
+    //draw_island();
 
-    draw_model("zvezda","zvezda",glm::vec3(-0.93,1.44,2.02)
+    draw_lit_model("ostrvo","standard_lighting",glm::vec3(0,-2,1)
+        ,glm::vec3(0.7f));
+    draw_emissive_model("zvezda","zvezda",glm::vec3(-0.93,1.44,2.02)
         ,glm::vec3(0.1f));
-    draw_model("kuca","basic",glm::vec3(1.1,0,0.37)
+    draw_lit_model("kuca","standard_lighting",glm::vec3(1.1,0,0.37)
         ,glm::vec3(0.1f),glm::vec3(0,1,0),-45.0);
-    draw_model("snesko","basic",glm::vec3(-0.27,0.04,2.87)
+    draw_lit_model("snesko","standard_lighting",glm::vec3(-0.27,0.04,2.87)
         ,glm::vec3(0.1f),glm::vec3(0,1,0),165.0);
-    draw_model("sanke","basic",glm::vec3(-1.33,-0.01,0.64)
+    draw_lit_model("sanke","standard_lighting",glm::vec3(-1.33,-0.01,0.64)
         ,glm::vec3(0.1f));
-    draw_model("poklon","basic",glm::vec3(-0.88,-0.01,1.42)
+    draw_lit_model("poklon","standard_lighting",glm::vec3(-0.88,-0.01,1.42)
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
-    draw_model("poklon","basic",glm::vec3(-1.2,-0.01,1.71)
+    draw_lit_model("poklon","standard_lighting",glm::vec3(-1.2,-0.01,1.71)
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
-    draw_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
+    draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
     draw_skybox();
 
