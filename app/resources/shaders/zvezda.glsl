@@ -20,8 +20,9 @@ void main(){
 #version 330 core
 
 out vec4 FragColor;
+uniform vec3 emissiveColor;
 
 void main(){
-    FragColor=vec4(0.992,0.875,0.49,1.0f);
+    FragColor = vec4(emissiveColor,1.0);
 }
 

@@ -91,6 +91,10 @@ void MainController::draw_emissive_model(const std::string &model_name,
     model_matrix = glm::scale(model_matrix, scale);
     shader->set_mat4("model", model_matrix);
 
+    if(shader_name == std::string("zvezda") && model_name == std::string("zvezda")) {
+        shader->set_vec3("emissiveColor",m_star_color);
+    }
+
     model->draw(shader);
 }
 
