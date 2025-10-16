@@ -59,17 +59,19 @@ void ResourcesController::load_textures() {
     }
 }
 
-void ResourcesController::load_skyboxes() {
-    if (!exists(m_skyboxes_path)) {
-        spdlog::info("[ResourcesController]: no {} found to load the skyboxes from", m_skyboxes_path.string());
-        return;
+    void ResourcesController::load_skyboxes() {
+    if (!exists(m_skyboxes_path_day)) {
+        spdlog::error("Skybox day path does not exist: {}", m_skyboxes_path_day.string());
+    } else {
+        skybox("skybox_day", m_skyboxes_path_day);
     }
-    for (const auto &sky_boxes_entry: std::filesystem::directory_iterator(m_skyboxes_path)) {
-        skybox(sky_boxes_entry.path()
-                              .stem()
-                              .string(), sky_boxes_entry.path());
+    if (!exists(m_skyboxes_path_night)) {
+        spdlog::error("Skybox night path does not exist: {}", m_skyboxes_path_night.string());
+    } else {
+        skybox("skybox_night", m_skyboxes_path_night);
     }
 }
+
 
 /**
  * @class AssimpSceneProcessor

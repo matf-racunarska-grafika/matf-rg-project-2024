@@ -115,7 +115,8 @@ private:
     const std::filesystem::path m_models_path = "resources/models";
     const std::filesystem::path m_textures_path = "resources/textures";
     const std::filesystem::path m_shaders_path = "resources/shaders";
-    const std::filesystem::path m_skyboxes_path = "resources/skyboxes";
+    const std::filesystem::path m_skyboxes_path_day = "resources/skyboxes/skybox/day";
+    const std::filesystem::path m_skyboxes_path_night = "resources/skyboxes/skybox/night";
 };
 } // namespace engine
 
