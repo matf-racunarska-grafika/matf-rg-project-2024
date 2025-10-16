@@ -4,7 +4,6 @@
 
 #ifndef MATF_RG_PROJECT_POINTLIGHT_HPP
 #define MATF_RG_PROJECT_POINTLIGHT_HPP
-#include <ModelDrawable.hpp>
 #include <glm/vec3.hpp>
 
 namespace app {
