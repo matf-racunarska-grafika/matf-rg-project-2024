@@ -53,11 +53,12 @@ void MyController::initialize() {
         else if (rotation == 1) ambient = glm::vec3(0.0f, 0.6f, 0.0f);
         else ambient = glm::vec3(0.0f, 0.0f, 0.6f);
 
-        addPointLight(new PointLight("lamp", glm::vec3(i*5-0.825f,0.185f,0), scale, angle, rotation_axis, ambient, diffuse, specular, relative_position, linear, quadratic, shininess));
-
-        glm::mat4 lamp_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(i*5-0.825f,0.185f,0));
+        auto lamp_coordinates = glm::vec3(i*5-0.825f,0.185f,0);
+        glm::mat4 lamp_matrix = glm::translate(glm::mat4(1.0f), lamp_coordinates);
         lamp_matrix = glm::rotate(lamp_matrix, glm::radians(angle), rotation_axis);
         lamp_matrix = glm::scale(lamp_matrix, scale);
+
+        addPointLight(new PointLight(ambient, diffuse, specular, lamp_coordinates+relative_position, linear, quadratic, shininess));
         lamp_matrices.push_back(lamp_matrix);
 
         glm::mat4 building_matrix = glm::translate(glm::mat4(1.0f), glm::vec3(i*5,0,-1));
@@ -71,7 +72,7 @@ void MyController::initialize() {
         road_matrices.push_back(road_matrix);
     }
 
-    //addDrawable(new InstancedModelDrawable("lamp", lamp_matrices));
+    addDrawable(new InstancedModelDrawable("lamp", lamp_matrices));
     addDrawable(new InstancedModelDrawable("building", building_matrices));
     addDrawable(new InstancedModelDrawable("road", road_matrices));
 
@@ -168,7 +169,10 @@ void MyController::terminate() {
     for (auto drawable : m_drawables) {
         delete drawable;
     }
-    //m_point_lights elemnts have already existed in m_drawables so no need to deallocate them
+    for (auto point_light: m_point_lights) {
+        delete point_light;
+    }
+
     m_drawables.clear();
     m_point_lights.clear();
 }
@@ -179,6 +183,5 @@ void MyController::addDrawable(Drawable *drawable) {
 
 void MyController::addPointLight(PointLight* point_light) {
     m_point_lights.push_back(point_light);
-    m_drawables.push_back(point_light);
 }
 }// namespace app

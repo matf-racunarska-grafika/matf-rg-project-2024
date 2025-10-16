@@ -40,7 +40,7 @@ engine::resources::Shader *InstancedModelDrawable::getShader(
 
     shader->set_int("point_light_count", point_lights.size());
     for (int i = 0; i < point_lights.size(); i++) {
-        shader->set_vec3("point_lights[" + std::to_string(i) + "].position", point_lights[i]->light_position());
+        shader->set_vec3("point_lights[" + std::to_string(i) + "].position", point_lights[i]->light_position);
         shader->set_vec3("point_lights[" + std::to_string(i) + "].ambient", point_lights[i]->get_ambient());
         shader->set_vec3("point_lights[" + std::to_string(i) + "].diffuse", point_lights[i]->get_diffuse());
         shader->set_vec3("point_lights[" + std::to_string(i) + "].specular", point_lights[i]->get_specular());

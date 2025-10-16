@@ -11,12 +11,9 @@
 
 namespace app {
 
-ModelDrawable::ModelDrawable(const std::string &model_name, const glm::vec3 &coordinates, const glm::vec3 &scale,
-                             float angle, const glm::vec3 &rotation_axis) : model(nullptr)
-                                                                        , coordinates(coordinates)
-                                                                        , scale(scale)
-                                                                        , angle(angle)
-                                                                        , rotation_axis(rotation_axis) {
+ModelDrawable::ModelDrawable(const std::string &model_name, const glm::mat4 &model_matrix)
+    : model(nullptr)
+    , model_matrix(model_matrix) {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     model = resources->model(model_name);
 }
@@ -30,9 +27,6 @@ engine::resources::Shader *ModelDrawable::getShader(
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
-    glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f), coordinates);
-    model_matrix = glm::rotate(model_matrix, glm::radians(angle), rotation_axis);
-    model_matrix = glm::scale(model_matrix, scale);
     shader->set_mat4("model", model_matrix);
 
     shader->set_vec3("directional_light.direction", directional_light.direction);
@@ -43,7 +37,7 @@ engine::resources::Shader *ModelDrawable::getShader(
 
     shader->set_int("point_light_count", point_lights.size());
     for (int i = 0; i < point_lights.size(); i++) {
-        shader->set_vec3("point_lights[" + std::to_string(i) + "].position", point_lights[i]->light_position());
+        shader->set_vec3("point_lights[" + std::to_string(i) + "].position", point_lights[i]->light_position);
         shader->set_vec3("point_lights[" + std::to_string(i) + "].ambient", point_lights[i]->get_ambient());
         shader->set_vec3("point_lights[" + std::to_string(i) + "].diffuse", point_lights[i]->get_diffuse());
         shader->set_vec3("point_lights[" + std::to_string(i) + "].specular", point_lights[i]->get_specular());

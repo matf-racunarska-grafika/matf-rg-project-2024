@@ -7,7 +7,7 @@
 
 #include <Drawable.hpp>
 #include <string>
-#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 
 namespace app {
 
@@ -16,13 +16,9 @@ class PointLight;
 class ModelDrawable: public Drawable {
     public:
         engine::resources::Model* model;
-        glm::vec3 coordinates;
-        glm::vec3 scale;
-        float angle;
-        glm::vec3 rotation_axis;
+        glm::mat4 model_matrix;
 
-        ModelDrawable(const std::string& model_name, const glm::vec3& coordinates, const glm::vec3& scale = glm::vec3(1.0f),
-                 float angle = 0, const glm::vec3& rotation_axis = glm::vec3(1,0,0));
+        ModelDrawable(const std::string& model_name, const glm::mat4& model_matrix);
 
         engine::resources::Shader * getShader(const DirectionalLight &directional_light, const std::vector<PointLight*> &point_lights) const;
 
