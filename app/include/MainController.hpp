@@ -13,7 +13,13 @@ class MainController : public engine::core::Controller{
     void initialize() override;
     bool loop() override;
     void draw_island();
-    void draw_model(const std::string& model_name,
+    void draw_emissive_model(const std::string& model_name,
+        const std::string& shader_name,
+        const glm::vec3& position = glm::vec3(0.0f),
+        const glm::vec3& scale = glm::vec3(1.0f),
+        const glm::vec3& rotation_axis = glm::vec3(0.0f),
+        float rotation_angle = 0.0f);
+    void draw_lit_model(const std::string& model_name,
         const std::string& shader_name,
         const glm::vec3& position = glm::vec3(0.0f),
         const glm::vec3& scale = glm::vec3(1.0f),
