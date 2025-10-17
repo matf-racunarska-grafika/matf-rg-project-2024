@@ -32,6 +32,12 @@ class Mesh {
     friend class AssimpSceneProcessor;
 
 public:
+    /**
+    * @brief Constructs a Mesh object.
+    * @param vertices The vertices in the mesh.
+    * @param indices The indices in the mesh.
+    * @param textures The textures in the mesh.
+     */
     Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
          std::vector<Texture *> textures);
     /**
@@ -46,14 +52,6 @@ public:
     void destroy();
 
 private:
-    /**
-    * @brief Constructs a Mesh object.
-    * @param vertices The vertices in the mesh.
-    * @param indices The indices in the mesh.
-    * @param textures The textures in the mesh.
-     */
-
-
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
