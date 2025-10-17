@@ -21,8 +21,8 @@ Projekat predstavlja scenu lika iz crtanog filma Sundjer Boba Kockalone, njegovo
 
 ### Implementirano:
 
-[x] Model with lighting
-[x] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[x] Model with lighting \
+[x] Two types of lighting with customizable colors and movement through GUI or ACTIONS \
 [x] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:
