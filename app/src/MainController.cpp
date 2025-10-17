@@ -220,6 +220,8 @@ void MainController::draw() {
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
     draw_lit_model("poklon","standard_lighting",glm::vec3(-1.2,-0.01,1.71)
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
+    draw_lit_model("oblak","standard_lighting",glm::vec3(0.5f,10.0f,0.85f)
+        ,glm::vec3(0.0041f),glm::vec3(1,0,0),90);
     draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
     draw_skybox();

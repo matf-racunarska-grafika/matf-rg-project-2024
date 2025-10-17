@@ -21,6 +21,9 @@
       },
       "poklon" : {
         "path" : "poklon/11563_gift_box_V3.obj"
+      },
+      "oblak" : {
+        "path" : "oblak/scene.gltf"
       }
     }
   },

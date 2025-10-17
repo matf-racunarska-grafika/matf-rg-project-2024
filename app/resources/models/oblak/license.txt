@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cloud from Super Mario Galaxy.
+* source:	https://sketchfab.com/3d-models/cloud-from-super-mario-galaxy-927910b2729a4041bfbf6005d902a8fb
+* author:	oskar.gustafsson1 (https://sketchfab.com/oskar.gustafsson1)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cloud from Super Mario Galaxy." (https://sketchfab.com/3d-models/cloud-from-super-mario-galaxy-927910b2729a4041bfbf6005d902a8fb) by oskar.gustafsson1 (https://sketchfab.com/oskar.gustafsson1) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
