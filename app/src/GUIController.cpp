@@ -12,6 +12,7 @@ void GUIController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KeyId::KEY_B)
                 .state() == engine::platform::Key::State::JustPressed) {
+        platform->set_enable_cursor(!is_enabled());
         set_enable(!is_enabled());
     }
 }

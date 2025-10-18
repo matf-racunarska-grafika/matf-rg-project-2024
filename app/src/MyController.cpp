@@ -39,6 +39,9 @@ void MyController::initialize() {
     camera->Pitch = -3.3;
     camera->Front = glm::vec3(1,-0.06, 0.04);
 
+    auto platform = get<engine::platform::PlatformController>();
+    platform->set_enable_cursor(false);
+
     float angle = 0;
     auto scale = glm::vec3(1.0f);
     glm::vec3 rotation_axis = glm::vec3(0,1,0);
@@ -83,7 +86,6 @@ void MyController::initialize() {
     addDrawable(new InstancedModelDrawable("building", building_matrices));
     addDrawable(new InstancedModelDrawable("road", road_matrices));
 
-    auto platform = get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
 }
