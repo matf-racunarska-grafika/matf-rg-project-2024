@@ -163,7 +163,10 @@ void MainController::draw_lit_model(const std::string &model_name,
 void MainController::draw_instanced_model(const std::string &model_name, const std::string &shader_name, int instance_count,
     float x_min, float x_max,
     float y_min, float y_max,
-    float z_min, float z_max) {
+    float z_min, float z_max,
+    const glm::vec3& scale,
+    const glm::vec3& rotation_axis,
+    float rotation_angle) {
 
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -202,7 +205,15 @@ void MainController::draw_instanced_model(const std::string &model_name, const s
 
             glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f),
                 glm::vec3(rand_x,rand_y,rand_z));
-            model_matrix = glm::scale(model_matrix,glm::vec3(0.008f));
+
+            if(rotation_angle!=0.0f && glm::length(rotation_axis)>0.0f) {
+                if(model_name == std::string("pahuljica")) {
+                    rotation_angle = rotation_angle + ((static_cast<float>(rand())/ RAND_MAX)-0.5f)*60;
+                }
+                model_matrix = glm::rotate(model_matrix,
+                    glm::radians(rotation_angle),rotation_axis);
+            }
+            model_matrix = glm::scale(model_matrix,scale);
             instance->matrices.push_back(model_matrix);
         }
 
@@ -283,10 +294,11 @@ void MainController::draw() {
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
     draw_lit_model("oblak","standard_lighting",glm::vec3(0.5f,10.0f,0.85f)
         ,glm::vec3(0.0041f),glm::vec3(1,0,0),90);
-    draw_instanced_model("poklon","basic_instanced",5
+    draw_instanced_model("pahuljica","basic_instanced",1650
         ,-3.0f,3.0f
-        ,0.0f,9.5f
-        ,-2.0f,5.0f);
+        ,-2.0f,9.0f
+        ,-2.0f,5.0f,
+        glm::vec3(0.004f),glm::vec3(1,0,0),90);
     draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
     draw_skybox();

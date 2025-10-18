@@ -24,6 +24,9 @@
       },
       "oblak" : {
         "path" : "oblak/scene.gltf"
+      },
+      "pahuljica" : {
+        "path" : "pahuljica/scene.gltf"
       }
     }
   },

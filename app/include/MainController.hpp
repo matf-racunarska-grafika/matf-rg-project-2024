@@ -43,7 +43,10 @@ class MainController : public engine::core::Controller{
         int instance_count,
         float x_min, float x_max,
         float y_min, float y_max,
-        float z_min, float z_max);
+        float z_min, float z_max,
+        const glm::vec3& scale = glm::vec3(1.0f),
+        const glm::vec3& rotation_axis = glm::vec3(0.0f),
+        float rotation_angle = 0.0f);
     void update_camera();
     void update() override;
     void begin_draw() override;
