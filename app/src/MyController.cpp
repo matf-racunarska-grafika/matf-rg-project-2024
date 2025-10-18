@@ -32,6 +32,13 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 
 void MyController::initialize() {
 
+    auto graphics = get<engine::graphics::GraphicsController>();
+    auto camera = graphics->camera();
+    camera->Position = glm::vec3(-3.73, 1.56, 2);
+    camera->Yaw = 2.3;
+    camera->Pitch = -3.3;
+    camera->Front = glm::vec3(1,-0.06, 0.04);
+
     float angle = 0;
     auto scale = glm::vec3(1.0f);
     glm::vec3 rotation_axis = glm::vec3(0,1,0);
