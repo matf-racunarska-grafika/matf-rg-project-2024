@@ -160,6 +160,67 @@ void MainController::draw_lit_model(const std::string &model_name,
 
 }
 
+void MainController::draw_instanced_model(const std::string &model_name, const std::string &shader_name, int instance_count,
+    float x_min, float x_max,
+    float y_min, float y_max,
+    float z_min, float z_max) {
+
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* model = resources->model(model_name);
+    engine::resources::Shader* shader = resources->shader(shader_name);
+
+    //samo jednom se generise
+    if(!m_seeded) {
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
+        m_seeded = true;
+    }
+
+    InstanceData* instance = nullptr;
+    for(auto& data : m_instances_data) {
+        if(data.model_name == model_name) {
+            instance = &data;
+            break;
+        }
+    }
+    //ako nije nadjen dodaj novi
+    if(!instance) {
+        InstanceData new_data;
+        new_data.model_name = model_name;
+        m_instances_data.push_back(std::move(new_data));
+        instance = &m_instances_data.back();
+    }
+
+    if(!instance->initialized) {
+        instance->matrices.clear();
+        //pravljenje rand matrica u datim okvirima
+        for(int i = 0; i<instance_count;++i) {
+            float rand_x = x_min + (static_cast<float>(rand())/ RAND_MAX) * (x_max-x_min);
+            float rand_y = y_min + (static_cast<float>(rand())/ RAND_MAX) * (y_max-y_min);
+            float rand_z = z_min + (static_cast<float>(rand())/ RAND_MAX) * (z_max-z_min);
+
+            glm::mat4 model_matrix = glm::translate(glm::mat4(1.0f),
+                glm::vec3(rand_x,rand_y,rand_z));
+            model_matrix = glm::scale(model_matrix,glm::vec3(0.008f));
+            instance->matrices.push_back(model_matrix);
+        }
+
+
+
+        model->set_instance_matrices(instance->matrices);
+        instance->initialized=true;
+    }
+    //Shader
+    shader->use();
+    shader->set_mat4("projection",graphics->projection_matrix());
+    shader->set_mat4("view",graphics->camera()->view_matrix());
+
+    model->draw_instanced(shader);
+
+}
+
+
 void MainController::update_camera() {
 
     if(is_gui_active()) {
@@ -222,6 +283,10 @@ void MainController::draw() {
         ,glm::vec3(0.008f),glm::vec3(1,0,0),-90);
     draw_lit_model("oblak","standard_lighting",glm::vec3(0.5f,10.0f,0.85f)
         ,glm::vec3(0.0041f),glm::vec3(1,0,0),90);
+    draw_instanced_model("poklon","basic_instanced",5
+        ,-3.0f,3.0f
+        ,0.0f,9.5f
+        ,-2.0f,5.0f);
     draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
     draw_skybox();

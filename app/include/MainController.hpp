@@ -4,12 +4,25 @@
 
 #ifndef MAINCONTROLLER_HPP
 #define MAINCONTROLLER_HPP
-#include<engine/core/Controller.hpp>
+#include <glm/glm.hpp>
+#include "glm/fwd.hpp"
 #include "glm/vec3.hpp"
+#include <engine/core/Controller.hpp>
+
+#include <unordered_map>
 
 namespace app {
 
 class MainController : public engine::core::Controller{
+
+    struct InstanceData{
+        std::string model_name;
+        std::vector<glm::mat4> matrices;
+        bool initialized;
+    };
+    std::vector<InstanceData> m_instances_data;
+    bool m_seeded = false;
+
     void initialize() override;
     bool loop() override;
     void draw_island();
@@ -25,6 +38,12 @@ class MainController : public engine::core::Controller{
         const glm::vec3& scale = glm::vec3(1.0f),
         const glm::vec3& rotation_axis = glm::vec3(0.0f),
         float rotation_angle = 0.0f);
+    void draw_instanced_model(const std::string& model_name,
+        const std::string& shader_name,
+        int instance_count,
+        float x_min, float x_max,
+        float y_min, float y_max,
+        float z_min, float z_max);
     void update_camera();
     void update() override;
     void begin_draw() override;
