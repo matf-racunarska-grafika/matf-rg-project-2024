@@ -104,7 +104,14 @@ void MyController::update_camera() {
         auto camera = graphics->camera();
         auto dt = platform->dt();
         if (platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+            float speed_coef;
+            if (platform->key(engine::platform::KeyId::KEY_LEFT_CONTROL).is_down()) {
+                speed_coef = 2.0f;
+            }
+            else {
+                speed_coef = 1.0f;
+            }
+            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, speed_coef * dt);
         }
         if (platform->key(engine::platform::KeyId::KEY_A).is_down()) {
             camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
