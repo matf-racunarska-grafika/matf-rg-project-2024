@@ -39,6 +39,8 @@ public:
     */
     void draw(const Shader *shader);
 
+    void setup_instancing(const std::vector<glm::mat4>& instance_matrices);
+    void draw_instanced(const Shader *shader);
     /**
     * @brief Destroys the mesh in the OpenGL context.
     */
@@ -57,6 +59,11 @@ private:
     uint32_t m_vao{0};
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
+
+    unsigned int m_instance_vbo=0;
+    size_t m_instance_count=0;
+    bool m_instancing_enabled = false;
+
 };
 } // namespace engine
 
