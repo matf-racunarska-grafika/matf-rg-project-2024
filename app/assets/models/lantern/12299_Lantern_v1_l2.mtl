@@ -1,0 +1,38 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 13.12.2011 16:40:59
+
+newmtl octagon_lantern_glass
+	Ns 31.0000
+	Ni 1.5000
+	d 0.1500
+	Tr 0.8500
+	Tf 0.1500 0.1500 0.1500 
+	illum 2
+	Ka 0.0000 0.0706 0.1373
+	Kd 0.0000 0.0706 0.1373
+	Ks 0.4500 0.4500 0.4500
+	Ke 0.0000 0.0000 0.0000
+
+newmtl octagon_lantern_metal
+	Ns 60.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.2431 0.1137 0.0784
+	Kd 0.4510 0.3098 0.2549
+	Ks 0.6300 0.6300 0.6300
+	Ke 0.0000 0.0000 0.0000
+
+newmtl octagon_lantern_brown_glass
+	Ns 31.0000
+	Ni 1.5000
+	d 0.4000
+	Tr 0.6000
+	Tf 0.4000 0.4000 0.4000 
+	illum 2
+	Ka 0.2902 0.0196 0.0000
+	Kd 0.2902 0.0196 0.0000
+	Ks 0.2980 0.2235 0.2235
+	Ke 0.0000 0.0000 0.0000
