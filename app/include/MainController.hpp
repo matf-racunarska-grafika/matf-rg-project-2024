@@ -31,5 +31,4 @@ public:
 };
 
 } // app
-
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
