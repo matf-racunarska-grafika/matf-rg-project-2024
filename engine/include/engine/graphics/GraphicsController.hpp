@@ -6,8 +6,11 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 
-#include <engine/graphics/Camera.hpp>
+#include "PostProcessing.hpp"
+
+
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/Camera.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
 struct ImGuiContext;
@@ -85,6 +88,40 @@ public:
     * @brief Draws a @ref resources::Skybox with the @ref resources::Shader.
     */
     void draw_skybox(const resources::Shader *shader, const resources::Skybox *skybox);
+
+    void init_hdr_framebuffer(int width,int height) {
+        m_post_processing.init_hdr(width,height);
+    }
+
+    void resize_hdr_framebuffer(int width,int height) {
+        m_post_processing.resize_hdr(width,height);
+    }
+
+    void bind_hdr_framebuffer() {
+        m_post_processing.bind_hdr_framebuffer();
+    }
+
+    void unbind_hdr_framebuffer() {
+        m_post_processing.unbind_hdr_framebuffer();
+    }
+
+    unsigned int get_scene_texture() {
+        return m_post_processing.get_scene_texture();
+    }
+
+    unsigned int get_bright_texture() {
+        return m_post_processing.get_bright_texture();
+    }
+
+    float get_exposure() {
+        return m_post_processing.m_exposure;
+    }
+
+    void set_exposure(float exposure) {
+        m_post_processing.m_exposure=exposure;
+    }
+
+    void draw_hdr_quad(engine::resources::Shader* shader);
 
     Camera *camera() {
         return &m_camera;
@@ -167,6 +204,7 @@ private:
     glm::mat4 m_projection_matrix{};
     Camera m_camera{};
     ImGuiContext *m_imgui_context{};
+    PostProcessing m_post_processing;
 };
 
 /**

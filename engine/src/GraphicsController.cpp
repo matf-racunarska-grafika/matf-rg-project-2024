@@ -42,6 +42,10 @@ void GraphicsController::initialize() {
     (void) io;
     RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
     RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");
+
+    //hdr
+    init_hdr_framebuffer(static_cast<int>(m_perspective_params.Width),
+        static_cast<int>(m_perspective_params.Height));
 }
 
 void GraphicsController::terminate() {
@@ -62,6 +66,8 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Right = static_cast<float>(width);
     m_graphics->orthographic_params()
               .Top = static_cast<float>(height);
+    //resize hdr
+    m_graphics->resize_hdr_framebuffer(width,height);
 }
 
 std::string_view GraphicsController::name() const {
@@ -93,4 +99,16 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glDepthFunc, GL_LESS); // set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
+
+void GraphicsController::draw_hdr_quad(engine::resources::Shader *shader) {
+    shader->use();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,m_post_processing.get_scene_texture());
+    shader->set_int("hdrBuffer",0);
+    shader->set_float("exposure",m_post_processing.m_exposure);
+
+    m_post_processing.render_screen_quad();
+}
+
+
 }
