@@ -48,6 +48,7 @@ class MainController : public engine::core::Controller{
         const glm::vec3& rotation_axis = glm::vec3(0.0f),
         float rotation_angle = 0.0f);
     void update_camera();
+    void update_exposure_level();
     void update() override;
     void begin_draw() override;
     void draw_skybox();

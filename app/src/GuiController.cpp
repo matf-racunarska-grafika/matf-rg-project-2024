@@ -44,6 +44,7 @@ void GUIController::draw() {
             color = glm::vec3(color_arr[0],color_arr[1],color_arr[2]);
         }
     }
+    ImGui::Text("Exposure: %.3f",graphics->get_exposure());
 
     ImGui::End();
 

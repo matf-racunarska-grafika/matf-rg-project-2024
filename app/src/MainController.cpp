@@ -257,9 +257,25 @@ void MainController::update_camera() {
     }
 }
 
+void MainController::update_exposure_level() {
+    if(is_gui_active()) {
+        return;
+    }
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    if(platform->key(engine::platform::KeyId::KEY_E).is_down()) {
+        graphics->set_exposure(graphics->get_exposure()+0.005f);
+    }
+    if(platform->key(engine::platform::KeyId::KEY_Q).is_down()) {
+        graphics->set_exposure(std::max(graphics->get_exposure()-0.005f,0.0f));
+    }
+
+}
+
 
 void MainController::update() {
     update_camera();
+    update_exposure_level();
 }
 
 
@@ -305,12 +321,13 @@ void MainController::draw() {
     draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
 
+    draw_skybox();
+
     graphics->unbind_hdr_framebuffer();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto hdr_shader = resources->shader("hdr_tonemap");
     graphics->draw_hdr_quad(hdr_shader);
 
-    draw_skybox();
 
 }
 
