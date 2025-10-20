@@ -6,6 +6,7 @@
 
 #include "AppUtils.hpp"
 #include "GuiController.hpp"
+#include "engine/graphics/PostProcessing.hpp"
 #include "spdlog/spdlog.h"
 
 #include <engine/graphics/GraphicsController.hpp>
@@ -277,7 +278,9 @@ void MainController::draw_skybox() {
 
 void MainController::draw() {
     //draw_island();
-
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    graphics->bind_hdr_framebuffer();
+    engine::graphics::OpenGL::clear_buffers();
     draw_lit_model("ostrvo","standard_lighting",glm::vec3(0,-2,1)
         ,glm::vec3(0.7f));
     draw_emissive_model("zvezda","zvezda",glm::vec3(-0.93,1.44,2.02)
@@ -301,6 +304,12 @@ void MainController::draw() {
         glm::vec3(0.004f),glm::vec3(1,0,0),90);
     draw_emissive_model("bonfire","basic_rgba",glm::vec3(-0.5,-0.01,0.18)
         ,glm::vec3(0.05f));
+
+    graphics->unbind_hdr_framebuffer();
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto hdr_shader = resources->shader("hdr_tonemap");
+    graphics->draw_hdr_quad(hdr_shader);
+
     draw_skybox();
 
 }
