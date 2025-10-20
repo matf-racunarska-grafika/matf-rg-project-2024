@@ -29,6 +29,5 @@ public:
         return "app::MainController";
     }
 };
-
 } // app
 #endif //MATF_RG_PROJECT_MAINCONTROLLER_HPP
