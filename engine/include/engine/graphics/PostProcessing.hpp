@@ -28,7 +28,7 @@ private:
 
     unsigned int m_quad_vao=0;
     unsigned int m_quad_vbo=0;
-    float m_exposure=0.18f;
+    float m_exposure=0.4f;
 };
 
 

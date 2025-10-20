@@ -93,7 +93,9 @@ void MainController::draw_emissive_model(const std::string &model_name,
     shader->set_mat4("model", model_matrix);
 
     if(shader_name == std::string("zvezda") && model_name == std::string("zvezda")) {
-        shader->set_vec3("emissiveColor",m_star_color);
+        auto platform =engine::core::Controller::get<engine::platform::PlatformController>();
+        shader->set_vec3("emissiveColor",
+            m_star_color*glm::vec3(15.0f+10.0*sin(platform->frame_time().current)));//intezitet
     }
 
     model->draw(shader);
