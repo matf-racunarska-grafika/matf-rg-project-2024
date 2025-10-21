@@ -25,8 +25,8 @@ private:
     engine::resources::Model *m_stone{nullptr};
     engine::resources::Model *m_lantern{nullptr};
 
-    float m_moveSpeed = 3.0f;  // osnovna brzina kretanja
-    float m_sprintScale = 2.0f;// koliko je brži sprint (Shift)
+    float m_moveSpeed = 3.0f;
+    float m_sprintScale = 2.0f;
 
     // lifecycle
     void initialize() override;
