@@ -42,7 +42,7 @@ private:
     unsigned int m_pingpong_fbo[2];
     unsigned int m_pingpong_color_buffers[2];
     int m_blur_itterartions = 10;
-    float m_bloom_strength = 1.0f;
+    float m_bloom_strength = 0.02f;
     bool m_bloom_enabled = true;
 };
 

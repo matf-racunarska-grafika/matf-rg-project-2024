@@ -56,7 +56,7 @@ class MainController : public engine::core::Controller{
     void draw_skybox();
     void draw() override;
     void end_draw() override;
-    glm::vec3 m_star_color = glm::vec3(0.992,0.875,0.49);
+    glm::vec3 m_star_color = glm::vec3(0.839,0.557,0.157);//glm::vec3(0.992,0.875,0.49);
 
 public:
     std::string_view name() const override {
