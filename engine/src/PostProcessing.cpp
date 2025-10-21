@@ -80,7 +80,7 @@ void PostProcessing::render_screen_quad() {
         glBindVertexArray(m_quad_vao);
         glBindBuffer(GL_ARRAY_BUFFER,m_quad_vbo);
         glBufferData(GL_ARRAY_BUFFER,sizeof(quadVerticies),
-            &quadVerticies,GL_STATIC_DRAW);
+            quadVerticies,GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,
             4*sizeof(float),(void*)0);
