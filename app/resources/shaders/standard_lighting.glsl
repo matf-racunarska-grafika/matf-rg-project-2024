@@ -31,7 +31,8 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 struct Material{
     sampler2D diffuse;
@@ -82,6 +83,15 @@ void main(){
     }
 
     FragColor = vec4(result,1.0);
+
+    //bloom deo
+    float brightness = dot(result,vec3(0.2126,0.7152,0.0722));
+    if(brightness>1.0){
+        BrightColor = vec4(result,1.0);
+    }else{
+        BrightColor = vec4(0.0,0.0,0.0,1.0);
+    }
+
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal,vec3 viewDir){
