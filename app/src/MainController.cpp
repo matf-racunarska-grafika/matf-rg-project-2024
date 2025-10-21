@@ -285,11 +285,26 @@ void MainController::update_bloom_state() {
     }
 }
 
+void MainController::update_bloom_strength() {
+    if(is_gui_active()) {
+        return;
+    }
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    if(platform->key(engine::platform::KeyId::KEY_J).is_down()) {
+        graphics->set_bloom_strength(std::max(0.0f,graphics->get_bloom_strength()-0.005f));
+    }
+    if(platform->key(engine::platform::KeyId::KEY_K).is_down()) {
+        graphics->set_bloom_strength(graphics->get_bloom_strength()+0.005f);
+    }
+}
+
 
 void MainController::update() {
     update_camera();
     update_exposure_level();
     update_bloom_state();
+    update_bloom_strength();
 }
 
 

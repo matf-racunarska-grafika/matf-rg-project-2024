@@ -135,6 +135,15 @@ public:
     void set_bloom_state(bool bloom) {
         m_post_processing.m_bloom_enabled = bloom;
     }
+
+    float get_bloom_strength() const{
+        return m_post_processing.m_bloom_strength;
+    }
+
+    void set_bloom_strength(float bloom_strength) {
+        m_post_processing.m_bloom_strength=bloom_strength;
+    }
+
     void apply_gaussian_blur(engine::resources::Shader* shader) {
         m_post_processing.apply_gaussian_blur(shader);
     }

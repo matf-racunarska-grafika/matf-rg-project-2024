@@ -50,6 +50,7 @@ class MainController : public engine::core::Controller{
     void update_camera();
     void update_exposure_level();
     void update_bloom_state();
+    void update_bloom_strength();
     void update() override;
     void begin_draw() override;
     void draw_skybox();
