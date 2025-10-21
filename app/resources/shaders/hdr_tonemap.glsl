@@ -23,13 +23,14 @@ uniform sampler2D bloomBlur;
 
 uniform bool bloom;
 uniform float exposure;
+uniform float bloomStrength;
 
 void main(){
     const float gamma = 2.2f;
     vec3 hdrColor = texture(hdrBuffer,TexCoords).rgb;
     vec3 bloomColor = texture(bloomBlur,TexCoords).rgb;
     if(bloom){
-        hdrColor+=bloomColor;
+        hdrColor+=bloomColor*bloomStrength;
     }
     vec3 result = vec3(1.0) - exp(-hdrColor*exposure);
     result = pow(result,vec3(1.0/gamma));

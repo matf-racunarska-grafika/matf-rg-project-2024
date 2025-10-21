@@ -115,6 +115,7 @@ void GraphicsController::draw_hdr_quad(engine::resources::Shader *shader) {
 
     shader->set_bool("bloom",m_post_processing.m_bloom_enabled);
     shader->set_float("exposure",m_post_processing.m_exposure);
+    shader->set_float("bloomStrength",m_post_processing.m_bloom_strength);
 
     m_post_processing.render_screen_quad();
 }
