@@ -47,9 +47,7 @@ void App::engine_setup(int argc, char **argv) {
 void App::initialize() {
     // Topologically sort controllers based on their dependency graph formed by before/after methods.
     {
-        auto adjacent_controllers = [](Controller *curr) {
-            return curr->next();
-        };
+        auto adjacent_controllers = [](Controller *curr) { return curr->next(); };
         RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), adjacent_controllers),
                      "Please make sure that there are no cycles in the controller dependency graph.");
         util::alg::topological_sort(range(m_controllers), adjacent_controllers);
@@ -61,11 +59,7 @@ void App::initialize() {
 }
 
 bool App::loop() {
-    for (auto controller: m_controllers) {
-        if (controller->is_enabled() && !controller->loop()) {
-            return false;
-        }
-    }
+    for (auto controller: m_controllers) { if (controller->is_enabled() && !controller->loop()) { return false; } }
     return true;
 }
 
@@ -77,30 +71,12 @@ void App::poll_events() {
     }
 }
 
-void App::update() {
-    for (auto controller: m_controllers) {
-        if (controller->is_enabled()) {
-            controller->update();
-        }
-    }
-}
+void App::update() { for (auto controller: m_controllers) { if (controller->is_enabled()) { controller->update(); } } }
 
 void App::draw() {
-    for (auto controller: m_controllers) {
-        if (controller->is_enabled()) {
-            controller->begin_draw();
-        }
-    }
-    for (auto controller: m_controllers) {
-        if (controller->is_enabled()) {
-            controller->draw();
-        }
-    }
-    for (auto controller: m_controllers) {
-        if (controller->is_enabled()) {
-            controller->end_draw();
-        }
-    }
+    for (auto controller: m_controllers) { if (controller->is_enabled()) { controller->begin_draw(); } }
+    for (auto controller: m_controllers) { if (controller->is_enabled()) { controller->draw(); } }
+    for (auto controller: m_controllers) { if (controller->is_enabled()) { controller->end_draw(); } }
 }
 
 void App::terminate() {
@@ -112,12 +88,8 @@ void App::terminate() {
     }
 }
 
-void App::app_setup() {
-    RG_UNIMPLEMENTED("You should override App::app_setup in your App implementation.");
-}
+void App::app_setup() { RG_UNIMPLEMENTED("You should override App::app_setup in your App implementation."); }
 
-void App::handle_error(const util::Error &e) {
-    spdlog::error(e.report());
-}
-} // namespace engine
+void App::handle_error(const util::Error &e) { spdlog::error(e.report()); }
+}// namespace engine
 
