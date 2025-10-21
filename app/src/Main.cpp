@@ -1,8 +1,11 @@
-#include <engine/core/Engine.hpp>
+#include <engine/core/App.hpp>
 
-/**
- * Start here...
- */
-int main(int argc, char** argv) {
-    return 0;
+class MyApp : public engine::core::App {
+protected:
+    void app_setup() override {}
+};
+
+int main(int argc, char **argv) {
+    MyApp app;
+    return app.run(argc, argv);
 }
