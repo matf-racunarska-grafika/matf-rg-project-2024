@@ -93,8 +93,16 @@ public:
         m_post_processing.init_hdr(width,height);
     }
 
+    void init_bloom_framebuffer(int width,int height) {
+        m_post_processing.init_bloom(width,height);
+    }
+
     void resize_hdr_framebuffer(int width,int height) {
         m_post_processing.resize_hdr(width,height);
+    }
+
+    void resize_bloom_framebuffer(int width,int height) {
+        m_post_processing.resize_bloom(width,height);
     }
 
     void bind_hdr_framebuffer() {
@@ -119,6 +127,9 @@ public:
 
     void set_exposure(float exposure) {
         m_post_processing.m_exposure=exposure;
+    }
+    void apply_gaussian_blur(engine::resources::Shader* shader) {
+        m_post_processing.apply_gaussian_blur(shader);
     }
 
     void draw_hdr_quad(engine::resources::Shader* shader);

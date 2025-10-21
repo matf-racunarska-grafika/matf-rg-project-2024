@@ -46,6 +46,8 @@ void GraphicsController::initialize() {
     //hdr
     init_hdr_framebuffer(static_cast<int>(m_perspective_params.Width),
         static_cast<int>(m_perspective_params.Height));
+    init_bloom_framebuffer(static_cast<int>(m_perspective_params.Width),
+        static_cast<int>(m_perspective_params.Height));
 }
 
 void GraphicsController::terminate() {
@@ -68,6 +70,7 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Top = static_cast<float>(height);
     //resize hdr
     m_graphics->resize_hdr_framebuffer(width,height);
+    m_graphics->resize_bloom_framebuffer(width,height);
 }
 
 std::string_view GraphicsController::name() const {
@@ -105,6 +108,12 @@ void GraphicsController::draw_hdr_quad(engine::resources::Shader *shader) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,m_post_processing.get_scene_texture());
     shader->set_int("hdrBuffer",0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D,m_post_processing.get_pingpong_texture());
+    shader->set_int("bloomBlur",1);
+
+    shader->set_bool("bloom",m_post_processing.m_bloom_enabled);
     shader->set_float("exposure",m_post_processing.m_exposure);
 
     m_post_processing.render_screen_quad();
