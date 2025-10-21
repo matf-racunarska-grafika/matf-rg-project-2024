@@ -327,6 +327,8 @@ void MainController::draw() {
 
     graphics->unbind_hdr_framebuffer();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto blur_shader = resources->shader("blur");
+    graphics->apply_gaussian_blur(blur_shader);
     auto hdr_shader = resources->shader("hdr_tonemap");
     graphics->draw_hdr_quad(hdr_shader);
 
