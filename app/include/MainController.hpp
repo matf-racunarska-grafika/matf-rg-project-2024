@@ -4,6 +4,7 @@
 #include <engine/core/Controller.hpp>
 #include <engine/resources/Shader.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <engine/resources/Model.hpp>
 
 namespace app {
 
@@ -12,11 +13,22 @@ public:
     std::string_view name() const override { return "MainController"; }
 
 private:
-    // --- Skybox podaci ---
+    // Shaders & skybox
     engine::resources::Shader *m_skyboxShader{nullptr};
     engine::resources::Skybox *m_skybox{nullptr};
+    engine::resources::Shader *m_basicShader{nullptr};
 
-    // --- Glavne funkcije kontrolera ---
+    // Models
+    engine::resources::Model *m_tree{nullptr};
+    engine::resources::Model *m_campfire{nullptr};
+    engine::resources::Model *m_tent{nullptr};
+    engine::resources::Model *m_stone{nullptr};
+    engine::resources::Model *m_lantern{nullptr};
+
+    float m_moveSpeed = 3.0f;  // osnovna brzina kretanja
+    float m_sprintScale = 2.0f;// koliko je brži sprint (Shift)
+
+    // lifecycle
     void initialize() override;
 
     bool loop() override;
@@ -25,7 +37,8 @@ private:
 
     void begin_draw() override;
 
-    void draw() override;// <== DODATO
+    void draw() override;
+
     void end_draw() override;
 
     void update_camera();
