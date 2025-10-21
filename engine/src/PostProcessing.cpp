@@ -94,5 +94,60 @@ void PostProcessing::render_screen_quad() {
     glBindVertexArray(0);
 }
 
+void PostProcessing::init_bloom(int width, int height) {
+    glGenFramebuffers(2,m_pingpong_fbo);
+    glGenTextures(2,m_pingpong_color_buffers);
+    for(unsigned int i = 0 ; i<2;i++) {
+        glBindFramebuffer(GL_FRAMEBUFFER,m_pingpong_fbo[i]);
+        glBindTexture(GL_TEXTURE_2D,m_pingpong_color_buffers[i]);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA16F,width,height,
+            0,GL_RGBA,GL_FLOAT,nullptr);
+
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,
+            GL_TEXTURE_2D,m_pingpong_color_buffers[i],0);
+
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE) {
+            spdlog::error("Pingpong framebuffer {} is not complete!",i);
+        }
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+}
+
+void PostProcessing::resize_bloom(int width, int height) {
+    for(unsigned int i=0;i<2;i++) {
+        glBindTexture(GL_TEXTURE_2D,m_pingpong_color_buffers[i]);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA16F,width,height,
+            0,GL_RGBA,GL_FLOAT,nullptr);
+    }
+}
+
+void PostProcessing::apply_gaussian_blur(engine::resources::Shader *blur_shader) {
+    bool horizontal = true;
+    bool first_itteration = true;
+    for(int i=0; i<m_blur_itterartions;++i) {
+        glBindFramebuffer(GL_FRAMEBUFFER,m_pingpong_fbo[horizontal]);
+        blur_shader->use();
+        blur_shader->set_bool("horizontal",horizontal);
+
+        glActiveTexture(GL_TEXTURE0);
+        unsigned int texture = first_itteration ? m_color_buffers[1] : m_pingpong_color_buffers[!horizontal];
+        glBindTexture(GL_TEXTURE_2D,texture);
+        blur_shader->set_int("image",0);
+
+        render_screen_quad();
+        horizontal = !horizontal;
+        if(first_itteration) {
+            first_itteration=false;
+        }
+
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+}
+
+
 
 }// namespace engine::graphics
