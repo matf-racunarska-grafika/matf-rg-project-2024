@@ -49,6 +49,7 @@ class MainController : public engine::core::Controller{
         float rotation_angle = 0.0f);
     void update_camera();
     void update_exposure_level();
+    void update_bloom_state();
     void update() override;
     void begin_draw() override;
     void draw_skybox();

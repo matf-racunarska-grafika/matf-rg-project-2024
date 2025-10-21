@@ -274,10 +274,22 @@ void MainController::update_exposure_level() {
 
 }
 
+void MainController::update_bloom_state() {
+    if(is_gui_active()) {
+        return;
+    }
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    if(platform->key(engine::platform::KeyId::KEY_F).state()==engine::platform::Key::State::JustPressed) {
+        graphics->set_bloom_state(!graphics->get_bloom_state());
+    }
+}
+
 
 void MainController::update() {
     update_camera();
     update_exposure_level();
+    update_bloom_state();
 }
 
 

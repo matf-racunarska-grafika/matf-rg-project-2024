@@ -128,6 +128,13 @@ public:
     void set_exposure(float exposure) {
         m_post_processing.m_exposure=exposure;
     }
+
+    bool get_bloom_state() {
+        return m_post_processing.m_bloom_enabled;
+    }
+    void set_bloom_state(bool bloom) {
+        m_post_processing.m_bloom_enabled = bloom;
+    }
     void apply_gaussian_blur(engine::resources::Shader* shader) {
         m_post_processing.apply_gaussian_blur(shader);
     }
