@@ -45,7 +45,8 @@ void GUIController::draw() {
         }
     }
     ImGui::Text("Exposure: %.3f",graphics->get_exposure());
-
+    ImGui::Text("Bloom strength: %.2f",graphics->get_bloom_strength());
+    ImGui::Text("Bloom: %s",graphics->get_bloom_state() ? "on" : "off");
     ImGui::End();
 
     graphics->end_gui();
