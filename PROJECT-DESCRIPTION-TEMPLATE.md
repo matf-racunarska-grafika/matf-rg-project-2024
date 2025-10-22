@@ -45,7 +45,7 @@ F  -> Paljenje/gašenje bloom-a
 ### Engine improvement:
 
 [X] U okviru Mesha dodana mogućnost crtanja istanciranih modela, uokvireno u Modelu za korišćenje.
-Napravljena klasa PostProcessing u engine/include/engine/graphics a implemntaicja u engine/src.
+Napravljena klasa PostProcessing u engine/include/engine/graphics a implementacija u engine/src.
 U njoj je omogućeno korišćenje HDR i bloom efekta. U GraphicsController-u  su dodate i izmenjene metode,
 kako bi bilo moguće koristiti HDR i bloom u App delu preko njega.
 
