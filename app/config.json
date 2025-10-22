@@ -1,11 +1,35 @@
 {
   "resources": {
     "models": {
+      "tree": {
+        "path": "tree/tree.obj",
+        "flip_uvs": false
+      },
+      "tent": {
+        "path": "tent/tent.obj",
+        "flip_uvs": false
+      },
+      "lantern": {
+        "path": "lantern/lantern.obj",
+        "flip_uvs": false
+      },
+      "stone": {
+        "path": "stone/stone.obj",
+        "flip_uvs": false
+      },
+      "campfire": {
+        "path": "campfire/campfire.obj",
+        "flip_uvs": false
+      },
+      "deadtrunk": {
+        "path": "deadtrunk/deadtrunk.obj",
+        "flip_uvs": false
+      }
     }
   },
   "window": {
+    "width": 800,
     "height": 600,
-    "title": "Hello, window!",
-    "width": 800
+    "title": "Camp Scene"
   }
 }

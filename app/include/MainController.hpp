@@ -24,6 +24,7 @@ private:
     engine::resources::Model *m_tent{nullptr};
     engine::resources::Model *m_stone{nullptr};
     engine::resources::Model *m_lantern{nullptr};
+    engine::resources::Model *m_deadtrunk{nullptr};
 
     float m_moveSpeed = 3.0f;
     float m_sprintScale = 2.0f;
