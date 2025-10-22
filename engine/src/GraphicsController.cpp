@@ -42,12 +42,9 @@ void GraphicsController::initialize() {
     (void) io;
     RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
     RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");
-
     //hdr
-    init_hdr_framebuffer(static_cast<int>(m_perspective_params.Width),
-        static_cast<int>(m_perspective_params.Height));
-    init_bloom_framebuffer(static_cast<int>(m_perspective_params.Width),
-        static_cast<int>(m_perspective_params.Height));
+    init_hdr_framebuffer(platform->window()->width(),platform->window()->height());
+    init_bloom_framebuffer(platform->window()->width(),platform->window()->height());
 }
 
 void GraphicsController::terminate() {
