@@ -1,0 +1,14 @@
+# Material for ground plane (Poly Haven texture)
+newmtl ground
+Ka 1.000 1.000 1.000
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 10.0
+d 1.0
+illum 2
+
+# Texture maps
+map_Kd forrest_ground_01_diff_4k.jpg
+map_Bump forrest_ground_01_nor_gl_4k.png
+map_Ka forrest_ground_01_ao_4k.jpg
+map_Pr forrest_ground_01_rough_4k.png

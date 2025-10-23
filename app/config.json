@@ -24,6 +24,10 @@
       "deadtrunk": {
         "path": "deadtrunk/deadtrunk.obj",
         "flip_uvs": false
+      },
+      "ground": {
+        "path": "ground/ground.obj",
+        "flip_uvs": false
       }
     }
   },
