@@ -5,6 +5,8 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <engine/graphics/GraphicsController.hpp>
+#include <engine/resources/Model.hpp>
+#include <engine/resources/Mesh.hpp>
 
 #include <spdlog/spdlog.h>
 #include <glm/glm.hpp>
@@ -46,7 +48,7 @@ void MainController::initialize() {
 
     // Shaders & skybox
     m_skyboxShader = resources->shader("skybox");
-    m_basicShader = resources->shader("basic");// shader sa fake-bloom podrškom
+    m_basicShader = resources->shader("basic");
     m_skybox = resources->skybox("dikhololo_night");
 
     // Models
@@ -65,17 +67,17 @@ void MainController::initialize() {
 
     if (m_basicShader) {
         m_basicShader->use();
-        // "Mesec" – jači i malo hladniji, za svetliju scenu
+        // jači, hladniji "mesec"
         m_basicShader->set_vec3("uDirLightDir", glm::normalize(glm::vec3(-0.18f, -1.0f, -0.08f)));
-        m_basicShader->set_vec3("uDirLightColor", glm::vec3(0.48f, 0.52f, 0.72f));
+        m_basicShader->set_vec3("uDirLightColor", glm::vec3(0.50f, 0.55f, 0.75f));
 
-        // Globalni materijal
-        m_basicShader->set_float("uAmbient", 0.28f);// više ambijenta (svetlije)
+        // materijal (malo svetlije okruženje/trava)
+        m_basicShader->set_float("uAmbient", 0.34f);
         m_basicShader->set_float("uSpecularStrength", 0.25f);
         m_basicShader->set_float("uShininess", 32.0f);
 
-        // Fake-bloom (pojačano)
-        m_basicShader->set_float("uExposure", 1.35f);
+        // fake bloom
+        m_basicShader->set_float("uExposure", 1.40f);
         m_basicShader->set_float("uBloomFakeStrength", 1.85f);
         m_basicShader->set_float("uGlowFalloffFire", 1.35f);
         m_basicShader->set_float("uGlowFalloffLamp", 2.0f);
@@ -101,6 +103,7 @@ void MainController::update_camera() {
                   || platform->key(engine::platform::KeyId::KEY_RIGHT_SHIFT).is_down();
     float speed = m_moveSpeed * (sprint ? m_sprintScale : 1.0f);
 
+    // WASD + strelice
     if (platform->key(engine::platform::KeyId::KEY_W).is_down()) camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt * speed);
     if (platform->key(engine::platform::KeyId::KEY_S).is_down()) camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt * speed);
     if (platform->key(engine::platform::KeyId::KEY_A).is_down()) camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt * speed);
@@ -129,37 +132,35 @@ void MainController::draw() {
     m_basicShader->set_mat4("view", graphics->camera()->view_matrix());
     m_basicShader->set_vec3("uViewPos", graphics->camera()->Position);
 
-    // ----- "Zemlja" referenca (sve modele spuštamo na ovu Y visinu) -----
-    const float groundY = -0.30f;
-
-    // Osnovna tačka scene – centar logorske vatre, poravnat sa "tlom"
+    // "tlo" = zajednička visina svih modela (deluje kao da stoje na dnu skyboxa)
+    const float groundY = -0.34f;
     const glm::vec3 campCenter = {0.0f, groundY, -7.0f};
 
-    // Flicker vatre (boja + blagi puls intenziteta)
+    // vatra u centru (flicker)
     static float t = 0.0f;
     t += platform->dt();
-    float k = 0.6f + 0.4f * std::sin(t * 5.2f);
-    glm::vec3 fireA(1.00f, 0.38f, 0.06f);
-    glm::vec3 fireB(1.00f, 0.82f, 0.36f);
-    glm::vec3 fireCol = (1.0f - k) * fireA + k * fireB;
+    const float k = 0.6f + 0.4f * std::sin(t * 5.0f);
+    const glm::vec3 fireA(1.00f, 0.38f, 0.06f);
+    const glm::vec3 fireB(1.00f, 0.82f, 0.36f);
+    const glm::vec3 fireCol = (1.0f - k) * fireA + k * fireB;
 
-    glm::vec3 firePos = campCenter + glm::vec3(0.0f, 1.25f, 0.0f);
+    const glm::vec3 firePos = campCenter + glm::vec3(0.0f, 1.25f, 0.0f);
     m_basicShader->set_vec3("uLightPos", firePos);
     m_basicShader->set_vec3("uLightColor", fireCol);
 
-    // Fenjer (toggle na 'L')
+    // fenjer — VEĆI i USPRAVAN
     static bool prevL = false;
     static float lanternOn = 1.0f;
-    bool currL = platform->key(engine::platform::KeyId::KEY_L).is_down();
+    const bool currL = platform->key(engine::platform::KeyId::KEY_L).is_down();
     if (currL && !prevL) lanternOn = (lanternOn > 0.5f) ? 0.0f : 1.0f;
     prevL = currL;
 
-    const glm::vec3 lanternPos = campCenter + glm::vec3(5.5f, groundY + 0.25f, 4.0f);// dalje od vatre
+    const glm::vec3 lanternPos = campCenter + glm::vec3(3.2f, groundY + 0.35f, 2.8f);
     m_basicShader->set_vec3("uLanternPos", lanternPos);
-    m_basicShader->set_vec3("uLanternColor", glm::vec3(1.0f, 0.88f, 0.52f));
+    m_basicShader->set_vec3("uLanternColor", glm::vec3(1.0f, 0.90f, 0.56f));
     m_basicShader->set_float("uLanternOn", lanternOn);
 
-    // Helper za crtanje
+    // helper za single-draw
     auto draw_model = [&](engine::resources::Model *mdl,
                           const glm::vec3 &pos,
                           const glm::vec3 &scale = glm::vec3(1.0f),
@@ -179,64 +180,114 @@ void MainController::draw() {
         mdl->draw(m_basicShader);
     };
 
-    // 1) Vatra – blago uvećana, “sedne” na zemlju
-    draw_model(
-            m_campfire,
-            campCenter + glm::vec3(0.0f, -0.02f, 0.0f),
-            glm::vec3(0.26f),
-            glm::vec3(0.0f, 10.0f, 0.0f),
-            glm::vec3(1.0f, 0.94f, 0.86f),
-            1.0f
-            );
+    // --- single modeli ---
+    draw_model(m_campfire, campCenter + glm::vec3(0.0f, -0.02f, 0.0f),
+               glm::vec3(0.28f), glm::vec3(0.0f, 10.0f, 0.0f),
+               glm::vec3(1.0f, 0.95f, 0.88f), 1.0f);
 
-    // 2) Kamen – odvojen od vatre, spušten na groundY
-    const glm::vec3 stonePos = campCenter + glm::vec3(-4.2f, -0.05f, -2.6f);
-    draw_model(
-            m_stone,
-            stonePos,
-            glm::vec3(0.85f),
-            glm::vec3(0.0f, 22.0f, 0.0f),
-            glm::vec3(0.92f, 0.94f, 0.96f),
-            1.0f
-            );
+    // fenjer uspravno (X rot = 0), malo veći
+    draw_model(m_lantern, lanternPos,
+               glm::vec3(0.04f),
+               glm::vec3(0.0f, -22.0f, 0.0f),
+               glm::vec3(1.0f, 0.98f, 0.86f), 0.0f);
 
-    // 3) Fenjer – daleko desno, na zemlji
-    draw_model(
-            m_lantern,
-            lanternPos,
-            glm::vec3(0.02f),
-            glm::vec3(-90.0f, -18.0f, 0.0f),
-            glm::vec3(1.0f, 0.96f, 0.84f),
-            0.0f
-            );
+    // kamen veći i odmaknut
+    draw_model(m_stone, campCenter + glm::vec3(-5.0f, -0.03f, 3.0f),
+               glm::vec3(1.15f), glm::vec3(0.0f, 18.0f, 0.0f),
+               glm::vec3(0.94f, 0.96f, 0.98f), 1.0f);
 
-    // 4) Panj (deblo) – smanjen i spušten
-    draw_model(
-            m_deadtrunk,
-            campCenter + glm::vec3(-6.0f, -0.03f, -3.1f),
-            glm::vec3(0.45f),
-            glm::vec3(0.0f, 24.0f, 10.0f)
-            );
+    // šator veći i dalje od pentagona
+    draw_model(m_tent, campCenter + glm::vec3(8.5f, -0.02f, -13.5f),
+               glm::vec3(2.10f), glm::vec3(0.0f, 28.0f, 0.0f),
+               glm::vec3(0.95f, 0.90f, 0.82f), 1.0f);
 
-    // 5) Šator – uvećan i poravnat; ostavljen -90° oko X jer su modeli Z-up
-    draw_model(
-            m_tent,
-            campCenter + glm::vec3(6.8f, -0.02f, -10.6f),
-            glm::vec3(1.80f),
-            glm::vec3(-0.0f, 30.0f, 0.0f),
-            glm::vec3(0.95f, 0.90f, 0.82f),
-            1.0f
-            );
+    // jedno drvo (primerak)
+    draw_model(m_tree, campCenter + glm::vec3(-10.0f, 0.0f, -18.0f),
+               glm::vec3(1.25f), glm::vec3(0.0f, -12.0f, 0.0f),
+               glm::vec3(0.90f, 1.0f, 0.90f), 1.0f);
 
-    // 6) Drvo – veće, “u pozadini”, spušteno na groundY
-    draw_model(
-            m_tree,
-            campCenter + glm::vec3(-9.0f, 0.0f, -16.0f),
-            glm::vec3(1.20f),
-            glm::vec3(0.0f, -10.0f, 0.0f),
-            glm::vec3(0.90f, 1.0f, 0.90f),
-            1.0f
-            );
+    // jedno deblo (van pentagona, čisto primerak)
+    draw_model(m_deadtrunk, campCenter + glm::vec3(-6.5f, -0.03f, -3.4f),
+               glm::vec3(0.46f), glm::vec3(0.0f, 24.0f, 10.0f));
+
+    // ===================== GPU INSTANCING =====================
+    static bool instancingInit = false;
+    static std::vector<glm::mat4> TRUNK_MATS;// panjevi oko vatre (pentagon)
+    static std::vector<glm::mat4> TREE_MATS; // raznovrsna stabla
+    static std::vector<uint32_t> TRUNK_VBOS;
+    static std::vector<uint32_t> TREE_VBOS;
+
+    if (!instancingInit) {
+        instancingInit = true;
+
+        auto frand = [](float a, float b) {
+            static uint32_t s = 0x9E3779B9u;
+            s ^= s << 13;
+            s ^= s >> 17;
+            s ^= s << 5;
+            float t = (s & 0xFFFFFF) / float(0xFFFFFF);
+            return a + (b - a) * t;
+        };
+
+        // ---- 1) panjevi kao PENTAGON oko logorske vatre ----
+        const int N_LOGS = 5;        // 4 ili 5; stavili smo 5 (pravilni petougao)
+        const float R_LOGS = 2.35f;  // radijus kruga na kome su “klupe”
+        const float LOG_MINS = 0.42f;// skala panja
+        const float LOG_MAXS = 0.55f;
+
+        TRUNK_MATS.reserve(N_LOGS);
+        for (int i = 0; i < N_LOGS; ++i) {
+            float ang = glm::two_pi<float>() * (float) i / (float) N_LOGS;
+            glm::vec3 p = campCenter + glm::vec3(std::cos(ang) * R_LOGS, -0.03f, std::sin(ang) * R_LOGS);
+
+            // neka “klupa” (deblo) gleda ka centru
+            float yawDeg = glm::degrees(atan2f(campCenter.z - p.z, campCenter.x - p.x));
+            float rollDeg = frand(-7.0f, 7.0f);// malo nagni
+
+            float s = frand(LOG_MINS, LOG_MAXS);
+
+            glm::mat4 M(1.0f);
+            M = glm::translate(M, p);
+            M = glm::rotate(M, glm::radians(yawDeg), glm::vec3(0, 1, 0)); // okreni ka vatri
+            M = glm::rotate(M, glm::radians(rollDeg), glm::vec3(0, 0, 1));// malo random nagni
+            M = glm::scale(M, glm::vec3(s));
+            TRUNK_MATS.push_back(M);
+        }
+
+        // ---- 2) stabla – više raznovrsnosti u veličini i rasporedu ----
+        const int N_TREES = 14;
+        const float R_MIN_TREE = 12.0f, R_MAX_TREE = 22.0f;// širi krug
+        const float TREE_MIN_S = 0.90f, TREE_MAX_S = 1.85f;// veći raspon skala
+
+        TREE_MATS.reserve(N_TREES);
+        for (int i = 0; i < N_TREES; ++i) {
+            float ang = glm::two_pi<float>() * (float) i / (float) N_TREES + frand(-0.2f, 0.2f);
+            float r = frand(R_MIN_TREE, R_MAX_TREE);
+            glm::vec3 p = campCenter + glm::vec3(std::cos(ang) * r, 0.0f, std::sin(ang) * r);
+
+            float yawDeg = frand(-30.0f, 30.0f);
+            float s = frand(TREE_MIN_S, TREE_MAX_S);
+
+            glm::mat4 M(1.0f);
+            M = glm::translate(M, p);
+            M = glm::rotate(M, glm::radians(yawDeg), glm::vec3(0, 1, 0));
+            M = glm::scale(M, glm::vec3(s));
+            TREE_MATS.push_back(M);
+        }
+
+        // upload + kačenje instance matrica (attrib base = 8)
+        TRUNK_VBOS.reserve(m_deadtrunk->meshes().size());
+        for (auto &msh: m_deadtrunk->meshes()) TRUNK_VBOS.push_back(msh.attach_instance_matrices(TRUNK_MATS, 8));
+
+        TREE_VBOS.reserve(m_tree->meshes().size());
+        for (auto &msh: m_tree->meshes()) TREE_VBOS.push_back(msh.attach_instance_matrices(TREE_MATS, 8));
+    }
+
+    // crtanje instanci (teksture se binduju unutar Mesh::draw_instanced)
+    m_basicShader->set_bool("uInstanced", true);
+    for (auto &msh: m_deadtrunk->meshes()) msh.draw_instanced(m_basicShader, (uint32_t) TRUNK_MATS.size());
+    for (auto &msh: m_tree->meshes()) msh.draw_instanced(m_basicShader, (uint32_t) TREE_MATS.size());
+    m_basicShader->set_bool("uInstanced", false);
 }
 
 void MainController::end_draw() {

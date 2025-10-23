@@ -4,9 +4,16 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
 
+/* Instancing: pomereno na 8–11 da ne kolidira sa Tangent(3)/Bitangent(4) */
+layout (location = 8)  in vec4 aInstRow0;
+layout (location = 9)  in vec4 aInstRow1;
+layout (location = 10) in vec4 aInstRow2;
+layout (location = 11) in vec4 aInstRow3;
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform bool uInstanced = false;
 
 out vec2 TexCoords;
 out vec3 FragPos;
@@ -15,10 +22,15 @@ out vec3 Normal;
 void main()
 {
     TexCoords = aTexCoords;
-    FragPos   = vec3(model * vec4(aPos, 1.0));
-    Normal    = mat3(transpose(inverse(model))) * aNormal;
+
+    mat4 instanceModel = mat4(aInstRow0, aInstRow1, aInstRow2, aInstRow3);
+    mat4 modelM = uInstanced ? instanceModel : model;
+
+    FragPos = vec3(modelM * vec4(aPos, 1.0));
+    Normal  = mat3(transpose(inverse(modelM))) * aNormal;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
+
 
 //#shader fragment
 #version 330 core

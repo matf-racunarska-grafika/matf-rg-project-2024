@@ -32,7 +32,6 @@ class Mesh {
     friend class AssimpSceneProcessor;
 
 public:
-
     /**
     * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
     * @param shader The shader to use for drawing.
@@ -43,6 +42,18 @@ public:
     * @brief Destroys the mesh in the OpenGL context.
     */
     void destroy();
+
+    // === Instancing helpers (GL ostaje u Mesh.cpp) ===
+    // Kači per-instance mat4 na VAO ovog meša i puni VBO prosleđenim matricama.
+    // baseAttribLocation stavljamo na 8 da ne sudari sa Tangent(3)/Bitangent(4).
+    uint32_t attach_instance_matrices(const std::vector<glm::mat4> &instanceModels,
+                                      unsigned baseAttribLocation = 8) const;
+
+    void draw_instanced(const Shader *shader, uint32_t instanceCount) const;
+
+    // (opciono — praktični getteri, neće remetiti ostali kod)
+    uint32_t vao() const { return m_vao; }
+    uint32_t index_count() const { return m_num_indices; }
 
 private:
     /**
@@ -58,6 +69,6 @@ private:
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
 };
-} // namespace engine
+}// namespace engine
 
 #endif//MATF_RG_PROJECT_MESH_HPP
