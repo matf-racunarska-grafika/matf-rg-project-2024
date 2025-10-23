@@ -3,12 +3,21 @@
     "models": {
       "backpack": {
         "path": "backpack/backpack.obj"
+      },
+      "SpookyManor": {
+        "path": "SpookyManor/Manor.obj"
+      },
+      "Street lamp": {
+        "path": "Street lamp/Street lamp.obj"
+      },
+      "Tree": {
+        "path": "Tree 02/Tree.obj"
       }
     }
   },
   "window": {
-    "height": 1200,
-    "title": "Hello, window!",
-    "width": 1600
+    "height": 800,
+    "title": "Forest ambience",
+    "width": 1200
   }
 }
