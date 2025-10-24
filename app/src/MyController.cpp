@@ -59,9 +59,9 @@ void MyController::initialize() {
     for (int i = 0; i < BUILDING_COUNT; i++) {
         glm::vec3 ambient;
         int rotation = i % 3;
-        if (rotation == 0) ambient = glm::vec3(0.6f, 0.0f, 0.0f);
-        else if (rotation == 1) ambient = glm::vec3(0.0f, 0.6f, 0.0f);
-        else ambient = glm::vec3(0.0f, 0.0f, 0.6f);
+        if (rotation == 0) ambient = glm::vec3(1.0f, 0.0f, 0.0f);
+        else if (rotation == 1) ambient = glm::vec3(0.0f, 1.0f, 0.0f);
+        else ambient = glm::vec3(0.0f, 0.0f, 1.0f);
 
         auto lamp_coordinates = glm::vec3(i*5-0.825f,0.185f,0);
         glm::mat4 lamp_matrix = glm::translate(glm::mat4(1.0f), lamp_coordinates);

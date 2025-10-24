@@ -40,7 +40,8 @@ struct PointLight {
     float quadratic;
     float shininess;
 };
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -66,6 +67,7 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), directional_light.shininess);
     vec3 specularDir = spec * directional_light.specular;
     vec3 dirLighting = ambientDir + diffuseDir + specularDir;
+    float min_distance = -1;
 
     // ----- Point Lights -----
     vec3 pointLighting = vec3(0,0,0);
@@ -73,6 +75,9 @@ void main() {
         PointLight point_light = point_lights[i];
         vec3 pointDir = normalize(point_light.position - FragPos);
         float distance = length(point_light.position - FragPos);
+        if(min_distance == -1 || min_distance > distance) {
+            min_distance = distance;
+        }
         float attenuation = 1.0 / (1.0 + point_light.linear * distance + point_light.quadratic * distance * distance);
         vec3 ambientPoint = point_light.ambient;
         float diffPoint = max(dot(norm, pointDir), 0.0);
@@ -86,4 +91,11 @@ void main() {
     vec3 texColor = texture(texture_diffuse1, TexCoords).rgb;
     vec3 lighting = dirLighting + pointLighting;
     FragColor = vec4(texColor * lighting, 1.0);
+
+    // Only output bright fragments and point lights for bloom
+    float brightness = dot(FragColor.rgb, vec3(0.25f));
+    if(min_distance < 0.3f || brightness > 1.0f)
+        BrightColor = vec4(FragColor.rgb, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
