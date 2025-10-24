@@ -6,7 +6,7 @@
 
 #include "GUIController.hpp"
 #include "InstancedModelDrawable.hpp"
-#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
 #include "engine/platform/PlatformController.hpp"
