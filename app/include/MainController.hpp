@@ -10,21 +10,23 @@ class MainController : public engine::core::Controller {
 
     bool loop() override;
 
+    //void poll_events() override;
+
     void draw_manor();
 
     void draw_street_lamp();
 
     void draw_tree();
 
-    void draw_backpack();
+    void draw_floor();
+
+    void draw_skybox();
 
     void update_camera();
 
     void update() override;
 
     void begin_draw() override;
-
-    void draw_skybox();
 
     void draw() override;
 

@@ -1,3 +1,4 @@
+#include "../../engine/libs/glad/include/glad/glad.h"
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -5,7 +6,9 @@
 
 #include <MainController.hpp>
 #include <spdlog/spdlog.h>
+#include <GL/gl.h>
 #include "GuiController.hpp"
+
 
 namespace app {
 
@@ -23,8 +26,8 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void MainController::initialize() {
-    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+    //auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    //platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
 }
 
@@ -37,24 +40,6 @@ bool MainController::loop() {
     return true;
 }
 
-void MainController::draw_backpack() {
-    // Model
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *backpack = resources->model("backpack");
-
-    // Shader
-    engine::resources::Shader *shader = resources->shader("basic");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -3.0f));
-    model = glm::scale(model, glm::vec3(0.3f));
-    shader->set_mat4("model", model);
-    backpack->draw(shader);
-}
 
 void MainController::draw_manor() {
     // Model
@@ -124,6 +109,75 @@ void MainController::draw_tree() {
     }
 }
 
+void MainController::draw_floor() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Texture *texture = resources->texture("floor1");
+
+    engine::resources::Shader *shader = resources->shader("basic");
+    shader->use();
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+
+    // Transform Model Matrix
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, 0.0f)); // Position the texture in the scene
+    shader->set_mat4("model", model);
+
+    // Bind the texture
+    texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
+    shader->set_int("texture1", 0); // Assuming the shader has a uniform 'texture1'
+
+    // Step 3: Set up the quad (texture coordinates included)
+    float quadVertices[] = {
+            // positions        // texture coords
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom-left corner
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // Bottom-right corner
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // Top-right corner
+
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom-left corner
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // Top-right corner
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // Top-left corner
+    };
+
+    // Generate VAO and VBO
+    unsigned int VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    // Texture coordinate attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Bind the texture and draw
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // Cleanup
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+void MainController::draw_skybox() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto skybox = resources->skybox("forest_skybox");
+
+    auto shader = resources->shader("skybox");
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    graphics->draw_skybox(shader, skybox);
+}
+
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (gui_controller->is_enabled()) {
@@ -166,21 +220,12 @@ void MainController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
 }
 
-void MainController::draw_skybox() {
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto skybox = resources->skybox("mountain_skybox");
-
-    auto shader = resources->shader("skybox");
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    graphics->draw_skybox(shader, skybox);
-}
-
 void MainController::draw() {
     // clear buffer (color buffer, depth buffer)
-    //  draw_backpack();
     draw_manor();
     draw_street_lamp();
     draw_tree();
+    draw_floor();
     draw_skybox();
     // swapBuffers
 }
