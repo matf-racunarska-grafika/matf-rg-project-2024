@@ -12,8 +12,23 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 namespace app {
+
+
+class MainPlatformEventObserver : public engine::platform::PlatformEventObserver
+{
+public:
+    void on_mouse_move(engine::platform::MousePosition position) override;
+
+};
+void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    camera->rotate_camera(position.dx,position.dy);
+}
+
 void app::MainController::initialize() {
     spdlog::info("Kontroler inicijalizovan");
+    auto observer = std::make_unique<MainPlatformEventObserver>();
+    engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
 };
 bool MainController::loop() {
     // ReSharper disable once CppRedundantQualifier
@@ -80,6 +95,8 @@ void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
     }
+
+
 
 
 }// namespace app;
