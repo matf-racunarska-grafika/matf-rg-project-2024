@@ -20,6 +20,8 @@ class MainController : public engine::core::Controller {
 
     void draw_floor();
 
+    void draw_grass();
+
     void draw_skybox();
 
     void update_camera();

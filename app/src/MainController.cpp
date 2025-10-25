@@ -26,8 +26,8 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void MainController::initialize() {
-    //auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    //platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
 }
 
@@ -110,28 +110,7 @@ void MainController::draw_tree() {
 }
 
 void MainController::draw_floor() {
-    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Texture *texture = resources->texture("floor1");
-
-    engine::resources::Shader *shader = resources->shader("basic");
-    shader->use();
-
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-
-    // Transform Model Matrix
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -2.5f, 0.0f)); // Position the texture in the scene
-    shader->set_mat4("model", model);
-
-    // Bind the texture
-    texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
-    shader->set_int("texture1", 0); // Assuming the shader has a uniform 'texture1'
-
-    // Step 3: Set up the quad (texture coordinates included)
-    float quadVertices[] = {
+    float floorVertices[] = {
             // positions        // texture coords
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom-left corner
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // Bottom-right corner
@@ -149,7 +128,7 @@ void MainController::draw_floor() {
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
@@ -159,11 +138,107 @@ void MainController::draw_floor() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Texture *texture = resources->texture("floor1");
+
+    engine::resources::Shader *shader = resources->shader("basic1"); // treba floorShader
+    shader->use();
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+
+    // Transform Model Matrix
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -2.5f, 0.0f)); // Position the texture in the scene
+    shader->set_mat4("model", model);
+
+    // Bind the texture
+    texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
+    shader->set_int("texture1", 0); // Assuming the shader has a uniform 'texture1'
+
     // Bind the texture and draw
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     // Cleanup
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+void MainController::draw_grass() {
+    float grassVertices[] = {
+            // positions         // texture Coords          // Normal Coords
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
+            1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.5f, 0.0f, 1.0f, 0.0f
+
+            // texture coords have swapped y coordinates because texture is flipped upside down
+    };
+
+    // transparent vegetation locations
+    std::vector<glm::vec3> vegetation{
+            glm::vec3(-1.5f, -2.0f, -4.48f),
+            glm::vec3(1.5f, -2.0f, 0.51f),
+            glm::vec3(6.0f, -2.0f, 3.7f),
+            glm::vec3(-2.3f, -2.0f, -7.3f),
+            glm::vec3(5.5f, -2.0f, -5.6f),
+            glm::vec3(2.5f, -2.0f, 5.6f),
+            glm::vec3(3.7f, -2.0f, -3.6f),
+            glm::vec3(-1.8f, -2.0f, 2.6f),
+            glm::vec3(-5.0f, -2.0f, -7.6f),
+            glm::vec3(0.0f, -2.0f, 0.0f)
+    };
+
+    // Generate VAO and VBO
+    unsigned int VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(grassVertices), grassVertices, GL_STATIC_DRAW);
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+
+    // Texture coordinate attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    engine::resources::Texture *texture = resources->texture("grass");
+
+    engine::resources::Shader *shader = resources->shader("grassShader");
+    shader->use();
+
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+
+    // Bind the texture
+    texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
+    shader->set_int("grassTexture", 0); // Assuming the shader has a uniform 'texture1'
+
+    for (unsigned int i = 0; i < vegetation.size(); i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, vegetation[i]); // Position the texture in the scene
+        shader->set_mat4("model", model);
+        
+        // Bind the texture and draw
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -226,6 +301,7 @@ void MainController::draw() {
     draw_street_lamp();
     draw_tree();
     draw_floor();
+    draw_grass();
     draw_skybox();
     // swapBuffers
 }
