@@ -17,6 +17,13 @@ public:
     void on_mouse_move(engine::platform::MousePosition position) override;
 };
 
+// Lighting
+glm::vec3 lightPos1(-4.2f, 3.0f, 10.0f);
+glm::vec3 lightPos2(1.65f, 0.0f, -3.2);
+
+// Sphere color
+glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (!gui_controller->is_enabled()) {
@@ -146,6 +153,23 @@ void MainController::initialize() {
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+    // --------------------------------sphere--------------------------------
+    glGenVertexArrays(1, &sphereVAO);
+    glGenBuffers(1, &sphereVBO);
+    glBindVertexArray(sphereVAO);
+
+    sphereVertices = generateSphereVertices(1.0f, 36, 18); // Poluprečnik 1.0, 36 sektora i 18 slojeva
+
+    // Povezivanje VBO-a sa sferom
+    glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
+    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), &sphereVertices[0], GL_STATIC_DRAW);
+
+    // Povezivanje atributa pozicije
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 }
 
 bool MainController::loop() {
@@ -324,6 +348,30 @@ void MainController::draw_light_cube() {
 
 }
 
+void MainController::draw_sphere() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Shader *shader = resources->shader("sphereShader");
+    shader->use();
+    shader->set_vec3("sphereColor", sphereColor);
+
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-3.0f));
+    model = glm::translate(model, lightPos1);
+    model = glm::scale(model, glm::vec3(1.0f)); // a smaller cube
+    shader->set_mat4("model", model);
+
+
+    glBindVertexArray(sphereVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereVertices.size() / 3);
+    glBindVertexArray(0);
+}
+
 void MainController::update_camera() {
     auto gui_controller = engine::core::Controller::get<GUIController>();
     if (gui_controller->is_enabled()) {
@@ -358,6 +406,35 @@ void MainController::update_camera() {
 
 }
 
+// Function for generating sphere vertex
+std::vector<float> MainController::generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks) {
+    std::vector<float> vertices;
+
+    float x, y, z, xy;                          // pozicije verteksa
+    float sectorStep = 2 * M_PI / sectors;      // ugao po longitudinalnoj liniji
+    float stackStep = M_PI / stacks;            // ugao po latitudinalnoj liniji
+    float sectorAngle, stackAngle;
+
+    for (unsigned int i = 0; i <= stacks; ++i) {
+        stackAngle = M_PI / 2 - i * stackStep;        // pocevsi od pi/2 do -pi/2
+        xy = radius * cosf(stackAngle);             // precnik * kosinus od latituda
+        z = radius * sinf(stackAngle);              // precnik * sinus od latituda
+
+        for (unsigned int j = 0; j <= sectors; ++j) {
+            sectorAngle = j * sectorStep;           // longitudinalni ugao
+
+            // pozicije verteksa
+            x = xy * cosf(sectorAngle);             // x = r * cos(u) * cos(v)
+            y = xy * sinf(sectorAngle);             // y = r * cos(u) * sin(v)
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
+        }
+    }
+
+    return vertices;
+}
+
 void MainController::update() {
     update_camera();
 }
@@ -375,6 +452,7 @@ void MainController::draw() {
     draw_grass();
     draw_skybox();
     draw_light_cube();
+    draw_sphere();
     // swapBuffers
 }
 
@@ -387,6 +465,9 @@ void MainController::deinitialize() {
 
     glDeleteVertexArrays(1, &lightCubeVAO);
     glDeleteBuffers(1, &lightCubeVBO);
+
+    glDeleteVertexArrays(1, &sphereVAO);
+    glDeleteBuffers(1, &sphereVBO);
 }
 
 void MainController::end_draw() {

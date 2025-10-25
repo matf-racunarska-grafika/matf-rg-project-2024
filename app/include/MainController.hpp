@@ -26,9 +26,11 @@ class MainController : public engine::core::Controller {
 
     void draw_skybox();
 
+    void draw_light_cube();
+
     std::vector<float> generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks);
 
-    void draw_light_cube();
+    void draw_sphere();
 
     void update_camera();
 
@@ -49,7 +51,9 @@ private:
     unsigned int floorVAO, floorVBO;
     unsigned int grassVAO, grassVBO;
     unsigned int lightCubeVAO, lightCubeVBO;
+    unsigned int sphereVAO, sphereVBO;
 
+    std::vector<float> sphereVertices;
 
 };
 } // app
