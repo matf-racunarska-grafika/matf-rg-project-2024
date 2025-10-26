@@ -19,13 +19,13 @@ public:
 };
 
 // Lighting
-glm::vec3 lightPos1(-4.2f, 20.0f, -35.0f);
+glm::vec3 lightPos1(-4.2f, 25.0f, -45.0f);
 glm::vec3 lightPos2(-4.33f, -0.4f, -3.93);
 glm::vec3 lightPos3(-3.53f, -0.4f, -3.93f);
 
 
 // Lightning colors
-glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+glm::vec3 sphereColor(0.7f, 0.8f, 1.0f);
 glm::vec3 lightCubeColor = glm::vec3(1.0f, 1.0f, 0.0f);
 
 
@@ -178,24 +178,24 @@ void MainController::set_model_lighting(engine::resources::Shader *shader) {
 
     // Light 1 (moon)
     shader->set_vec3("light1.position", lightPos1);
-    shader->set_vec3("light1.ambient", glm::vec3(0.5f));
-    shader->set_vec3("light1.diffuse", glm::vec3(0.5f));
-    shader->set_vec3("light1.specular", glm::vec3(1.0f));
+    shader->set_vec3("light1.ambient", sphereColor * 0.15f);//glm::vec3(0.5f));
+    shader->set_vec3("light1.diffuse", sphereColor * 0.35f);//glm::vec3(0.5f));
+    shader->set_vec3("light1.specular", sphereColor * 0.1f);//glm::vec3(1.0f));
 
     // Light 2 (lamp)
     shader->set_vec3("light2.position", lightPos2);
-    shader->set_vec3("light2.ambient", glm::vec3(0.15f, 0.12f, 0.05f));
-    shader->set_vec3("light2.diffuse", glm::vec3(0.9f, 0.75f, 0.85f));
-    shader->set_vec3("light2.specular", glm::vec3(1.0f, 0.85f, 0.95f));
+    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);//glm::vec3(0.15f, 0.12f, 0.05f));
+    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);//glm::vec3(0.9f, 0.75f, 0.85f));
+    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);//glm::vec3(1.0f, 0.85f, 0.95f));
 
     // Light 2 (lamp)
     shader->set_vec3("light2.position", lightPos3);
-    shader->set_vec3("light2.ambient", glm::vec3(0.15f, 0.12f, 0.05f));
-    shader->set_vec3("light2.diffuse", glm::vec3(0.9f, 0.75f, 0.85f));
-    shader->set_vec3("light2.specular", glm::vec3(1.0f, 0.85f, 0.95f));
+    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);//glm::vec3(0.15f, 0.12f, 0.05f));
+    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);//glm::vec3(0.9f, 0.75f, 0.85f));
+    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);//glm::vec3(1.0f, 0.85f, 0.95f));
 
     // Material
-    shader->set_float("shininess", 64.0f);
+    shader->set_float("shininess", 16.0f);
 }
 
 void MainController::draw_manor() {
@@ -439,11 +439,20 @@ void MainController::update_camera() {
 
     if (platform->key(engine::platform::KeyId::KEY_1)
                 .is_down()) {
-        sphereColor = glm::vec3(1.0f, 1.0f, 1.0f);
+        sphereColor = glm::vec3(0.7f, 0.8f, 1.0f);
     }
     if (platform->key(engine::platform::KeyId::KEY_2)
                 .is_down()) {
-        sphereColor = glm::vec3(0.0f, 0.2f, 0.4f);
+        sphereColor = glm::vec3(0.541f, 0.0118f, 0.0118f);
+    }
+
+    if (platform->key(engine::platform::KeyId::KEY_3)
+                .is_down()) {
+        lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    }
+    if (platform->key(engine::platform::KeyId::KEY_4)
+                .is_down()) {
+        lightCubeColor = glm::vec3(1.0f, 1.0f, 0.0f);
     }
 }
 
