@@ -2,6 +2,7 @@
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 
 #include <engine/core/Controller.hpp>
+#include <engine/resources/Shader.hpp>
 
 namespace app {
 
@@ -20,6 +21,8 @@ class MainController : public engine::core::Controller {
 
     void draw_tree();
 
+    void set_model_lighting(engine::resources::Shader *shader);
+
     void draw_floor();
 
     void draw_grass();
@@ -27,8 +30,6 @@ class MainController : public engine::core::Controller {
     void draw_skybox();
 
     void draw_light_cube();
-
-    std::vector<float> generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks);
 
     void draw_sphere();
 
@@ -42,18 +43,26 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
+private:
+    unsigned int floorVAO, floorVBO;
+    unsigned int grassVAO, grassVBO;
+    unsigned int lightCubeVAO, lightCubeVBO;
+    unsigned int sphereVAO, sphereVBO, sphereEBO;
+    size_t sphereIndexCount;
+
 public:
     std::string_view name() const override {
         return "app::MainController";
     }
 
-private:
-    unsigned int floorVAO, floorVBO;
-    unsigned int grassVAO, grassVBO;
-    unsigned int lightCubeVAO, lightCubeVBO;
-    unsigned int sphereVAO, sphereVBO;
+    struct SphereMesh {
+        std::vector<float> sphereVertices;
+        std::vector<unsigned int> sphereIndices;
+    };
 
-    std::vector<float> sphereVertices;
+    std::vector<float> generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks);
+
+    SphereMesh generateSphereMesh(float radius, unsigned int sectors, unsigned int stacks);
 
 };
 } // app

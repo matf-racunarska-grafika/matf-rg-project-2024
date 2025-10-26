@@ -110,7 +110,7 @@ public:
 
     /**
     * @brief Loads the skybox textures from the `path`.
-    * Make sure that images are named: front.jpg, back.jpg, up.jpg, down.jpg, left.jpg, down.jpg.
+    * Make sure that images are named: back.jpg, front.jpg, up.jpg, down.jpg, left.jpg, down.jpg.
     * They can be of the other extension as well, but the function will assign each texture to the appropriate
     * side of the cubemap based on the texture file name.
     * @param path directory in which cubemap textures are located.

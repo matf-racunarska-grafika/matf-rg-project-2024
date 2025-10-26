@@ -8,6 +8,7 @@
 #include <spdlog/spdlog.h>
 #include <GL/gl.h>
 #include "GuiController.hpp"
+#include "../../engine/libs/glfw/include/GLFW/glfw3.h"
 
 
 namespace app {
@@ -18,18 +19,28 @@ public:
 };
 
 // Lighting
-glm::vec3 lightPos1(-4.2f, 3.0f, 10.0f);
-glm::vec3 lightPos2(1.65f, 0.0f, -3.2);
+glm::vec3 lightPos1(-4.2f, 20.0f, -35.0f);
+glm::vec3 lightPos2(-3.93f, 0.0f, -3.93);
 
-// Sphere color
+// Lightning colors
 glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
+glm::vec3 lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
     auto gui_controller = engine::core::Controller::get<GUIController>();
-    if (!gui_controller->is_enabled()) {
-        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
-        camera->rotate_camera(position.dx, position.dy);
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+    if (gui_controller->is_enabled()) {
+        platform->set_enable_cursor(true);
+        return;
     }
+
+    // tell GLFW to capture our mouse
+    platform->set_enable_cursor(false);
+
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    camera->rotate_camera(position.dx, position.dy, true);
 }
 
 void MainController::initialize() {
@@ -39,14 +50,14 @@ void MainController::initialize() {
 
     // --------------------------------floor--------------------------------
     float floorVertices[] = {
-            // posdjemitions        // texture coords
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom-left corner
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,  // Bottom-right corner
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // Top-right corner
+            // positions              // texture Coords     // Normal Coords
+            15.0f, -2.5f, 15.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -15.0f, -2.5f, 15.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -15.0f, -2.5f, -15.0f, 0.0f, 2.0f, 0.0f, 1.0f, 0.0f,
 
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,  // Bottom-left corner
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,  // Top-right corner
-            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f   // Top-left corner
+            15.0f, -2.5f, 15.0f, 2.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -15.0f, -2.5f, -15.0f, 0.0f, 2.0f, 0.0f, 1.0f, 0.0f,
+            15.0f, -2.5f, -15.0f, 2.0f, 2.0f, 0.0f, 1.0f, 0.0f
     };
 
     // Generate VAO and VBO
@@ -58,13 +69,15 @@ void MainController::initialize() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
 
     // Position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     // Texture coordinate attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     // --------------------------------grass--------------------------------
 
@@ -100,48 +113,47 @@ void MainController::initialize() {
     // --------------------------------lightCube--------------------------------
 
     float lightCubeVertices[] = {
-            // positions          // normals           // texture coords
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
 
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
 
-            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
 
-            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
 
-            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, -0.5f,
 
-            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f
     };
 
     glGenVertexArrays(1, &lightCubeVAO);
@@ -151,25 +163,33 @@ void MainController::initialize() {
     glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     // --------------------------------sphere--------------------------------
+    SphereMesh sphere = generateSphereMesh(1.0f, 36, 18);
+
     glGenVertexArrays(1, &sphereVAO);
     glGenBuffers(1, &sphereVBO);
+    glGenBuffers(1, &sphereEBO);
+
     glBindVertexArray(sphereVAO);
 
-    sphereVertices = generateSphereVertices(1.0f, 36, 18); // Poluprečnik 1.0, 36 sektora i 18 slojeva
-
-    // Povezivanje VBO-a sa sferom
     glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphereVertices.size() * sizeof(float), &sphereVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphere.sphereVertices
+                                        .size() * sizeof(float), &sphere.sphereVertices[0], GL_STATIC_DRAW);
 
-    // Povezivanje atributa pozicije
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.sphereIndices
+                                                .size() * sizeof(unsigned int), &sphere.sphereIndices[0],
+                 GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+    sphereIndexCount = sphere.sphereIndices
+                             .size();
 }
 
 bool MainController::loop() {
@@ -181,6 +201,26 @@ bool MainController::loop() {
     return true;
 }
 
+void MainController::set_model_lighting(engine::resources::Shader *shader) {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    shader->set_vec3("viewPos", graphics->camera()
+                                        ->Position);
+
+    // Light 1 (Cube)
+    shader->set_vec3("light1.position", lightPos1);
+    shader->set_vec3("light1.ambient", glm::vec3(0.2f));
+    shader->set_vec3("light1.diffuse", glm::vec3(0.5f));
+    shader->set_vec3("light1.specular", glm::vec3(1.0f));
+
+    // Light 2 (Pendulum)
+    shader->set_vec3("light2.position", lightPos2);
+    shader->set_vec3("light2.ambient", glm::vec3(0.2f));
+    shader->set_vec3("light2.diffuse", glm::vec3(0.5f));
+    shader->set_vec3("light2.specular", glm::vec3(1.0f));
+
+    // Material
+    shader->set_float("material.shininess", 64.0f);
+}
 
 void MainController::draw_manor() {
     // Model
@@ -189,8 +229,10 @@ void MainController::draw_manor() {
     engine::resources::Model *manor = resources->model("SpookyManor");
 
     // Shader
-    engine::resources::Shader *shader = resources->shader("basic"); // treba modelShader
+    engine::resources::Shader *shader = resources->shader("modelShader");
     shader->use();
+    set_model_lighting(shader);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -208,8 +250,10 @@ void MainController::draw_street_lamp() {
     engine::resources::Model *street_lamp = resources->model("Street lamp");
 
     // Shader
-    engine::resources::Shader *shader = resources->shader("basic"); // treba modelShader
+    engine::resources::Shader *shader = resources->shader("modelShader");
     shader->use();
+    set_model_lighting(shader);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -227,8 +271,10 @@ void MainController::draw_tree() {
     engine::resources::Model *tree = resources->model("Tree");
 
     // Shader
-    engine::resources::Shader *shader = resources->shader("basic"); // treba modelShader
+    engine::resources::Shader *shader = resources->shader("modelShader");
     shader->use();
+    set_model_lighting(shader);
+
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
@@ -237,7 +283,9 @@ void MainController::draw_tree() {
     std::vector<glm::vec3> trees{
             glm::vec3(6.0f, -2.5f, -2.0f),
             glm::vec3(-6.5f, 0.0f, -7.51f),
-            glm::vec3(-10.5f, 0.0f, 5.01f)
+            glm::vec3(-10.5f, 0.0f, 5.01f),
+            glm::vec3(-3.5f, 0.0f, -17.51f),
+            glm::vec3(-0.5f, 0.0f, 11.01f)
     };
 
     glm::mat4 model = glm::mat4(1.0f);
@@ -252,10 +300,11 @@ void MainController::draw_tree() {
 
 void MainController::draw_floor() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    engine::resources::Texture *texture = resources->texture("floor1");
+    engine::resources::Texture *texture = resources->texture("floor");
 
-    engine::resources::Shader *shader = resources->shader("basic1"); // treba floorShader
+    engine::resources::Shader *shader = resources->shader("floorShader");
     shader->use();
+    set_model_lighting(shader);
 
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     shader->set_mat4("projection", graphics->projection_matrix());
@@ -264,7 +313,8 @@ void MainController::draw_floor() {
 
     // Transform Model Matrix
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -2.5f, 0.0f)); // Position the texture in the scene
+    model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0f)); // Position the texture in the scene
+    model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));    // it's a bit too big for our scene, so scale it down
     shader->set_mat4("model", model);
 
     // Bind the texture
@@ -322,6 +372,7 @@ void MainController::draw_skybox() {
     auto skybox = resources->skybox("forest_skybox");
 
     auto shader = resources->shader("skybox");
+    set_model_lighting(shader);
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     graphics->draw_skybox(shader, skybox);
 }
@@ -339,13 +390,14 @@ void MainController::draw_light_cube() {
 
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-3.93f, 0.0, -3.93f));;
+    model = glm::translate(model, lightPos2);
     model = glm::scale(model, glm::vec3(0.15f));
     shader->set_mat4("model", model);
 
+    shader->set_vec3("lightColor", lightCubeColor);
+
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
 }
 
 void MainController::draw_sphere() {
@@ -361,14 +413,14 @@ void MainController::draw_sphere() {
                                      ->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-3.0f));
+    //model = glm::translate(model, glm::vec3(-3.0f));
     model = glm::translate(model, lightPos1);
-    model = glm::scale(model, glm::vec3(1.0f)); // a smaller cube
+    model = glm::scale(model, glm::vec3(5.0f)); // a smaller cube
     shader->set_mat4("model", model);
 
 
     glBindVertexArray(sphereVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, sphereVertices.size() / 3);
+    glDrawElements(GL_TRIANGLES, sphereIndexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
@@ -404,36 +456,72 @@ void MainController::update_camera() {
         camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
     }
 
+
+    if (platform->key(engine::platform::KeyId::KEY_1)
+                .is_down()) {
+        sphereColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    }
+    if (platform->key(engine::platform::KeyId::KEY_2)
+                .is_down()) {
+        sphereColor = glm::vec3(0.0f, 0.2f, 0.4f);
+    }
 }
 
-// Function for generating sphere vertex
-std::vector<float> MainController::generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks) {
-    std::vector<float> vertices;
+MainController::SphereMesh MainController::generateSphereMesh(float radius, unsigned int sectors, unsigned int stacks) {
+    SphereMesh mesh;
 
-    float x, y, z, xy;                          // pozicije verteksa
-    float sectorStep = 2 * M_PI / sectors;      // ugao po longitudinalnoj liniji
-    float stackStep = M_PI / stacks;            // ugao po latitudinalnoj liniji
+    float x, y, z, xy;
+    float sectorStep = 2 * M_PI / sectors;
+    float stackStep = M_PI / stacks;
     float sectorAngle, stackAngle;
 
     for (unsigned int i = 0; i <= stacks; ++i) {
-        stackAngle = M_PI / 2 - i * stackStep;        // pocevsi od pi/2 do -pi/2
-        xy = radius * cosf(stackAngle);             // precnik * kosinus od latituda
-        z = radius * sinf(stackAngle);              // precnik * sinus od latituda
+        stackAngle = M_PI / 2 - i * stackStep;
+        xy = radius * cosf(stackAngle);
+        z = radius * sinf(stackAngle);
 
         for (unsigned int j = 0; j <= sectors; ++j) {
-            sectorAngle = j * sectorStep;           // longitudinalni ugao
+            sectorAngle = j * sectorStep;
 
-            // pozicije verteksa
-            x = xy * cosf(sectorAngle);             // x = r * cos(u) * cos(v)
-            y = xy * sinf(sectorAngle);             // y = r * cos(u) * sin(v)
-            vertices.push_back(x);
-            vertices.push_back(y);
-            vertices.push_back(z);
+            x = xy * cosf(sectorAngle);
+            y = xy * sinf(sectorAngle);
+            mesh.sphereVertices
+                .push_back(x);
+            mesh.sphereVertices
+                .push_back(y);
+            mesh.sphereVertices
+                .push_back(z);
         }
     }
 
-    return vertices;
+    // GENERISANJE INDEKSA
+    for (unsigned int i = 0; i < stacks; ++i) {
+        unsigned int k1 = i * (sectors + 1);
+        unsigned int k2 = k1 + sectors + 1;
+
+        for (unsigned int j = 0; j < sectors; ++j, ++k1, ++k2) {
+            if (i != 0) {
+                mesh.sphereIndices
+                    .push_back(k1);
+                mesh.sphereIndices
+                    .push_back(k2);
+                mesh.sphereIndices
+                    .push_back(k1 + 1);
+            }
+            if (i != (stacks - 1)) {
+                mesh.sphereIndices
+                    .push_back(k1 + 1);
+                mesh.sphereIndices
+                    .push_back(k2);
+                mesh.sphereIndices
+                    .push_back(k2 + 1);
+            }
+        }
+    }
+
+    return mesh;
 }
+
 
 void MainController::update() {
     update_camera();

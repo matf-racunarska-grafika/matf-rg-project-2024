@@ -52,7 +52,7 @@ public:
     *
     * Other params, except name, are optional. If not provided the function will search for a skybox
     * in the: "resources/skyboxes".
-    * Images for the sides of the skybox cube should be named: left.jpg, right.jpg, top.jpg, bottom.jpg, front.jpg, back.jpg (any supported image extension).
+    * Images for the sides of the skybox cube should be named: left.jpg, right.jpg, top.jpg, bottom.jpg, back.jpg, front.jpg (any supported image extension).
     * @param name of the skybox directory that contains 6 images for each side of the cube.
     * @param path form which to load the texture.
     * @param flip_uvs flip the uvs on load if set to true
