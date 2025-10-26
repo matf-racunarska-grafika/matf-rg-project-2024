@@ -178,9 +178,9 @@ void MainController::set_model_lighting(engine::resources::Shader *shader) {
 
     // Light 1 (moon)
     shader->set_vec3("light1.position", lightPos1);
-    shader->set_vec3("light1.ambient", sphereColor * 0.15f);//glm::vec3(0.5f));
-    shader->set_vec3("light1.diffuse", sphereColor * 0.35f);//glm::vec3(0.5f));
-    shader->set_vec3("light1.specular", sphereColor * 0.1f);//glm::vec3(1.0f));
+    shader->set_vec3("light1.ambient", sphereColor * 0.25f);//glm::vec3(0.5f));
+    shader->set_vec3("light1.diffuse", sphereColor * 0.45f);//glm::vec3(0.5f));
+    shader->set_vec3("light1.specular", sphereColor * 0.2f);//glm::vec3(1.0f));
 
     // Light 2 (lamp)
     shader->set_vec3("light2.position", lightPos2);
@@ -448,11 +448,11 @@ void MainController::update_camera() {
 
     if (platform->key(engine::platform::KeyId::KEY_3)
                 .is_down()) {
-        lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+        lightCubeColor = glm::vec3(1.0f, 1.0f, 0.0f);
     }
     if (platform->key(engine::platform::KeyId::KEY_4)
                 .is_down()) {
-        lightCubeColor = glm::vec3(1.0f, 1.0f, 0.0f);
+        lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
     }
 }
 
