@@ -1,0 +1,23 @@
+
+This is a polygon model of Street Lamp and Post  with PBR compatible materials.
+Available in three different formats.
+Autodesk Maya 2016 .mb,  FBX and OBJ.
+Software used: Autodesk Maya 2016, Zbrush and Substance Painter. 
+Texture Maps: Base Color, Normal, Metallic, Roughness and Emissive. (Total nine JPG images)
+Poly Count  :15790
+ 
+Tri Count     :31530
+ 
+Vertex Count  :15951
+ 
+Renderer      :mayaHardware2
+ Maya Version  :2016
+
+
+Real World Scale.
+
+Units Used:cm
+ Model Size:Length: 227.41, Width:87.38, Height:588.64
+
+
+.................................................................

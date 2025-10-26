@@ -1,0 +1,24 @@
+# --- Metalni stub ---
+newmtl StingrayPBS1SG
+illum 4
+Kd 1.000 1.000 1.000
+Ka 1.000 1.000 1.000
+Ks 0.500 0.500 0.500
+Ns 96.0
+map_Kd textures/post_base_color.png
+map_Ks textures/post_metallic.png
+map_Bump textures/post_normal.png
+map_Pr textures/post_roughness.png
+
+# --- Glava lampe ---
+newmtl StingrayPBS2SG
+illum 4
+Kd 1.000 1.000 1.000
+Ka 1.000 1.000 1.000
+Ks 0.500 0.500 0.500
+Ns 96.0
+map_Kd textures/lamp_base_color.png
+map_Ks textures/lamp_metallic.png
+map_Bump textures/lamp_normal.png
+map_Pr textures/lamp_roughness.png
+map_Ke textures/lamp_emissive.png
