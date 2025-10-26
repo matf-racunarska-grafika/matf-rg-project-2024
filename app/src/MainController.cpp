@@ -20,11 +20,13 @@ public:
 
 // Lighting
 glm::vec3 lightPos1(-4.2f, 20.0f, -35.0f);
-glm::vec3 lightPos2(-3.93f, 0.0f, -3.93);
+glm::vec3 lightPos2(-4.33f, -0.4f, -3.93);
+glm::vec3 lightPos3(-3.53f, -0.4f, -3.93f);
+
 
 // Lightning colors
 glm::vec3 sphereColor(1.0f, 1.0f, 1.0f);
-glm::vec3 lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 lightCubeColor = glm::vec3(1.0f, 1.0f, 0.0f);
 
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
@@ -111,60 +113,29 @@ void MainController::initialize() {
     glBindVertexArray(0);
 
     // --------------------------------lightCube--------------------------------
-
-    float lightCubeVertices[] = {
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, -0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-
-            -0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, -0.5f,
-            0.5f, -0.5f, 0.5f,
-            0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, 0.5f,
-            -0.5f, -0.5f, -0.5f,
-
-            -0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, -0.5f,
-            0.5f, 0.5f, 0.5f,
-            0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, 0.5f,
-            -0.5f, 0.5f, -0.5f
-    };
+    SphereMesh lightCube = generateSphereMesh(1.0f, 36, 18);
 
     glGenVertexArrays(1, &lightCubeVAO);
     glGenBuffers(1, &lightCubeVBO);
+    glGenBuffers(1, &lightCubeEBO);
 
     glBindVertexArray(lightCubeVAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(lightCubeVertices), lightCubeVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, lightCube.vertices
+                                           .size() * sizeof(float), &lightCube.vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, lightCubeEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, lightCube.indices
+                                                   .size() * sizeof(unsigned int), &lightCube.indices[0],
+                 GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    lightCubeIndexCount = lightCube.indices
+                                   .size();
 
     // --------------------------------sphere--------------------------------
     SphereMesh sphere = generateSphereMesh(1.0f, 36, 18);
@@ -176,19 +147,18 @@ void MainController::initialize() {
     glBindVertexArray(sphereVAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, sphereVBO);
-    glBufferData(GL_ARRAY_BUFFER, sphere.sphereVertices
-                                        .size() * sizeof(float), &sphere.sphereVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sphere.vertices
+                                        .size() * sizeof(float), &sphere.vertices[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphereEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.sphereIndices
-                                                .size() * sizeof(unsigned int), &sphere.sphereIndices[0],
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sphere.indices
+                                                .size() * sizeof(unsigned int), &sphere.indices[0], GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
-    sphereIndexCount = sphere.sphereIndices
+    sphereIndexCount = sphere.indices
                              .size();
 }
 
@@ -206,20 +176,26 @@ void MainController::set_model_lighting(engine::resources::Shader *shader) {
     shader->set_vec3("viewPos", graphics->camera()
                                         ->Position);
 
-    // Light 1 (Cube)
+    // Light 1 (moon)
     shader->set_vec3("light1.position", lightPos1);
-    shader->set_vec3("light1.ambient", glm::vec3(0.2f));
+    shader->set_vec3("light1.ambient", glm::vec3(0.5f));
     shader->set_vec3("light1.diffuse", glm::vec3(0.5f));
     shader->set_vec3("light1.specular", glm::vec3(1.0f));
 
-    // Light 2 (Pendulum)
+    // Light 2 (lamp)
     shader->set_vec3("light2.position", lightPos2);
-    shader->set_vec3("light2.ambient", glm::vec3(0.2f));
-    shader->set_vec3("light2.diffuse", glm::vec3(0.5f));
-    shader->set_vec3("light2.specular", glm::vec3(1.0f));
+    shader->set_vec3("light2.ambient", glm::vec3(0.15f, 0.12f, 0.05f));
+    shader->set_vec3("light2.diffuse", glm::vec3(0.9f, 0.75f, 0.85f));
+    shader->set_vec3("light2.specular", glm::vec3(1.0f, 0.85f, 0.95f));
+
+    // Light 2 (lamp)
+    shader->set_vec3("light2.position", lightPos3);
+    shader->set_vec3("light2.ambient", glm::vec3(0.15f, 0.12f, 0.05f));
+    shader->set_vec3("light2.diffuse", glm::vec3(0.9f, 0.75f, 0.85f));
+    shader->set_vec3("light2.specular", glm::vec3(1.0f, 0.85f, 0.95f));
 
     // Material
-    shader->set_float("material.shininess", 64.0f);
+    shader->set_float("shininess", 64.0f);
 }
 
 void MainController::draw_manor() {
@@ -237,7 +213,7 @@ void MainController::draw_manor() {
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-7.0f, -2.3f, -10.0f));
+    model = glm::translate(model, glm::vec3(-7.0f, -2.5f, -10.0f));
     model = glm::scale(model, glm::vec3(4.0f));
     shader->set_mat4("model", model);
     manor->draw(shader);
@@ -247,7 +223,7 @@ void MainController::draw_street_lamp() {
     // Model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    engine::resources::Model *street_lamp = resources->model("Street lamp");
+    engine::resources::Model *street_lamp = resources->model("StreetLamp");
 
     // Shader
     engine::resources::Shader *shader = resources->shader("modelShader");
@@ -258,8 +234,8 @@ void MainController::draw_street_lamp() {
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-3.93f));
-    model = glm::scale(model, glm::vec3(0.2f));
+    model = glm::translate(model, glm::vec3(-3.93, -2.5f, -3.93));
+    model = glm::scale(model, glm::vec3(0.0045f));
     shader->set_mat4("model", model);
     street_lamp->draw(shader);
 }
@@ -383,21 +359,27 @@ void MainController::draw_light_cube() {
 
     engine::resources::Shader *shader = resources->shader("lightCubeShader");
     shader->use();
+    shader->set_vec3("lightCubeColor", lightCubeColor);
 
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
 
+    std::vector<glm::vec3> lightPos;
+    lightPos.push_back(lightPos2);
+    lightPos.push_back(lightPos3);
+    for (int i = 0; i < lightPos.size(); i++) {
+        glm::mat4 model = glm::mat4(1.0f);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, lightPos2);
-    model = glm::scale(model, glm::vec3(0.15f));
-    shader->set_mat4("model", model);
+        model = glm::translate(model, lightPos[i]);
+        model = glm::scale(model, glm::vec3(0.05f));
+        shader->set_mat4("model", model);
 
-    shader->set_vec3("lightColor", lightCubeColor);
 
-    glBindVertexArray(lightCubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(lightCubeVAO);
+        glDrawElements(GL_TRIANGLES, lightCubeIndexCount, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
 }
 
 void MainController::draw_sphere() {
@@ -413,7 +395,6 @@ void MainController::draw_sphere() {
                                      ->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0f);
-    //model = glm::translate(model, glm::vec3(-3.0f));
     model = glm::translate(model, lightPos1);
     model = glm::scale(model, glm::vec3(5.0f)); // a smaller cube
     shader->set_mat4("model", model);
@@ -456,7 +437,6 @@ void MainController::update_camera() {
         camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
     }
 
-
     if (platform->key(engine::platform::KeyId::KEY_1)
                 .is_down()) {
         sphereColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -485,11 +465,11 @@ MainController::SphereMesh MainController::generateSphereMesh(float radius, unsi
 
             x = xy * cosf(sectorAngle);
             y = xy * sinf(sectorAngle);
-            mesh.sphereVertices
+            mesh.vertices
                 .push_back(x);
-            mesh.sphereVertices
+            mesh.vertices
                 .push_back(y);
-            mesh.sphereVertices
+            mesh.vertices
                 .push_back(z);
         }
     }
@@ -501,27 +481,25 @@ MainController::SphereMesh MainController::generateSphereMesh(float radius, unsi
 
         for (unsigned int j = 0; j < sectors; ++j, ++k1, ++k2) {
             if (i != 0) {
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k1);
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k2);
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k1 + 1);
             }
             if (i != (stacks - 1)) {
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k1 + 1);
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k2);
-                mesh.sphereIndices
+                mesh.indices
                     .push_back(k2 + 1);
             }
         }
     }
-
     return mesh;
 }
-
 
 void MainController::update() {
     update_camera();
@@ -561,6 +539,8 @@ void MainController::deinitialize() {
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
+
+    //deinitialize();
 }
 
 } // app

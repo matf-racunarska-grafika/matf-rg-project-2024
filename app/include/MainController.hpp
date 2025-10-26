@@ -46,9 +46,9 @@ class MainController : public engine::core::Controller {
 private:
     unsigned int floorVAO, floorVBO;
     unsigned int grassVAO, grassVBO;
-    unsigned int lightCubeVAO, lightCubeVBO;
+    unsigned int lightCubeVAO, lightCubeVBO, lightCubeEBO;
     unsigned int sphereVAO, sphereVBO, sphereEBO;
-    size_t sphereIndexCount;
+    size_t sphereIndexCount, lightCubeIndexCount;
 
 public:
     std::string_view name() const override {
@@ -56,8 +56,8 @@ public:
     }
 
     struct SphereMesh {
-        std::vector<float> sphereVertices;
-        std::vector<unsigned int> sphereIndices;
+        std::vector<float> vertices;
+        std::vector<unsigned int> indices;
     };
 
     std::vector<float> generateSphereVertices(float radius, unsigned int sectors, unsigned int stacks);

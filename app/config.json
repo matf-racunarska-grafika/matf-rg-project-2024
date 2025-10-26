@@ -1,14 +1,11 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path": "backpack/backpack.obj"
-      },
       "SpookyManor": {
         "path": "SpookyManor/Manor.obj"
       },
-      "Street lamp": {
-        "path": "Street lamp/Street lamp.obj"
+      "StreetLamp": {
+        "path": "StreetLamp/street_lamp_obj.obj"
       },
       "Tree": {
         "path": "Tree 02/Tree.obj"

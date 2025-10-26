@@ -23,15 +23,8 @@ void main() {
 #version 330 core
 out vec4 FragColor;
 
-struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
-    float shininess;
-};
-
 struct Light {
     vec3 position;
-
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -42,24 +35,38 @@ in vec3 Normal;
 in vec3 FragPos;
 
 uniform vec3 viewPos;
-uniform Material material;
-// uniform Light light;
+
+uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
+uniform float shininess;
+
 uniform Light light1;   // Cube source of light
 uniform Light light2;   // Pendulum source of light
 
 vec3 CalculateLight(Light light, vec3 normal, vec3 viewDir, vec3 fragPos, vec2 texCoords) {
+    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+
+    // Read textures directly from the engine uniform
+    vec3 diffuseColor = texture(texture_diffuse1, texCoords).rgb;
+    vec3 specularColor = texture(texture_specular1, texCoords).rgb;
+
+    //    // If model doesn't have a texture, use white as a fallback
+    if (length(diffuseColor) < 0.001)
+    diffuseColor = vec3(1.0);
+    if (length(specularColor) < 0.001)
+    specularColor = vec3(0.2);
+
     // ambient
-    vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
+    vec3 ambient = light.ambient * diffuseColor;
 
     // diffuse
-    vec3 lightDir = normalize(light.position - fragPos);
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+    vec3 diffuse = light.diffuse * diff * diffuseColor;
 
     // specular
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = light.specular * spec * specularColor;
 
     return ambient + diffuse + specular;
 }

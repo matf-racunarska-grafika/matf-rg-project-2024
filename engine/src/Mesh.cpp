@@ -61,6 +61,10 @@ void Mesh::draw(const Shader *shader) {
     glBindVertexArray(m_vao);
     glDrawElements(GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
+
+    // 🔽 DODAJ OVO:
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Mesh::destroy() {
