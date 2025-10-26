@@ -15,6 +15,7 @@ class MainController: public engine::core::Controller {
     void update_camera();
     void update() override;
     void draw() override;
+    void draw_skybox();
     void end_draw() override;
 
 public:
@@ -22,7 +23,6 @@ public:
         return "app::MainController";
     }
 
-};
 
 }
 #endif//MATF_RG_PROJECT_MAINCONTROLLER_HPP
