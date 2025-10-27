@@ -9,11 +9,7 @@ namespace app {
 class MainController : public engine::core::Controller {
     void initialize() override;
 
-    void deinitialize();
-
     bool loop() override;
-
-    //void poll_events() override;
 
     void draw_manor();
 
@@ -43,12 +39,18 @@ class MainController : public engine::core::Controller {
 
     void end_draw() override;
 
+    void terminate() override;
+
 private:
     unsigned int floorVAO, floorVBO;
     unsigned int grassVAO, grassVBO;
     unsigned int lightCubeVAO, lightCubeVBO, lightCubeEBO;
     unsigned int sphereVAO, sphereVBO, sphereEBO;
     size_t sphereIndexCount, lightCubeIndexCount;
+
+    unsigned int treeInstanceVBO = 0;
+    unsigned int treeAmount = 100;
+    std::vector<glm::mat4> treeModelMatrices;
 
 public:
     std::string_view name() const override {

@@ -31,6 +31,19 @@ public:
     void destroy();
 
     /**
+    * @brief Draws the model using a given shader with instancing.
+    * @param shader The shader to use for drawing.
+    * @param amount The number of instances to draw.
+    */
+    void draw_instanced(const Shader *shader, GLsizei amount);
+
+    /**
+    * @brief Adds a VBO containing instance-specific data to all meshes in the model.
+    * @param buffer_id The ID of the VBO containing the instance data.
+    */
+    void add_instance_vbo(uint32_t buffer_id);
+
+    /**
     * @brief Returns the meshes in the model.
     * @returns The meshes in the model.
     */

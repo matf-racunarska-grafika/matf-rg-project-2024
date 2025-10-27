@@ -18,7 +18,7 @@ public:
     void on_mouse_move(engine::platform::MousePosition position) override;
 };
 
-// Lighting
+// Lighting (moon + 2 light cubes)
 glm::vec3 lightPos1(-4.2f, 25.0f, -45.0f);
 glm::vec3 lightPos2(-4.33f, -0.4f, -3.93);
 glm::vec3 lightPos3(-3.53f, -0.4f, -3.93f);
@@ -46,6 +46,7 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void MainController::initialize() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
     engine::graphics::OpenGL::enable_depth_testing();
@@ -160,6 +161,78 @@ void MainController::initialize() {
     glBindVertexArray(0);
     sphereIndexCount = sphere.indices
                              .size();
+
+    // --------------------------------trees--------------------------------
+    const float area_radius = 65.0f;     // Trees have to be in <75.0f area (floor area)
+    const float y_level = -2.5f;         // Height of the floor
+
+    // Restricted area (because of the Manor and StreetLamp objects)
+    struct ForbiddenZone {
+        glm::vec3 center;
+        float radius;
+    };
+
+    std::vector<ForbiddenZone> noTreeZones = {
+            // Coordinates of the Manor
+            {glm::vec3(-7.0f, y_level, -10.0f),  8.0f},
+            // Coordinates of the Street Lamp
+            {glm::vec3(-3.93f, y_level, -3.93f), 4.0f},
+    };
+
+    // Matrix
+    treeModelMatrices.resize(treeAmount);
+    srand(time(NULL));
+    float angle_step = 360.0f / (float) treeAmount; // For even distribution of trees
+
+    unsigned int matrices_generated = 0;
+    while (matrices_generated < treeAmount) {
+        glm::mat4 model = glm::mat4(1.0f);
+
+        // Generating random position withing the circle (floor height included)
+        float random_angle = (rand() % 360) * 3.14159f / 180.0f;
+        float random_radius = (rand() % (int) (area_radius * 100)) / 100.0f; // 0 to area_radius
+
+        float x = cos(random_angle) * random_radius;
+        float z = sin(random_angle) * random_radius;
+
+        glm::vec3 potential_pos(x, y_level, z);
+
+        // Checking collision between tree and other objects
+        bool collision = false;
+        for (const auto &zone: noTreeZones) {
+            if (glm::distance(potential_pos, zone.center) < zone.radius) {
+                collision = true;
+                break;
+            }
+        }
+
+        // If there is a collision, generate a new position
+        if (collision) { continue; }
+
+        // Translate (if there's no collision)
+        model = glm::translate(model, potential_pos);
+
+        // Have a random scale of the tree, between 0.8 and 1.2
+        float scale = (rand() % 40) / 100.0f + 0.8f; // od 0.8 do 1.2
+        model = glm::scale(model, glm::vec3(scale));
+
+        // Have a random rotation around Y axis
+        float rotAngle = (rand() % 360);
+        model = glm::rotate(model, glm::radians(rotAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        // Add generated matrix and continue
+        treeModelMatrices[matrices_generated++] = model;
+    }
+
+    // VBO SETUP for matrix instancing
+    glGenBuffers(1, &treeInstanceVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, treeInstanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, treeAmount * sizeof(glm::mat4), &treeModelMatrices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // Adding VBO-a to the model
+    engine::resources::Model *tree = resources->model("Tree");
+    tree->add_instance_vbo(treeInstanceVBO);
 }
 
 bool MainController::loop() {
@@ -178,21 +251,21 @@ void MainController::set_model_lighting(engine::resources::Shader *shader) {
 
     // Light 1 (moon)
     shader->set_vec3("light1.position", lightPos1);
-    shader->set_vec3("light1.ambient", sphereColor * 0.25f);//glm::vec3(0.5f));
-    shader->set_vec3("light1.diffuse", sphereColor * 0.45f);//glm::vec3(0.5f));
-    shader->set_vec3("light1.specular", sphereColor * 0.2f);//glm::vec3(1.0f));
+    shader->set_vec3("light1.ambient", sphereColor * 0.25f);
+    shader->set_vec3("light1.diffuse", sphereColor * 0.45f);
+    shader->set_vec3("light1.specular", sphereColor * 0.2f);
 
     // Light 2 (lamp)
     shader->set_vec3("light2.position", lightPos2);
-    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);//glm::vec3(0.15f, 0.12f, 0.05f));
-    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);//glm::vec3(0.9f, 0.75f, 0.85f));
-    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);//glm::vec3(1.0f, 0.85f, 0.95f));
+    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);
+    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);
+    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);
 
-    // Light 2 (lamp)
+    // Light 3 (lamp)
     shader->set_vec3("light2.position", lightPos3);
-    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);//glm::vec3(0.15f, 0.12f, 0.05f));
-    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);//glm::vec3(0.9f, 0.75f, 0.85f));
-    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);//glm::vec3(1.0f, 0.85f, 0.95f));
+    shader->set_vec3("light2.ambient", lightCubeColor * 0.05f);
+    shader->set_vec3("light2.diffuse", lightCubeColor * 0.13f);
+    shader->set_vec3("light2.specular", lightCubeColor * 0.04f);
 
     // Material
     shader->set_float("shininess", 16.0f);
@@ -241,13 +314,11 @@ void MainController::draw_street_lamp() {
 }
 
 void MainController::draw_tree() {
-    // Model
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     engine::resources::Model *tree = resources->model("Tree");
 
-    // Shader
-    engine::resources::Shader *shader = resources->shader("modelShader");
+    engine::resources::Shader *shader = resources->shader("treeShader");
     shader->use();
     set_model_lighting(shader);
 
@@ -255,23 +326,7 @@ void MainController::draw_tree() {
     shader->set_mat4("view", graphics->camera()
                                      ->view_matrix());
 
-    // Tree locations
-    std::vector<glm::vec3> trees{
-            glm::vec3(6.0f, -2.5f, -2.0f),
-            glm::vec3(-6.5f, 0.0f, -7.51f),
-            glm::vec3(-10.5f, 0.0f, 5.01f),
-            glm::vec3(-3.5f, 0.0f, -17.51f),
-            glm::vec3(-0.5f, 0.0f, 11.01f)
-    };
-
-    glm::mat4 model = glm::mat4(1.0f);
-    for (int i = 0; i < trees.size(); i++) {
-        model = glm::translate(model, trees[i]); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));    // it's a bit too big for our scene, so scale it down
-
-        shader->set_mat4("model", model);
-        tree->draw(shader);
-    }
+    tree->draw_instanced(shader, treeAmount);
 }
 
 void MainController::draw_floor() {
@@ -290,12 +345,12 @@ void MainController::draw_floor() {
     // Transform Model Matrix
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 10.0f, 0.0f)); // Position the texture in the scene
-    model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));    // it's a bit too big for our scene, so scale it down
+    model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
     shader->set_mat4("model", model);
 
     // Bind the texture
     texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
-    shader->set_int("texture1", 0); // Assuming the shader has a uniform 'texture1'
+    shader->set_int("texture1", 0); // shader has a uniform 'texture1'
 
     // Bind the texture and draw
     glBindVertexArray(floorVAO);
@@ -317,7 +372,7 @@ void MainController::draw_grass() {
 
     // Bind the texture
     texture->bind(GL_TEXTURE0); // Binds texture to GL_TEXTURE0
-    shader->set_int("grassTexture", 0); // Assuming the shader has a uniform 'texture1'
+    shader->set_int("grassTexture", 0);
 
     std::vector<glm::vec3> vegetation{
             glm::vec3(-1.5f, -2.0f, -4.48f),
@@ -454,6 +509,10 @@ void MainController::update_camera() {
                 .is_down()) {
         lightCubeColor = glm::vec3(1.0f, 1.0f, 1.0f);
     }
+    if (platform->key(engine::platform::KeyId::KEY_5)
+                .is_down()) {
+        lightCubeColor = glm::vec3(0.0f, 0.0f, 0.0f);
+    }
 }
 
 MainController::SphereMesh MainController::generateSphereMesh(float radius, unsigned int sectors, unsigned int stacks) {
@@ -483,7 +542,7 @@ MainController::SphereMesh MainController::generateSphereMesh(float radius, unsi
         }
     }
 
-    // GENERISANJE INDEKSA
+    // Generating the indices
     for (unsigned int i = 0; i < stacks; ++i) {
         unsigned int k1 = i * (sectors + 1);
         unsigned int k2 = k1 + sectors + 1;
@@ -531,7 +590,14 @@ void MainController::draw() {
     // swapBuffers
 }
 
-void MainController::deinitialize() {
+void MainController::terminate() {
+    engine::core::Controller::get<engine::resources::ResourcesController>()->model("Tree")
+                                                                           ->destroy();
+    engine::core::Controller::get<engine::resources::ResourcesController>()->model("StreetLamp")
+                                                                           ->destroy();
+    engine::core::Controller::get<engine::resources::ResourcesController>()->model("SpookyManor")
+                                                                           ->destroy();
+
     glDeleteVertexArrays(1, &floorVAO);
     glDeleteBuffers(1, &floorVBO);
 
@@ -543,13 +609,15 @@ void MainController::deinitialize() {
 
     glDeleteVertexArrays(1, &sphereVAO);
     glDeleteBuffers(1, &sphereVBO);
+
+    if (treeInstanceVBO != 0) {
+        glDeleteBuffers(1, &treeInstanceVBO);
+    }
 }
 
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
-
-    //deinitialize();
 }
 
 } // app

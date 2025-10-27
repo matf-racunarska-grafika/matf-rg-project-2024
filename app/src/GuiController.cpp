@@ -25,16 +25,22 @@ void GUIController::draw() {
     ImGui::Text("Welcome to the 'Forest ambience' tutorial!");
     ImGui::Text("Press F2 to toggle the GUI.\n");
     ImGui::Separator();
-    ImGui::Text("\nTo navigate through the scene, use the WASD or Arrows keys.");
+
+    ImGui::Text("\t\tNAVIGATING THE SCENE");
+    ImGui::Text("To navigate through the scene, use the WASD or Arrows keys.\n");
     ImGui::Text("To rotate through the scene, use the mouse.\n");
     ImGui::Separator();
+
+    ImGui::Text("\t\tCHANGING LIGHTING");
     ImGui::Text(
-            "\nTo change lighting of the moon, press 1 to put it in the base color (white), and 2 to put it in the red color (bright red).\n");
-    ImGui::Separator();
+            "To change lighting of the moon, press 1 to put it in the base color (white), and 2 to put it in the blood moon (bright red).\n");
     ImGui::Text(
-            "To change the lighting of the street lamp light bulbs, press 3 to put them in the base warm color (yellow), and 4 to put them in the LED white color (white).\n");
+            "To change the lighting of the street lamp light bulbs, press 3 to put them in the base warm yellow color, press4 to put them in the LED white color,\n"
+            "and press 5 to completely turn off the lights.\n");
     ImGui::Separator();
-    ImGui::Text("\nPress ESC to exit the application.\n");
+
+    ImGui::Text("\t\tOTHER");
+    ImGui::Text("Press ESC to exit the application.\n");
     //ImGui::Text("Camera position: (%f, %f, %f)", camera->Position.x, camera->Position.y, camera->Position.z);
 
     ImGui::End();
