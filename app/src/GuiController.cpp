@@ -33,8 +33,8 @@ void GUIController::draw() {
     ImGui::Separator();
     ImGui::Text(
             "To change the lighting of the street lamp light bulbs, press 3 to put them in the base warm color (yellow), and 4 to put them in the LED white color (white).\n");
-
-    ImGui::
+    ImGui::Separator();
+    ImGui::Text("\nPress ESC to exit the application.\n");
     //ImGui::Text("Camera position: (%f, %f, %f)", camera->Position.x, camera->Position.y, camera->Position.z);
 
     ImGui::End();
