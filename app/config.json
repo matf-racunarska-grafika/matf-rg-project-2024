@@ -2,7 +2,7 @@
   "resources": {
     "models": {
       "tree": {
-        "path": "tree/tree.obj",
+        "path": "tree/Low_Poly_Fir.obj",
         "flip_uvs": false
       },
       "tent": {

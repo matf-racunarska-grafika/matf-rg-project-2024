@@ -1,6 +1,6 @@
 # Blender v2.92.0 OBJ File: 'Stone 1.blend'
 # www.blender.org
-mtllib Stone.mtl
+mtllib stone.mtl
 o Cube_Cube.002
 v -0.439453 1.305393 -0.559527
 v -0.535888 0.704874 -1.155373
