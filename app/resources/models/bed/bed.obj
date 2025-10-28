@@ -1,6 +1,31 @@
 # Blender v2.78 (sub 0) OBJ File: 'bed.blend'
 # www.blender.org
-mtllib bed.mtl
+mtllib bed.mtl# Blender MTL File: 'bed.blend'
+# Material Count: 2
+# FIXED VERSION - Both materials use bed_d.png
+
+newmtl Material
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd bed_d.png
+
+newmtl Material_NONE
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd bed_d.png
+
 o Cube.004_Cube.007
 v -0.063432 0.638807 -2.163711
 v -0.598734 0.638807 -2.104642

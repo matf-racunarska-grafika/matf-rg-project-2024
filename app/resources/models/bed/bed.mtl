@@ -1,5 +1,6 @@
 # Blender MTL File: 'bed.blend'
 # Material Count: 2
+# FIXED VERSION - bed_d.png is the diffuse texture, bed_n.png is the normal map
 
 newmtl Material
 Ns 96.078431
@@ -11,6 +12,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd bed_d.png
+map_Bump bed_n.png
 
 newmtl Material_NONE
 Ns 96.078431
@@ -21,4 +23,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd bed_n.png
+map_Kd bed_d.png
+map_Bump bed_n.png

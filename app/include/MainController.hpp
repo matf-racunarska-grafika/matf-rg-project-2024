@@ -1,28 +1,35 @@
 //
 // Created by zesla on 10/9/25.
 //
-
 #ifndef MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #define MATF_RG_PROJECT_MAINCONTROLLER_HPP
 #include <engine/core/Controller.hpp>
+#include <engine/resources/ResourcesController.hpp>
+#include <glm/vec3.hpp>
 
 namespace app{
 class MainController: public engine::core::Controller {
+public:
     void initialize() override;
     bool loop() override;
-    void draw_bed();
     void begin_draw() override;
-    void update_camera();
-    void update() override;
     void draw() override;
-    void draw_skybox();
     void end_draw() override;
-
-public:
+    void update() override;
     std::string_view name() const override {
         return "app::MainController";
     }
 
+private:
+    void draw_bed();
+    void draw_cloud();
+    void draw_skybox();
+    void update_camera();
+    void setup_lighting(engine::resources::Shader* shader);
 
+    glm::vec3 m_cloud_transl_factor = glm::vec3(0.0f, 5.0f, 0.0f);
+    glm::vec3 m_cloud_scale_factor = glm::vec3(1.0f);
+
+};
 }
 #endif//MATF_RG_PROJECT_MAINCONTROLLER_HPP

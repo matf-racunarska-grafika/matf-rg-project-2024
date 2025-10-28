@@ -6,6 +6,9 @@
       },
       "backpack" : {
         "path" : "backpack/backpack.obj"
+      },
+      "cloud" : {
+        "path" : "cloud/cloud.obj"
       }
     }
   },
