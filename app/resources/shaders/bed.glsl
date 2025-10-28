@@ -67,13 +67,10 @@ void main() {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
 
-    // Get the texture color once
     vec3 texColor = texture(texture_diffuse1, TexCoords).rgb;
 
-    // Directional lighting
     vec3 result = CalcDirLight(dirLight, norm, viewDir, texColor);
 
-    // Point lights
     for(int i = 0; i < numPointLights && i < 4; i++) {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, texColor);
     }
@@ -84,14 +81,11 @@ void main() {
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 texColor) {
     vec3 lightDir = normalize(-light.direction);
 
-    // Ambient - the light's ambient color multiplied by the texture
     vec3 ambient = light.ambient * texColor;
 
-    // Diffuse - based on angle between normal and light
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texColor;
 
-    // Specular (Blinn-Phong) - shiny highlights
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material_shininess);
     vec3 specular = light.specular * spec;
@@ -102,24 +96,19 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 texColor) {
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 texColor) {
     vec3 lightDir = normalize(light.position - fragPos);
 
-    // Attenuation - light gets weaker with distance
     float distance = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance +
     light.quadratic * (distance * distance));
 
-    // Ambient
     vec3 ambient = light.ambient * texColor;
 
-    // Diffuse
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * texColor;
 
-    // Specular (Blinn-Phong)
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0), material_shininess);
     vec3 specular = light.specular * spec;
 
-    // Apply attenuation to all components
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;

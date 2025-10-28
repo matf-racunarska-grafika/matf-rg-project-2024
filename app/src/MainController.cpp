@@ -100,7 +100,7 @@ void MainController::draw_cloud() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
     engine::resources::Model* cloud = resources->model("cloud");
-    engine::resources::Shader* shader = resources->shader("lighting_simple");
+    engine::resources::Shader* shader = resources->shader("bed.glsl");
 
     shader->use();
 
