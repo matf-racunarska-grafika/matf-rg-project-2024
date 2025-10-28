@@ -1,7 +1,7 @@
 # File produced by Open Asset Import Library (http://www.assimp.sf.net)
 # (assimp v3.1.187496374)
 
-mtllib cloud.obj.mtl
+mtllib cloud.mtl
 
 # 562 vertex positions
 v  128.719 145.156 82.5156

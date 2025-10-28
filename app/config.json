@@ -9,6 +9,9 @@
       },
       "cloud" : {
         "path" : "cloud/cloud.obj"
+      },
+      "bed1" : {
+        "path" : "bed1/untitled.obj"
       }
     }
   },

@@ -75,7 +75,7 @@ void MainController::draw_bed() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* bed = resources->model("bed");
+    engine::resources::Model* bed = resources->model("bed1");
     engine::resources::Shader* shader = resources->shader("bed");
 
     shader->use();
@@ -100,17 +100,17 @@ void MainController::draw_cloud() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
     engine::resources::Model* cloud = resources->model("cloud");
-    engine::resources::Shader* shader = resources->shader("bed.glsl");
+    engine::resources::Shader* shader = resources->shader("cloud");
 
     shader->use();
 
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-
     glm::mat4 model = glm::mat4(1.0);
-    model = glm::translate(model, m_cloud_transl_factor);
-    model = glm::scale(model, m_cloud_scale_factor);
+    model = glm::translate(model, glm::vec3(0.0f, 10.0f, -20.0f));
+    model = glm::scale(model, glm::vec3(0.9f));  // 2% size!
+
     shader->set_mat4("model", model);
+    setup_lighting(shader);
+
 
     shader->set_vec3("viewPos", graphics->camera()->Position);
     shader->set_vec3("lightPos", glm::vec3(0.0f, 5.0f, 0.0f));
@@ -120,6 +120,7 @@ void MainController::draw_cloud() {
 }
 
 void MainController::begin_draw() {
+    engine::graphics::OpenGL::enable_depth_testing();
 engine::graphics::OpenGL::clear_buffers();
 }
 void MainController::update_camera() {
@@ -159,7 +160,7 @@ void MainController::draw() {
 
     draw_skybox();
     draw_bed();
-    //draw_cloud();
+    draw_cloud();
 
 
 }
