@@ -29,6 +29,31 @@
         "path": "ground/ground.obj",
         "flip_uvs": false
       }
+    },
+    "shaders": {
+      "basic": {
+        "path": "shaders/basic.glsl"
+      },
+      "skybox": {
+        "path": "shaders/skybox.glsl"
+      },
+      "bloom_extract": {
+        "path": "shaders/bloom_extract.glsl"
+      },
+      "bloom_blur": {
+        "path": "shaders/bloom_blur.glsl"
+      },
+      "bloom_final": {
+        "path": "shaders/bloom_final.glsl"
+      }
+    },
+    "skyboxes": {
+      "dikhololo_night": {
+        "path": "skyboxes/dkhololo_night"
+      },
+      "skybox": {
+        "path": "skyboxes/skybox"
+      }
     }
   },
   "window": {

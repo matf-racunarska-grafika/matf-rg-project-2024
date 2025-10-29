@@ -8,10 +8,11 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++23" COMPILER_SUPPORTS_CXX23)
 if (NOT COMPILER_SUPPORTS_CXX23)
     message(FATAL_ERROR "The compiler does not support C++23.")
-endif()
+endif ()
 
-file(GLOB engine-sources src/*.cpp)
-file(GLOB engine-headers include/engine/*.hpp)
+# Use GLOB_RECURSE to automatically find all files in subdirectories
+file(GLOB_RECURSE engine-sources src/*.cpp)
+file(GLOB_RECURSE engine-headers include/engine/*.hpp)
 
 ################ Libs ################
 add_subdirectory(libs/spdlog EXCLUDE_FROM_ALL)
@@ -25,6 +26,7 @@ add_subdirectory(libs/stb EXCLUDE_FROM_ALL)
 add_subdirectory(libs/imgui EXCLUDE_FROM_ALL)
 add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
+# Remove the explicit file listing - GLOB_RECURSE will find them automatically
 add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers})
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
