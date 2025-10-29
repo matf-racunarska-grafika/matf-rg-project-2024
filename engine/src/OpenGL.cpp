@@ -69,10 +69,32 @@ SimpleColorBuffer OpenGL::makeSimpleColorBuffer(unsigned int width, unsigned int
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuff, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    SimpleColorBuffer res{fbo, colorBuff};
+    return res;
 }
 
-void OpenGL::ActivateBuffer(unsigned int buffer_id) {
+void OpenGL::bindFrameBuffer(unsigned int buffer_id) {
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
+}
+
+void OpenGL::deleteFrameBuffer(unsigned int fb) {
+    if (fb != 0) {
+        glDeleteFramebuffers(1, &fb);
+    }
+}
+
+void OpenGL::deleteTexture(unsigned int texture_id) {
+    if (texture_id != 0) {
+        glDeleteTextures(1, &texture_id);
+    }
+}
+
+void OpenGL::deleteRenderBuffer(unsigned int rbo) {
+    if (rbo != 0) {
+        glDeleteRenderbuffers(1, &rbo);
+    }
 }
 
 void OpenGL::DestroyBuffer(BloomFrameBuffer bloom_buffer) {
@@ -88,7 +110,51 @@ void OpenGL::DestroyBuffer(SimpleColorBuffer simple_buffer) {
     glDeleteTextures(1, &simple_buffer.texture);
 }
 
+unsigned int OpenGL::genFrameBuffer() {
+    unsigned int fbo;
+    glGenFramebuffers(1,&fbo);
+    return fbo;
+}
+
+void OpenGL::setAttachmentCount(unsigned int fb, unsigned int count) {
+    std::vector<GLenum> attachments;
+    for (size_t i = 0; i < count; ++i)
+        attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+
+    glDrawBuffers((GLsizei)attachments.size(), attachments.data());
+
+}
+
+unsigned int OpenGL::addFrameTexture(unsigned int fb,unsigned int slot ,FrameTextureType type,unsigned int width, unsigned int height, bool linear) {
+    bindFrameBuffer(fb);
+    unsigned int texture_id = 0;
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+slot, GL_TEXTURE_2D, texture_id, 0);
+    return texture_id;
+}
+
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+
+unsigned int OpenGL::addRenderBuffer(unsigned int fb,unsigned int width, unsigned int height) {
+    bindFrameBuffer(fb);
+    unsigned int depthBuff;
+    glGenRenderbuffers(1, &depthBuff);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthBuff);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuff);
+    return depthBuff;
+}
+
 void OpenGL::BindTexture(unsigned int id) {
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void OpenGL::BindTexture(unsigned int id, unsigned int slot) {
+    glActiveTexture(GL_TEXTURE0+slot);
     glBindTexture(GL_TEXTURE_2D, id);
 }
 

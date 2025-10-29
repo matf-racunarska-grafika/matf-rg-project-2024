@@ -41,6 +41,12 @@ struct SimpleColorBuffer {
     unsigned int texture = 0;
 };
 
+enum class FrameTextureType {
+    RGB,
+    RGBA,
+    FLOAT
+};
+
 
 /**
 * @class OpenGL
@@ -52,14 +58,28 @@ class OpenGL {
 public:
     using ShaderProgramId = uint32_t;
 
+    static unsigned int genFrameBuffer();
+
+    static unsigned int addFrameTexture(unsigned int fb,unsigned int slot,FrameTextureType type,unsigned int width, unsigned int height, bool linear);
+    static unsigned int addRenderBuffer(unsigned int fb,unsigned int width, unsigned int height);
+    static void setAttachmentCount(unsigned int fb,unsigned int count);
+
+    static void SetTextureSlot(unsigned int num);
+    static void BindTexture(unsigned int id);
+    static void BindTexture(unsigned int id,unsigned int slot);
+    static void bindFrameBuffer(unsigned int buffer_id);
+
+
     static BloomFrameBuffer makeBloomFramebuffer(unsigned int width, unsigned int height);
     static SimpleColorBuffer makeSimpleColorBuffer(unsigned int width, unsigned int height);
-    static void ActivateBuffer(unsigned int buffer_id);
+
+
+    static void deleteFrameBuffer(unsigned int fb);
+    static void deleteTexture(unsigned int texture_id);
+    static void deleteRenderBuffer(unsigned int rbo);
     static void DestroyBuffer(BloomFrameBuffer bloom_buffer);
     static void DestroyBuffer(SimpleColorBuffer bloom_buffer);
 
-    static void BindTexture(unsigned int id);
-    static void SetTextureSlot(unsigned int num);
     /**
     * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 

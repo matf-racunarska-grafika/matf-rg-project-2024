@@ -7,6 +7,7 @@
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/MyFrameBuffer.hpp>
 
 namespace engine::graphics {
 
@@ -26,8 +27,10 @@ private:
     float m_bright_threshold;
     float m_intensity;
     unsigned int m_num_swaps;
-    struct engine::graphics::BloomFrameBuffer m_bloom_fbo;
-    struct engine::graphics::SimpleColorBuffer m_blur_pongs[2];
+
+    resources::MyFrameBuffer m_bloom_buffer;
+    resources::MyFrameBuffer m_pong_buffer[2];
+
     float m_gauss_weights[5] = {0.2270270270, 0.1945945946, 0.1216216216, 0.0540540541, 0.0162162162};
 
     resources::Shader* m_combine_shader;

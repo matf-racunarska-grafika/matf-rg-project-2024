@@ -30,22 +30,28 @@ engine::graphics::BloomFilter::~BloomFilter() {
 }
 
 void engine::graphics::BloomFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_height) {
-    m_bloom_fbo= engine::graphics::OpenGL::makeBloomFramebuffer(scr_width, scr_height);
-    m_blur_pongs[0]=engine::graphics::OpenGL::makeSimpleColorBuffer(scr_width, scr_height);
-    m_blur_pongs[1]=engine::graphics::OpenGL::makeSimpleColorBuffer(scr_width, scr_height);
+    m_bloom_buffer.init(scr_width, scr_height);
+    m_bloom_buffer.addColorAttachment(FrameTextureType::FLOAT,true,"bloom");
+
+
+    m_pong_buffer[0].init(scr_width, scr_height,false);
+    m_pong_buffer[0].addColorAttachment(FrameTextureType::FLOAT,true,"blur");
+
+    m_pong_buffer[1].init(scr_width, scr_height,false);
+    m_pong_buffer[1].addColorAttachment(FrameTextureType::FLOAT,true,"blur");
+
 }
 
 void engine::graphics::BloomFilter::setUpCanvas() {
-    engine::graphics::OpenGL::ActivateBuffer(m_bloom_fbo.fbo);
+    m_bloom_buffer.bind();
 }
 
 void engine::graphics::BloomFilter::applyBloom() {
     m_combine_shader->use();
-    engine::graphics::OpenGL::SetTextureSlot(0);
-    engine::graphics::OpenGL::BindTexture(m_bloom_fbo.texture_normal);
+    
+    engine::graphics::OpenGL::BindTexture(m_bloom_buffer.getTexture("image"),0);
 
-    engine::graphics::OpenGL::SetTextureSlot(1);
-    engine::graphics::OpenGL::BindTexture(m_blur_pongs[0].fbo);
+    engine::graphics::OpenGL::BindTexture(m_pong_buffer[0].getTexture("blur"),1);
 
     m_combine_shader->set_float("intensity",m_intensity);
     graphcis->draw_quad();
@@ -55,31 +61,27 @@ void engine::graphics::BloomFilter::applyBloom() {
 void engine::graphics::BloomFilter::applyBlur() {
 
     m_blur_shader_v->use();
-    engine::graphics::OpenGL::ActivateBuffer(m_blur_pongs[0].fbo);
-    engine::graphics::OpenGL::BindTexture(m_bloom_fbo.texture_bright);
+    m_pong_buffer[0].bind();
+    engine::graphics::OpenGL::BindTexture(m_bloom_buffer.getTexture("bloom"));
     graphcis->draw_quad();
 
     for (unsigned int i = 0; i < m_num_swaps; i++)
     {
-        engine::graphics::OpenGL::ActivateBuffer(m_blur_pongs[(i+1)%2].fbo);
+        m_pong_buffer[(i+1)%2].bind();
         if (i%2 == 0) {
             m_blur_shader_h->use();
         }
         else {
             m_blur_shader_v->use();
         }
-
-        engine::graphics::OpenGL::BindTexture(m_blur_pongs[i%2].fbo);
+        engine::graphics::OpenGL::BindTexture(m_pong_buffer[i%2].getTexture("image"));
         graphcis->draw_quad();
     }
-    engine::graphics::OpenGL::ActivateBuffer(0);
+    engine::graphics::OpenGL::bindFrameBuffer(0);
 }
 
 void engine::graphics::BloomFilter::destroyBuffers() {
-    engine::graphics::OpenGL::DestroyBuffer(m_bloom_fbo);
-    engine::graphics::OpenGL::DestroyBuffer(m_blur_pongs[0]);
-    engine::graphics::OpenGL::DestroyBuffer(m_blur_pongs[1]);
-    m_bloom_fbo={};
-    m_blur_pongs[0]={};
-    m_blur_pongs[1]={};
+    m_pong_buffer[0].free();
+    m_pong_buffer[1].free();
+    m_bloom_buffer.free();
 }
