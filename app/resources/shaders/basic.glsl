@@ -71,10 +71,19 @@ uniform vec3  uLanternColor;
 uniform float uLanternOn;
 
 
-uniform float uExposure          = 1.0;// tonemap
-uniform float uBloomFakeStrength = 1.4;// jačina glow halo-a
-uniform float uGlowFalloffFire   = 1.6;// koliko brzo opada oko vatre
-uniform float uGlowFalloffLamp   = 2.2;// koliko brzo opada oko fenjera
+uniform float uExposure          = 1.0;
+uniform float uBloomFakeStrength = 1.4;
+uniform float uGlowFalloffFire   = 1.6;
+uniform float uGlowFalloffLamp   = 2.2;
+
+
+// Spotlight uniforms
+uniform vec3  uSpotlightPos;
+uniform vec3  uSpotlightDir;
+uniform vec3  uSpotlightColor;
+uniform float uSpotlightCutoff;
+uniform float uSpotlightOuterCutoff;
+uniform bool  uSpotlightEnabled;
 
 vec4 sampleDiffuse()
 {
@@ -130,7 +139,26 @@ void main()
     vec3 specL = uLanternColor * pow(max(dot(V, R_l), 0.0), uShininess) * uSpecularStrength * attL * uLanternOn;
 
 
-    vec3 lighting = base * (diffuseD + diffuseP + diffuseL) + (specD + specP + specL) + base * uAmbient;
+    vec3 spotlightResult = vec3(0.0);
+    if (uSpotlightEnabled && length(uSpotlightColor) > 0.0) {
+        vec3 lightDir = normalize(uSpotlightPos - FragPos);
+        float theta = dot(lightDir, normalize(-uSpotlightDir));
+        float epsilon = uSpotlightCutoff - uSpotlightOuterCutoff;
+        float intensity = clamp((theta - uSpotlightOuterCutoff) / epsilon, 0.0, 1.0);
+
+        if (theta > uSpotlightOuterCutoff) {
+            float distance = length(uSpotlightPos - FragPos);
+            float attenuation = 1.0 / (1.0 + 0.22*distance + 0.20*distance*distance);
+            vec3 diffuseS = uSpotlightColor * max(dot(N, lightDir), 0.0) * attenuation * intensity;
+            vec3 R_s = reflect(-lightDir, N);
+            vec3 specS = uSpotlightColor * pow(max(dot(V, R_s), 0.0), uShininess) * uSpecularStrength * attenuation * intensity;
+            spotlightResult = diffuseS + specS;
+        }
+    }
+
+    vec3 lighting = base * (diffuseD + diffuseP + diffuseL + spotlightResult) + (specD + specP + specL) + base * uAmbient;
+
+
 
 
     float glowFire   = glowFalloff(FragPos, uLightPos, uGlowFalloffFire);

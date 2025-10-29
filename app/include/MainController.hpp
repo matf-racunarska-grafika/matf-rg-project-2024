@@ -43,6 +43,10 @@ private:
     void end_draw() override;
 
     void update_camera();
+
+    void update_lighting_adjustments();
+
+    void update_event_sequence();
 };
 
 }// namespace app
