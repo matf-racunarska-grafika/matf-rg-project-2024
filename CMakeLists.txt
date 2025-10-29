@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(matf-rg-project)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -10,9 +10,9 @@ find_package(Python3 COMPONENTS Interpreter Development)
 include(cmake/functions.cmake)
 
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++23" COMPILER_SUPPORTS_CXX23)
-if (NOT COMPILER_SUPPORTS_CXX23)
-    message(FATAL_ERROR "The compiler does not support C++23.")
+check_cxx_compiler_flag("-std=c++20" COMPILER_SUPPORTS_CXX20)
+if (NOT COMPILER_SUPPORTS_CXX20)
+    message(FATAL_ERROR "The compiler does not support C++20.")
 endif ()
 
 
