@@ -28,6 +28,20 @@ class Skybox;
 #define CHECKED_GL_CALL(func, ...) engine::graphics::OpenGL::call(std::source_location::current(), func, __VA_ARGS__)
 
 namespace engine::graphics {
+
+struct BloomFrameBuffer {
+    unsigned int fbo = 0;
+    unsigned int texture_normal = 0;
+    unsigned int texture_bright = 0;
+    unsigned int depth_buffer = 0;
+};
+
+struct SimpleColorBuffer {
+    unsigned int fbo = 0;
+    unsigned int texture = 0;
+};
+
+
 /**
 * @class OpenGL
 * @brief This class serves as the OpenGL interface for your app, since the engine doesn't directly link OpenGL to the app executable.
@@ -38,6 +52,14 @@ class OpenGL {
 public:
     using ShaderProgramId = uint32_t;
 
+    static BloomFrameBuffer makeBloomFramebuffer(unsigned int width, unsigned int height);
+    static SimpleColorBuffer makeSimpleColorBuffer(unsigned int width, unsigned int height);
+    static void ActivateBuffer(unsigned int buffer_id);
+    static void DestroyBuffer(BloomFrameBuffer bloom_buffer);
+    static void DestroyBuffer(SimpleColorBuffer bloom_buffer);
+
+    static void BindTexture(unsigned int id);
+    static void SetTextureSlot(unsigned int num);
     /**
     * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 

@@ -47,7 +47,7 @@ public:
     void setShininess(uint32_t shininess) ;
     bool is_instanced() const ;
 
-    void instanciate(glm::mat4* transform, uint32_t count);
+    void instantiate(glm::mat4* transform, uint32_t count);
 
 private:
     /**

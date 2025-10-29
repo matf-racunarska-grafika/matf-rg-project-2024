@@ -99,12 +99,12 @@ void MySceneController::prepare_grass(float fromx, float tox, float fromy, float
         }
 
     }
-    grass_model->instancite(trans,num_of_inst);
+    grass_model->instantiate(trans,num_of_inst);
     delete[] trans;
 }
 
 void MySceneController::draw_grass() {
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("scene_shader");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("grass");
     shader->use();

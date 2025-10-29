@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <filesystem>
 #include <array>
+#include <iostream>
 #include <stb_image.h>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/Shader.hpp>
@@ -10,6 +11,91 @@
 #include <engine/util/Utils.hpp>
 
 namespace engine::graphics {
+BloomFrameBuffer OpenGL::makeBloomFramebuffer(unsigned int width, unsigned int height) {
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    unsigned int colorBuffers[2];
+    glGenTextures(2, colorBuffers);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D, colorBuffers[0], 0);
+
+    glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1 , GL_TEXTURE_2D, colorBuffers[1], 0);
+
+    unsigned int depthBuff;
+    glGenRenderbuffers(1, &depthBuff);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthBuff);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuff);
+
+    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, attachments);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    struct BloomFrameBuffer res= {fbo,colorBuffers[0],colorBuffers[1], depthBuff};
+    return res;
+}
+
+SimpleColorBuffer OpenGL::makeSimpleColorBuffer(unsigned int width, unsigned int height) {
+    unsigned int fbo;
+    unsigned int colorBuff;
+    glGenFramebuffers(1, &fbo);
+    glGenTextures(1, &colorBuff);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    glBindTexture(GL_TEXTURE_2D, colorBuff);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuff, 0);
+}
+
+void OpenGL::ActivateBuffer(unsigned int buffer_id) {
+    glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
+}
+
+void OpenGL::DestroyBuffer(BloomFrameBuffer bloom_buffer) {
+
+    glDeleteFramebuffers(1, &bloom_buffer.fbo);
+    glDeleteTextures(1, &bloom_buffer.texture_bright);
+    glDeleteTextures(1, &bloom_buffer.texture_normal);
+    glDeleteRenderbuffers(1, &bloom_buffer.depth_buffer);
+}
+
+void OpenGL::DestroyBuffer(SimpleColorBuffer simple_buffer) {
+    glDeleteFramebuffers(1, &simple_buffer.fbo);
+    glDeleteTextures(1, &simple_buffer.texture);
+}
+
+void OpenGL::BindTexture(unsigned int id) {
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+void OpenGL::SetTextureSlot(unsigned int num) {
+    glActiveTexture(GL_TEXTURE0+num);
+}
+
 int32_t OpenGL::shader_type_to_opengl_type(resources::ShaderType type) {
     switch (type) {
         case resources::ShaderType::Vertex: return GL_VERTEX_SHADER;
@@ -191,6 +277,7 @@ uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool fl
 
     return texture_id;
 }
+
 
 void OpenGL::enable_depth_testing() {
     CHECKED_GL_CALL(glEnable, GL_DEPTH_TEST);

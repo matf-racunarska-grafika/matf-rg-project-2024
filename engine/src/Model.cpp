@@ -22,10 +22,10 @@ void Model::destroy() {
     }
 }
 
-void Model::instancite(glm::mat4 *transform, uint32_t count) {
+void Model::instantiate(glm::mat4 *transform, uint32_t count) {
     for (auto &mesh: m_meshes) {
         if (!mesh.is_instanced())
-            mesh.instanciate(transform, count);
+            mesh.instantiate(transform, count);
     }
 }
 }
