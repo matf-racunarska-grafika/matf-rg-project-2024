@@ -27,7 +27,7 @@ public:
     void bindTexture(std::string name, unsigned int slot);
 
 
-    unsigned int getFBO() const { return fbo; }
+    unsigned int getFrameBuff() const { return fbo; }
     unsigned int getDepthBuffer() const { return depthBuffer; }
     unsigned int getTexture(const std::string& name)  { return colorTextures[name]; }
     size_t getTextureCount() const { return colorTextures.size(); }

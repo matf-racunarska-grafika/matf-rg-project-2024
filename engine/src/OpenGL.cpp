@@ -110,6 +110,17 @@ void OpenGL::DestroyBuffer(SimpleColorBuffer simple_buffer) {
     glDeleteTextures(1, &simple_buffer.texture);
 }
 
+void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, toFbo);
+    glBlitFramebuffer(0, 0, width, height,
+                      0, 0, width, height,
+                      GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
 unsigned int OpenGL::genFrameBuffer() {
     unsigned int fbo;
     glGenFramebuffers(1,&fbo);

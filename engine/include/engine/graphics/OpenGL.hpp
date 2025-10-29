@@ -80,6 +80,7 @@ public:
     static void DestroyBuffer(BloomFrameBuffer bloom_buffer);
     static void DestroyBuffer(SimpleColorBuffer bloom_buffer);
 
+    static void BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask);
     /**
     * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 
