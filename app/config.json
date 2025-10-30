@@ -19,6 +19,10 @@
       "table":
       {
         "path" : "table/Table.obj"
+      },
+      "lamp":
+      {
+        "path" : "table-lamp-01/source/lamp.obj"
       }
     }
   },

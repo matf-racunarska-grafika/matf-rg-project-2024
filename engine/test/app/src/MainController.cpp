@@ -61,7 +61,7 @@ void MainController::end_draw() {
 void MainController::draw_backpack() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+    auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("lamp");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()

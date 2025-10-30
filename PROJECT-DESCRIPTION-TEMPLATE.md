@@ -1,20 +1,20 @@
 # {NAME-OF-THE-PROJECT}
 
-{INDEX} - {STUDENT-FULL-NAME}  
+{130/22} - {ZELJKO ZEKAVICIC}  
 {PROJECT DESCRIPTION}
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+WASD -> Forward, backward, left, right
+Left Shift -> Down
+Space -> Up
+L -> Turn on light on lamp by the bedside table
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
+[X] Model with lighting
 [ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
 [ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 

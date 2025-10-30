@@ -26,15 +26,22 @@ void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition po
 }
 
 void app::MainController::initialize() {
-    spdlog::info("Kontroler inicijalizovan");
+    spdlog::info("Controller initiallized!");
 
     auto observer = std::make_unique<MainPlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    camera->Position = glm::vec3(-7.0f, 7.0f, 7.0f);
 };
 bool MainController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KeyId::KEY_ESCAPE).is_down()) {
         return false;
+    }
+    if (platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+        lamp_is_on = !lamp_is_on;
+        spdlog::info("Lamp has just been turned {}", lamp_is_on?"on!":"off!");
     }
     return true;
 }
@@ -45,28 +52,38 @@ void MainController::setup_lighting(engine::resources::Shader* shader) {
     shader->use();
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
-    shader->set_float("material_shininess", 32.0f);
+    //TODO:shininess
 
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLight.ambient", glm::vec3(0.4f, 0.4f, 0.5f));   // Higher ambient for visibility
-    shader->set_vec3("dirLight.diffuse", glm::vec3(0.6f, 0.6f, 0.7f));   // Brighter diffuse
-    shader->set_vec3("dirLight.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+    shader->set_vec3("dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    shader->set_vec3("dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.3f));
+    shader->set_vec3("dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
 
-    shader->set_vec3("pointLights[0].position", glm::vec3(2.0f, 1.5f, 0.0f));
-    shader->set_vec3("pointLights[0].ambient", glm::vec3(0.3f, 0.2f, 0.15f));
-    shader->set_vec3("pointLights[0].diffuse", glm::vec3(1.0f, 0.8f, 0.6f));
-    shader->set_vec3("pointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader->set_vec3("pointLights[0].ambient", glm::vec3(0)); //0.3f, 0.2f, 0.15f
+    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0)); //1.0f, 0.8f, 0.6f
+    shader->set_vec3("pointLights[0].specular", glm::vec3(0)); //1.0f, 1.0f, 1.0f
     shader->set_float("pointLights[0].constant", 1.0f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
 
-    shader->set_vec3("pointLights[1].position", glm::vec3(-2.0f, 1.5f, 0.0f));
-    shader->set_vec3("pointLights[1].ambient", glm::vec3(0.3f, 0.2f, 0.15f));
-    shader->set_vec3("pointLights[1].diffuse", glm::vec3(1.0f, 0.8f, 0.6f));
-    shader->set_vec3("pointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    shader->set_float("pointLights[1].constant", 1.0f);
-    shader->set_float("pointLights[1].linear", 0.09f);
-    shader->set_float("pointLights[1].quadratic", 0.032f);
+    if (lamp_is_on) {
+        shader->set_vec3("pointLights[1].position", lamp_position + glm::vec3(0.0f, 0.5f, 0.0f));
+        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.4f, 0.35f, 0.3f));
+        shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.8f, 0.7f, 0.6f));
+        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.2f, 0.18f, 0.15f));
+        shader->set_vec3("pointLights[1].specular", glm::vec3(0.5f, 0.45f, 0.4f));
+        shader->set_float("pointLights[1].constant", 1.0f);
+        shader->set_float("pointLights[1].linear", 0.22f);
+        shader->set_float("pointLights[1].quadratic", 0.20f);
+    } else {
+        shader->set_vec3("pointLights[1].position", lamp_position);
+        shader->set_vec3("pointLights[1].ambient", glm::vec3(0.0f));
+        shader->set_vec3("pointLights[1].diffuse", glm::vec3(0.0f));
+        shader->set_vec3("pointLights[1].specular", glm::vec3(0.0f));
+        shader->set_float("pointLights[1].constant", 1.0f);
+        shader->set_float("pointLights[1].linear", 1.0f);
+        shader->set_float("pointLights[1].quadratic", 1.0f);
+    }
 
     shader->set_int("numPointLights", 2);
 }
@@ -130,13 +147,41 @@ void MainController::draw_table() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0);
-    model = glm::translate(model, glm::vec3(7.0f, -3.0f, 7.0f));  // Right side
-    model = glm::scale(model, glm::vec3(0.065f));  // Small nightstand size
+    model = glm::translate(model, glm::vec3(7.0f, -3.0f, 7.0f));
+    model = glm::scale(model, glm::vec3(0.065f));
     shader->set_mat4("model", model);
 
     setup_lighting(shader);
     table->draw(shader);
 
+}
+
+void MainController::draw_lamp() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* lamp = resources->model("lamp");
+    engine::resources::Shader* shader = resources->shader("lamp");
+
+    shader->use();
+
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0);
+
+    model = glm::translate(model, lamp_position);
+
+    model = glm::scale(model, glm::vec3(0.09f, 0.09f, 0.09f));
+    shader->set_mat4("model", model);
+
+    shader->set_int("lampIsOn", lamp_is_on ? 1 : 0);
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+    shader->set_float("material_shininess", 64.0f);
+
+    setup_lighting(shader);
+
+    lamp->draw(shader);
 }
 
 void MainController::begin_draw() {
@@ -163,6 +208,12 @@ void MainController::update_camera() {
     if (platform->key(engine::platform::KeyId::KEY_D).is_down()) {
         camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
     }
+    if (platform->key(engine::platform::KeyId::KEY_SPACE).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
+    }
+    if (platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
+        camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt);
+    }
 }
 void MainController::update() {
     update_camera();
@@ -182,7 +233,7 @@ void MainController::draw() {
     draw_bed();
     draw_cloud();
     draw_table();
-
+    draw_lamp();
 }
 
 void MainController::end_draw() {
