@@ -16,29 +16,32 @@ void MyFrameBuffer::init(int width, int height, bool use_depth) {
     this->width = width;
     this->height = height;
 
-    fbo=engine::graphics::OpenGL::genFrameBuffer();
+    fbo = engine::graphics::OpenGL::genFrameBuffer();
     if (use_depth)
-        depthBuffer = graphics::OpenGL::addRenderBuffer(fbo,width,height);
+        depthBuffer = graphics::OpenGL::addRenderBuffer(fbo, width, height);
 
     graphics::OpenGL::bindFrameBuffer(0);
-
 }
 
-void MyFrameBuffer::addColorAttachment(graphics::FrameTextureType type, bool linear, const std::string& name) {
-    unsigned int tex = graphics::OpenGL::addFrameTexture(fbo, (unsigned int)getTextureCount(), type, width, height, linear);
+void MyFrameBuffer::addColorAttachment(graphics::FrameTextureType type, bool linear, const std::string &name) {
+    unsigned int tex = graphics::OpenGL::addFrameTexture(fbo, (unsigned int) getTextureCount(), type, width, height, linear);
     colorTextures[name] = tex;
-    graphics::OpenGL::setAttachmentCount(fbo,getTextureCount());
+    graphics::OpenGL::setAttachmentCount(fbo, getTextureCount());
 }
 
 void MyFrameBuffer::bind() const {
     graphics::OpenGL::bindFrameBuffer(fbo);
+}
+void MyFrameBuffer::clear() {
+    graphics::OpenGL::bindFrameBuffer(fbo);
+    graphics::OpenGL::clear_buffers();
 }
 
 void MyFrameBuffer::unbind() {
     graphics::OpenGL::bindFrameBuffer(0);
 }
 
-void MyFrameBuffer::bindTexture(std::string name, unsigned int slot)  {
+void MyFrameBuffer::bindTexture(std::string name, unsigned int slot) {
     graphics::OpenGL::BindTexture(colorTextures[name], slot);
 }
 
@@ -50,7 +53,7 @@ void MyFrameBuffer::free() {
     }
 
     if (!colorTextures.empty()) {
-        for (auto pair : colorTextures) {
+        for (auto pair: colorTextures) {
             graphics::OpenGL::deleteTexture(pair.second);
         }
         colorTextures.clear();

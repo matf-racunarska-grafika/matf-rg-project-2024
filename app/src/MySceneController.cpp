@@ -4,19 +4,40 @@
 
 #include "../include/MySceneController.hpp"
 #define GLM_ENABLE_EXPERIMENTAL
-#include <random>
+#include <LightSwarm.hpp>
+#include <MyGUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <random>
+
 
 namespace app {
 
+
+void ScenePlatformEventObserver::on_key(engine::platform::Key key) {
+    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (engine::platform::KEY_SPACE == key.id()) {
+        const auto myscene = engine::core::Controller::get<app::MySceneController>();
+        myscene->start_animation();
+    }
+}
+void MySceneController::set_dim(float brightness) {
+    m_scene.dim_lights(brightness);
+}
+void MySceneController::start_animation() {
+    m_duration_timer.startTimer(m_duration_amount);
+}
 void MySceneController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
-    //auto observer = std::make_unique<MainPlatformEventObserver>();
-    //engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+    auto observer = std::make_unique<ScenePlatformEventObserver>();
+    engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+
+    m_scene=Scene();
+    m_delay_timer=Timer();
+    m_duration_timer=Timer();
 }
 
 bool MySceneController::loop() {
@@ -32,90 +53,87 @@ void MySceneController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     if (platform->key(engine::platform::KEY_F1)
                 .state() == engine::platform::Key::State::JustPressed) {
-        //platform->set_enable_cursor(false);
+        m_cursor_enabled = !m_cursor_enabled;
+        platform->set_enable_cursor(m_cursor_enabled);
+
     }
 }
 
 void MySceneController::update() {
+    update_camera();
+    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto ft=platform->frame_time();
+
+    if (m_delay_timer.isEnabled()) {
+        if (!m_delay_timer.update(ft.dt)) {
+            m_duration_timer.startTimer(m_duration_amount);
+            m_scene.toggle_swarm();
+        }
+    }
+    if (m_delay_timer.isEnabled()) {
+        if (!m_delay_timer.update(ft.dt)) {
+            m_scene.toggle_swarm();
+        }
+    }
+    m_scene.update(ft.dt, std::sin(ft.current));
+
+}
+
+
+void MySceneController::update_camera() {
+    auto gui = engine::core::Controller::get<app::MyGUIController>();
+    if (gui->is_enabled()) {
+         return;
+    }
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+    float dt = platform->dt();
+    if (platform->key(engine::platform::KEY_W)
+                .state() == engine::platform::Key::State::Pressed) {
+        camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+                }
+    if (platform->key(engine::platform::KEY_S)
+                .state() == engine::platform::Key::State::Pressed) {
+        camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
+                }
+    if (platform->key(engine::platform::KEY_A)
+                .state() == engine::platform::Key::State::Pressed) {
+        camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
+                }
+    if (platform->key(engine::platform::KEY_D)
+                .state() == engine::platform::Key::State::Pressed) {
+        camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
+                }
+    auto mouse = platform->mouse();
+    camera->rotate_camera(mouse.dx, mouse.dy);
+    camera->zoom(mouse.scroll);
 }
 
 void MySceneController::begin_draw() {
     engine::graphics::OpenGL::clear_buffers();
+
 }
 
 void MySceneController::draw() {
-    draw_skybox();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    std::vector<engine::graphics::Light> lights = m_scene.get_lights();
+    graphics->deferred_filter().setUpCanvas(lights);
+    m_scene.draw_static_scene(graphics->deferred_filter().geometry_shader());
+    engine::resources::Shader * drawing_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("deferred_bloom_aware_render");
+    graphics->bloom_filter().setUpCanvas();
+    graphics->deferred_filter().render(drawing_shader);
+    engine::graphics::OpenGL::bindFrameBuffer(0);
+    graphics->bloom_filter().applyBloom();
+    graphics->deferred_filter().blitDepth(graphics->perspective_params().Width, graphics->perspective_params().Height, 0);
+
+    //special shaders?
+    m_scene.draw_lights();
+    m_scene.draw_skybox();
+
 }
 
 void MySceneController::end_draw() {
     engine::core::Controller::get<engine::platform::PlatformController>()->swap_buffers();
 }
 
-void MySceneController::draw_skybox() {
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox");
-    auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
-    engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
-}
-
-void MySceneController::prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count=10000) {
-    uint32_t num_of_inst=count;
-    float radius = 5.0;
-    float offset = 2.0f;
-    float tilt_angle_bias=15.0f;
-
-    auto grass_model=engine::core::Controller::get<engine::resources::ResourcesController>()->model("grass");
-    glm::mat4* trans=new glm::mat4[num_of_inst];
-    srand(engine::core::Controller::get<engine::platform::PlatformController>()->frame_time().current);
-
-
-    for (uint32_t i=0; i<num_of_inst/5; i++) {
-
-        for (uint32_t j=0; j<5; j++) {
-            glm::mat4 model = glm::mat4(1.0f);
-            float angle = (float)i / (float)num_of_inst * 360.0f;
-            float displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-            float x = sin(angle) * radius + displacement;
-            displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-            float y = -abs(displacement) * 0.4f;
-            displacement = (rand() % (int)(2 * offset * 100)) / 100.0f - offset;
-            float z = cos(angle) * radius + displacement;
-
-            float scale =1+ (rand() % 20) / 100.0f;
-            glm::vec3 dir=glm::vec3(0,1,0)+ glm::vec3(tan(tilt_angle_bias)) * glm::normalize(glm::vec3(x, y, z));
-            glm::mat4 rot = glm::toMat4(glm::rotation(glm::vec3(0.0f,1.0f,0.0f), dir));
-
-            model = glm::translate(model, glm::vec3(x, y, z));
-            model = glm::scale(model, glm::vec3(scale));
-            model=model*rot;
-
-
-            model=glm::translate(model, glm::vec3(
-                fromx + static_cast<float>(rand()) / RAND_MAX * (tox - fromx),
-                fromy + static_cast<float>(rand()) / RAND_MAX * (toy - fromy),
-                0.0f
-                ));
-
-            trans[i*5+j]=model;
-        }
-
-    }
-    grass_model->instantiate(trans,num_of_inst);
-    delete[] trans;
-}
-
-void MySceneController::draw_grass() {
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("basic");
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("grass");
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()->view_matrix());
-
-    grass->draw(shader);
-}
-
-
-}
-
-
-
+} // namespace app

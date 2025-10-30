@@ -25,7 +25,6 @@ void Mesh::destroy() {
     glDeleteVertexArrays(1, &m_vao);
 }
 
-//set shininess to clipped value between 1 and 256
 void Mesh::setShininess(uint32_t shininess) {
     m_shininess = std::max(1u, std::min(shininess, 256u));
 }
@@ -99,7 +98,7 @@ void Mesh::prepare_for_draw(const Shader *shader) {
             continue;
         }
         uniform_name.append(std::to_string(count));
-        shader->set_int(uniform_name, i);
+        shader->set_int(uniform_name, i+1);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
         uniform_name.clear();
     }

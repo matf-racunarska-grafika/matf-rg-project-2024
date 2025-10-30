@@ -2,13 +2,13 @@
 // Created by matija on 10/12/25.
 //
 
+#include <../include/engine/resources/Light.hpp>
 #include <algorithm>
-#include <engine/graphics/Light.hpp>
 
 namespace engine::graphics {
 
 
-Light::Light(LightType type,glm::vec3 position, glm::vec3 direction, glm::vec3 color)
+Light::Light(LightType type,glm::vec3 position,glm::vec3 color,glm::vec3 direction)
     :m_position(position), m_direction(direction), m_color(color){
     m_type = type;
 }

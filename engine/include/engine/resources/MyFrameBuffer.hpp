@@ -23,6 +23,7 @@ public:
     void addColorAttachment(graphics::FrameTextureType type, bool linear,const std::string& name);
 
     void bind() const;
+    void clear();
     static void unbind();
     void bindTexture(std::string name, unsigned int slot);
 

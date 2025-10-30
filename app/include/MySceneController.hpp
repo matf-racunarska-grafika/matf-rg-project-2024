@@ -4,6 +4,10 @@
 
 #ifndef MATF_RG_PROJECT_MYSCENECONTROLLER_HPP
 #define MATF_RG_PROJECT_MYSCENECONTROLLER_HPP
+#include <../../engine/include/engine/resources/Light.hpp>
+#include <LightSwarm.hpp>
+#include <Scene.hpp>
+#include <Timer.hpp>
 #include <engine/core/Controller.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 #include <glm/fwd.hpp>
@@ -12,7 +16,6 @@ namespace app {
 class ScenePlatformEventObserver final : public engine::platform::PlatformEventObserver {
 public:
     void on_key(engine::platform::Key key) override;
-    void on_mouse_move(engine::platform::MousePosition position) override;
 };
 
 class MySceneController final : public engine::core::Controller {
@@ -20,6 +23,8 @@ public:
     std::string_view name() const override {
         return "test::app::MainController";
     }
+    void set_dim(float brightness);
+    void start_animation();
 
 private:
     void initialize() override;
@@ -36,20 +41,20 @@ private:
 
     void end_draw() override;
 
-    void draw_skybox();
-
-    void prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count);
-
-    void draw_grass();
-
-    void draw_floor();
 
 
 
-    //#TODO add state..
-    //bool m_draw_gui{false};
-    //bool m_cursor_enabled{true};
+    void update_camera();
 
+
+    bool m_cursor_enabled{true};
+
+    Scene m_scene;
+    Timer m_delay_timer;
+    Timer m_duration_timer;
+
+    float m_duration_amount=10.0f;
+    float m_delay_amount=3.0f;
 };
 } // app
 

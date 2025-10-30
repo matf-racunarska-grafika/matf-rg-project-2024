@@ -1,25 +1,28 @@
-#include <imgui.h>
+#include <MyGUIController.hpp>
+#include <MySceneController.hpp>
 #include <engine/core/Engine.hpp>
-#include <app/GUIController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
+#include <engine/platform/PlatformController.hpp>
+#include <imgui.h>
 
-namespace engine::test::app {
-void GUIController::initialize() {
-    toggle_enable(false);
+namespace app {
+void MyGUIController::initialize() {
+    set_enable(false);
 }
 
-void GUIController::poll_events() {
-    const auto platform = engine::core::Controller::get<platform::PlatformController>();
-    if (platform->key(platform::KeyId::KEY_F2)
-                .state() == platform::Key::State::JustPressed) {
-        toggle_enable(!is_enabled());
-    }
+void MyGUIController::poll_events() {
+    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KeyId::KEY_F2)
+                .state() == engine::platform::Key::State::JustPressed) {
+        set_enable(!is_enabled());
+                }
 }
 
-void GUIController::draw() {
+void MyGUIController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     graphics->begin_gui();
+
     // Draw backpack scale slider window
     // auto backpack  = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
     // static float f = 0.0f;
@@ -41,6 +44,15 @@ void GUIController::draw() {
                                                     .y, c.Front
                                                          .z);
     ImGui::End();
+
+    ImGui::Begin("Lighting");
+    static float brightness = 1.0f;
+    if (ImGui::SliderFloat("Intensity of light sources:", &brightness, 0.0f, 1.0f)) {
+          engine::core::Controller::get<app::MySceneController>()->set_dim(brightness);
+    }
+    ImGui::End();
     graphics->end_gui();
 }
 }
+
+

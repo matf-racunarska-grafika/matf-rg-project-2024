@@ -23,6 +23,7 @@ engine::graphics::BloomFilter::BloomFilter(float intensity, float threshold, uns
     m_blur_shader_h->use();
     m_blur_shader_h->set_int("image",0);
 
+
 }
 
 engine::graphics::BloomFilter::~BloomFilter() {
@@ -30,6 +31,7 @@ engine::graphics::BloomFilter::~BloomFilter() {
 }
 
 void engine::graphics::BloomFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_height) {
+    destroyBuffers();
     m_bloom_buffer.init(scr_width, scr_height);
     m_bloom_buffer.addColorAttachment(FrameTextureType::FLOAT,true,"bloom");
 
@@ -49,13 +51,18 @@ void engine::graphics::BloomFilter::setUpCanvas() {
 void engine::graphics::BloomFilter::applyBloom() {
     m_combine_shader->use();
     
-    engine::graphics::OpenGL::BindTexture(m_bloom_buffer.getTexture("image"),0);
+    engine::graphics::OpenGL::BindTexture(m_bloom_buffer.getTexture("bloom"),0);
 
     engine::graphics::OpenGL::BindTexture(m_pong_buffer[0].getTexture("blur"),1);
 
     m_combine_shader->set_float("intensity",m_intensity);
-    graphcis->draw_quad();
+         engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_quad();
 
+}
+void engine::graphics::BloomFilter::clearBuffers() {
+    m_bloom_buffer.clear();
+    m_pong_buffer[0].clear();
+    m_pong_buffer[1].clear();
 }
 
 void engine::graphics::BloomFilter::applyBlur() {
@@ -63,7 +70,7 @@ void engine::graphics::BloomFilter::applyBlur() {
     m_blur_shader_v->use();
     m_pong_buffer[0].bind();
     engine::graphics::OpenGL::BindTexture(m_bloom_buffer.getTexture("bloom"));
-    graphcis->draw_quad();
+         engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_quad();
 
     for (unsigned int i = 0; i < m_num_swaps; i++)
     {
@@ -75,7 +82,7 @@ void engine::graphics::BloomFilter::applyBlur() {
             m_blur_shader_v->use();
         }
         engine::graphics::OpenGL::BindTexture(m_pong_buffer[i%2].getTexture("image"));
-        graphcis->draw_quad();
+             engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_quad();
     }
     engine::graphics::OpenGL::bindFrameBuffer(0);
 }

@@ -27,15 +27,15 @@ add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
 add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers}
         src/Light.cpp
-        include/engine/graphics/Light.hpp
+        include/engine/resources/Light.hpp
         src/BloomFilter.cpp
         include/engine/graphics/BloomFilter.hpp
         src/MyFrameBuffer.cpp
         include/engine/resources/MyFrameBuffer.hpp
         src/DeferredFilter.cpp
         include/engine/graphics/DeferredFilter.hpp
-        src/LightSwarm.cpp
-        include/engine/resources/LightSwarm.hpp)
+        ../app/src/LightSwarm.cpp
+        ../app/include/LightSwarm.hpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC glm::glm-header-only spdlog::spdlog imgui json)

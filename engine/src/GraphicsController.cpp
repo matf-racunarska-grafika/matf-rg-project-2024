@@ -1,4 +1,3 @@
-
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -8,12 +7,18 @@
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <engine/graphics/BloomFilter.hpp>
+#include <engine/graphics/DeferredFilter.hpp>
 
 namespace engine::graphics {
 
 void GraphicsController::initialize() {
     const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
+
+    // Instantiate filters now that OpenGL is available
+    m_deferred_filter = std::make_unique<DeferredFilter>();
+    m_bloom_filter = std::make_unique<BloomFilter>();
 
     auto platform = engine::core::Controller::get<platform::PlatformController>();
     auto handle = platform->window()
@@ -42,6 +47,10 @@ void GraphicsController::initialize() {
     (void) io;
     RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
     RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");
+
+    // Initialize filter buffers to current window size
+    deferred_filter().initilizeBuffers(static_cast<unsigned int>(m_perspective_params.Width), static_cast<unsigned int>(m_perspective_params.Height));
+    bloom_filter().initilizeBuffers(static_cast<unsigned int>(m_perspective_params.Width), static_cast<unsigned int>(m_perspective_params.Height));
 }
 
 void GraphicsController::terminate() {
@@ -51,6 +60,8 @@ void GraphicsController::terminate() {
         ImGui::DestroyContext();
     }
 }
+
+GraphicsController::~GraphicsController() = default;
 
 void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
     m_graphics->perspective_params()
@@ -62,10 +73,24 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
               .Right = static_cast<float>(width);
     m_graphics->orthographic_params()
               .Top = static_cast<float>(height);
+
+    m_graphics->deferred_filter().initilizeBuffers(width,height);
+    m_graphics->bloom_filter().initilizeBuffers(width,height);
 }
 
 std::string_view GraphicsController::name() const {
     return "GraphicsController";
+}
+
+DeferredFilter &GraphicsController::deferred_filter() { return *m_deferred_filter; }
+BloomFilter &GraphicsController::bloom_filter() { return *m_bloom_filter; }
+
+
+void GraphicsController::prepare_for_draw(resources::Shader* s) {
+
+    s->set_mat4("projection", projection_matrix());
+    s->set_mat4("view", camera()->view_matrix());
+
 }
 
 void GraphicsController::begin_gui() {

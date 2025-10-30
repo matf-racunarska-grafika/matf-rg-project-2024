@@ -4,15 +4,12 @@
 
 #ifndef MATF_RG_PROJECT_LIGHTSWARM_HPP
 #define MATF_RG_PROJECT_LIGHTSWARM_HPP
+#include <../../engine/include/engine/resources/Light.hpp>
+#include <engine/resources/Shader.hpp>
 #include <vector>
-#include <engine/graphics/Camera.hpp>
-#include <engine/graphics/Light.hpp>
 
-namespace engine::resources {
-class Shader;
-}
 
-namespace graphics::resources {
+namespace app {
 class LightSwarm {
 public:
 
@@ -29,11 +26,14 @@ public:
     //move lights in a swarm pattern, alongside vector in random direction
     void move_lights(float dt);
 
+    void set_light_dim(float dim);
+
 private:
     unsigned int light_vao;
     std::vector<engine::graphics::Light> lights;
     float m_speed{1.0f};
     float m_size{0.1f};
+    float m_light_dim=1.0f;
 };
 }
 

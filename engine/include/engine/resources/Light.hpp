@@ -1,11 +1,10 @@
-
 #ifndef MATF_RG_PROJECT_LIGHT_HPP
 #define MATF_RG_PROJECT_LIGHT_HPP
 #include "../../../libs/assimp/code/AssetLib/glTF2/glTF2Exporter.h"
 
-#include <string_view>
 #include <engine/util/Errors.hpp>
 #include <glm/vec3.hpp>
+#include <string_view>
 
 namespace engine::graphics {
 enum class LightType {
@@ -34,12 +33,14 @@ class Light {
 
 public:
 
-    Light(LightType type, glm::vec3 position, glm::vec3 direction, glm::vec3 color);
+    Light(LightType type, glm::vec3 position, glm::vec3 color, glm::vec3 direction={0.0f,-1.0f,0.0f});;
 
     Light(LightType type, glm::vec3 position, glm::vec3 direction, glm::vec3 color,
               float ambient_factor, float diffuse_factor, float specular_factor,
               float cutOff, float outerCutOff,
               float constant, float linear, float quadratic);
+
+    static const Light default_light;
 
     void change_brightness(float alpha);
     void set_brightness(float brightness);

@@ -6,11 +6,11 @@
 #ifndef MATF_RG_PROJECT_SHADER_HPP
 #define MATF_RG_PROJECT_SHADER_HPP
 
-#include <engine/util/Utils.hpp>
-#include <string>
-#include <engine/graphics/Light.hpp>
+#include <engine/resources/Light.hpp>
 #include <engine/resources/Texture.hpp>
+#include <engine/util/Utils.hpp>
 #include <glm/glm.hpp>
+#include <string>
 
 
 namespace engine::resources {

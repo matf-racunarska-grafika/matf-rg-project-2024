@@ -46,6 +46,9 @@ class OpenGL {
 public:
     using ShaderProgramId = uint32_t;
 
+    static void bindVao(unsigned int vao);
+    static void drawArrays(unsigned int mode, unsigned int count);
+
     static unsigned int genFrameBuffer();
 
     static unsigned int addFrameTexture(unsigned int fb,unsigned int slot,FrameTextureType type,unsigned int width, unsigned int height, bool linear);

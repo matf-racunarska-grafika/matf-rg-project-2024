@@ -6,10 +6,13 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 
-#include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
-#include <engine/graphics/Light.hpp>
+#include <engine/graphics/Camera.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
+#include <engine/resources/Light.hpp>
+#include <memory>
+#include <engine/graphics/BloomFilter.hpp>
+#include <engine/graphics/DeferredFilter.hpp>
 
 struct ImGuiContext;
 
@@ -58,7 +61,9 @@ enum ProjectionType {
 class GraphicsController final : public core::Controller {
 public:
     std::string_view name() const override;
+    ~GraphicsController() override;
 
+    void prepare_for_draw(resources::Shader * s);
     /**
     * @brief Calls internal methods for the beginning of gui drawing. Should be called in pair with @ref GraphicsController::end_gui.
     *
@@ -164,6 +169,10 @@ public:
         return m_lights;
     }
 
+    DeferredFilter &deferred_filter();
+
+    BloomFilter &bloom_filter();
+
 private:
     /**
     * @brief Initializes OpenGL, ImGUI, and projection matrix params;
@@ -180,6 +189,8 @@ private:
     ImGuiContext *m_imgui_context{};
     std::vector<Light> m_lights;
 
+    std::unique_ptr<DeferredFilter> m_deferred_filter;
+    std::unique_ptr<BloomFilter> m_bloom_filter;
 
 
 };

@@ -4,8 +4,6 @@
 
 #ifndef MATF_RG_PROJECT_BLOOMFILTER_HPP
 #define MATF_RG_PROJECT_BLOOMFILTER_HPP
-#include <engine/core/Controller.hpp>
-#include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/MyFrameBuffer.hpp>
 
@@ -22,8 +20,10 @@ public:
 
     void applyBloom();
 
+    void clearBuffers();
+    void destroyBuffers();
+
 private:
-    GraphicsController* graphcis=engine::core::Controller::get<engine::graphics::GraphicsController>();
     float m_bright_threshold;
     float m_intensity;
     unsigned int m_num_swaps;
@@ -38,7 +38,6 @@ private:
     resources::Shader* m_blur_shader_v;
 
     void applyBlur();
-    void destroyBuffers();
 
 };
 

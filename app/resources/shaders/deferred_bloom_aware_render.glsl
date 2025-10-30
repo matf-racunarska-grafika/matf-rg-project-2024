@@ -1,24 +1,15 @@
+
 //#shader vertex
+
 #version 330 core
-
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoords;
-
+layout (location = 1) in vec2 aTexCoords;
 out vec2 TexCoords;
-out vec3 Normal;
-out vec3 FragPos;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
 
 void main()
 {
-    FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = aNormal;
     TexCoords = aTexCoords;
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+    gl_Position = vec4(aPos, 1.0);
 }
 
 //#shader fragment
@@ -27,9 +18,12 @@ layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
 
-out vec3 FragPos;
-out vec3 Normal;
-out vec2 TexCoords;
+in vec2 TexCoords;
+
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform sampler2D gAlbedoSpec;
+uniform sampler2D gEmissiveShine;
 
 
 struct LightData {
@@ -54,24 +48,27 @@ uniform int num_of_spot;
 
 uniform float shininess;
 
-uniform LightData light_directional[8];
-uniform LightData light_spot[8];
-uniform LightData light_point[32];
+uniform LightData light_directional[32];
+uniform LightData light_spot[32];
+uniform LightData light_point[128];
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
 
 uniform vec3 viewPos;
 
 void main()
 {
-    vec3 color = texture(texture_diffuse1, TexCoords).rgb;
-    vec3 specMap = vec3(texture(texture_specular1, TexCoords).xxx);
+    vec3 FragPos = texture(gPosition, TexCoords).rgb;
+    vec3 Normal = texture(gNormal, TexCoords).rgb;
+
+    vec3 color = texture(gAlbedoSpec, TexCoords).rgb;
+    vec3 specMap = texture(gAlbedoSpec, TexCoords).aaa;
     vec3 normal = normalize(Normal);
 
     vec3 lighting = vec3(0.0);
     vec3 viewDir = normalize(viewPos - FragPos);
 
+    int shiness=int(texture(gEmissiveShine, TexCoords).a*128.0);
+    vec3 emissive = texture(gEmissiveShine, TexCoords).rgb;
 
     for(int i = 0; i < num_of_point; i++)
     {
@@ -122,7 +119,8 @@ void main()
         lighting += (ambient + diffuse + specular);
 
     }
-
+    lighting += emissive;
+    FragColor = vec4(lighting, 1.0);
 
     float brightness = dot(lighting, vec3(0.2126, 0.7152, 0.0722));
 
@@ -130,5 +128,4 @@ void main()
     BrightColor = vec4(lighting, 1.0);
     else
     BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
-    FragColor = vec4(lighting, 1.0);
 }

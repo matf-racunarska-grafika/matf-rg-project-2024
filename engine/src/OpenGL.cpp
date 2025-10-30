@@ -13,6 +13,13 @@
 
 namespace engine::graphics {
 
+void OpenGL::bindVao(unsigned int vao) {
+    glBindVertexArray(vao);
+}
+
+void OpenGL::drawArrays(unsigned int mode, unsigned int count) {
+    glDrawArrays(mode, 0, count);
+}
 
 void OpenGL::bindFrameBuffer(unsigned int buffer_id) {
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
@@ -103,9 +110,18 @@ unsigned int OpenGL::addFrameTexture(unsigned int fb,unsigned int slot ,FrameTex
     unsigned int texture_id = 0;
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    if (type==FrameTextureType::RGB)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    else if (type==FrameTextureType::RGBA)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    else if (type==FrameTextureType::FLOAT) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+slot, GL_TEXTURE_2D, texture_id, 0);
     return texture_id;
 }
