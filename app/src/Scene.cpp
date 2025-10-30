@@ -104,7 +104,7 @@ void Scene::draw_skybox() {
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
 }
 void Scene::draw_lights() {
-    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("ligh_shader");
+    auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("light_shader");
     light_swarm->draw(shader);
 }
 void Scene::set_width_height(int width, int height) {
@@ -114,7 +114,7 @@ void Scene::set_width_height(int width, int height) {
 
 std::vector<engine::graphics::Light> Scene::get_lights() {
     std::vector<engine::graphics::Light> res(lights);
-    res.insert( lights.begin(),light_swarm->get_lights().begin(),light_swarm->get_lights().end());
+    res.insert( res.begin(),light_swarm->get_lights().begin(),light_swarm->get_lights().end());
     return res;
 }
 void Scene::draw() {
