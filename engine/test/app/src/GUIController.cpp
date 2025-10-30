@@ -5,14 +5,14 @@
 
 namespace engine::test::app {
 void GUIController::initialize() {
-    toggle_enable(false);
+    set_enable(false);
 }
 
 void GUIController::poll_events() {
     const auto platform = engine::core::Controller::get<platform::PlatformController>();
     if (platform->key(platform::KeyId::KEY_F2)
                 .state() == platform::Key::State::JustPressed) {
-        toggle_enable(!is_enabled());
+        set_enable(!is_enabled());
     }
 }
 

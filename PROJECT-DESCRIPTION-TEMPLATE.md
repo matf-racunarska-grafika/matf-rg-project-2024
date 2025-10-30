@@ -8,8 +8,9 @@ Implementiran bloom i deferred shading za svetlašca, instancing za crtanje trav
 
 F1 -> Toggle mouse capture
 F2 -> Toggle GUI 
-W,A,S,D -> Move the camera forward/back/left/right
+ESC -> Exit application
 Space -> Start timer that triggers glowing worms that move around scene for set duration
+W,A,S,D -> Move the camera forward/back/left/right
 
 ## Features
 

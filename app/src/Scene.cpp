@@ -47,27 +47,41 @@ void Scene::init_scene() {
 
     auto l2= engine::graphics::Light(
             engine::graphics::LightType::Spot,
-            glm::vec3(0, 0, 0),
+            glm::vec3(0, 10, 0),
             glm::vec3(0,-1,0)
             ,glm::vec3(1,1,1));
     lights.push_back(l2);
 
+    auto l3= engine::graphics::Light(
+            engine::graphics::LightType::Point,
+            glm::vec3(10, 0, 10),
+            glm::vec3(1,1,1));
+    auto l4= engine::graphics::Light(
+            engine::graphics::LightType::Point,
+            glm::vec3(-5, 0, 20),
+            glm::vec3(1,1,1));
 
 
     light_swarm = LightSwarm();
+    light_swarm.add_light(l3);
+    light_swarm.add_light(l4);
 
 
-    auto floor = engine::core::Controller::get<engine::resources::ResourcesController>()->model("floor");
-    MyModel mfloor =MyModel(floor,glm::vec3(0.0f, -0.01f, 0.0f),0.5,0.0f,0.0f,0.0f);
-    models.push_back(mfloor);
+
+    // auto floor = engine::core::Controller::get<engine::resources::ResourcesController>()->model("floor");
+    // MyModel mfloor =MyModel(floor,glm::vec3(0.0f, -0.01f, 0.0f),0.5,0.0f,0.0f,0.0f);
+    // models.push_back(mfloor);
 
 
-    auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("gress");
-    prepare_grass(-50.0f,50.0f,-50.0f,50.0f,1000);
-    MyModel mgrass =MyModel(floor,glm::vec3(0.0f, 0.0f, 0.0f),0.5,0.0f,0.0f,0.0f);
-    models.push_back(mgrass);
+    // auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("gress");
+    // prepare_grass(-50.0f,50.0f,-50.0f,50.0f,1000);
+    // MyModel mgrass =MyModel(floor,glm::vec3(0.0f, 0.0f, 0.0f),0.5,0.0f,0.0f,0.0f);
+    // models.push_back(mgrass);
 
     //...
+    auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
+    MyModel mgrass =MyModel(grass,glm::vec3(0.0f, 0.0f, 0.0f),0.5,0.0f,0.0f,0.0f);
+    models.push_back(mgrass);
 
 }
 
