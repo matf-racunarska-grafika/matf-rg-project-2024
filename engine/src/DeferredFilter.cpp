@@ -33,7 +33,7 @@ void DeferredFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_h
 void DeferredFilter::setUpCanvas(std::vector<Light>& lights) {
     m_gbuffer.bind();
     m_geometry_shader->use();
-    m_geometry_shader->prepare_for_use();
+    //m_geometry_shader->prepare_for_use();
     m_geometry_shader->set_lights(lights);
     engine::core::Controller::get<GraphicsController>()->prepare_for_draw(m_geometry_shader);
 
@@ -43,7 +43,7 @@ void DeferredFilter::setUpCanvas(std::vector<Light>& lights) {
 
 void DeferredFilter::render(resources::Shader* shader) {
     shader->use();
-    shader->prepare_for_use();
+    //shader->prepare_for_use();
 
     shader->set_int("gPosition", 0);
     shader->set_int("gNormal", 1);

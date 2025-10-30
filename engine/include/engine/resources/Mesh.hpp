@@ -69,6 +69,7 @@ private:
     uint32_t m_shininess{32};
     bool isinstanced{false};
     bool is_emissive{false};
+    bool is_specular{false};
     uint32_t m_vbo{0};
 
 };

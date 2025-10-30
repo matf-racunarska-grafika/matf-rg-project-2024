@@ -6,6 +6,7 @@
 
 #include <MyGUIController.hpp>
 #include <MySceneController.hpp>
+#include <engine/graphics/GraphicsController.hpp>
 
 namespace app {
 void MyApp::app_setup() {

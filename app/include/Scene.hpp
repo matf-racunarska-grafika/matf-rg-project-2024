@@ -7,6 +7,8 @@
 #include <../../engine/include/engine/resources/Light.hpp>
 #include <LightSwarm.hpp>
 #include <MyModel.hpp>
+#include <engine/graphics/BloomFilter.hpp>
+#include <engine/graphics/DeferredFilter.hpp>
 #include <engine/resources/Model.hpp>
 #include <vector>
 
@@ -24,15 +26,24 @@ public:
 
     void draw_skybox();
     void draw_lights();
+
+    void set_width_height(int width, int height);
+
     std::vector<engine::graphics::Light> get_lights();
+    void draw();
+    void init_scene();
 
 private:
     std::vector<engine::graphics::Light> lights;
-    app::LightSwarm light_swarm;
     std::vector<MyModel> models;
     bool m_swarm_enabled = false;
 
-    void init_scene();
+    app::LightSwarm* light_swarm=nullptr;
+    engine::graphics::DeferredFilter*  m_deferred_filter=nullptr;
+    engine::graphics::BloomFilter*  m_bloom_filter=nullptr;
+
+
+
 
     void prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count);
     void scatter_lights(float fromx, float tox, float fromy, float toy, float fromz, float toz,  uint32_t count);

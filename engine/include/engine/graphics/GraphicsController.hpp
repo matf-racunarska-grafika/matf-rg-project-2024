@@ -169,9 +169,6 @@ public:
         return m_lights;
     }
 
-    DeferredFilter &deferred_filter();
-
-    BloomFilter &bloom_filter();
 
 private:
     /**
@@ -188,9 +185,6 @@ private:
     Camera m_camera{};
     ImGuiContext *m_imgui_context{};
     std::vector<Light> m_lights;
-
-    std::unique_ptr<DeferredFilter> m_deferred_filter;
-    std::unique_ptr<BloomFilter> m_bloom_filter;
 
 
 };

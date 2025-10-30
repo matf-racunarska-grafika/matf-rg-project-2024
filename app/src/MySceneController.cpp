@@ -24,11 +24,22 @@ void ScenePlatformEventObserver::on_key(engine::platform::Key key) {
         myscene->start_animation();
     }
 }
+
+void ScenePlatformEventObserver::on_window_resize(int width, int height) {
+    auto scene = engine::core::Controller::get<app::MySceneController>();
+    scene->set_window_size(width,height);
+}
+
 void MySceneController::set_dim(float brightness) {
     m_scene.dim_lights(brightness);
 }
+
 void MySceneController::start_animation() {
     m_duration_timer.startTimer(m_duration_amount);
+}
+
+void MySceneController::set_window_size(int width, int height) {
+    m_scene.set_width_height(width, height);
 }
 void MySceneController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
@@ -36,6 +47,7 @@ void MySceneController::initialize() {
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
 
     m_scene=Scene();
+    m_scene.init_scene();
     m_delay_timer=Timer();
     m_duration_timer=Timer();
 }
@@ -115,21 +127,7 @@ void MySceneController::begin_draw() {
 }
 
 void MySceneController::draw() {
-    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-    std::vector<engine::graphics::Light> lights = m_scene.get_lights();
-    graphics->deferred_filter().setUpCanvas(lights);
-    m_scene.draw_static_scene(graphics->deferred_filter().geometry_shader());
-    engine::resources::Shader * drawing_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("deferred_bloom_aware_render");
-    graphics->bloom_filter().setUpCanvas();
-    graphics->deferred_filter().render(drawing_shader);
-    engine::graphics::OpenGL::bindFrameBuffer(0);
-    graphics->bloom_filter().applyBloom();
-    graphics->deferred_filter().blitDepth(graphics->perspective_params().Width, graphics->perspective_params().Height, 0);
-
-    //special shaders?
-    m_scene.draw_lights();
-    m_scene.draw_skybox();
-
+    m_scene.draw();
 }
 
 void MySceneController::end_draw() {

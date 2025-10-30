@@ -46,6 +46,7 @@ class OpenGL {
 public:
     using ShaderProgramId = uint32_t;
 
+    static bool uniform_exists(ShaderProgramId program_id, const std::string &name);
     static void bindVao(unsigned int vao);
     static void drawArrays(unsigned int mode, unsigned int count);
 

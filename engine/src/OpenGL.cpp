@@ -13,6 +13,9 @@
 
 namespace engine::graphics {
 
+bool OpenGL::uniform_exists(ShaderProgramId program_id, const std::string &name) {
+    return glGetUniformLocation( program_id, name.c_str())!=-1;
+}
 void OpenGL::bindVao(unsigned int vao) {
     glBindVertexArray(vao);
 }

@@ -16,15 +16,17 @@ namespace app {
 class ScenePlatformEventObserver final : public engine::platform::PlatformEventObserver {
 public:
     void on_key(engine::platform::Key key) override;
+    void on_window_resize(int width, int height) override;
 };
 
 class MySceneController final : public engine::core::Controller {
 public:
     std::string_view name() const override {
-        return "test::app::MainController";
+        return "test::app::MyMainController";
     }
     void set_dim(float brightness);
     void start_animation();
+    void set_window_size(int width, int height);
 
 private:
     void initialize() override;
@@ -45,6 +47,7 @@ private:
 
 
     void update_camera();
+
 
 
     bool m_cursor_enabled{true};

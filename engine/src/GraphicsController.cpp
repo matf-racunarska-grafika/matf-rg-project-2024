@@ -16,9 +16,6 @@ void GraphicsController::initialize() {
     const int opengl_initialized = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
     RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
-    // Instantiate filters now that OpenGL is available
-    m_deferred_filter = std::make_unique<DeferredFilter>();
-    m_bloom_filter = std::make_unique<BloomFilter>();
 
     auto platform = engine::core::Controller::get<platform::PlatformController>();
     auto handle = platform->window()
@@ -48,10 +45,7 @@ void GraphicsController::initialize() {
     RG_GUARANTEE(ImGui_ImplGlfw_InitForOpenGL(handle, true), "ImGUI failed to initialize for OpenGL");
     RG_GUARANTEE(ImGui_ImplOpenGL3_Init("#version 330 core"), "ImGUI failed to initialize for OpenGL");
 
-    // Initialize filter buffers to current window size
-    deferred_filter().initilizeBuffers(static_cast<unsigned int>(m_perspective_params.Width), static_cast<unsigned int>(m_perspective_params.Height));
-    bloom_filter().initilizeBuffers(static_cast<unsigned int>(m_perspective_params.Width), static_cast<unsigned int>(m_perspective_params.Height));
-}
+    }
 
 void GraphicsController::terminate() {
     if (ImGui::GetCurrentContext()) {
@@ -74,16 +68,12 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
     m_graphics->orthographic_params()
               .Top = static_cast<float>(height);
 
-    m_graphics->deferred_filter().initilizeBuffers(width,height);
-    m_graphics->bloom_filter().initilizeBuffers(width,height);
 }
 
 std::string_view GraphicsController::name() const {
     return "GraphicsController";
 }
 
-DeferredFilter &GraphicsController::deferred_filter() { return *m_deferred_filter; }
-BloomFilter &GraphicsController::bloom_filter() { return *m_bloom_filter; }
 
 
 void GraphicsController::prepare_for_draw(resources::Shader* s) {

@@ -113,7 +113,7 @@ Shader::Shader(unsigned shader_id, std::string name, std::string source, std::fi
     m_num_textures[TextureType::Diffuse] = 1;
     m_num_textures[TextureType::Specular] = 1;
     m_num_textures[TextureType::Emissive] = 1;
-    prepare_for_use();
+    //prepare_for_use();
 
 }
 

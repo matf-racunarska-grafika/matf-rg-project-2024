@@ -84,7 +84,7 @@ std::string_view Light::uniform_name_convention(LightType type)  {
         case LightType::Directional: return "light_directional";
         case LightType::Point: return "light_point";
         case LightType::Spot: return "light_spot";
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled light type");
     }
 }
 

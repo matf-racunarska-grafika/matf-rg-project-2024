@@ -19,8 +19,7 @@ void main()
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     Normal = normalMatrix * aNormal;
-
-    gl_Position = projection * view * worldPos;
+    gl_Position = projection * view * vec4(aPos,1.0f);
 }
 
 //#shader fragment
@@ -38,7 +37,8 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_emissive1;
 
-uniform bool emissive;
+uniform bool is_emissive;
+uniform bool is_specular;
 uniform int shininess;
 
 void main()
@@ -46,9 +46,12 @@ void main()
     gPosition = FragPos;
     gNormal = normalize(Normal);
     gAlbedoSpec.rgb = texture(texture_diffuse1, TexCoords).rgb;
-    gAlbedoSpec.a = texture(texture_specular1, TexCoords).r;
     gEmissiveShine.a = float(shininess)/128.0f;
-    gEmissive.rgb=vec3(0.0);
-    if(emissive)
-        gEmissive.rgb=texture(texture_emissive1, TexCoords).rgb;
+    gEmissiveShine.rgb=vec3(0.0);
+    gAlbedoSpec.a = 0.0;
+
+    if(is_emissive)
+        gEmissiveShine.rgb=texture(texture_emissive1, TexCoords).rgb;
+    if(is_specular)
+        gAlbedoSpec.a = texture(texture_specular1, TexCoords).r;
 }

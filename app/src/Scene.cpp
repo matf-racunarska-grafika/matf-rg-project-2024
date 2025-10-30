@@ -13,12 +13,11 @@
 
 namespace app {
 Scene::Scene() {
-    init_scene();
 }
 void Scene::update(float dt, float light_intensity) {
     if (m_swarm_enabled) {
-        light_swarm.move_lights(dt);
-        light_swarm.set_light_dim(light_intensity);
+        light_swarm->move_lights(dt);
+        light_swarm->set_light_dim(light_intensity);
     }
 }
 void Scene::dim_lights(float factor) {
@@ -38,6 +37,20 @@ void Scene::toggle_swarm() {
 
 
 void Scene::init_scene() {
+    if (m_deferred_filter==nullptr) {
+        m_deferred_filter=new engine::graphics::DeferredFilter();
+        auto g=engine::core::Controller::get<engine::graphics::GraphicsController>();
+        m_deferred_filter->initilizeBuffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
+    }
+    if (m_bloom_filter==nullptr) {
+        m_bloom_filter=new engine::graphics::BloomFilter();
+        auto g=engine::core::Controller::get<engine::graphics::GraphicsController>();
+        m_bloom_filter->initilizeBuffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
+    }
+    if (light_swarm==nullptr) {
+        light_swarm=new LightSwarm();
+    }
+
     //lights
     auto l= engine::graphics::Light(
             engine::graphics::LightType::Point,
@@ -62,9 +75,8 @@ void Scene::init_scene() {
             glm::vec3(1,1,1));
 
 
-    light_swarm = LightSwarm();
-    light_swarm.add_light(l3);
-    light_swarm.add_light(l4);
+    light_swarm->add_light(l3);
+    light_swarm->add_light(l4);
 
 
 
@@ -93,12 +105,32 @@ void Scene::draw_skybox() {
 }
 void Scene::draw_lights() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("ligh_shader");
-    light_swarm.draw(shader);
+    light_swarm->draw(shader);
 }
+void Scene::set_width_height(int width, int height) {
+    m_deferred_filter->initilizeBuffers((width), (height));
+    m_bloom_filter->initilizeBuffers((width), (height));
+}
+
 std::vector<engine::graphics::Light> Scene::get_lights() {
     std::vector<engine::graphics::Light> res(lights);
-    res.insert( lights.begin(),light_swarm.get_lights().begin(),light_swarm.get_lights().end());
+    res.insert( lights.begin(),light_swarm->get_lights().begin(),light_swarm->get_lights().end());
     return res;
+}
+void Scene::draw() {
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+    std::vector<engine::graphics::Light> all_lights = get_lights();
+    m_deferred_filter->setUpCanvas(all_lights);
+    draw_static_scene(m_deferred_filter->geometry_shader());
+    engine::resources::Shader * drawing_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("deferred_bloom_aware_render");
+    m_bloom_filter->setUpCanvas();
+    m_deferred_filter->render(drawing_shader);
+    engine::graphics::OpenGL::bindFrameBuffer(0);
+    m_bloom_filter->applyBloom();
+    m_deferred_filter->blitDepth(graphics->perspective_params().Width, graphics->perspective_params().Height, 0);
+
+    draw_lights();
+    draw_skybox();
 }
 
 void Scene::prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count=1000) {
@@ -167,7 +199,7 @@ void Scene::scatter_lights(float fromx, float tox, float fromy, float fromz, flo
         generated.push_back(light);
     }
 
-    light_swarm.set_lights(generated);
+    light_swarm->set_lights(generated);
 }
 
 }// namespace app

@@ -81,6 +81,7 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
 
     for (auto &texture : m_textures) {
         if (texture->type()==TextureType::Emissive) {is_emissive=true; break;}
+        if (texture->type()==TextureType::Specular) {is_specular=true; break;}
     }
 
 }
@@ -90,20 +91,26 @@ void Mesh::prepare_for_draw(const Shader *shader) {
     std::string uniform_name;
     uniform_name.reserve(32);
     for (int i = 0; i < m_textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i+1);
+        //glActiveTexture(GL_TEXTURE0 + i+1);
+        glActiveTexture(GL_TEXTURE0 + i);
         const auto &texture_type = Texture::uniform_name_convention(m_textures[i]->type());
         uniform_name.append(texture_type);
         const auto count = (counts[texture_type] += 1);
-        if (count>shader->getLimitNumTextures(m_textures[i]->type())) {
-            continue;
-        }
+        //if (count>shader->getLimitNumTextures(m_textures[i]->type())) {
+        //    continue;
+        //}
         uniform_name.append(std::to_string(count));
-        shader->set_int(uniform_name, i+1);
+        //shader->set_int(uniform_name, i+1);
+        shader->set_int(uniform_name, i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
         uniform_name.clear();
     }
 
-    shader->set_int("shininess", m_shininess);
-    shader->set_bool("emissive", is_emissive);
+    if (graphics::OpenGL::uniform_exists(shader->id(), "shininess"))
+        shader->set_int("shininess", m_shininess);
+    if (graphics::OpenGL::uniform_exists(shader->id(), "is_emissive"))
+        shader->set_bool("is_emissive", is_emissive);
+    if (graphics::OpenGL::uniform_exists(shader->id(), "is_specular"))
+        shader->set_bool("is_specular", is_specular);
 }
 }
