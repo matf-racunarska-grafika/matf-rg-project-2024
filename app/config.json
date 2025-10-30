@@ -10,8 +10,15 @@
       "cloud" : {
         "path" : "cloud/cloud.obj"
       },
+      "clouds" : {
+        "path" : "cloud/cloud.obj"
+      },
       "bed1" : {
         "path" : "bed1/untitled.obj"
+      },
+      "table":
+      {
+        "path" : "table/Table.obj"
       }
     }
   },

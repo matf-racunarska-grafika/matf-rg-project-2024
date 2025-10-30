@@ -86,6 +86,7 @@ void MainController::draw_bed() {
     glm::mat4 model = glm::mat4(1.0);
     shader->set_mat4("model", model);
 
+    shader->set_float("material_shininess", 2.0f);
     //shader->set_vec3("viewPos", graphics->camera()->Position);
     //shader->set_vec3("lightPos", glm::vec3(0.0f, 5.0f, 2.0f));
     //shader->set_vec3("lightColor", glm::vec3(5.0f, 5.0f, 5.0f));
@@ -99,14 +100,13 @@ void MainController::draw_cloud() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* cloud = resources->model("cloud");
+    engine::resources::Model* cloud = resources->model("clouds");
     engine::resources::Shader* shader = resources->shader("cloud");
 
     shader->use();
 
     glm::mat4 model = glm::mat4(1.0);
-    model = glm::translate(model, glm::vec3(0.0f, 10.0f, -20.0f));
-    model = glm::scale(model, glm::vec3(0.9f));  // 2% size!
+
 
     shader->set_mat4("model", model);
     setup_lighting(shader);
@@ -117,6 +117,26 @@ void MainController::draw_cloud() {
     shader->set_vec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
     cloud->draw(shader);
+}
+void MainController::draw_table() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Model* table = resources->model("table");
+    engine::resources::Shader* shader = resources->shader("table");
+
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
+
+    glm::mat4 model = glm::mat4(1.0);
+    model = glm::translate(model, glm::vec3(7.0f, -3.0f, 7.0f));  // Right side
+    model = glm::scale(model, glm::vec3(0.065f));  // Small nightstand size
+    shader->set_mat4("model", model);
+
+    setup_lighting(shader);
+    table->draw(shader);
+
 }
 
 void MainController::begin_draw() {
@@ -161,7 +181,7 @@ void MainController::draw() {
     draw_skybox();
     draw_bed();
     draw_cloud();
-
+    draw_table();
 
 }
 

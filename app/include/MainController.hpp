@@ -23,6 +23,7 @@ public:
 private:
     void draw_bed();
     void draw_cloud();
+    void draw_table();
     void draw_skybox();
     void update_camera();
     void setup_lighting(engine::resources::Shader* shader);
