@@ -4,6 +4,24 @@
 
 namespace engine::resources {
 
+void Shader::prepare_for_use() {
+    std::string uniform_name;
+    uniform_name.reserve(32);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, graphics::OpenGL::getDefaultTexture());
+
+    for (auto tex_type:{TextureType::Emissive,TextureType::Specular,TextureType::Diffuse})
+        for (int i=0;i<m_num_textures[tex_type];i++) {
+            set_int(std::string(Texture::uniform_name_convention(tex_type)) + std::to_string(i), i);
+        }
+}
+
+int Shader::getLimitNumLights() const {
+    return m_num_lights;
+}
+int Shader::getLimitNumTextures(TextureType type) const {
+    return m_num_textures.at(type);
+}
 void Shader::use() const {
     glUseProgram(m_shader_id);
 }
@@ -91,6 +109,12 @@ Shader::Shader(unsigned shader_id, std::string name, std::string source, std::fi
                                                                                                           , m_name(std::move(name))
                                                                                                           , m_source(std::move(source))
                                                                                                           , m_source_path(std::move(source_path)) {
+
+    m_num_textures[TextureType::Diffuse] = 1;
+    m_num_textures[TextureType::Specular] = 1;
+    m_num_textures[TextureType::Emissive] = 1;
+    prepare_for_use();
+
 }
 
 }

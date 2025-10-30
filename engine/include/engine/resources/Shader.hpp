@@ -9,6 +9,7 @@
 #include <engine/util/Utils.hpp>
 #include <string>
 #include <engine/graphics/Light.hpp>
+#include <engine/resources/Texture.hpp>
 #include <glm/glm.hpp>
 
 
@@ -38,6 +39,9 @@ class Shader {
     friend class ShaderCompiler;
 
 public:
+    void prepare_for_use();
+    int getLimitNumLights() const;
+    int getLimitNumTextures(TextureType type) const;
     /**
     * @brief Binds the shader program.
     */
@@ -158,6 +162,11 @@ private:
     std::string m_name;
     std::string m_source;
     std::filesystem::path m_source_path;
+
+    //map?
+    int m_num_lights{1};
+    std::unordered_map<TextureType, int> m_num_textures;
+
 };
 } // namespace engine
 

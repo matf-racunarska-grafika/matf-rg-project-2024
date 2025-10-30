@@ -47,6 +47,42 @@ void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
+unsigned int OpenGL::CreateBlackTexture() {
+        unsigned int texID;
+        glGenTextures(1, &texID);
+        glBindTexture(GL_TEXTURE_2D, texID);
+
+        // 1x1 black pixel
+        unsigned char blackPixel[4] = { 0, 0, 0, 255 }; // RGBA
+
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,                  // mip level
+            GL_RGBA,            // internal format
+            1, 1,               // width, height
+            0,                  // border
+            GL_RGBA,            // format
+            GL_UNSIGNED_BYTE,   // type
+            blackPixel          // pixel data
+        );
+
+        // Set filtering and wrapping (important even for 1x1 texture)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // Unbind
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        return texID;
+}
+
+unsigned int OpenGL::getDefaultTexture() {
+    static unsigned int tex_id=CreateBlackTexture();
+    return tex_id;
+}
+
 unsigned int OpenGL::genFrameBuffer() {
     unsigned int fbo;
     glGenFramebuffers(1,&fbo);

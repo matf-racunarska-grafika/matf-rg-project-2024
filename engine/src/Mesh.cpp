@@ -91,10 +91,13 @@ void Mesh::prepare_for_draw(const Shader *shader) {
     std::string uniform_name;
     uniform_name.reserve(32);
     for (int i = 0; i < m_textures.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
+        glActiveTexture(GL_TEXTURE0 + i+1);
         const auto &texture_type = Texture::uniform_name_convention(m_textures[i]->type());
         uniform_name.append(texture_type);
         const auto count = (counts[texture_type] += 1);
+        if (count>shader->getLimitNumTextures(m_textures[i]->type())) {
+            continue;
+        }
         uniform_name.append(std::to_string(count));
         shader->set_int(uniform_name, i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());

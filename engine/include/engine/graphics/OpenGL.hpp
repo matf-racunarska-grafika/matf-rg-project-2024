@@ -63,6 +63,8 @@ public:
     static void deleteRenderBuffer(unsigned int rbo);
 
     static void BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask);
+    static unsigned int CreateBlackTexture();
+    static unsigned int getDefaultTexture();
     /**
     * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 
