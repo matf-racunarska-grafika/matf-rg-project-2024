@@ -25,6 +25,7 @@ void DeferredFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_h
     m_gbuffer.addColorAttachment(FrameTextureType::FLOAT, false, "position");
     m_gbuffer.addColorAttachment(FrameTextureType::FLOAT, false, "normal");
     m_gbuffer.addColorAttachment(FrameTextureType::RGBA, false, "albedo_spec");
+    m_gbuffer.addColorAttachment(FrameTextureType::RGBA, false, "emissive_shine");
 }
 
 void DeferredFilter::setUpCanvas() {
@@ -41,10 +42,10 @@ void DeferredFilter::render(resources::Shader shader) {
     shader.set_int("gNormal", 1);
     shader.set_int("gAlbedoSpec", 2);
 
-    // Bind textures to the matching units
     m_gbuffer.bindTexture("position", 0);
     m_gbuffer.bindTexture("normal", 1);
     m_gbuffer.bindTexture("albedo_spec", 2);
+    m_gbuffer.bindTexture("emissive_shine", 3);
 
     graphics->draw_quad();
 }

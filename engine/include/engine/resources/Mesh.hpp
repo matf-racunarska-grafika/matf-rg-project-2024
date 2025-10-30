@@ -57,7 +57,7 @@ private:
     * @param textures The textures in the mesh.
      */
     Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-         std::vector<Texture *> textures);
+         std::vector<Texture *> textures,bool emissive=false);
 
     void prepare_for_draw(const Shader *shader);
 
@@ -68,6 +68,7 @@ private:
 
     uint32_t m_shininess{32};
     bool isinstanced{false};
+    bool is_emissive{false};
     uint32_t m_vbo{0};
 
 };

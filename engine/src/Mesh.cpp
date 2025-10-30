@@ -42,7 +42,7 @@ void Mesh::instantiate(glm::mat4 *transform,uint32_t count) {
 }
 
 Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &indices,
-           std::vector<Texture *> textures) {
+           std::vector<Texture *> textures,bool emissive) {
     // NOLINTBEGIN
     static_assert(std::is_trivial_v<Vertex>);
     uint32_t VAO, VBO, EBO;
@@ -77,6 +77,13 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
     m_vao = VAO;
     m_num_indices = indices.size();
     m_textures = std::move(textures);
+
+    is_emissive = emissive;
+
+    for (auto &texture : m_textures) {
+        if (texture->type()==TextureType::Emissive) {is_emissive=true; break;}
+    }
+
 }
 
 void Mesh::prepare_for_draw(const Shader *shader) {
@@ -93,6 +100,8 @@ void Mesh::prepare_for_draw(const Shader *shader) {
         glBindTexture(GL_TEXTURE_2D, m_textures[i]->id());
         uniform_name.clear();
     }
+
     shader->set_int("shininess", m_shininess);
+    shader->set_bool("emissive", is_emissive);
 }
 }

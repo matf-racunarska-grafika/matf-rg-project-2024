@@ -258,6 +258,7 @@ std::vector<Texture *> AssimpSceneProcessor::process_materials(const aiMaterial 
             aiTextureType_SPECULAR,
             aiTextureType_NORMALS,
             aiTextureType_HEIGHT,
+            aiTextureType_EMISSIVE,
     };
 
     for (auto ai_texture_type: ai_texture_types) {
@@ -285,6 +286,8 @@ TextureType AssimpSceneProcessor::assimp_texture_type_to_engine(aiTextureType ty
         case aiTextureType_SPECULAR: return TextureType::Specular;
         case aiTextureType_HEIGHT: return TextureType::Height;
         case aiTextureType_NORMALS: return TextureType::Normal;
+        case aiTextureType_EMISSIVE: return TextureType::Emissive;
+
         default: RG_SHOULD_NOT_REACH_HERE("Engine currently doesn't support the aiTextureType: {}",
                                           static_cast<int>(type));
     }
