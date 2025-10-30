@@ -1,6 +1,8 @@
 
 #ifndef MATF_RG_PROJECT_LIGHT_HPP
 #define MATF_RG_PROJECT_LIGHT_HPP
+#include "../../../libs/assimp/code/AssetLib/glTF2/glTF2Exporter.h"
+
 #include <string_view>
 #include <engine/util/Errors.hpp>
 #include <glm/vec3.hpp>
@@ -47,6 +49,10 @@ public:
     void set_cutoff(float cutOff, float outerCutOff);
 
     bool is_spotlight();
+
+    glm::vec3 get_position();
+    void set_position(glm::vec3 new_position);
+    void move_position(glm::vec3 delta);
 
     LightType light_type() const;
 

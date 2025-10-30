@@ -35,7 +35,8 @@ bool Mesh::is_instanced() const {
 }
 
 void Mesh::instantiate(glm::mat4 *transform,uint32_t count) {
-    graphics::OpenGL::set_instancing_matrices(m_vao, transform, count, Mesh::NUM_OF_ATTRIBUTES);
+
+    m_vbo=graphics::OpenGL::set_instancing_matrices(m_vao,m_vbo, transform, count, Mesh::NUM_OF_ATTRIBUTES);
     isinstanced = true;
     m_num_instances = count;
 }

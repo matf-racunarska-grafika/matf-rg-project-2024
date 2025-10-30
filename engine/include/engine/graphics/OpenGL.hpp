@@ -58,8 +58,6 @@ public:
 
     static void bindFrameBuffer(unsigned int buffer_id);
 
-
-
     static void deleteFrameBuffer(unsigned int fb);
     static void deleteTexture(unsigned int texture_id);
     static void deleteRenderBuffer(unsigned int rbo);
@@ -168,7 +166,7 @@ public:
     */
     static std::string get_compilation_error_message(uint32_t shader_id);
 
-    static void set_instancing_matrices(uint32_t vao, glm::mat4* model_matrices, size_t count, uint32_t start_attribute_index = 5);
+    static unsigned int set_instancing_matrices(uint32_t vao,uint32_t vbo, glm::mat4* model_matrices, size_t count, uint32_t start_attribute_index = 5);
 private:
     /**
     * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.

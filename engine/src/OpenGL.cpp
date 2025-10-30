@@ -9,71 +9,10 @@
 #include <engine/resources/Skybox.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
+#include <unordered_map>
 
 namespace engine::graphics {
-BloomFrameBuffer OpenGL::makeBloomFramebuffer(unsigned int width, unsigned int height) {
-    unsigned int fbo;
-    glGenFramebuffers(1, &fbo);
-    unsigned int colorBuffers[2];
-    glGenTextures(2, colorBuffers);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D, colorBuffers[0], 0);
-
-    glBindTexture(GL_TEXTURE_2D, colorBuffers[1]);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1 , GL_TEXTURE_2D, colorBuffers[1], 0);
-
-    unsigned int depthBuff;
-    glGenRenderbuffers(1, &depthBuff);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthBuff);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuff);
-
-    unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-    glDrawBuffers(2, attachments);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    struct BloomFrameBuffer res= {fbo,colorBuffers[0],colorBuffers[1], depthBuff};
-    return res;
-}
-
-SimpleColorBuffer OpenGL::makeSimpleColorBuffer(unsigned int width, unsigned int height) {
-    unsigned int fbo;
-    unsigned int colorBuff;
-    glGenFramebuffers(1, &fbo);
-    glGenTextures(1, &colorBuff);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-    glBindTexture(GL_TEXTURE_2D, colorBuff);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuff, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    SimpleColorBuffer res{fbo, colorBuff};
-    return res;
-}
 
 void OpenGL::bindFrameBuffer(unsigned int buffer_id) {
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
@@ -95,19 +34,6 @@ void OpenGL::deleteRenderBuffer(unsigned int rbo) {
     if (rbo != 0) {
         glDeleteRenderbuffers(1, &rbo);
     }
-}
-
-void OpenGL::DestroyBuffer(BloomFrameBuffer bloom_buffer) {
-
-    glDeleteFramebuffers(1, &bloom_buffer.fbo);
-    glDeleteTextures(1, &bloom_buffer.texture_bright);
-    glDeleteTextures(1, &bloom_buffer.texture_normal);
-    glDeleteRenderbuffers(1, &bloom_buffer.depth_buffer);
-}
-
-void OpenGL::DestroyBuffer(SimpleColorBuffer simple_buffer) {
-    glDeleteFramebuffers(1, &simple_buffer.fbo);
-    glDeleteTextures(1, &simple_buffer.texture);
 }
 
 void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask) {
@@ -261,8 +187,14 @@ std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
     return infoLog;
 }
 
-void OpenGL::set_instancing_matrices(uint32_t vao, glm::mat4 *model_matrices, size_t count, uint32_t start_attribute_index) {
+unsigned int OpenGL::set_instancing_matrices(uint32_t vao,uint32_t vbo, glm::mat4 *model_matrices, size_t count, uint32_t start_attribute_index) {
     glBindVertexArray(vao);
+    unsigned int buffer=vbo;
+    if (vbo==0)
+        glGenBuffers(1, &buffer);
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, count * sizeof(glm::mat4), model_matrices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(start_attribute_index);
     glVertexAttribPointer(start_attribute_index++, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
@@ -271,15 +203,16 @@ void OpenGL::set_instancing_matrices(uint32_t vao, glm::mat4 *model_matrices, si
     glEnableVertexAttribArray(start_attribute_index);
     glVertexAttribPointer(start_attribute_index++, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4)));
     glEnableVertexAttribArray(start_attribute_index);
-    glVertexAttribPointer(start_attribute_index, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
+    glVertexAttribPointer(start_attribute_index,   4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4)));
 
     glVertexAttribDivisor(start_attribute_index, 1);
     glVertexAttribDivisor(--start_attribute_index, 1);
     glVertexAttribDivisor(--start_attribute_index, 1);
     glVertexAttribDivisor(--start_attribute_index, 1);
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
+    return buffer;
 
 }
 

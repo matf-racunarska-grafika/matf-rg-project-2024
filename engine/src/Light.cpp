@@ -42,10 +42,23 @@ void Light::set_attenuation(float constant, float linear, float quadratic) {
 }
 
 void Light::set_cutoff(float cutOff, float outerCutOff) {
-    m_outerCutoff = std::clamp(m_outerCutoff * cutOff, 1.0f, 360.0f);
+    m_cutoff = cutOff;
+    m_outerCutoff = outerCutOff;
 }
 
 bool Light::is_spotlight() { return m_type == LightType::Spot; }
+
+glm::vec3 Light::get_position() {
+    return m_position;
+}
+
+void Light::set_position(glm::vec3 new_position) {
+    m_position = new_position;
+}
+
+void Light::move_position(glm::vec3 delta) {
+    m_position += delta;
+}
 
 LightType Light::light_type() const {
     return m_type;

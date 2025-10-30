@@ -68,6 +68,7 @@ private:
 
     uint32_t m_shininess{32};
     bool isinstanced{false};
+    uint32_t m_vbo{0};
 
 };
 } // namespace engine
