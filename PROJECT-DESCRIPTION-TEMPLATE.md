@@ -15,8 +15,10 @@ L -> Turn on light on lamp by the bedside table
 ### Fundamental:
 
 [X] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[ ] {Click on GUI button - 'Make or brake'}
+    --- AFTER_3_SECONDS ---Triggers---> {Lamp flickers for 3 seconds}
+    ---> AFTER_3_SECONDS---Triggers---> {Either turns on or off, 50% chance}
 
 ### Group A:
 

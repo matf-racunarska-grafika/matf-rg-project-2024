@@ -35,6 +35,12 @@ private:
 
     bool lamp_is_on = true;
     glm::vec3 lamp_position = glm::vec3(7.0f, 1.2f, 7.0f);
+    bool start_flicker_sequence = false;
+    bool lamp_is_flickering = false;
+    float flicker_delay_timer = 0.0f;
+    float flicker_timer = 0.0f;
+    float flicker_interval = 0.0f;
+
 
 };
 }

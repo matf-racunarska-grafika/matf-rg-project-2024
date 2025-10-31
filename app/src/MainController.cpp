@@ -11,6 +11,12 @@
 
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
+
+bool g_lamp_is_on = true;
+bool g_lamp_is_flickering = false;
+bool g_start_flicker_sequence = false;
+float g_flicker_timer = 0.0f;
+
 namespace app {
 
 
@@ -40,8 +46,10 @@ bool MainController::loop() {
         return false;
     }
     if (platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
-        lamp_is_on = !lamp_is_on;
-        spdlog::info("Lamp has just been turned {}", lamp_is_on?"on!":"off!");
+        if (!lamp_is_flickering) {
+            lamp_is_on = !lamp_is_on;
+            spdlog::info("Lamp has just been (manually) turned {}", lamp_is_on?"on!":"off!");
+        }
     }
     return true;
 }
@@ -184,6 +192,59 @@ void MainController::draw_lamp() {
     lamp->draw(shader);
 }
 
+void MainController::update_lamp_flicker() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    float dt = platform->dt();
+
+    if (g_start_flicker_sequence) {
+        start_flicker_sequence = true;
+        g_start_flicker_sequence = false;
+    }
+
+    if (start_flicker_sequence && !lamp_is_flickering) {
+        start_flicker_sequence = false;
+        flicker_delay_timer = 3.0f;
+        lamp_is_flickering = true;
+        spdlog::info("Flicker sequence started - waiting 3 seconds");
+    }
+
+    if (lamp_is_flickering) {
+        if (flicker_delay_timer > 0.0f) {
+            flicker_delay_timer -= dt;
+
+            if (flicker_delay_timer <= 0.0f) {
+                flicker_timer = 3.0f;
+                flicker_interval = 0.0f;
+                spdlog::info("Starting flicker effect");
+            }
+        }
+        else if (flicker_timer > 0.0f) {
+            flicker_timer -= dt;
+            g_flicker_timer = flicker_timer;
+
+            flicker_interval -= dt;
+            if (flicker_interval <= 0.0f) {
+                lamp_is_on = !lamp_is_on;
+                g_lamp_is_on = lamp_is_on;
+
+                flicker_interval = 0.05f + (rand() % 150) / 1000.0f;
+            }
+
+            if (flicker_timer <= 0.0f) {
+                lamp_is_on = (rand() % 2) == 0;  // 50/50 chance
+                g_lamp_is_on = lamp_is_on;
+                lamp_is_flickering = false;
+                g_lamp_is_flickering = false;
+
+                spdlog::info("Flicker effect ended - lamp is now (due to pure luck): {}", lamp_is_on ? "on!" : "off");
+            }
+        }
+    }
+
+    g_lamp_is_flickering = lamp_is_flickering;
+    g_lamp_is_on = lamp_is_on;
+}
+
 void MainController::begin_draw() {
     engine::graphics::OpenGL::enable_depth_testing();
 engine::graphics::OpenGL::clear_buffers();
@@ -217,6 +278,9 @@ void MainController::update_camera() {
 }
 void MainController::update() {
     update_camera();
+    update_lamp_flicker();
+    lamp_is_on = g_lamp_is_on;
+    lamp_is_flickering = g_lamp_is_flickering;
 }
 
 void MainController::draw_skybox() {
