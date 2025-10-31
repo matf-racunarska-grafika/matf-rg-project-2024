@@ -14,6 +14,8 @@ namespace app {
         spdlog::info("App setup completed");
         auto main_controller = register_controller<app::MainController>();
         auto gui_controller = register_controller<app::GUIController>();
+        auto drawing_controller = register_controller<engine::graphics::GraphicsController>();
+        drawing_controller->before(gui_controller);
         main_controller->before(gui_controller);
         main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
     }

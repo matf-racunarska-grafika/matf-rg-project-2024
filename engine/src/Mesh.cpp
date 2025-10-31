@@ -63,6 +63,7 @@ void Mesh::draw(const Shader *shader) {
     glBindVertexArray(0);
 }
 
+
 void Mesh::destroy() {
     glDeleteVertexArrays(1, &m_vao);
 }

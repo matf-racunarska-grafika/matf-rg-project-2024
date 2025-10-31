@@ -25,7 +25,9 @@ add_subdirectory(libs/stb EXCLUDE_FROM_ALL)
 add_subdirectory(libs/imgui EXCLUDE_FROM_ALL)
 add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
-add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers})
+add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers}
+        src/DrawingController.cpp
+        include/engine/graphics/DrawingController.hpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC glm::glm-header-only spdlog::spdlog imgui json)

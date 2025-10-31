@@ -16,4 +16,7 @@ void Model::destroy() {
         mesh.destroy();
     }
 }
+std::vector<Mesh> Model::get_m_meshes() const {
+    return m_meshes;
 }
+}// namespace engine::resources

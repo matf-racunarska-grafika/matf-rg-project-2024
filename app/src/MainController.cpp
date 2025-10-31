@@ -236,7 +236,7 @@ void MainController::update_lamp_flicker() {
                 lamp_is_flickering = false;
                 g_lamp_is_flickering = false;
 
-                spdlog::info("Flicker effect ended - lamp is now (due to pure luck): {}", lamp_is_on ? "on!" : "off");
+                spdlog::info("Flicker effect ended - lamp is now (due to pure luck): {}", lamp_is_on ? "on!" : "off!");
             }
         }
     }
@@ -292,7 +292,6 @@ void MainController::draw_skybox() {
 }
 
 void MainController::draw() {
-
     draw_skybox();
     draw_bed();
     draw_cloud();
@@ -303,7 +302,7 @@ void MainController::draw() {
 void MainController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
-    }
+}
 
 
 

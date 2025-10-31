@@ -45,7 +45,7 @@ public:
     const std::filesystem::path &path() const {
         return m_path;
     }
-
+    [[nodiscard]] std::vector<Mesh> get_m_meshes() const;
     /**
     * @brief Returns the name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
     * @returns The name of the model.

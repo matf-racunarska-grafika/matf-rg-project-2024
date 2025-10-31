@@ -38,7 +38,8 @@ public:
     * @param shader The shader to use for drawing.
     */
     void draw(const Shader *shader);
-
+    [[nodiscard]] uint32_t get_m_num_indices() const {return m_num_indices; }
+[[nodiscard]] uint32_t get_vao() const { return m_vao; }
     /**
     * @brief Destroys the mesh in the OpenGL context.
     */
