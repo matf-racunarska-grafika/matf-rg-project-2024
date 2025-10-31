@@ -395,7 +395,7 @@ class Verifier:
 
     def _apply_rule_checks(self, file_path: Path) -> List[RuleViolation]:
         result = []
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
             lines = f.readlines()
         result.extend(self._check_source_level_rules(lines, file_path))
         result.extend(self._check_line_level_rules(lines, file_path))

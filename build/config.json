@@ -1,7 +1,19 @@
 {
-    "window": {
-        "height": 600,
-        "title": "Hello, window!",
-        "width": 800
+  "resources": {
+    "models": {
+      "moon": {
+        "path": "moon/Moon2k.obj",
+        "flip_uvs": false
+      },
+      "flower": {
+        "path": "flower/tulip.obj",
+        "flip_uvs": false
+      }
     }
+  },
+  "window": {
+    "height": 600,
+    "title": "Mesec nebo zvezdice",
+    "width": 800
+  }
 }

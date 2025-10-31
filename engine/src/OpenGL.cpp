@@ -50,6 +50,7 @@ uint32_t OpenGL::generate_texture(const std::filesystem::path &path, bool flip_u
 int32_t OpenGL::texture_format(int32_t number_of_channels) {
     switch (number_of_channels) {
         case 1: return GL_RED;
+        case 2: return GL_RG;
         case 3: return GL_RGB;
         case 4: return GL_RGBA;
         default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
@@ -205,6 +206,7 @@ uint32_t face_index(std::string_view name) {
 int32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels) {
     switch (number_of_channels) {
         case 1: return GL_RED;
+        case 2: return GL_RG;
         case 3: return GL_RGB;
         case 4: return GL_RGBA;
         default: RG_SHOULD_NOT_REACH_HERE("Unknown channels {}", number_of_channels);
