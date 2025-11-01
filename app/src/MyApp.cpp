@@ -3,9 +3,14 @@
 //
 
 #include <MyApp.hpp>
+#include <MainController.hpp>
+#include <../include/MyApp.hpp>
+#include <engine/core/Controller.hpp>
 
 namespace my_project {
-void app_setup() {
-    // Here I will register all the necessary controllers for my Application
+void MyApp::app_setup() {
+
+    auto main_controller = MyApp::register_controller<my_project::MyController>();
+    main_controller->after(engine::core::Controller::get<engine::core::EngineControllersEnd>());
 }
 }
