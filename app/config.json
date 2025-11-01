@@ -1,16 +1,16 @@
 {
   "resources": {
     "models": {
-      "backpack": {
-        "path": "backpack/backpack.obj",
-        "flip_uvs": false
-      },
       "cube": {
         "path": "cube/cube.obj",
         "flip_uvs": false
       },
       "sphere": {
         "path": "sphereobj/sphere_uv_24x24.obj",
+        "flip_uvs": false
+      },
+      "tigar_cat": {
+        "path": "cat/cat.obj",
         "flip_uvs": false
       }
     }

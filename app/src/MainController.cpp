@@ -54,7 +54,6 @@ void MyController::begin_draw() {
 }
 
 void MyController::draw() {
-    draw_test_model();
     draw_scene_with_lights();
 }
 
@@ -100,7 +99,6 @@ void MyController::draw_scene_with_lights() {
     auto resource_c = core::Controller::get<resources::ResourcesController>();
     auto graphics_c = core::Controller::get<graphics::GraphicsController>();
 
-    auto model = resource_c->model("backpack");
     auto shader = resource_c->shader("lighting_shader");
 
     shader->use();
@@ -149,7 +147,19 @@ void MyController::draw_scene_with_lights() {
     if (platform->key(platform::KEY_O).state() == platform::Key::State::Pressed)
         pointPos.y -= moveSpeed;
 
-    model->draw(shader);
+    auto cat = resource_c->model("tigar_cat");
+    if (cat) {
+        glm::mat4 catModel = glm::mat4(1.0f);
+        catModel = glm::translate(catModel, glm::vec3(0.0f, -1.0f, -3.0f));
+        catModel = glm::rotate(catModel, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        catModel = glm::rotate(catModel, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        catModel = glm::scale(catModel, glm::vec3(0.08f));
+        shader->set_mat4("model", catModel);
+        shader->set_vec3("objectColor", glm::vec3(0.9f, 0.85f, 0.75f));
+        cat->draw(shader);
+
+        cat->draw(shader);
+    }
 
     auto lightShader = resource_c->shader("light_cube");
     auto sphere = resource_c->model("sphere");
