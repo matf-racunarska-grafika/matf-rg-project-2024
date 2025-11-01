@@ -100,6 +100,21 @@ void MainController::draw_moon() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+    shader->set_float("shininess", m_shininess);
+    // Directional light
+    shader->set_vec3("dirLight.direction", m_dir_light.direction);
+    shader->set_vec3("dirLight.ambient",   m_dir_light.ambient);
+    shader->set_vec3("dirLight.diffuse",   m_dir_light.diffuse);
+    shader->set_vec3("dirLight.specular",  m_dir_light.specular);
+    // Point light
+    shader->set_vec3("pointLight.position",  m_point_light.position);
+    shader->set_float("pointLight.constant",  m_point_light.constant);
+    shader->set_float("pointLight.linear",    m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLight.ambient",    m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse",    m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular",   m_point_light.specular);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(8.0f, 8.0f, 8.0f));
@@ -120,6 +135,19 @@ void MainController::draw_tulip() {
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
     shader->set_mat4("view", graphics->camera()->view_matrix());
+    shader->set_vec3("viewPos", graphics->camera()->Position);
+    shader->set_float("shininess", m_shininess);
+    shader->set_vec3("dirLight.direction", m_dir_light.direction);
+    shader->set_vec3("dirLight.ambient",   m_dir_light.ambient);
+    shader->set_vec3("dirLight.diffuse",   m_dir_light.diffuse);
+    shader->set_vec3("dirLight.specular",  m_dir_light.specular);
+    shader->set_vec3("pointLight.position",  m_point_light.position);
+    shader->set_float("pointLight.constant",  m_point_light.constant);
+    shader->set_float("pointLight.linear",    m_point_light.linear);
+    shader->set_float("pointLight.quadratic", m_point_light.quadratic);
+    shader->set_vec3("pointLight.ambient",    m_point_light.ambient);
+    shader->set_vec3("pointLight.diffuse",    m_point_light.diffuse);
+    shader->set_vec3("pointLight.specular",   m_point_light.specular);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, 19.0f, 9.0f));
@@ -142,7 +170,13 @@ void MainController::draw() {
     // Nacrtaj skybox u pozadini
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-    graphics->draw_skybox(resources->shader("skybox"), resources->skybox("skybox1"));
+    {
+        std::filesystem::path sb = "resources/skyboxes/skybox";
+        if (!std::filesystem::is_directory(sb)) {
+            sb = "app/resources/skyboxes/skybox";
+        }
+        graphics->draw_skybox(resources->shader("skybox"), resources->skybox("skybox", sb));
+    }
 
     if (g_bloom && g_bloom->is_bloom_enabled()) {
         g_bloom->finalize_bloom();
