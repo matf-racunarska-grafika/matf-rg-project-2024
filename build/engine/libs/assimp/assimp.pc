@@ -1,7 +1,7 @@
 libdir=/usr/local/lib
 includedir=/usr/local/include
 
-Name: matf-rg-project
+Name: mesec_nebo_zvezdice
 Description: Import various well-known 3D model formats in an uniform manner.
 Version: 5.4.3
 Libs: -L${libdir} -lassimp

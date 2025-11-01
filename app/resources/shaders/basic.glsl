@@ -39,6 +39,6 @@ void main()
     // Jednostavno lambert osvetljenje sa fiksnim smerom
     vec3 lightDir = normalize(vec3(0.4, 1.0, 0.3));
     float diff = max(dot(normalize(Normal), lightDir), 0.0);
-    vec3 color = 0.2 * base + 0.8 * diff * base;
+    vec3 color = 0.8 * base + 0.8 * diff * base;
     FragColor = vec4(color, 1.0);
 }

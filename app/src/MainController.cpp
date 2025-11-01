@@ -1,5 +1,7 @@
 #include "MainController.h"
 #include "GUIController.hpp"
+#include "engine/graphics/BloomController.h"
+#include "engine/graphics/SpriteController.hpp"
 #include "engine/core/Controller.hpp"
 #include "engine/graphics/GraphicsController.hpp"
 #include "engine/graphics/OpenGL.hpp"
@@ -8,6 +10,9 @@
 #include "spdlog/spdlog.h"
 
 namespace app {
+static engine::graphics::BloomController* g_bloom = nullptr;
+static bool g_b_pressed = false;
+static engine::resources::Texture* g_star_tex = nullptr;
 
 // Klasa za praćenje miša
 class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -29,19 +34,31 @@ void MainController::initialize() {
 
     engine::graphics::OpenGL::enable_depth_testing();
 
-    // Podesi kameru kao u projektu 'grafika' (pozicija i orijentacija)
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto cam = graphics->camera();
     cam->Position = glm::vec3(-33.941f, 18.9701f, -10.2835f);
     cam->Yaw = 22.06f;
     cam->Pitch = 13.39f;
     cam->rotate_camera(0.0f, 0.0f);
+    cam->Position -= cam->Front * 30.0f;
 
     // Inicijalizuj skybox shader (postavi sampler)
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto skyboxShader = resources->shader("skybox");
     skyboxShader->use();
     skyboxShader->set_int("skybox", 0);
+
+    // Bloom setup
+    g_bloom = engine::core::Controller::get<engine::graphics::BloomController>();
+    if (g_bloom) {
+        g_bloom->bloom_setup();
+        g_bloom->toggle_bloom();
+    }
+
+    // Učitaj star teksturu
+    if (!g_star_tex) {
+        g_star_tex = resources->texture("star", "resources/textures/star.png");
+    }
 }
 
 // ----------------------
@@ -53,6 +70,17 @@ bool MainController::loop() {
         return false;
     }
 
+    // Toggle bloom na B
+    if (g_bloom) {
+        if (platform->key(engine::platform::KeyId::KEY_B).is_down()) {
+            if (!g_b_pressed) {
+                g_bloom->toggle_bloom();
+                g_b_pressed = true;
+            }
+        } else {
+            g_b_pressed = false;
+        }
+    }
     return true;
 }
 
@@ -74,7 +102,6 @@ void MainController::draw_moon() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0f);
-    // Pozicioniranje kao u projektu 'grafika'
     model = glm::translate(model, glm::vec3(8.0f, 8.0f, 8.0f));
     model = glm::scale(model, glm::vec3(8.25f));
 
@@ -95,7 +122,6 @@ void MainController::draw_tulip() {
     shader->set_mat4("view", graphics->camera()->view_matrix());
 
     glm::mat4 model = glm::mat4(1.0f);
-    // Pozicioniranje kao u projektu 'grafika'
     model = glm::translate(model, glm::vec3(0.0f, 19.0f, 9.0f));
     model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 1.0f));
     model = glm::scale(model, glm::vec3(0.37f));
@@ -106,6 +132,10 @@ void MainController::draw_tulip() {
 
 // Glavna draw funkcija
 void MainController::draw() {
+    if (g_bloom && g_bloom->is_bloom_enabled()) {
+        g_bloom->prepare_hdr();
+    }
+    
     draw_moon();
     draw_tulip();
 
@@ -113,6 +143,24 @@ void MainController::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     graphics->draw_skybox(resources->shader("skybox"), resources->skybox("skybox1"));
+
+    if (g_bloom && g_bloom->is_bloom_enabled()) {
+        g_bloom->finalize_bloom();
+    }
+
+    {
+        auto shader = resources->shader("blending");
+
+        glm::mat4 modelStar = glm::mat4(1.0f);
+        modelStar = glm::translate(modelStar, glm::vec3(23.0f, 0.0f, 5.0f));
+        modelStar = glm::rotate(modelStar, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+
+        modelStar = glm::scale(modelStar, glm::vec3(90.0f));
+
+        engine::core::Controller::get<engine::graphics::SpriteController>()->
+            draw_textured_quad(g_star_tex, shader, modelStar,
+                               graphics->camera()->view_matrix(), graphics->projection_matrix());
+    }
 }
 
 // ----------------------

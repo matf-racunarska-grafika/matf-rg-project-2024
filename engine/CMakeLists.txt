@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(matf-rg-engine)
+project(mesec_engine)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -25,9 +25,13 @@ add_subdirectory(libs/stb EXCLUDE_FROM_ALL)
 add_subdirectory(libs/imgui EXCLUDE_FROM_ALL)
 add_subdirectory(libs/glm EXCLUDE_FROM_ALL)
 
-add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers})
-target_include_directories(${PROJECT_NAME} PUBLIC include/)
-target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
+add_library(engine_lib ${engine-sources} ${engine-headers}
+        include/engine/graphics/BloomController.h
+        src/BloomController.cpp
+        include/engine/graphics/SpriteController.hpp
+        src/SpriteController.cpp)
+target_include_directories(engine_lib PUBLIC include/)
+target_link_libraries(engine_lib PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC glm::glm-header-only spdlog::spdlog imgui json)
 
-prebuild_check(${PROJECT_NAME})
+prebuild_check(engine_lib)
