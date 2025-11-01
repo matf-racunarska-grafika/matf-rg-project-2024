@@ -25,6 +25,8 @@ private:
 
     void update() override;
 
+    void update_camera();
+
     void begin_draw() override;
 
     void draw() override;
@@ -34,8 +36,6 @@ private:
     void draw_skybox();
 
     void draw_backpack();
-
-    void update_camera();
 
     float m_backpack_scale{1.0f};
     bool m_draw_gui{false};
