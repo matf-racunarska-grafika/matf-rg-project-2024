@@ -55,7 +55,7 @@ void MyController::begin_draw() {
 
 void MyController::draw() {
     draw_test_model();
-    draw_light_cube();
+    draw_scene_with_lights();
 }
 
 
@@ -94,5 +94,89 @@ void MyController::draw_light_cube() {
     shader->set_mat4("model", model);
     cube->draw(shader);
 }
+
+void MyController::draw_scene_with_lights() {
+    using namespace engine;
+    auto resource_c = core::Controller::get<resources::ResourcesController>();
+    auto graphics_c = core::Controller::get<graphics::GraphicsController>();
+
+    // 🔹 Uzimamo model koji želimo da osvetlimo (možeš menjati "backpack" ili "cube")
+    auto model = resource_c->model("backpack");
+    auto shader = resource_c->shader("lighting_shader");
+
+    // 🔹 Aktiviramo shader
+    shader->use();
+
+    // 🔹 Matrice kamere i projekcije
+    shader->set_mat4("projection", graphics_c->projection_matrix());
+    shader->set_mat4("view", graphics_c->camera()->view_matrix());
+
+    // 🔹 Model matrica (pozicija i skala modela)
+    glm::mat4 modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, glm::vec3(0.0f, -1.0f, -3.0f)); // pomeri malo napred
+    modelMat = glm::scale(modelMat, glm::vec3(1.0f));
+    shader->set_mat4("model", modelMat);
+
+    // Pozicija kamere (za Phong view vector)
+    shader->set_vec3("viewPos", graphics_c->camera()->Position);
+
+    // 1️⃣ Directional light
+    shader->set_vec3("dirLightDir", glm::vec3(-0.2f, -1.0f, -0.3f));
+    shader->set_vec3("dirLightColor", glm::vec3(1.0f, 1.0f, 1.0f)); // belo svetlo
+
+    // 2️⃣ Point light
+    static glm::vec3 pointPos(2.0f, 2.0f, 2.0f); // početna pozicija svetla
+    shader->set_vec3("pointLightPos", pointPos);
+    shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.6f, 0.6f)); // toplo svetlo
+
+    // Boja objekta
+    shader->set_vec3("objectColor", glm::vec3(1.0f, 0.9f, 0.8f));
+
+    // ============================================================
+    // 🧠 INTERAKTIVNE KONTROLE
+    // ============================================================
+
+    auto platform = core::Controller::get<platform::PlatformController>();
+
+    // Promena boje svetla tastaturom
+    if (platform->key(platform::KEY_1).state_str() == "Pressed")
+        shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.0f, 0.0f)); // crveno
+    if (platform->key(platform::KEY_2).state_str() == "Pressed")
+        shader->set_vec3("pointLightColor", glm::vec3(0.0f, 1.0f, 0.0f)); // zeleno
+    if (platform->key(platform::KEY_3).state_str() == "Pressed")
+        shader->set_vec3("pointLightColor", glm::vec3(0.0f, 0.0f, 1.0f)); // plavo
+
+    // Pomeri svetlo WASD
+    float moveSpeed = 2.0f * platform->dt();
+    if (platform->key(platform::KEY_I).state() == platform::Key::State::Pressed)
+        pointPos.z -= moveSpeed;
+    if (platform->key(platform::KEY_K).state() == platform::Key::State::Pressed)
+        pointPos.z += moveSpeed;
+    if (platform->key(platform::KEY_J).state() == platform::Key::State::Pressed)
+        pointPos.x -= moveSpeed;
+    if (platform->key(platform::KEY_L).state() == platform::Key::State::Pressed)
+        pointPos.x += moveSpeed;
+    if (platform->key(platform::KEY_U).state() == platform::Key::State::Pressed)
+        pointPos.y += moveSpeed;
+    if (platform->key(platform::KEY_O).state() == platform::Key::State::Pressed)
+        pointPos.y -= moveSpeed;
+
+    model->draw(shader);
+
+    auto lightShader = resource_c->shader("light_cube");
+    auto sphere = resource_c->model("sphere");
+
+    lightShader->use();
+    lightShader->set_mat4("projection", graphics_c->projection_matrix());
+    lightShader->set_mat4("view", graphics_c->camera()->view_matrix());
+
+    glm::mat4 lightModel = glm::mat4(1.0f);
+    lightModel = glm::translate(lightModel, pointPos);
+    lightModel = glm::scale(lightModel, glm::vec3(0.1f));
+    lightShader->set_mat4("model", lightModel);
+
+    sphere->draw(lightShader);
+}
+
 
 }

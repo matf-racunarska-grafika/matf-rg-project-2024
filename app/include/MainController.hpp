@@ -33,7 +33,7 @@ private:
     void draw_test_model();
 
     void draw_light_cube();
-
+    void draw_scene_with_lights();
 };
 }
 
