@@ -30,6 +30,10 @@ private:
 
     bool enable_cursor{true};
 
+    void draw_test_model();
+
+    void draw_light_cube();
+
 };
 }
 

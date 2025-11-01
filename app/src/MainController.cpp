@@ -42,6 +42,8 @@ void MyController::update() {
                 .state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt); }
     if (platform->key(engine::platform::KEY_D)
                 .state() == engine::platform::Key::State::Pressed) { camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt); }
+    if (platform->key(engine::platform::KEY_SPACE).state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::UP, dt); }
+    if (platform->key(engine::platform::KEY_LEFT_CONTROL).state_str() == "Pressed") { camera->move_camera(engine::graphics::Camera::DOWN, dt); }
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
@@ -52,23 +54,45 @@ void MyController::begin_draw() {
 }
 
 void MyController::draw() {
-
-    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
-    auto backpack = resource_c->model("backpack");
-    auto shader = resource_c->shader("basic_backpack");
-
-    auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
-
-    shader->use();
-    shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
-    shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(1.0f)));
-    backpack->draw(shader);
+    draw_test_model();
+    draw_light_cube();
 }
+
+
 
 void MyController::end_draw() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     platform->swap_buffers();
 }
+
+void MyController::draw_test_model() {
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto backpack = resource_c->model("backpack");
+    auto shader = resource_c->shader("basic_backpack");
+    auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
+    shader->use();
+    shader->set_mat4("projection", graphics->projection_matrix());
+    shader->set_mat4("view", graphics->camera()
+                                     ->view_matrix());
+    shader->set_mat4("model", glm::mat4(1.0f));
+    backpack->draw(shader);
+}
+
+void MyController::draw_light_cube() {
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+    auto cube = resource_c->model("cube");
+    auto shader = resource_c->shader("light_cube");
+    auto graphics_c = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    shader->use();
+    shader->set_mat4("projection", graphics_c->projection_matrix());
+    shader->set_mat4("view", graphics_c->camera()->view_matrix());
+    auto model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(2.0f, 2.0f, 2.0f));
+    model = glm::scale(model, glm::vec3(0.25f));
+    shader->set_mat4("model", model);
+    cube->draw(shader);
+}
+
 }
