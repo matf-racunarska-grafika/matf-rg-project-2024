@@ -100,45 +100,33 @@ void MyController::draw_scene_with_lights() {
     auto resource_c = core::Controller::get<resources::ResourcesController>();
     auto graphics_c = core::Controller::get<graphics::GraphicsController>();
 
-    // 🔹 Uzimamo model koji želimo da osvetlimo (možeš menjati "backpack" ili "cube")
     auto model = resource_c->model("backpack");
     auto shader = resource_c->shader("lighting_shader");
 
-    // 🔹 Aktiviramo shader
     shader->use();
 
-    // 🔹 Matrice kamere i projekcije
     shader->set_mat4("projection", graphics_c->projection_matrix());
     shader->set_mat4("view", graphics_c->camera()->view_matrix());
 
-    // 🔹 Model matrica (pozicija i skala modela)
     glm::mat4 modelMat = glm::mat4(1.0f);
-    modelMat = glm::translate(modelMat, glm::vec3(0.0f, -1.0f, -3.0f)); // pomeri malo napred
+    modelMat = glm::translate(modelMat, glm::vec3(0.0f, -1.0f, -3.0f));
     modelMat = glm::scale(modelMat, glm::vec3(1.0f));
     shader->set_mat4("model", modelMat);
 
-    // Pozicija kamere (za Phong view vector)
     shader->set_vec3("viewPos", graphics_c->camera()->Position);
 
-    // 1️⃣ Directional light
     shader->set_vec3("dirLightDir", glm::vec3(-0.2f, -1.0f, -0.3f));
     shader->set_vec3("dirLightColor", glm::vec3(1.0f, 1.0f, 1.0f)); // belo svetlo
 
-    // 2️⃣ Point light
     static glm::vec3 pointPos(2.0f, 2.0f, 2.0f); // početna pozicija svetla
     shader->set_vec3("pointLightPos", pointPos);
     shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.6f, 0.6f)); // toplo svetlo
 
-    // Boja objekta
     shader->set_vec3("objectColor", glm::vec3(1.0f, 0.9f, 0.8f));
 
-    // ============================================================
-    // 🧠 INTERAKTIVNE KONTROLE
-    // ============================================================
 
     auto platform = core::Controller::get<platform::PlatformController>();
 
-    // Promena boje svetla tastaturom
     if (platform->key(platform::KEY_1).state_str() == "Pressed")
         shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.0f, 0.0f)); // crveno
     if (platform->key(platform::KEY_2).state_str() == "Pressed")
@@ -177,6 +165,4 @@ void MyController::draw_scene_with_lights() {
 
     sphere->draw(lightShader);
 }
-
-
 }
