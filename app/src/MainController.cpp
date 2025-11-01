@@ -75,11 +75,38 @@ bool MainController::loop() {
         if (platform->key(engine::platform::KeyId::KEY_B).is_down()) {
             if (!g_b_pressed) {
                 g_bloom->toggle_bloom();
+                spdlog::info("ACTION_B: bloom toggled -> {}", g_bloom->is_bloom_enabled() ? "ON" : "OFF");
                 g_b_pressed = true;
             }
         } else {
             g_b_pressed = false;
         }
+    }
+
+    // Direktni tasteri za EVENT_A i EVENT_C radi lakšeg testiranja
+    if (platform->key(engine::platform::KeyId::KEY_A)
+                .state() == engine::platform::Key::State::JustPressed) {
+        // Postavi svetlo na roze nijansu i pojačaj intenzitet
+        const glm::vec3 pink = glm::vec3(1.2f, 0.3f, 0.9f);
+        m_point_light.diffuse  = pink * 3.0f;
+        m_point_light.specular = pink * 3.0f;
+        m_point_light.ambient  = pink * 0.5f; // i ambient ide u roze, ali slabije
+        m_event_a_done = true;
+        spdlog::info("EVENT_A: point light color changed");
+    }
+    if (platform->key(engine::platform::KeyId::KEY_C)
+                .state() == engine::platform::Key::State::JustPressed) {
+        m_tulip_visible = !m_tulip_visible;
+        m_event_c_done = true;
+        spdlog::info("EVENT_C: tulip visible = {}", m_tulip_visible);
+    }
+
+    // ACTION: pokreni event sekvencu tasterom SPACE
+    if (platform->key(engine::platform::KeyId::KEY_SPACE)
+                .state() == engine::platform::Key::State::JustPressed) {
+        m_sequence_running = true;
+        m_sequence_time = 0.0f;
+        m_event_a_done = m_event_b_done = m_event_c_done = false;
     }
     return true;
 }
@@ -117,7 +144,7 @@ void MainController::draw_moon() {
     shader->set_vec3("pointLight.specular",   m_point_light.specular);
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(8.0f, 8.0f, 8.0f));
+    model = glm::translate(model, glm::vec3(8.0f, 8.0f, 8.0f) + m_moon_event_offset);
     model = glm::scale(model, glm::vec3(8.25f));
 
     shader->set_mat4("model", model);
@@ -129,6 +156,7 @@ void MainController::draw_tulip() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
 
+    if (!m_tulip_visible) return;
     engine::resources::Model* tulip = resources->model("tulip");
     auto shader = resources->shader("basic");
 
@@ -229,6 +257,37 @@ void MainController::update_camera() {
 
 void MainController::update() {
     update_camera();
+
+    // Event sekvenca – vreme i okidači
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (m_sequence_running) {
+        m_sequence_time += platform->dt();
+        // EVENT_A: nakon 5s – promeni boju point svetla (npr. roze)
+        if (!m_event_a_done && m_sequence_time >= 5.0f) {
+            m_point_light.diffuse = glm::vec3(1.0f, 0.3f, 0.8f);
+            m_event_a_done = true;
+        }
+        // EVENT_B: nakon 8s – pomeri mesec
+        if (!m_event_b_done && m_sequence_time >= 8.0f) {
+            m_moon_event_offset = glm::vec3(4.0f, 2.0f, 0.0f);
+            m_event_b_done = true;
+            spdlog::info("EVENT_B: moon moved by offset (4,2,0)");
+        }
+        // EVENT_C: nakon 12s – sakrij tulip
+        if (!m_event_c_done && m_sequence_time >= 12.0f) {
+            m_tulip_visible = false;
+            m_event_c_done = true;
+        }
+        // reset posle 18s
+        if (m_sequence_time >= 18.0f) {
+            m_sequence_running = false;
+            m_sequence_time = 0.0f;
+            m_moon_event_offset = glm::vec3(0.0f);
+            m_tulip_visible = true;
+            // vrati svetlo
+            m_point_light.diffuse = glm::vec3(0.8f);
+        }
+    }
 }
 
 } // namespace app

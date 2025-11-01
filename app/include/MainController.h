@@ -48,6 +48,15 @@ namespace app {
         PointLightParams m_point_light{};
         float m_shininess = 32.0f;
 
+        // Event sekvenca (ACTION -> after t -> EVENT_A -> after t -> EVENT_B ...)
+        bool  m_sequence_running = false;
+        float m_sequence_time    = 0.0f;   // sekunde od ACTION
+        bool  m_event_a_done     = false;  // promena boje svetla
+        bool  m_event_b_done     = false;  // pomeraj meseca
+        bool  m_event_c_done     = false;  // sakrij tulip
+        bool  m_tulip_visible    = true;
+        glm::vec3 m_moon_event_offset{0.0f};
+
             
     private:
         void update_camera();
