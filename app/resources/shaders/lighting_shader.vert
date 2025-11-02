@@ -20,6 +20,7 @@ void main() {
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
+
 //#shader fragment
 #version 330 core
 
@@ -40,12 +41,30 @@ uniform vec3 pointLightColor;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_bump1;
 uniform vec3 objectColor;
-void main() {
-    vec3 baseColor = texture(texture_diffuse1, TexCoords).rgb;
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{
+    float height = texture(texture_bump1, texCoords).r;
+    float heightScale = 0.04;
+    vec2 p = viewDir.xy / viewDir.z * (height * heightScale);
+    return texCoords - p;
+}
+
+void main()
+{
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    vec2 parallaxTexCoords = ParallaxMapping(TexCoords, viewDir);
+
+    if (parallaxTexCoords.x < 0.0 || parallaxTexCoords.x > 1.0 ||
+        parallaxTexCoords.y < 0.0 || parallaxTexCoords.y > 1.0)
+        discard;
+
+    vec3 baseColor = texture(texture_diffuse1, parallaxTexCoords).rgb;
     if (baseColor == vec3(0.0))
         baseColor = objectColor;
 
-    float bump = texture(texture_bump1, TexCoords).r;
+    float bump = texture(texture_bump1, parallaxTexCoords).r;
     bump = bump * 2.0 - 1.0;
     vec3 perturbedNormal = normalize(Normal + bump * 0.3);
     vec3 norm = normalize(perturbedNormal);
@@ -62,5 +81,6 @@ void main() {
 
     vec3 ambient = 0.25 * baseColor;
     vec3 result = (ambient + diffuseDir + diffusePoint) * baseColor;
+
     FragColor = vec4(result, 1.0);
 }

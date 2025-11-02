@@ -13,6 +13,10 @@ namespace my_project {
 void MyController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     spdlog::info("Hello, from the MyController initialize");
+
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto window = platform->window();
+    engine::graphics::OpenGL::create_bloom_fbo(window->width(), window->height());
 }
 
 bool MyController::loop() {
@@ -54,7 +58,12 @@ void MyController::begin_draw() {
 }
 
 void MyController::draw() {
+    engine::graphics::OpenGL::bind_and_clear_fbo_framebuffer();
     draw_scene_with_lights();
+    auto fbo_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("fbo_shader");
+    fbo_shader->use();
+    fbo_shader->set_int("fboTexture", 0);
+    engine::graphics::OpenGL::draw_framebuffer();
 }
 
 
@@ -114,11 +123,11 @@ void MyController::draw_scene_with_lights() {
     shader->set_vec3("viewPos", graphics_c->camera()->Position);
 
     shader->set_vec3("dirLightDir", glm::vec3(-0.2f, -1.0f, -0.3f));
-    shader->set_vec3("dirLightColor", glm::vec3(1.0f, 1.0f, 1.0f)); // belo svetlo
+    shader->set_vec3("dirLightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
-    static glm::vec3 pointPos(2.0f, 2.0f, 2.0f); // početna pozicija svetla
+    static glm::vec3 pointPos(2.0f, 2.0f, 2.0f);
     shader->set_vec3("pointLightPos", pointPos);
-    shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.6f, 0.6f)); // toplo svetlo
+    shader->set_vec3("pointLightColor", glm::vec3(1.0f, 0.6f, 0.6f));
 
     shader->set_vec3("objectColor", glm::vec3(1.0f, 0.9f, 0.8f));
 
