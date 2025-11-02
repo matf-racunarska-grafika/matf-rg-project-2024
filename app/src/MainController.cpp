@@ -147,6 +147,37 @@ void MyController::draw_scene_with_lights() {
     if (platform->key(platform::KEY_O).state() == platform::Key::State::Pressed)
         pointPos.y -= moveSpeed;
 
+    static float eventTimer = 0.0f;
+    static bool eventTriggered = false;
+
+    float dt = platform->dt();
+
+    if (platform->key(platform::KEY_G).state_str() == "JustReleased") {
+        spdlog::info("Event sequence started!");
+        eventTimer = 0.0f;
+        eventTriggered = true;
+    }
+
+    if (eventTriggered) {
+        eventTimer += dt;
+
+        if (eventTimer > 3.0f && eventTimer < 3.1f) {
+            spdlog::info("EVENT A triggered — cyan light!");
+            shader->set_vec3("pointLightColor", glm::vec3(0.0f, 1.0f, 1.0f));
+        }
+
+        if (eventTimer > 6.0f && eventTimer < 6.1f) {
+            spdlog::info("EVENT B triggered — turning off light.");
+            shader->set_vec3("pointLightColor", glm::vec3(0.0f, 0.0f, 0.0f));
+        }
+
+        if (eventTimer > 8.0f) {
+            spdlog::info("Event sequence finished.");
+            eventTriggered = false;
+        }
+    }
+
+
     auto cat = resource_c->model("tigar_cat");
     if (cat) {
         static float rotationAngle = 0.0f;
