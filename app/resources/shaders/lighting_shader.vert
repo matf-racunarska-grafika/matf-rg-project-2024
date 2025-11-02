@@ -3,9 +3,11 @@
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
 
 out vec3 FragPos;
 out vec3 Normal;
+out vec2 TexCoords;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -14,6 +16,7 @@ uniform mat4 projection;
 void main() {
     FragPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
+    TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
 
@@ -24,35 +27,39 @@ out vec4 FragColor;
 
 in vec3 FragPos;
 in vec3 Normal;
+in vec2 TexCoords;
 
 uniform vec3 viewPos;
 
-// Directional light
 uniform vec3 dirLightDir;
 uniform vec3 dirLightColor;
 
-// Point light
 uniform vec3 pointLightPos;
 uniform vec3 pointLightColor;
 
-// Material
+uniform sampler2D texture_diffuse1;
 uniform vec3 objectColor;
 
 void main() {
     vec3 norm = normalize(Normal);
+    vec3 baseColor = texture(texture_diffuse1, TexCoords).rgb;
+    if (baseColor == vec3(0.0)) baseColor = objectColor;
 
-    // Directional light
     vec3 lightDir = normalize(-dirLightDir);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuseDir = diff * dirLightColor;
 
-    // Point light
+
     vec3 toLight = normalize(pointLightPos - FragPos);
     float diffPoint = max(dot(norm, toLight), 0.0);
     float dist = length(pointLightPos - FragPos);
     float attenuation = 1.0 / (1.0 + 0.09 * dist + 0.032 * dist * dist);
     vec3 diffusePoint = diffPoint * pointLightColor * attenuation;
 
-    vec3 result = (diffuseDir + diffusePoint) * objectColor;
+
+    vec3 ambient = 0.25 * baseColor;
+
+
+    vec3 result = (ambient + diffuseDir + diffusePoint) * baseColor;
     FragColor = vec4(result, 1.0);
 }
