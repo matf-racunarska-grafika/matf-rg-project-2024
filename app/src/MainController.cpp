@@ -149,16 +149,20 @@ void MyController::draw_scene_with_lights() {
 
     auto cat = resource_c->model("tigar_cat");
     if (cat) {
+        static float rotationAngle = 0.0f;
+        auto platform = core::Controller::get<platform::PlatformController>();
+        float dt = platform->dt();
+        rotationAngle += 30.0f * dt;
+
         glm::mat4 catModel = glm::mat4(1.0f);
         catModel = glm::translate(catModel, glm::vec3(0.0f, -1.0f, -3.0f));
         catModel = glm::rotate(catModel, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        catModel = glm::rotate(catModel, glm::radians(-90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        catModel = glm::rotate(catModel, glm::radians(rotationAngle), glm::vec3(0.0f, 0.0f, 1.0f));
+
         catModel = glm::scale(catModel, glm::vec3(0.08f));
         shader->set_mat4("model", catModel);
-        shader->set_vec3("objectColor", glm::vec3(0.9f, 0.85f, 0.75f));
         cat->draw(shader);
 
-        cat->draw(shader);
     }
 
     auto lightShader = resource_c->shader("light_cube");

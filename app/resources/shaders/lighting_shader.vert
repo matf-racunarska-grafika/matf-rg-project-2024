@@ -38,17 +38,21 @@ uniform vec3 pointLightPos;
 uniform vec3 pointLightColor;
 
 uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_bump1;
 uniform vec3 objectColor;
-
 void main() {
-    vec3 norm = normalize(Normal);
     vec3 baseColor = texture(texture_diffuse1, TexCoords).rgb;
-    if (baseColor == vec3(0.0)) baseColor = objectColor;
+    if (baseColor == vec3(0.0))
+        baseColor = objectColor;
+
+    float bump = texture(texture_bump1, TexCoords).r;
+    bump = bump * 2.0 - 1.0;
+    vec3 perturbedNormal = normalize(Normal + bump * 0.3);
+    vec3 norm = normalize(perturbedNormal);
 
     vec3 lightDir = normalize(-dirLightDir);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuseDir = diff * dirLightColor;
-
+    float diffDir = max(dot(norm, lightDir), 0.0);
+    vec3 diffuseDir = diffDir * dirLightColor;
 
     vec3 toLight = normalize(pointLightPos - FragPos);
     float diffPoint = max(dot(norm, toLight), 0.0);
@@ -56,10 +60,7 @@ void main() {
     float attenuation = 1.0 / (1.0 + 0.09 * dist + 0.032 * dist * dist);
     vec3 diffusePoint = diffPoint * pointLightColor * attenuation;
 
-
     vec3 ambient = 0.25 * baseColor;
-
-
     vec3 result = (ambient + diffuseDir + diffusePoint) * baseColor;
     FragColor = vec4(result, 1.0);
 }
