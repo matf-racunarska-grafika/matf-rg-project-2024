@@ -61,9 +61,19 @@ void MyController::begin_draw() {
 void MyController::draw() {
     engine::graphics::OpenGL::bind_and_clear_fbo_framebuffer();
     draw_scene_with_lights();
-    auto fbo_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("fbo_shader");
-    fbo_shader->use();
-    fbo_shader->set_int("fboTexture", 0);
+    auto resource_c = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto post_shader = resource_c->shader("postprocess_shader");
+    post_shader->use();
+    post_shader->set_int("fboTexture", 0);
+
+    static int effectType = 0;
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    if (platform->key(engine::platform::KEY_4).state_str() == "JustReleased") effectType = 1; // grayscale
+    if (platform->key(engine::platform::KEY_5).state_str() == "JustReleased") effectType = 2; // invert
+    if (platform->key(engine::platform::KEY_6).state_str() == "JustReleased") effectType = 0; // normal
+
+    post_shader->set_int("effectType", effectType);
+
     engine::graphics::OpenGL::draw_framebuffer();
 }
 
