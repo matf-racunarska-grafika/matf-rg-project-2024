@@ -220,11 +220,32 @@ void MyController::draw_scene_with_lights() {
     if (cube) {
         glm::mat4 spaceModel = glm::mat4(1.0f);
         spaceModel = glm::translate(spaceModel, glm::vec3(0.0f, -1.0f, -3.0f));
-        spaceModel = glm::scale(spaceModel, glm::vec3(3.0f, 0.1f, 3.0f));
+        spaceModel = glm::scale(spaceModel, glm::vec3(7.0f, 0.1f, 7.0f));
         shader->set_mat4("model", spaceModel);
 
         shader->set_vec3("objectColor", glm::vec3(0.0f, 0.8f, 0.0f));
         cube->draw(shader);
+    }
+
+    auto tree = resource_c->model("tree");
+    if (tree) {
+        glm::mat4 treeModel = glm::mat4(1.0f);
+        treeModel = glm::translate(treeModel, glm::vec3(4.0f, -1.0f, -3.0f));
+        treeModel = glm::scale(treeModel, glm::vec3(0.2f));
+        shader->set_mat4("model", treeModel);
+        shader->set_vec3("objectColor", glm::vec3(0.2f, 0.8f, 0.3f));
+        tree->draw(shader);
+    }
+
+    auto bird = resource_c->model("bird");
+    if (bird) {
+        glm::mat4 birdModel = glm::mat4(1.0f);
+        birdModel = glm::translate(birdModel, glm::vec3(3.5f, 2.0f, -1.0f));
+        birdModel = glm::rotate(birdModel, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        birdModel = glm::scale(birdModel, glm::vec3(0.08f));
+        shader->set_mat4("model", birdModel);
+        shader->set_vec3("objectColor", glm::vec3(0.2f, 0.8f, 0.3f));
+        bird->draw(shader);
     }
 
     auto lightShader = resource_c->shader("light_cube");

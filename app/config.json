@@ -12,7 +12,16 @@
       "tigar_cat": {
         "path": "cat/cat.obj",
         "flip_uvs": false
+      },
+      "tree": {
+        "path": "low_poly_tree/Lowpoly_tree_sample.obj",
+        "flip_uvs": true
+      },
+      "bird": {
+        "path": "bird/12235_Bird_v1_l3.obj",
+        "flip_uvs": true
       }
+
     }
   },
   "window": {
