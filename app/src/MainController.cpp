@@ -216,6 +216,17 @@ void MyController::draw_scene_with_lights() {
 
     }
 
+    auto cube = resource_c->model("cube");
+    if (cube) {
+        glm::mat4 spaceModel = glm::mat4(1.0f);
+        spaceModel = glm::translate(spaceModel, glm::vec3(0.0f, -1.0f, -3.0f));
+        spaceModel = glm::scale(spaceModel, glm::vec3(3.0f, 0.1f, 3.0f));
+        shader->set_mat4("model", spaceModel);
+
+        shader->set_vec3("objectColor", glm::vec3(0.0f, 0.8f, 0.0f));
+        cube->draw(shader);
+    }
+
     auto lightShader = resource_c->shader("light_cube");
     auto sphere = resource_c->model("sphere");
 
