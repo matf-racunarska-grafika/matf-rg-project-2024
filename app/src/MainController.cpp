@@ -54,6 +54,7 @@ void MyController::update() {
 }
 
 void MyController::begin_draw() {
+    engine::graphics::OpenGL::set_clear_color(0.2f, 0.4f, 0.7f, 1.0f);
     engine::graphics::OpenGL::clear_buffers();
 }
 

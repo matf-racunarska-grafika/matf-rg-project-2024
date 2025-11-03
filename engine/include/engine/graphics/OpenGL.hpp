@@ -147,6 +147,8 @@ public:
 
     static void draw_framebuffer();
 
+    static void set_clear_color(float r, float g, float b, float a);
+
 private:
     /**
     * @brief Throws an engine::util::EngineError of type @ref engine::util::EngineError::Type::OpenGLError if an OpenGL error occurred. Used internally.
