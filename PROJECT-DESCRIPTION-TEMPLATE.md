@@ -16,14 +16,14 @@ L -> Turn on light on lamp by the bedside table
 
 [X] Model with lighting
 [X] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {Click on GUI button - 'Make or brake'}
+[X] {Click on GUI button - 'Make or brake'}
     --- AFTER_3_SECONDS ---Triggers---> {Lamp flickers for 3 seconds}
     ---> AFTER_3_SECONDS---Triggers---> {Either turns on or off, 50% chance}
 
 ### Group A:
 
 [ ] Frame-buffers with post-processing   
-[ ] Instancing  
+[ehhhh] Instancing  
 [ ] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
 

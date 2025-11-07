@@ -4,6 +4,7 @@
 
 #include <MainController.hpp>
 #include <engine/core/App.hpp>
+#include <engine/graphics/DrawingController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
@@ -39,6 +40,10 @@ void app::MainController::initialize() {
 
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     camera->Position = glm::vec3(-7.0f, 7.0f, 7.0f);
+
+    setup_clouds();
+
+    setup_cloud_lighting();
 };
 bool MainController::loop() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
@@ -60,16 +65,15 @@ void MainController::setup_lighting(engine::resources::Shader* shader) {
     shader->use();
     shader->set_vec3("viewPos", graphics->camera()->Position);
 
-    //TODO:shininess
 
     shader->set_vec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
     shader->set_vec3("dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
     shader->set_vec3("dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.3f));
     shader->set_vec3("dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
 
-    shader->set_vec3("pointLights[0].ambient", glm::vec3(0)); //0.3f, 0.2f, 0.15f
-    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0)); //1.0f, 0.8f, 0.6f
-    shader->set_vec3("pointLights[0].specular", glm::vec3(0)); //1.0f, 1.0f, 1.0f
+    shader->set_vec3("pointLights[0].ambient", glm::vec3(0));
+    shader->set_vec3("pointLights[0].diffuse", glm::vec3(0));
+    shader->set_vec3("pointLights[0].specular", glm::vec3(0));
     shader->set_float("pointLights[0].constant", 1.0f);
     shader->set_float("pointLights[0].linear", 0.09f);
     shader->set_float("pointLights[0].quadratic", 0.032f);
@@ -94,6 +98,21 @@ void MainController::setup_lighting(engine::resources::Shader* shader) {
     }
 
     shader->set_int("numPointLights", 2);
+}
+
+void MainController::setup_cloud_lighting() {
+    auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+    auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+
+    engine::resources::Shader* cloud_shader = resources->shader("cloud");
+    if (!cloud_shader) return;
+
+    cloud_shader->use();
+
+    setup_lighting(cloud_shader);
+
+    cloud_shader->set_vec3("cloudColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    cloud_shader->set_float("material_shininess", 8.0f);
 }
 
 void MainController::draw_bed() {
@@ -125,17 +144,15 @@ void MainController::draw_cloud() {
     auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
 
-    engine::resources::Model* cloud = resources->model("clouds");
+    engine::resources::Model* cloud = resources->model("cloud");
     engine::resources::Shader* shader = resources->shader("cloud");
 
     shader->use();
 
     glm::mat4 model = glm::mat4(1.0);
 
-
     shader->set_mat4("model", model);
     setup_lighting(shader);
-
 
     shader->set_vec3("viewPos", graphics->camera()->Position);
     shader->set_vec3("lightPos", glm::vec3(0.0f, 5.0f, 0.0f));
@@ -244,6 +261,51 @@ void MainController::update_lamp_flicker() {
     g_lamp_is_flickering = lamp_is_flickering;
     g_lamp_is_on = lamp_is_on;
 }
+void MainController::setup_clouds() {
+    auto drawing = engine::core::Controller::get<engine::drawing::DrawingController>();
+
+    drawing->create_instanced_group("cloud", "cloud", "cloud");
+
+    for (int i = 0; i < num_clouds; i++) {
+        float angle = (i / (float)num_clouds) * 2.0f * M_PI;
+        float x = cos(angle) * orbit_radius;
+        float z = sin(angle) * orbit_radius;
+        float y = sin(angle * 3.0f) * 1.0f;
+
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, glm::vec3(x, y, z));
+        transform = glm::rotate(transform, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+        transform = glm::scale(transform, glm::vec3(0.015f));
+
+        drawing->add_instance_to_group("cloud", transform);
+    }
+
+    drawing->setup_instanced_group("cloud");
+}
+
+void MainController::update_clouds() {
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    auto drawing = engine::core::Controller::get<engine::drawing::DrawingController>();
+    cloud_orbit_time += platform->dt();
+    float orbit_angle = cloud_orbit_time * 10.0f; 
+
+    for (size_t i = 0; i < num_clouds; i++) {
+        float angle = (i / (float)num_clouds) * 2.0f * M_PI + glm::radians(orbit_angle);
+
+        float x = cos(angle) * orbit_radius;
+        float z = sin(angle) * orbit_radius;
+        float y = sin(angle * 3.0f) * 1.0f;
+
+        y += sin(cloud_orbit_time * 2.0f + i * 0.5f) * 0.3f;
+
+        glm::mat4 transform = glm::mat4(1.0f);
+        transform = glm::translate(transform, glm::vec3(x, y, z));
+        transform = glm::rotate(transform, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+        transform = glm::scale(transform, glm::vec3(0.015f));
+
+        drawing->update_instance_in_group("cloud", i, transform);
+    }
+}
 
 void MainController::begin_draw() {
     engine::graphics::OpenGL::enable_depth_testing();
@@ -278,6 +340,7 @@ void MainController::update_camera() {
 }
 void MainController::update() {
     update_camera();
+    update_clouds();
     update_lamp_flicker();
     lamp_is_on = g_lamp_is_on;
     lamp_is_flickering = g_lamp_is_flickering;
@@ -294,9 +357,9 @@ void MainController::draw_skybox() {
 void MainController::draw() {
     draw_skybox();
     draw_bed();
-    draw_cloud();
     draw_table();
     draw_lamp();
+
 }
 
 void MainController::end_draw() {
@@ -306,5 +369,4 @@ void MainController::end_draw() {
 
 
 
-
-}// namespace app;
+}

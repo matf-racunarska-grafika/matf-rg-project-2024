@@ -19,7 +19,7 @@ public:
     std::string_view name() const override {
         return "app::MainController";
     }
-//c3c1aaa39efd442bba6bccd21ec33c14.obj
+
 private:
     void draw_bed();
     void draw_cloud();
@@ -29,6 +29,9 @@ private:
     void update_camera();
     void update_lamp_flicker();
     void setup_lighting(engine::resources::Shader* shader);
+    void setup_cloud_lighting();
+    void setup_clouds();
+    void update_clouds();
 
     glm::vec3 m_cloud_transl_factor = glm::vec3(0.0f, 5.0f, 0.0f);
     glm::vec3 m_cloud_scale_factor = glm::vec3(1.0f);
@@ -41,6 +44,9 @@ private:
     float flicker_timer = 0.0f;
     float flicker_interval = 0.0f;
 
+    float cloud_orbit_time = 0.2f;
+    float orbit_radius = 20.0f;
+    int num_clouds = 10;
 
 };
 }

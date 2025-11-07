@@ -1,12 +1,11 @@
-# Fixed cloud material - white/light gray for realistic cloud appearance
 # File produced by Open Asset Import Library (http://www.assimp.sf.net)
 # (assimp v3.1.187496374)
 
 newmtl %%%DEFAULT
-Kd 0.95 0.95 0.98
-Ka 0.3 0.3 0.35
-Ks 0.2 0.2 0.2
+Kd 0.3 0.3 0.3
+Ka 0 0 0
+Ks 0 0 0
 Ke 0 0 0
-Ns 32
 d 1
-illum 2
+illum 1
+
