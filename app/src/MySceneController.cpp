@@ -35,21 +35,36 @@ void MySceneController::set_dim(float brightness) {
 }
 
 void MySceneController::start_animation() {
-    m_duration_timer.startTimer(m_duration_amount);
+    m_delay_timer.startTimer(m_delay_amount);
 }
 
 void MySceneController::set_window_size(int width, int height) {
     m_scene.set_width_height(width, height);
 }
+
+void MySceneController::set_threshold(float threshold) {
+    m_scene.set_threshold(threshold);
+}
+
+void MySceneController::set_bloom_intensity(float brightness) {
+    m_scene.set_bloom_intensity(brightness);
+}
+
 void MySceneController::initialize() {
     engine::graphics::OpenGL::enable_depth_testing();
     auto observer = std::make_unique<ScenePlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
+    const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    platform->set_enable_cursor(true);
 
     m_scene=Scene();
     m_scene.init_scene();
+    m_scene.set_swarm_enabled(false);
     m_delay_timer=Timer();
     m_duration_timer=Timer();
+    m_delay_timer.restartTimer();
+    m_duration_timer.restartTimer();
+
 }
 
 bool MySceneController::loop() {
@@ -76,18 +91,19 @@ void MySceneController::update() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto ft=platform->frame_time();
 
+
     if (m_delay_timer.isEnabled()) {
         if (!m_delay_timer.update(ft.dt)) {
-            m_duration_timer.startTimer(m_duration_amount);
-            m_scene.toggle_swarm();
+        m_duration_timer.startTimer(m_duration_amount);
+        m_scene.set_swarm_enabled(true);
         }
     }
-    if (m_delay_timer.isEnabled()) {
-        if (!m_delay_timer.update(ft.dt)) {
-            m_scene.toggle_swarm();
+    if (m_duration_timer.isEnabled()) {
+        if (!m_duration_timer.update(ft.dt)) {
+        m_scene.set_swarm_enabled(false);
         }
     }
-    m_scene.update(ft.dt, std::sin(ft.current));
+    m_scene.update(ft);
 
 }
 
@@ -128,6 +144,7 @@ void MySceneController::begin_draw() {
 
 void MySceneController::draw() {
     m_scene.draw();
+    //m_scene.draw_bloom();
 }
 
 void MySceneController::end_draw() {

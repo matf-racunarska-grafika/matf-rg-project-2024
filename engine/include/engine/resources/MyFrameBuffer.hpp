@@ -33,6 +33,9 @@ public:
     unsigned int getTexture(const std::string& name)  { return colorTextures[name]; }
     size_t getTextureCount() const { return colorTextures.size(); }
 
+    bool isComplete() const {
+        return (engine::graphics::OpenGL::isFramebufferComplete());
+    }
 private:
     unsigned int fbo = 0;
     unsigned int depthBuffer = 0;

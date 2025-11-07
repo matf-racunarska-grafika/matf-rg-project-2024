@@ -19,5 +19,3 @@ _deps
 engine/test/app/test-app
 app/APP
 .venv/
-app/resources/models/
-app/resources/skyboxes

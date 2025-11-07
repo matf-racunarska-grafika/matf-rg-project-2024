@@ -16,6 +16,20 @@ void Model::draw(const Shader *shader) {
     }
 }
 
+void Model::draw_instanced(const Shader *shader) {
+    for (auto &mesh: m_meshes) {
+        if (mesh.is_instanced()) {
+            mesh.draw_instanced(shader);
+        }
+    }
+}
+
+void Model::setShininess(uint32_t shininess) {
+    for (auto &mesh: m_meshes) {
+        mesh.setShininess(shininess);
+    }
+}
+
 void Model::destroy() {
     for (auto &mesh: m_meshes) {
         mesh.destroy();

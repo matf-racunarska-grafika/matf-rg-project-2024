@@ -32,7 +32,7 @@ class Mesh {
     friend class AssimpSceneProcessor;
 
 public:
-    static const uint32_t NUM_OF_ATTRIBUTES = 5;
+    static const uint32_t NUM_OF_ATTRIBUTES = 3;
     /**
     * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
     * @param shader The shader to use for drawing.

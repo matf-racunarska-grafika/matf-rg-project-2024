@@ -23,6 +23,9 @@ void main()
 
 //#shader fragment
 #version 330 core
+#define MAX_POINT_LIGHTS 64
+#define MAX_SPOT_LIGHTS 16
+
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
@@ -52,11 +55,11 @@ struct LightData {
 uniform int num_of_point;
 uniform int num_of_spot;
 
-uniform float shininess;
+uniform int shininess;
 
 uniform LightData light_directional[8];
-uniform LightData light_spot[8];
-uniform LightData light_point[32];
+uniform LightData light_spot[MAX_SPOT_LIGHTS];
+uniform LightData light_point[MAX_POINT_LIGHTS];
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
@@ -73,7 +76,7 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos);
 
 
-    for(int i = 0; i < num_of_point; i++)
+    for(int i = 0; i < MAX_POINT_LIGHTS; i++)
     {
         vec3 lightDir = normalize(light_point[i].position - FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
@@ -94,7 +97,7 @@ void main()
         lighting += (ambient + diffuse + specular);
     }
 
-    for(int i = 0; i < num_of_spot; i++)
+    for(int i = 0; i < MAX_SPOT_LIGHTS; i++)
     {
         vec3 lightDir = normalize(light_spot[i].position - FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
@@ -126,7 +129,7 @@ void main()
 
     float brightness = dot(lighting, vec3(0.2126, 0.7152, 0.0722));
 
-    if(brightness > 1.0)
+    if (brightness > 1.0)
     BrightColor = vec4(lighting, 1.0);
     else
     BrightColor = vec4(0.0, 0.0, 0.0, 1.0);

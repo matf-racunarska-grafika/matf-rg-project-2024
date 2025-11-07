@@ -14,6 +14,8 @@ public:
     BloomFilter( float intensity=1.0f, float threshold=1.0f, unsigned int num_of_passes=5);
     ~BloomFilter();
 
+    float getTreshold() const;
+
     void initilizeBuffers(unsigned int scr_width, unsigned int scr_height);
 
     void setUpCanvas();
@@ -22,6 +24,13 @@ public:
 
     void clearBuffers();
     void destroyBuffers();
+    void applyBlur();
+
+    unsigned int get_framebuffer_id();
+
+    void set_threshold(float threshold);
+
+    void setIntensity(float brightness);
 
 private:
     float m_bright_threshold;
@@ -37,7 +46,6 @@ private:
     resources::Shader* m_blur_shader_h;
     resources::Shader* m_blur_shader_v;
 
-    void applyBlur();
 
 };
 

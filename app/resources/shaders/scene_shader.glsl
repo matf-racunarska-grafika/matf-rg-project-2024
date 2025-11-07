@@ -23,6 +23,9 @@ void main()
 
 //#shader fragment
 #version 330 core
+#define MAX_POINT_LIGHTS 64
+#define MAX_SPOT_LIGHTS 16
+
 out vec4 FragColor;
 
 in vec3 FragPos;
@@ -50,11 +53,11 @@ vec3 specular;
 uniform int num_of_point;
 uniform int num_of_spot;
 
-uniform float shininess;
+uniform int shininess;
 
-uniform LightData light_directional[32];
-uniform LightData light_spot[32];
-uniform LightData light_point[128];
+uniform LightData light_directional[8];
+uniform LightData light_spot[MAX_SPOT_LIGHTS];
+uniform LightData light_point[MAX_POINT_LIGHTS];
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
@@ -71,7 +74,7 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos);
 
 
-    for(int i = 0; i < num_of_point; i++)
+    for(int i = 0; i < MAX_POINT_LIGHTS; i++)
     {
         vec3 lightDir = normalize(light_point[i].position - FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
@@ -92,7 +95,7 @@ void main()
         lighting += (ambient + diffuse + specular);
     }
 
-    for(int i = 0; i < num_of_spot; i++)
+    for(int i = 0; i < MAX_SPOT_LIGHTS; i++)
     {
         vec3 lightDir = normalize(light_spot[i].position - FragPos);
         float diff = max(dot(lightDir, normal), 0.0);
@@ -106,6 +109,7 @@ void main()
         vec3 ambient = light_spot[i].ambient * color;
         vec3 diffuse = light_spot[i].diffuse * diff * color;
         vec3 specular = light_spot[i].specular * spec * specMap;
+
 
         ambient *= attenuation;
         diffuse *= attenuation;

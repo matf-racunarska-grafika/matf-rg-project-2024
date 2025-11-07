@@ -23,9 +23,7 @@ void MyModel::prepare_for_draw(engine::resources::Shader * s) {
 
 void MyModel::draw(engine::resources::Shader * s) {
     prepare_for_draw(s);
-    if (m_model) {
-        m_model->draw(s);
-    }
+    m_model->draw(s);
 }
 
 engine::resources::Model * MyModel::model() const {

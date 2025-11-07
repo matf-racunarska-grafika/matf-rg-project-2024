@@ -30,13 +30,12 @@ void DeferredFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_h
     m_gbuffer.addColorAttachment(FrameTextureType::RGBA, false, "emissive_shine");
 }
 
-void DeferredFilter::setUpCanvas(std::vector<Light>& lights) {
+void DeferredFilter::setUpCanvas() {
     m_gbuffer.bind();
+    clearBuffers();
     m_geometry_shader->use();
     //m_geometry_shader->prepare_for_use();
-    m_geometry_shader->set_lights(lights);
     engine::core::Controller::get<GraphicsController>()->prepare_for_draw(m_geometry_shader);
-
 }
 
 

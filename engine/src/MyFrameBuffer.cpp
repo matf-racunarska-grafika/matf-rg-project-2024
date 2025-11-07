@@ -19,12 +19,10 @@ void MyFrameBuffer::init(int width, int height, bool use_depth) {
     fbo = engine::graphics::OpenGL::genFrameBuffer();
     if (use_depth)
         depthBuffer = graphics::OpenGL::addRenderBuffer(fbo, width, height);
-
-    graphics::OpenGL::bindFrameBuffer(0);
 }
 
 void MyFrameBuffer::addColorAttachment(graphics::FrameTextureType type, bool linear, const std::string &name) {
-    unsigned int tex = graphics::OpenGL::addFrameTexture(fbo, (unsigned int) getTextureCount(), type, width, height, linear);
+    unsigned int tex = graphics::OpenGL::addFrameTexture(fbo,  getTextureCount(), type, width, height, linear);
     colorTextures[name] = tex;
     graphics::OpenGL::setAttachmentCount(fbo, getTextureCount());
 }
@@ -32,8 +30,8 @@ void MyFrameBuffer::addColorAttachment(graphics::FrameTextureType type, bool lin
 void MyFrameBuffer::bind() const {
     graphics::OpenGL::bindFrameBuffer(fbo);
 }
+
 void MyFrameBuffer::clear() {
-    graphics::OpenGL::bindFrameBuffer(fbo);
     graphics::OpenGL::clear_buffers();
 }
 

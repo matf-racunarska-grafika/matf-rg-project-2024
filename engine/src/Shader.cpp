@@ -1,3 +1,4 @@
+#include <iostream>
 #include <glad/glad.h>
 #include <engine/resources/Shader.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -16,8 +17,8 @@ void Shader::prepare_for_use() {
         }
 }
 
-int Shader::getLimitNumLights() const {
-    return m_num_lights;
+int Shader::getLimitNumLights(graphics::LightType type) {
+    return m_num_lights[type];
 }
 int Shader::getLimitNumTextures(TextureType type) const {
     return m_num_textures.at(type);
@@ -83,11 +84,46 @@ void Shader::set_lights(const std::vector<engine::graphics::Light> &lights) cons
     uniform_name.reserve(32);
     std::unordered_map<std::string_view, uint32_t> counts;
 
+    for (int i = 0; i < NUM_OF_POINT_LIGHTS; ++i) {
+        const auto &light = graphics::Light::default_light;
+        uniform_name = graphics::Light::uniform_name_convention(engine::graphics::LightType::Point);
+        uniform_name += "[" + std::to_string(i) + "].";
+        graphics::LightData data = graphics::Light::default_light();
+        set_vec3(uniform_name + "position", data.position);
+        set_vec3(uniform_name + "direction", data.direction);
+        set_vec3(uniform_name + "ambient", data.ambient);
+        set_vec3(uniform_name + "diffuse", data.diffuse);
+        set_vec3(uniform_name + "specular", data.specular);
+        set_float(uniform_name + "cutoff", data.cutoff);
+        set_float(uniform_name + "outercutoff", data.outercutoff);
+        set_float(uniform_name + "constant", data.constant);
+        set_float(uniform_name + "linear", data.linear);
+        set_float(uniform_name + "quadratic", data.quadratic);
+
+    }
+
+
+    for (int i = 0; i < NUM_OF_SPOT_LIGHTS; ++i) {
+        const auto &light = graphics::Light::default_light;
+        uniform_name = graphics::Light::uniform_name_convention(engine::graphics::LightType::Spot);
+        uniform_name += "[" + std::to_string(i) + "].";
+        graphics::LightData data = graphics::Light::default_light();
+        set_vec3(uniform_name + "position", data.position);
+        set_vec3(uniform_name + "direction", data.direction);
+        set_vec3(uniform_name + "ambient", data.ambient);
+        set_vec3(uniform_name + "diffuse", data.diffuse);
+        set_vec3(uniform_name + "specular", data.specular);
+        set_float(uniform_name + "cutoff", data.cutoff);
+        set_float(uniform_name + "outercutoff", data.outercutoff);
+        set_float(uniform_name + "constant", data.constant);
+        set_float(uniform_name + "linear", data.linear);
+        set_float(uniform_name + "quadratic", data.quadratic);
+    }
+
     for (size_t i = 0; i < lights.size(); i++) {
         const auto &light = lights[i];
         uniform_name = graphics::Light::uniform_name_convention(light.light_type());
-        const auto count = (counts[uniform_name] += 1);
-
+        const auto count = (counts[uniform_name] ++);
         uniform_name += "[" + std::to_string(count) + "].";
         graphics::LightData data = light.light_data();
         set_vec3(uniform_name + "position", data.position);
@@ -101,6 +137,9 @@ void Shader::set_lights(const std::vector<engine::graphics::Light> &lights) cons
         set_float(uniform_name + "linear", data.linear);
         set_float(uniform_name + "quadratic", data.quadratic);
     }
+    set_int("num_of_point",counts[ graphics::Light::uniform_name_convention(engine::graphics::LightType::Point)]);
+    set_int("num_of_spot",counts[ graphics::Light::uniform_name_convention(engine::graphics::LightType::Spot)]);
+
 }
 
 

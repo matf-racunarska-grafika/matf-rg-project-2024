@@ -182,7 +182,7 @@ private:
     OrthographicMatrixParams m_ortho_params{};
 
     glm::mat4 m_projection_matrix{};
-    Camera m_camera{};
+    Camera m_camera=Camera(glm::vec3(0,0.3,+0.5));
     ImGuiContext *m_imgui_context{};
     std::vector<Light> m_lights;
 

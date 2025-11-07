@@ -13,6 +13,10 @@
 
 namespace engine::graphics {
 
+bool OpenGL::isFramebufferComplete() {
+    return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+}
+
 bool OpenGL::uniform_exists(ShaderProgramId program_id, const std::string &name) {
     return glGetUniformLocation( program_id, name.c_str())!=-1;
 }
@@ -51,7 +55,7 @@ void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, toFbo);
     glBlitFramebuffer(0, 0, width, height,
                       0, 0, width, height,
-                      GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+                      mask, GL_NEAREST);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -100,11 +104,13 @@ unsigned int OpenGL::genFrameBuffer() {
 }
 
 void OpenGL::setAttachmentCount(unsigned int fb, unsigned int count) {
+    bindFrameBuffer(fb);
     std::vector<GLenum> attachments;
     for (size_t i = 0; i < count; ++i)
         attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
 
     glDrawBuffers((GLsizei)attachments.size(), attachments.data());
+    bindFrameBuffer(0);
 
 }
 
@@ -122,14 +128,14 @@ unsigned int OpenGL::addFrameTexture(unsigned int fb,unsigned int slot ,FrameTex
     }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+slot, GL_TEXTURE_2D, texture_id, 0);
+    bindFrameBuffer(0);
     return texture_id;
 }
 
-//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
 
 unsigned int OpenGL::addRenderBuffer(unsigned int fb,unsigned int width, unsigned int height) {
     bindFrameBuffer(fb);
@@ -138,6 +144,7 @@ unsigned int OpenGL::addRenderBuffer(unsigned int fb,unsigned int width, unsigne
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuff);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuff);
+    engine::graphics::OpenGL::bindFrameBuffer(0);
     return depthBuff;
 }
 

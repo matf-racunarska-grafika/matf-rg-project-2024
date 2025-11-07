@@ -19,7 +19,7 @@ void main()
 
     mat3 normalMatrix = transpose(inverse(mat3(model)));
     Normal = normalMatrix * aNormal;
-    gl_Position = projection * view * vec4(aPos,1.0f);
+    gl_Position = projection * view * model*vec4(aPos,1.0f);
 }
 
 //#shader fragment

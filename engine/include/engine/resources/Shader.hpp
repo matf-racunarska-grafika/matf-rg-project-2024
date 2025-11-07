@@ -39,8 +39,11 @@ class Shader {
     friend class ShaderCompiler;
 
 public:
+    static constexpr int NUM_OF_POINT_LIGHTS = 128;
+    static constexpr int NUM_OF_SPOT_LIGHTS = 16;
+
     void prepare_for_use();
-    int getLimitNumLights() const;
+    int getLimitNumLights(graphics::LightType);
     int getLimitNumTextures(TextureType type) const;
     /**
     * @brief Binds the shader program.
@@ -164,7 +167,7 @@ private:
     std::filesystem::path m_source_path;
 
     //map?
-    int m_num_lights{1};
+    std::unordered_map<graphics::LightType,int> m_num_lights;
     std::unordered_map<TextureType, int> m_num_textures;
 
 };

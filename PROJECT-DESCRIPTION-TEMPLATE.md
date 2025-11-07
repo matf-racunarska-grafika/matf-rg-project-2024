@@ -43,12 +43,11 @@ W,A,S,D -> Move the camera forward/back/left/right
 
 ## Models:
 
-[link1]   
-[link2]
+https://free3d.com/3d-models/
+https://sketchfab.com/
+https://free3d.io/
+https://tools.wwwtyro.net/space-3d/index.html
 
 ## Textures
 
-[link1]  
-[link2]
-
-{OTHER-RESOURCES}
+No external textures were used.

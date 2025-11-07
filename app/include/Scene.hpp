@@ -11,6 +11,7 @@
 #include <engine/graphics/DeferredFilter.hpp>
 #include <engine/resources/Model.hpp>
 #include <vector>
+#include <engine/platform/PlatformController.hpp>
 
 namespace app {
 
@@ -18,7 +19,7 @@ class Scene {
 
 public:
     Scene();
-    void update(float dt,float light_intensity);
+    void update(engine::platform::FrameTime);
     void dim_lights(float factor);
 
     void draw_static_scene(engine::resources::Shader * s);
@@ -30,8 +31,26 @@ public:
     void set_width_height(int width, int height);
 
     std::vector<engine::graphics::Light> get_lights();
+
+    void draw_instanced();
+
     void draw();
     void init_scene();
+
+    void draw_bloom();
+
+    void set_bloom_enabled(bool enabled) { m_bloom_enabled = enabled; }
+    bool bloom_enabled() const { return m_bloom_enabled; }
+
+    bool swarm_enabled();
+
+    void set_swarm_enabled(bool enabled);
+
+    void set_threshold(float threshold);
+
+    void set_bloom_intensity(float brightness);
+
+    void make_instances(engine::resources::Model *model, float fromx, float tox, float fromz, float toz, float fromy, float toy, uint32_t count);
 
 private:
     std::vector<engine::graphics::Light> lights;
@@ -39,14 +58,13 @@ private:
     bool m_swarm_enabled = false;
 
     app::LightSwarm* light_swarm=nullptr;
+    app::LightSwarm* light_swarm2=nullptr;
     engine::graphics::DeferredFilter*  m_deferred_filter=nullptr;
     engine::graphics::BloomFilter*  m_bloom_filter=nullptr;
-
-
-
+    bool m_bloom_enabled = true;
 
     void prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count);
-    void scatter_lights(float fromx, float tox, float fromy, float toy, float fromz, float toz,  uint32_t count);
+    std::vector<engine::graphics::Light>  scatter_lights(float fromx, float tox, float fromy, float toy, float fromz, float toz,  uint32_t count);
 };
 
 }// namespace app

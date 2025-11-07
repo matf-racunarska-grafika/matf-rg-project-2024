@@ -4,6 +4,8 @@
 
 #include <../include/engine/resources/Light.hpp>
 #include <algorithm>
+#include <engine/graphics/BloomFilter.hpp>
+#include <engine/graphics/BloomFilter.hpp>
 
 namespace engine::graphics {
 
@@ -24,14 +26,28 @@ Light::Light(LightType type, glm::vec3 position, glm::vec3 direction, glm::vec3 
     m_type = type;
 }
 
+LightData Light::default_light() {
+    return LightData {.constant = 1.f};
+}
+
 void Light::change_brightness(float alpha) {
     m_intensity = std::clamp(m_intensity * alpha, 0.0f, 1.0f);
 }
 
-void Light::set_brightness(float brightness) { m_intensity = brightness; }
+void Light::set_brightness(float brightness) {
+    m_intensity = brightness;
+}
 
 void Light::set_color(const glm::vec3 &color) {
     m_color = color;
+}
+
+void Light::set_direction(const glm::vec3 &direction) {
+    m_direction = direction;
+}
+
+glm::vec3 Light::get_direction() const {
+    return  m_direction;
 }
 
 void Light::set_attenuation(float constant, float linear, float quadratic) {
@@ -58,6 +74,7 @@ void Light::set_position(glm::vec3 new_position) {
 
 void Light::move_position(glm::vec3 delta) {
     m_position += delta;
+
 }
 
 LightType Light::light_type() const {
@@ -79,7 +96,7 @@ LightData Light::light_data() const {
     };
 }
 
-std::string_view Light::uniform_name_convention(LightType type)  {
+std::string Light::uniform_name_convention(LightType type)  {
     switch (type) {
         case LightType::Directional: return "light_directional";
         case LightType::Point: return "light_point";

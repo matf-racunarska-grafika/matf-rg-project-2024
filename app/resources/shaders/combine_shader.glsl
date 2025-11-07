@@ -19,6 +19,7 @@ in vec2 TexCoords;
 
 uniform sampler2D image;
 uniform sampler2D bloom;
+
 uniform float intensity;
 
 void main()

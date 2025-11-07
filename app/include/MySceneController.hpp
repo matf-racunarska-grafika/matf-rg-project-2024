@@ -28,6 +28,12 @@ public:
     void start_animation();
     void set_window_size(int width, int height);
 
+    Scene* scene() { return &m_scene; }
+
+    void set_threshold(float brightness);
+
+    void set_bloom_intensity(float brightness);
+
 private:
     void initialize() override;
 
@@ -41,13 +47,11 @@ private:
 
     void draw() override;
 
+
+
     void end_draw() override;
 
-
-
-
     void update_camera();
-
 
 
     bool m_cursor_enabled{true};
@@ -56,7 +60,7 @@ private:
     Timer m_delay_timer;
     Timer m_duration_timer;
 
-    float m_duration_amount=10.0f;
+    float m_duration_amount=15.0f;
     float m_delay_amount=3.0f;
 };
 } // app

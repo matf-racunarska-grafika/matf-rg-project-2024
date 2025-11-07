@@ -24,7 +24,8 @@ public:
     * @param shader The shader to use for drawing.
     */
     void draw(const Shader *shader);
-
+    void draw_instanced(const Shader *shader);
+    void setShininess(uint32_t shininess);
     /**
     * @brief Destroys the model in the OpenGL context.
     */

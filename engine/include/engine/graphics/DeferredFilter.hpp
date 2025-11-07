@@ -17,7 +17,7 @@ public:
 
     void initilizeBuffers(unsigned int scr_width, unsigned int scr_height);
 
-    void setUpCanvas(std::vector<Light>&);
+    void setUpCanvas();
 
     void render(resources::Shader* shader);
 

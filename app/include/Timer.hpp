@@ -4,6 +4,7 @@
 
 #ifndef MATF_RG_PROJECT_TIMER_HPP
 #define MATF_RG_PROJECT_TIMER_HPP
+#include <iostream>
 
 namespace app {
 

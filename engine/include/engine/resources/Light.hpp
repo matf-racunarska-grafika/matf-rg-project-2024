@@ -11,6 +11,7 @@ enum class LightType {
     Point,
     Spot,
     Directional,
+    None,
 };
 
 struct LightData {
@@ -40,12 +41,12 @@ public:
               float cutOff, float outerCutOff,
               float constant, float linear, float quadratic);
 
-    static const Light default_light;
-
+    static LightData default_light();
     void change_brightness(float alpha);
     void set_brightness(float brightness);
     void set_color(const glm::vec3 &color);
-
+    void set_direction(const glm::vec3 &direction);
+    glm::vec3 get_direction() const;
     void set_attenuation(float constant, float linear, float quadratic);
     void set_cutoff(float cutOff, float outerCutOff);
 
@@ -59,7 +60,7 @@ public:
 
     LightData light_data() const;
 
-    static std::string_view uniform_name_convention(LightType type);
+    static std::string uniform_name_convention(LightType type);
 
 
 protected:
@@ -68,15 +69,15 @@ protected:
     glm::vec3 m_direction = {0.0f, -1.0f, 0.0f};
     glm::vec3 m_color = {1.0f, 1.0f, 1.0f};
 
-    float m_cutoff = 0;
-    float m_outerCutoff = 0;
+    float m_cutoff = 45;
+    float m_outerCutoff = 50;
 
     float m_constant = 1.0f;
-    float m_linear = 0.09f;
-    float m_quadratic = 0.032f;
+    float m_linear = 0.12f;
+    float m_quadratic = 0.082f;
 
     float m_intensity = 1.0f;
-    float m_ambient = 0.1f;
+    float m_ambient = 0.02f;
     float m_diffuse = 0.8f;
     float m_specular = 1.0f;
 
