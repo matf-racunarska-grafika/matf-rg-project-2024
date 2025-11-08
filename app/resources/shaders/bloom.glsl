@@ -46,7 +46,7 @@ void main()
 
         FragColor = vec4(brightColor, 1.0);
     }
-    else if (mode == 1) {
+    else if (mode == 1) { // oh god please work
         vec2 tex_offset = 1.0 / textureSize(brightTexture, 0);
         vec3 result = texture(brightTexture, TexCoords).rgb * weight[0];
 
