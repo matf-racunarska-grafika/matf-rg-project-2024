@@ -36,17 +36,19 @@ private:
     glm::vec3 m_cloud_transl_factor = glm::vec3(0.0f, 5.0f, 0.0f);
     glm::vec3 m_cloud_scale_factor = glm::vec3(1.0f);
 
-    bool lamp_is_on = true;
-    glm::vec3 lamp_position = glm::vec3(7.0f, 1.2f, 7.0f);
-    bool start_flicker_sequence = false;
-    bool lamp_is_flickering = false;
-    float flicker_delay_timer = 0.0f;
-    float flicker_timer = 0.0f;
-    float flicker_interval = 0.0f;
+    bool m_lamp_is_on = true;
+    glm::vec3 m_lamp_position = glm::vec3(7.0f, 1.2f, 7.0f);
+    bool m_start_flicker_sequence = false;
+    bool m_lamp_is_flickering = false;
+    float m_flicker_delay_timer = 0.0f;
+    float m_flicker_timer = 0.0f;
+    float m_flicker_interval = 0.0f;
 
-    float cloud_orbit_time = 0.2f;
-    float orbit_radius = 20.0f;
-    int num_clouds = 10;
+    float m_cloud_orbit_time = 0.2f;
+    float m_orbit_radius = 20.0f;
+    int m_num_clouds = 10;
+
+    bool m_morbin_time = false;
 
 };
 }

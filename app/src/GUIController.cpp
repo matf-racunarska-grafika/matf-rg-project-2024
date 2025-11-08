@@ -2,8 +2,8 @@
 // Created by zesla on 10/25/25.
 //
 
-#include "../include/GUIController.hpp"
-
+#include <GUIController.hpp>
+#include <MainController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <imgui.h>
@@ -27,7 +27,6 @@ void GUIController::draw() {
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     graphics->begin_gui();
 
-    // Draw camera info
     ImGui::Begin("Camera info");
     const auto &c = *camera;
     ImGui::Text("Camera position: (%f, %f, %f)", c.Position.x, c.Position.y, c.Position.z);

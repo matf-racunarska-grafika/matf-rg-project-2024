@@ -38,6 +38,8 @@ uniform sampler2D texture_specular1;  // Lamp_SM.png
 
 uniform vec3 viewPos;
 uniform bool lampIsOn;
+//uniform vec3 redGlowTint = vec3(10.0, 0.1, 0.1);
+uniform bool lampRedGlow;
 
 struct DirLight {
     vec3 direction;
@@ -64,6 +66,7 @@ uniform float material_shininess;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 diffuseColor, float specularValue);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 diffuseColor, float specularValue);
 
+
 void main() {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -71,8 +74,12 @@ void main() {
     vec3 diffuseColor = texture(texture_diffuse1, TexCoords).rgb;
     float specularValue = texture(texture_specular1, TexCoords).r;
     vec3 emissionColor = texture(texture_emission1, TexCoords).rgb;
-
     float emissionIntensity = (emissionColor.r + emissionColor.g + emissionColor.b) / 3.0;
+
+    if (lampRedGlow && emissionIntensity > 0.1) {
+        float brightness = (diffuseColor.r + diffuseColor.g + diffuseColor.b) / 3.0;
+        diffuseColor = vec3(brightness * 1.0, brightness * 0.1, brightness * 0.1);
+    }
 
     vec3 result = CalcDirLight(dirLight, norm, viewDir, diffuseColor, specularValue);
 
@@ -89,6 +96,7 @@ void main() {
             result += emissionColor * 0.05;
         }
     }
+
 
     FragColor = vec4(result, 1.0);
 }

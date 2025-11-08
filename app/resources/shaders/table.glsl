@@ -97,7 +97,7 @@ void main() {
     for(int i = 0; i < numPointLights && i < 4; i++) {
         result += CalcPointLight(pointLights[i], normal, FragPos, viewDir, texColor);
     }
-
+    FragColor.rgb = max(FragColor.rgb, vec3(0.01));
     FragColor = vec4(result, 1.0);
 }
 

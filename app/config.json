@@ -1,26 +1,17 @@
 {
   "resources": {
     "models": {
-      "bed" : {
-        "path" : "bed/bed.obj"
-      },
-      "backpack" : {
-        "path" : "backpack/backpack.obj"
+      "bed1" : {
+        "path" : "bed1/bed.obj"
       },
       "cloud" : {
         "path" : "cloud/cloud.obj"
-      },
-      "bed1" : {
-        "path" : "bed1/untitled.obj"
       },
       "table": {
         "path" : "table/Table.obj"
       },
       "lamp": {
         "path" : "table-lamp-01/source/lamp.obj"
-      },
-      "moon": {
-        "path" : "moon-obj/source/Moon.obj"
       }
     }
   },
