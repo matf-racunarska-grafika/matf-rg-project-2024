@@ -2,7 +2,7 @@
 // Created by matija on 10/12/25.
 //
 
-#include "../include/MyApp.hpp"
+#include <MyApp.hpp>
 
 #include <MyGUIController.hpp>
 #include <MySceneController.hpp>

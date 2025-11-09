@@ -15,16 +15,16 @@ public:
     DeferredFilter();
     ~DeferredFilter();
 
-    void initilizeBuffers(unsigned int scr_width, unsigned int scr_height);
+    void initialize_buffers(unsigned int scr_width, unsigned int scr_height);
 
-    void setUpCanvas();
+    void set_up_canvas();
 
     void render(resources::Shader* shader);
 
-    void blitDepth(unsigned int width, unsigned int height, unsigned int toFbo) const;
+    void blit_depth(unsigned int width, unsigned int height, unsigned int to_fbo) const;
 
-    void clearBuffers();
-    void destroyBuffers();
+    void clear_buffers();
+    void destroy_buffers();
     resources::Shader * geometry_shader() const { return m_geometry_shader; }
 
 private:

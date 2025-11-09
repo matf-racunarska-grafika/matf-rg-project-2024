@@ -1,4 +1,3 @@
-#include <iostream>
 #include <glad/glad.h>
 #include <engine/resources/Shader.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -9,7 +8,7 @@ void Shader::prepare_for_use() {
     std::string uniform_name;
     uniform_name.reserve(32);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, graphics::OpenGL::getDefaultTexture());
+    glBindTexture(GL_TEXTURE_2D, graphics::OpenGL::get_default_texture());
 
     for (auto tex_type:{TextureType::Emissive,TextureType::Specular,TextureType::Diffuse})
         for (int i=0;i<m_num_textures[tex_type];i++) {
@@ -17,10 +16,10 @@ void Shader::prepare_for_use() {
         }
 }
 
-int Shader::getLimitNumLights(graphics::LightType type) {
+int Shader::limit_num_lights(graphics::LightType type) {
     return m_num_lights[type];
 }
-int Shader::getLimitNumTextures(TextureType type) const {
+int Shader::limit_num_textures(TextureType type) const {
     return m_num_textures.at(type);
 }
 void Shader::use() const {

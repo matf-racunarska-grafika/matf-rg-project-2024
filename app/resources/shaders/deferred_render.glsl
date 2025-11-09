@@ -77,7 +77,7 @@ void main()
         vec3 reflectDir = reflect(-lightDir, normal);
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
-        float distance = length(FragPos - light_point[i].position);
+        float distance = 25*length(FragPos - light_point[i].position);
         float attenuation = 1.0 / (light_point[i].constant + light_point[i].linear * distance + light_point[i].quadratic * (distance * distance));
 
         vec3 ambient = light_point[i].ambient * color;
@@ -98,7 +98,7 @@ void main()
         vec3 reflectDir = reflect(-lightDir, normal);
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 
-        float distance = length(FragPos - light_spot[i].position);
+        float distance = 25*length(FragPos - light_spot[i].position);
         float attenuation = 1.0 / (light_spot[i].constant + light_spot[i].linear * distance + light_spot[i].quadratic * (distance * distance));
 
         vec3 ambient = light_spot[i].ambient * color;

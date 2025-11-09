@@ -43,8 +43,8 @@ public:
     static constexpr int NUM_OF_SPOT_LIGHTS = 16;
 
     void prepare_for_use();
-    int getLimitNumLights(graphics::LightType);
-    int getLimitNumTextures(TextureType type) const;
+    int limit_num_lights(graphics::LightType);
+    int limit_num_textures(TextureType type) const;
     /**
     * @brief Binds the shader program.
     */

@@ -20,29 +20,29 @@ public:
     void init(int width, int height, bool use_depth=true);
     void free();
 
-    void addColorAttachment(graphics::FrameTextureType type, bool linear,const std::string& name);
+    void add_color_attachment(graphics::FrameTextureType type, bool linear,const std::string& name);
 
     void bind() const;
     void clear();
     static void unbind();
-    void bindTexture(std::string name, unsigned int slot);
+    void bind_texture(std::string name, unsigned int slot);
 
 
-    unsigned int getFrameBuff() const { return fbo; }
-    unsigned int getDepthBuffer() const { return depthBuffer; }
-    unsigned int getTexture(const std::string& name)  { return colorTextures[name]; }
-    size_t getTextureCount() const { return colorTextures.size(); }
+    unsigned int framebuffer_id() const { return m_fbo; }
+    unsigned int depth_buffer() const { return m_depth_buffer; }
+    unsigned int texture(const std::string& name)  { return m_color_textures[name]; }
+    size_t texture_count() const { return m_color_textures.size(); }
 
-    bool isComplete() const {
-        return (engine::graphics::OpenGL::isFramebufferComplete());
+    bool is_complete() const {
+        return (engine::graphics::OpenGL::is_framebuffer_complete());
     }
 private:
-    unsigned int fbo = 0;
-    unsigned int depthBuffer = 0;
-    std::unordered_map<std::string,unsigned int> colorTextures;
+    unsigned int m_fbo = 0;
+    unsigned int m_depth_buffer = 0;
+    std::unordered_map<std::string,unsigned int> m_color_textures;
 
-    int width = 0;
-    int height = 0;
+    int m_width = 0;
+    int m_height = 0;
 };
 
 }

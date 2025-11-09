@@ -25,18 +25,17 @@ void Mesh::destroy() {
     glDeleteVertexArrays(1, &m_vao);
 }
 
-void Mesh::setShininess(uint32_t shininess) {
+void Mesh::set_shininess(uint32_t shininess) {
     m_shininess = std::max(1u, std::min(shininess, 256u));
 }
 
 bool Mesh::is_instanced() const {
-    return isinstanced;
+    return m_is_instanced;
 }
 
 void Mesh::instantiate(glm::mat4 *transform,uint32_t count) {
-
     m_vbo=graphics::OpenGL::set_instancing_matrices(m_vao,m_vbo, transform, count, Mesh::NUM_OF_ATTRIBUTES);
-    isinstanced = true;
+    m_is_instanced = true;
     m_num_instances = count;
 }
 
@@ -77,11 +76,11 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
     m_num_indices = indices.size();
     m_textures = std::move(textures);
 
-    is_emissive = emissive;
+    m_is_emissive = emissive;
 
     for (auto &texture : m_textures) {
-        if (texture->type()==TextureType::Emissive) {is_emissive=true; break;}
-        if (texture->type()==TextureType::Specular) {is_specular=true; break;}
+        if (texture->type()==TextureType::Emissive) {m_is_emissive=true; break;}
+        if (texture->type()==TextureType::Specular) {m_is_specular=true; break;}
     }
 
 }
@@ -109,8 +108,8 @@ void Mesh::prepare_for_draw(const Shader *shader) {
     if (graphics::OpenGL::uniform_exists(shader->id(), "shininess"))
         shader->set_int("shininess", m_shininess);
     if (graphics::OpenGL::uniform_exists(shader->id(), "is_emissive"))
-        shader->set_bool("is_emissive", is_emissive);
+        shader->set_bool("is_emissive", m_is_emissive);
     if (graphics::OpenGL::uniform_exists(shader->id(), "is_specular"))
-        shader->set_bool("is_specular", is_specular);
+        shader->set_bool("is_specular", m_is_specular);
 }
 }

@@ -4,7 +4,7 @@
 
 #ifndef MATF_RG_PROJECT_SCENE_HPP
 #define MATF_RG_PROJECT_SCENE_HPP
-#include <../../engine/include/engine/resources/Light.hpp>
+#include <engine/resources/Light.hpp>
 #include <LightSwarm.hpp>
 #include <MyModel.hpp>
 #include <engine/graphics/BloomFilter.hpp>
@@ -53,12 +53,12 @@ public:
     void make_instances(engine::resources::Model *model, float fromx, float tox, float fromz, float toz, float fromy, float toy, uint32_t count);
 
 private:
-    std::vector<engine::graphics::Light> lights;
-    std::vector<MyModel> models;
+    std::vector<engine::graphics::Light> m_lights;
+    std::vector<MyModel> m_models;
     bool m_swarm_enabled = false;
 
-    app::LightSwarm* light_swarm=nullptr;
-    app::LightSwarm* light_swarm2=nullptr;
+    app::LightSwarm* m_light_swarm=nullptr;
+    app::LightSwarm* m_light_swarm2=nullptr;
     engine::graphics::DeferredFilter*  m_deferred_filter=nullptr;
     engine::graphics::BloomFilter*  m_bloom_filter=nullptr;
     bool m_bloom_enabled = true;

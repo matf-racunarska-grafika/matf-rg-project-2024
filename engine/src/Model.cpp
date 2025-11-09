@@ -1,4 +1,3 @@
-
 #include <engine/resources/Model.hpp>
 #include <engine/resources/Shader.hpp>
 
@@ -24,9 +23,9 @@ void Model::draw_instanced(const Shader *shader) {
     }
 }
 
-void Model::setShininess(uint32_t shininess) {
+void Model::set_shininess(uint32_t shininess) {
     for (auto &mesh: m_meshes) {
-        mesh.setShininess(shininess);
+        mesh.set_shininess(shininess);
     }
 }
 

@@ -4,14 +4,14 @@
 
 #ifndef MATF_RG_PROJECT_TIMER_HPP
 #define MATF_RG_PROJECT_TIMER_HPP
-#include <iostream>
+
 
 namespace app {
 
 class Timer {
 public:
-    Timer(){}
-    void restartTimer() {
+    Timer()=default;
+    void restart_timer() {
         m_enabled=false;
         m_time_left=0.0f;
     }
@@ -26,11 +26,11 @@ public:
         }
         return false;
     }
-    void startTimer(float time_seconds) {
+    void start_timer(float time_seconds) {
         m_time_left = time_seconds;
         m_enabled = true;
     }
-    bool isEnabled() const { return m_enabled; }
+    bool is_enabled() const { return m_enabled; }
 private:
     bool m_enabled=false;
     float m_time_left=0.0f;

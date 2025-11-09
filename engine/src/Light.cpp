@@ -2,7 +2,7 @@
 // Created by matija on 10/12/25.
 //
 
-#include <../include/engine/resources/Light.hpp>
+#include <engine/resources/Light.hpp>
 #include <algorithm>
 #include <engine/graphics/BloomFilter.hpp>
 #include <engine/graphics/BloomFilter.hpp>
@@ -17,10 +17,10 @@ Light::Light(LightType type,glm::vec3 position,glm::vec3 color,glm::vec3 directi
 
 Light::Light(LightType type, glm::vec3 position, glm::vec3 direction, glm::vec3 color,
            float ambient_factor, float diffuse_factor, float specular_factor,
-           float cutOff, float outerCutOff,
+           float cut_off, float outer_cut_off,
            float constant, float linear, float quadratic)
     :m_position(position), m_direction(direction), m_color(color),
-     m_cutoff(cutOff), m_outerCutoff(outerCutOff),
+     m_cutoff(cut_off), m_outer_cutoff(outer_cut_off),
      m_constant(constant), m_linear(linear), m_quadratic(quadratic),
      m_diffuse(diffuse_factor),m_ambient(ambient_factor),m_specular(specular_factor) {
     m_type = type;
@@ -57,9 +57,9 @@ void Light::set_attenuation(float constant, float linear, float quadratic) {
 
 }
 
-void Light::set_cutoff(float cutOff, float outerCutOff) {
-    m_cutoff = cutOff;
-    m_outerCutoff = outerCutOff;
+void Light::set_cutoff(float cutoff_deg, float outer_cutoff_deg) {
+    m_cutoff = cutoff_deg;
+    m_outer_cutoff = outer_cutoff_deg;
 }
 
 bool Light::is_spotlight() { return m_type == LightType::Spot; }
@@ -85,8 +85,8 @@ LightData Light::light_data() const {
     return LightData {
         .position = m_position,
         .direction = m_direction,
-        .cutoff = m_cutoff,
-        .outercutoff = m_outerCutoff,
+        .cutoff = glm::cos(glm::radians( m_cutoff)),
+        .outercutoff = glm::cos(glm::radians(m_outer_cutoff)),
         .constant = m_constant,
         .linear = m_linear,
         .quadratic = m_quadratic,
@@ -101,7 +101,7 @@ std::string Light::uniform_name_convention(LightType type)  {
         case LightType::Directional: return "light_directional";
         case LightType::Point: return "light_point";
         case LightType::Spot: return "light_spot";
-        default: RG_SHOULD_NOT_REACH_HERE("Unhandled light type");
+        default: RG_SHOULD_NOT_REACH_HERE("Unhandled slight type");
     }
 }
 

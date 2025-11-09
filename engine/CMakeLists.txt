@@ -34,8 +34,7 @@ add_library(${PROJECT_NAME} ${engine-sources} ${engine-headers}
         include/engine/resources/MyFrameBuffer.hpp
         src/DeferredFilter.cpp
         include/engine/graphics/DeferredFilter.hpp
-        ../app/src/LightSwarm.cpp
-        ../app/include/LightSwarm.hpp)
+        )
 target_include_directories(${PROJECT_NAME} PUBLIC include/)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw assimp ${ASSIMP_LIBRARIES} stb
         PUBLIC glm::glm-header-only spdlog::spdlog imgui json)

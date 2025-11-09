@@ -1,4 +1,4 @@
-#include "../include/MyModel.hpp"
+#include <MyModel.hpp>
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -35,4 +35,3 @@ glm::mat4 MyModel::transform() const {
 }
 
 } // namespace app
-

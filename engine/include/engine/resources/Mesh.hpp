@@ -44,7 +44,7 @@ public:
     */
     void destroy();
 
-    void setShininess(uint32_t shininess) ;
+    void set_shininess(uint32_t shininess) ;
     bool is_instanced() const ;
 
     void instantiate(glm::mat4* transform, uint32_t count);
@@ -67,9 +67,9 @@ private:
     std::vector<Texture *> m_textures;
 
     uint32_t m_shininess{32};
-    bool isinstanced{false};
-    bool is_emissive{false};
-    bool is_specular{false};
+    bool m_is_instanced{false};
+    bool m_is_emissive{false};
+    bool m_is_specular{false};
     uint32_t m_vbo{0};
 
 };

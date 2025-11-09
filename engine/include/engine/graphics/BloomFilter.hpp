@@ -11,26 +11,26 @@ namespace engine::graphics {
 
 class BloomFilter {
 public:
-    BloomFilter( float intensity=1.0f, float threshold=1.0f, unsigned int num_of_passes=5);
+    BloomFilter(float intensity = 1.0f, float threshold = 1.0f, unsigned int num_of_passes = 5);
     ~BloomFilter();
 
-    float getTreshold() const;
+    float threshold() const;
 
-    void initilizeBuffers(unsigned int scr_width, unsigned int scr_height);
+    void initialize_buffers(unsigned int scr_width, unsigned int scr_height);
 
-    void setUpCanvas();
+    void set_up_canvas();
 
-    void applyBloom();
+    void apply_bloom();
 
-    void clearBuffers();
-    void destroyBuffers();
-    void applyBlur();
+    void clear_buffers();
+    void destroy_buffers();
+    void apply_blur();
 
-    unsigned int get_framebuffer_id();
+    unsigned int framebuffer_id();
 
     void set_threshold(float threshold);
 
-    void setIntensity(float brightness);
+    void set_intensity(float brightness);
 
 private:
     float m_bright_threshold;

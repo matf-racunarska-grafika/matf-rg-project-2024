@@ -2,7 +2,7 @@
 // Created by matija on 10/12/25.
 //
 
-#include "../include/MySceneController.hpp"
+#include <MySceneController.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <LightSwarm.hpp>
 #include <MyGUIController.hpp>
@@ -35,7 +35,7 @@ void MySceneController::set_dim(float brightness) {
 }
 
 void MySceneController::start_animation() {
-    m_delay_timer.startTimer(m_delay_amount);
+    m_delay_timer.start_timer(m_delay_amount);
 }
 
 void MySceneController::set_window_size(int width, int height) {
@@ -55,15 +55,15 @@ void MySceneController::initialize() {
     auto observer = std::make_unique<ScenePlatformEventObserver>();
     engine::core::Controller::get<engine::platform::PlatformController>()->register_platform_event_observer(std::move(observer));
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    platform->set_enable_cursor(true);
+    platform->set_enable_cursor(false);
 
     m_scene=Scene();
     m_scene.init_scene();
     m_scene.set_swarm_enabled(false);
     m_delay_timer=Timer();
     m_duration_timer=Timer();
-    m_delay_timer.restartTimer();
-    m_duration_timer.restartTimer();
+    m_delay_timer.restart_timer();
+    m_duration_timer.restart_timer();
 
 }
 
@@ -84,6 +84,10 @@ void MySceneController::poll_events() {
         platform->set_enable_cursor(m_cursor_enabled);
 
     }
+    if (platform->key(engine::platform::KEY_B)
+                .state() == engine::platform::Key::State::JustPressed) {
+        scene()->set_swarm_enabled(true);
+    }
 }
 
 void MySceneController::update() {
@@ -92,15 +96,15 @@ void MySceneController::update() {
     auto ft=platform->frame_time();
 
 
-    if (m_delay_timer.isEnabled()) {
+    if (m_delay_timer.is_enabled()) {
         if (!m_delay_timer.update(ft.dt)) {
-        m_duration_timer.startTimer(m_duration_amount);
-        m_scene.set_swarm_enabled(true);
+            m_duration_timer.start_timer(m_duration_amount);
+            m_scene.set_swarm_enabled(true);
         }
     }
-    if (m_duration_timer.isEnabled()) {
+    if (m_duration_timer.is_enabled()) {
         if (!m_duration_timer.update(ft.dt)) {
-        m_scene.set_swarm_enabled(false);
+            m_scene.set_swarm_enabled(false);
         }
     }
     m_scene.update(ft);

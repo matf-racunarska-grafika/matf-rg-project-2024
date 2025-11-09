@@ -46,31 +46,31 @@ class OpenGL {
 public:
     using ShaderProgramId = uint32_t;
 
-    static bool isFramebufferComplete();
+    static bool is_framebuffer_complete();
 
     static bool uniform_exists(ShaderProgramId program_id, const std::string &name);
-    static void bindVao(unsigned int vao);
-    static void drawArrays(unsigned int mode, unsigned int count);
+    static void bind_vao(unsigned int vao);
+    static void draw_arrays(unsigned int mode, unsigned int count);
 
-    static unsigned int genFrameBuffer();
+    static unsigned int gen_framebuffer();
 
-    static unsigned int addFrameTexture(unsigned int fb,unsigned int slot,FrameTextureType type,unsigned int width, unsigned int height, bool linear);
-    static unsigned int addRenderBuffer(unsigned int fb,unsigned int width, unsigned int height);
-    static void setAttachmentCount(unsigned int fb,unsigned int count);
+    static unsigned int add_frame_texture(unsigned int fb,unsigned int slot,FrameTextureType type,unsigned int width, unsigned int height, bool linear);
+    static unsigned int add_render_buffer(unsigned int fb,unsigned int width, unsigned int height);
+    static void set_attachment_count(unsigned int fb,unsigned int count);
 
-    static void SetTextureSlot(unsigned int num);
-    static void BindTexture(unsigned int id);
-    static void BindTexture(unsigned int id,unsigned int slot);
+    static void set_texture_slot(unsigned int num);
+    static void bind_texture(unsigned int id);
+    static void bind_texture(unsigned int id,unsigned int slot);
 
-    static void bindFrameBuffer(unsigned int buffer_id);
+    static void bind_frame_buffer(unsigned int buffer_id);
 
-    static void deleteFrameBuffer(unsigned int fb);
-    static void deleteTexture(unsigned int texture_id);
-    static void deleteRenderBuffer(unsigned int rbo);
+    static void delete_frame_buffer(unsigned int fb);
+    static void delete_texture(unsigned int texture_id);
+    static void delete_render_buffer(unsigned int rbo);
 
-    static void BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask);
-    static unsigned int CreateBlackTexture();
-    static unsigned int getDefaultTexture();
+    static void blit_framebuffer(unsigned int from_fbo, unsigned int to_fbo, unsigned int width, unsigned int height, unsigned int mask);
+    static unsigned int create_black_texture();
+    static unsigned int get_default_texture();
     /**
     * @brief Performs a checked OpenGL call. If the OpenGL call fails, it throws @ref engine::util::EngineError::Type::OpenGLError.
 

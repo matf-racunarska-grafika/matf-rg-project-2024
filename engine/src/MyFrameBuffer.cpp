@@ -2,8 +2,7 @@
 // Created by matija on 10/29/25.
 //
 
-#include "../include/engine/resources/MyFrameBuffer.hpp"
-
+#include <engine/resources/MyFrameBuffer.hpp>
 using namespace engine::resources;
 
 MyFrameBuffer::MyFrameBuffer() {}
@@ -13,22 +12,22 @@ MyFrameBuffer::~MyFrameBuffer() {
 }
 
 void MyFrameBuffer::init(int width, int height, bool use_depth) {
-    this->width = width;
-    this->height = height;
+    this->m_width = width;
+    this->m_height = height;
 
-    fbo = engine::graphics::OpenGL::genFrameBuffer();
+    m_fbo = engine::graphics::OpenGL::gen_framebuffer();
     if (use_depth)
-        depthBuffer = graphics::OpenGL::addRenderBuffer(fbo, width, height);
+        m_depth_buffer = graphics::OpenGL::add_render_buffer(m_fbo, width, height);
 }
 
-void MyFrameBuffer::addColorAttachment(graphics::FrameTextureType type, bool linear, const std::string &name) {
-    unsigned int tex = graphics::OpenGL::addFrameTexture(fbo,  getTextureCount(), type, width, height, linear);
-    colorTextures[name] = tex;
-    graphics::OpenGL::setAttachmentCount(fbo, getTextureCount());
+void MyFrameBuffer::add_color_attachment(graphics::FrameTextureType type, bool linear, const std::string &name) {
+    unsigned int tex = graphics::OpenGL::add_frame_texture(m_fbo,  texture_count(), type, m_width, m_height, linear);
+    m_color_textures[name] = tex;
+    graphics::OpenGL::set_attachment_count(m_fbo, texture_count());
 }
 
 void MyFrameBuffer::bind() const {
-    graphics::OpenGL::bindFrameBuffer(fbo);
+    graphics::OpenGL::bind_frame_buffer(m_fbo);
 }
 
 void MyFrameBuffer::clear() {
@@ -36,29 +35,29 @@ void MyFrameBuffer::clear() {
 }
 
 void MyFrameBuffer::unbind() {
-    graphics::OpenGL::bindFrameBuffer(0);
+    graphics::OpenGL::bind_frame_buffer(0);
 }
 
-void MyFrameBuffer::bindTexture(std::string name, unsigned int slot) {
-    graphics::OpenGL::BindTexture(colorTextures[name], slot);
+void MyFrameBuffer::bind_texture(std::string name, unsigned int slot) {
+    graphics::OpenGL::bind_texture(m_color_textures[name], slot);
 }
 
 
 void MyFrameBuffer::free() {
-    if (depthBuffer) {
-        graphics::OpenGL::deleteRenderBuffer(depthBuffer);
-        depthBuffer = 0;
+    if (m_depth_buffer) {
+        graphics::OpenGL::delete_render_buffer(m_depth_buffer);
+        m_depth_buffer = 0;
     }
 
-    if (!colorTextures.empty()) {
-        for (auto pair: colorTextures) {
-            graphics::OpenGL::deleteTexture(pair.second);
+    if (!m_color_textures.empty()) {
+        for (auto pair: m_color_textures) {
+            graphics::OpenGL::delete_texture(pair.second);
         }
-        colorTextures.clear();
+        m_color_textures.clear();
     }
 
-    if (fbo) {
-        graphics::OpenGL::deleteFrameBuffer(fbo);
-        fbo = 0;
+    if (m_fbo) {
+        graphics::OpenGL::delete_frame_buffer(m_fbo);
+        m_fbo = 0;
     }
 }

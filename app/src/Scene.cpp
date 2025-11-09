@@ -2,7 +2,7 @@
 // Created by matija on 10/30/25.
 //
 
-#include "../include/Scene.hpp"
+#include <Scene.hpp>
 
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/GraphicsController.hpp>
@@ -10,28 +10,26 @@
 #include <engine/resources/ResourcesController.hpp>
 #include <cstdlib>
 #include <cmath>
-#include <iostream>
 
 namespace app {
-Scene::Scene() {
-}
+Scene::Scene() = default;
 void Scene::update(engine::platform::FrameTime time) {
     if (m_swarm_enabled) {
-        light_swarm->move_lights(time.dt);
-        light_swarm2->move_lights(time.dt);
-        float light_intensity = std::max(std::pow(std::sin(time.current * 1.0f)-0.1f, 3.0f), 0.0f);
-        float light_intensity2 = std::max(std::pow(std::sin(time.current * 1.0f+1.2f)-0.1f, 3.0f), 0.0f);
-        light_swarm->set_light_dim(light_intensity);
-        light_swarm2->set_light_dim(light_intensity2);
+        m_light_swarm->move_lights(time.dt);
+        m_light_swarm2->move_lights(time.dt);
+        float light_intensity = std::max(std::pow(std::sin(time.current * 1.0f)-0.0f, 3.0f), 0.0f);
+        float light_intensity2 = std::max(std::pow(std::sin(time.current * 1.0f+1.2f)-0.0f, 3.0f), 0.0f);
+        m_light_swarm->set_light_dim(light_intensity);
+        m_light_swarm2->set_light_dim(light_intensity2);
     }
 }
 void Scene::dim_lights(float factor) {
-    for (auto &l : lights) {
+    for (auto &l : m_lights) {
         l.set_brightness(factor);
     }
 }
 void Scene::draw_static_scene(engine::resources::Shader *s) {
-    for (auto &model : models) {
+    for (auto &model : m_models) {
         model.draw(s);
     }
 }
@@ -45,44 +43,45 @@ void Scene::init_scene() {
     if (m_deferred_filter==nullptr) {
         m_deferred_filter=new engine::graphics::DeferredFilter();
         auto g=engine::core::Controller::get<engine::graphics::GraphicsController>();
-        m_deferred_filter->initilizeBuffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
+        m_deferred_filter->initialize_buffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
     }
     if (m_bloom_filter==nullptr) {
-        m_bloom_filter=new engine::graphics::BloomFilter(0.7,0.7,5);
+        m_bloom_filter=new engine::graphics::BloomFilter(1,0.5,3);
         auto g=engine::core::Controller::get<engine::graphics::GraphicsController>();
-        m_bloom_filter->initilizeBuffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
+        m_bloom_filter->initialize_buffers(static_cast<unsigned int>(g->perspective_params().Width),g->perspective_params().Height);
     }
-    if (light_swarm==nullptr) {
-        light_swarm=new LightSwarm();
+    if (m_light_swarm==nullptr) {
+        m_light_swarm=new LightSwarm();
     }
-    if (light_swarm2==nullptr) {
-        light_swarm2=new LightSwarm();
+    if (m_light_swarm2==nullptr) {
+        m_light_swarm2=new LightSwarm();
     }
 
 
     auto l2= engine::graphics::Light(
             engine::graphics::LightType::Spot,
-            glm::vec3(0, 2, 0),
-            glm::vec3(0.6,0.6,0.6)
-            ,glm::vec3(0,1,0));
+            glm::vec3(0, 1.6, 0),
+            glm::vec3(1.5,1.5,1.5)
+            ,glm::vec3(0,-1,0));
 
-    l2.set_cutoff(12,17);
-    lights.push_back(l2);
+    l2.set_cutoff(20,25);
+    m_lights.push_back(l2);
 
-    std::vector<engine::graphics::Light> generated= scatter_lights(-3,3,0,2,-3,3,70);
-    light_swarm->set_lights(generated);
-    std::vector<engine::graphics::Light> generated2= scatter_lights(-3,3,0,2,-3,3,40);
-    light_swarm2->set_lights(generated2);
+    std::vector<engine::graphics::Light> generated= scatter_lights(-2.5,2.5,0,1.5,-2.5,2.5,70);
+    m_light_swarm->set_lights(generated);
+    std::vector<engine::graphics::Light> generated2= scatter_lights(-1,1,0,1,-1,1,50);
+    m_light_swarm2->set_lights(generated2);
 
 
     auto floor = engine::core::Controller::get<engine::resources::ResourcesController>()->model("floor");
+    floor->set_shininess(2);
     MyModel mfloor =MyModel(floor,glm::vec3(-0.5f, -0.28, -0.5f),0.035,0.0f,-90.0f,0.0f);
-    models.push_back(mfloor);
+    m_models.push_back(mfloor);
 
     auto statue = engine::core::Controller::get<engine::resources::ResourcesController>()->model("sculpture");
-    statue->setShininess(32);
+    statue->set_shininess(64);
     MyModel mstatue =MyModel(statue,glm::vec3(0.0f, -0.05, 0.0f),0.00007,-90.0f,0.0f,0.0f);
-    models.push_back(mstatue);
+    m_models.push_back(mstatue);
 
     auto tree1 = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree_winter");
     MyModel mtree1 =MyModel(tree1,glm::vec3(0.0f, -0.051, 0.5f),1,0.0f,0.0f,0.0f);
@@ -98,12 +97,12 @@ void Scene::init_scene() {
 
 
      auto grass = engine::core::Controller::get<engine::resources::ResourcesController>()->model("grass");
-     grass->setShininess(5);
-     make_instances(grass,-4.5f,4.5f,-4.5f,4.5f,-0.04, -0.015, 10000);
+     grass->set_shininess(16);
+     make_instances(grass,-4.5f,4.5f,-4.5f,4.5f,-0.01, -0.005, 10000);
 
     auto tree = engine::core::Controller::get<engine::resources::ResourcesController>()->model("tree2");
-    tree->setShininess(8);
-    make_instances(tree,-4.2f,4.2f,-4.2f,4.2f,-0.065, -0.045, 30);
+    tree->set_shininess(8);
+    make_instances(tree,-4.2f,4.2f,-4.2f,4.2f,-0.025, -0.015, 30);
 
 
 }
@@ -112,31 +111,31 @@ void Scene::init_scene() {
 void Scene::draw_skybox() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("skybox_bloom_shader");
     shader->use();
-    shader->set_float("treshold",m_bloom_filter->getTreshold());
+    shader->set_float("treshold", m_bloom_filter->threshold());
     auto skybox_cube = engine::core::Controller::get<engine::resources::ResourcesController>()->skybox("skybox");
     engine::core::Controller::get<engine::graphics::GraphicsController>()->draw_skybox(shader, skybox_cube);
 }
 void Scene::draw_lights() {
     auto shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("light_shader");
     shader->use();
-    shader->set_float("treshold",m_bloom_filter->getTreshold());
-    light_swarm->draw(shader);
-    light_swarm2->draw(shader);
+    shader->set_float("treshold", m_bloom_filter->threshold());
+    m_light_swarm->draw(shader);
+    m_light_swarm2->draw(shader);
 }
 void Scene::set_width_height(int width, int height) {
-    m_deferred_filter->initilizeBuffers((width), (height));
-    m_bloom_filter->initilizeBuffers((width), (height));
+    m_deferred_filter->initialize_buffers(width, height);
+    m_bloom_filter->initialize_buffers(width, height);
 }
 
 std::vector<engine::graphics::Light> Scene::get_lights() {
 
     if (m_swarm_enabled) {
-        std::vector<engine::graphics::Light> res(lights);
-        res.insert( res.begin(),light_swarm->get_lights().begin(),light_swarm->get_lights().end());
-        res.insert( res.begin(),light_swarm2->get_lights().begin(),light_swarm2->get_lights().end());
+        std::vector<engine::graphics::Light> res(m_lights);
+        res.insert(res.begin(), m_light_swarm->lights().begin(), m_light_swarm->lights().end());
+        res.insert(res.begin(), m_light_swarm2->lights().begin(), m_light_swarm2->lights().end());
         return res;
     }
-    return lights;
+    return m_lights;
 }
 
 void Scene::draw_instanced() {
@@ -163,36 +162,35 @@ void Scene::draw() {
     auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
     std::vector<engine::graphics::Light> all_lights = get_lights();
 
-    m_deferred_filter->setUpCanvas();
+    m_deferred_filter->set_up_canvas();
     draw_static_scene(m_deferred_filter->geometry_shader());
     draw_instanced();
 
     engine::resources::Shader * drawing_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("deferred_bloom_aware_render");
     drawing_shader->use();
-    drawing_shader->set_float("treshold",m_bloom_filter->getTreshold());
+    drawing_shader->set_float("treshold", m_bloom_filter->threshold());
     drawing_shader->set_lights(all_lights);
-    drawing_shader->set_vec3("viewPos",graphics->camera()->Position);
+    drawing_shader->set_vec3("viewPos", graphics->camera()->Position);
 
     if (m_bloom_enabled) {
-        m_bloom_filter->setUpCanvas();
-        m_bloom_filter->clearBuffers();
-    }
-    else {
-        engine::graphics::OpenGL::bindFrameBuffer(0);
+        m_bloom_filter->set_up_canvas();
+        m_bloom_filter->clear_buffers();
+    } else {
+        engine::graphics::OpenGL::bind_frame_buffer(0);
     }
     m_deferred_filter->render(drawing_shader);
-    m_deferred_filter->blitDepth(graphics->perspective_params().Width, graphics->perspective_params().Height, m_bloom_filter->get_framebuffer_id());
+    m_deferred_filter->blit_depth(graphics->perspective_params().Width, graphics->perspective_params().Height, m_bloom_filter->framebuffer_id());
     if (m_bloom_enabled) {
-        m_bloom_filter->setUpCanvas();
+        m_bloom_filter->set_up_canvas();
     }
     if (m_swarm_enabled) {
         draw_lights();
     }
     draw_skybox();
     if (m_bloom_enabled) {
-        m_bloom_filter->applyBlur();
-        engine::graphics::OpenGL::bindFrameBuffer(0);
-        m_bloom_filter->applyBloom();
+        m_bloom_filter->apply_blur();
+        engine::graphics::OpenGL::bind_frame_buffer(0);
+        m_bloom_filter->apply_bloom();
     }
 
 
@@ -208,18 +206,18 @@ void Scene::draw_bloom() {
 
     engine::resources::Shader * drawing_shader = engine::core::Controller::get<engine::resources::ResourcesController>()->shader("bloom_aware_shader");
     drawing_shader->use();
-    drawing_shader->set_float("treshold",m_bloom_filter->getTreshold());
+    drawing_shader->set_float("treshold", m_bloom_filter->threshold());
     graphics->prepare_for_draw(drawing_shader);
     drawing_shader->set_lights(all_lights);
-    drawing_shader->set_vec3("viewPos",graphics->camera()->Position);
+    drawing_shader->set_vec3("viewPos", graphics->camera()->Position);
 
-    m_bloom_filter->setUpCanvas();
+    m_bloom_filter->set_up_canvas();
 
     draw_static_scene(drawing_shader);
-    m_bloom_filter->applyBlur();
+    m_bloom_filter->apply_blur();
 
-    engine::graphics::OpenGL::bindFrameBuffer(0);
-    m_bloom_filter->applyBloom();
+    engine::graphics::OpenGL::bind_frame_buffer(0);
+    m_bloom_filter->apply_bloom();
 
 }
 
@@ -236,7 +234,7 @@ void Scene::set_threshold(float threshold) {
 }
 
 void Scene::set_bloom_intensity(float brightness) {
-    m_bloom_filter->setIntensity(brightness);
+    m_bloom_filter->set_intensity(brightness);
 }
 
 
@@ -292,49 +290,6 @@ void Scene::make_instances(engine::resources::Model* model,float fromx, float to
     delete[] trans;
 }
 
-void Scene::prepare_grass(float fromx, float tox, float fromy, float toy, uint32_t count=1000) {
-    uint32_t num_of_inst=count;
-    float radius = 5.0;
-    float offset = 2.0f;
-    float tilt_angle_bias=15.0f;
-    int bush_min=3;
-    int bush_max=8;
-    int scale_wiggle=15;
-    auto grass_model=engine::core::Controller::get<engine::resources::ResourcesController>()->model("grass");
-    glm::mat4* trans=new glm::mat4[num_of_inst];
-    srand(engine::core::Controller::get<engine::platform::PlatformController>()->frame_time().current);
-
-    int i=0;
-        while (i<num_of_inst) {
-        int bush_count= bush_min + rand() % (bush_max-bush_min);
-        for (uint32_t j=0; j<bush_count&&i<num_of_inst; j++,i++) {
-
-            glm::mat4 model = glm::mat4(1.0f);
-            float angle = (float)i / (float)num_of_inst * 360.0f;
-            float displacement = (rand() % (int)(2 * offset * 1000)) / 1000.0f - offset;
-            float x = sin(angle) * radius + displacement;
-            displacement = (rand() % (int)(2 * offset * 1000)) / 1000.0f - offset;
-            float y = -std::abs(displacement) * 0.4f;
-            displacement = (rand() % (int)(2 * offset * 1000)) / 1000.0f - offset;
-            float z = cos(angle) * radius + displacement;
-
-            float scale =1+ (rand() % (2*scale_wiggle)-scale_wiggle) / 100.0f;
-
-            glm::vec3 dir=glm::vec3(0,1,0)+ glm::vec3(tan(tilt_angle_bias)) * glm::normalize(glm::vec3(x, y, z));
-
-            model = glm::translate(model, glm::vec3(x, y, z));
-            model = glm::scale(model, glm::vec3(scale));
-
-            float yaw= glm::radians(-180.0f +  (std::rand()*1.0f) / (RAND_MAX*1.0f) *  360.0f);
-            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), yaw, glm::vec3(0.0f, 1.0f, 0.0f));
-            model=model*rotation;
-
-            trans[i]=model;
-        }
-    }
-    grass_model->instantiate(trans,num_of_inst);
-    delete[] trans;
-}
 
 std::vector<engine::graphics::Light>  Scene::scatter_lights(float fromx, float tox, float fromy,  float toy, float fromz, float toz, uint32_t count) {
 
@@ -353,27 +308,27 @@ std::vector<engine::graphics::Light>  Scene::scatter_lights(float fromx, float t
         const float ry = 2.0f * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX)) - 1.0f;
         const float rz = 2.0f * (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX)) - 1.0f;
 
-        glm::vec3 a= glm::normalize(glm::vec3(x, y, z));
-        glm::vec3 b(rx,ry *0.3 ,rz);
+        glm::vec3 a= glm::normalize(glm::vec3(x, y, z)-glm::vec3(0,0.3,0));
+        glm::vec3 b(rx,ry*0.5,rz);
         b=normalize(b);
 
         glm::vec3 proj = (glm::dot(b, a) / glm::dot(a, a)) * a;
         glm::vec3 b_ortho = b - proj;
 
-        const float cr = -0.2 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.4f;
-        const float cg = -0.4 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.4f;
-        const float cb = -0.2 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.4f;
+        const float cr = -0.1 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.2f;
+        const float cg = -0.1 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.2f;
+        const float cb = -0.1 + (static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX))*0.2f;
 
         glm::vec3 light_col=glm::vec3(0.7f+cr, 1.0f+cg, 0.3f+cb);
 
         engine::graphics::Light light(
             engine::graphics::LightType::Point,
             glm::vec3(x, y, z),
-            light_col*0.5f
+            light_col
         );
-        light.set_brightness(0.5);
+        light.set_brightness(1);
         light.set_direction(b_ortho);
-        light.set_attenuation(1, 0.4f, 0.5f);
+        light.set_attenuation(1, 0.08f, 0.08f);
         generated.push_back(light);
     }
     return generated;

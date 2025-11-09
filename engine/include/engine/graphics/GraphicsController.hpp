@@ -92,7 +92,7 @@ public:
     */
     void draw_skybox(const resources::Shader *shader, const resources::Skybox *skybox);
 
-    unsigned int quadVAO = 0;
+    unsigned int quad_vao = 0;
     void draw_quad() ;
     Camera *camera() {
         return &m_camera;

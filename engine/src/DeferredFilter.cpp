@@ -2,7 +2,6 @@
 // Created by matija on 10/29/25.
 //
 
-#include "../include/engine/graphics/DeferredFilter.hpp"
 
 #include <engine/graphics/GraphicsController.hpp>
 #include <engine/resources/ResourcesController.hpp>
@@ -18,21 +17,21 @@ DeferredFilter::DeferredFilter() {
 }
 
 DeferredFilter::~DeferredFilter() {
-    destroyBuffers();
+    destroy_buffers();
 }
 
-void DeferredFilter::initilizeBuffers(unsigned int scr_width, unsigned int scr_height) {
-    destroyBuffers();
+void DeferredFilter::initialize_buffers(unsigned int scr_width, unsigned int scr_height) {
+    destroy_buffers();
     m_gbuffer.init(scr_width, scr_height, true);
-    m_gbuffer.addColorAttachment(FrameTextureType::FLOAT, false, "position");
-    m_gbuffer.addColorAttachment(FrameTextureType::FLOAT, false, "normal");
-    m_gbuffer.addColorAttachment(FrameTextureType::RGBA, false, "albedo_spec");
-    m_gbuffer.addColorAttachment(FrameTextureType::RGBA, false, "emissive_shine");
+    m_gbuffer.add_color_attachment(FrameTextureType::FLOAT, false, "position");
+    m_gbuffer.add_color_attachment(FrameTextureType::FLOAT, false, "normal");
+    m_gbuffer.add_color_attachment(FrameTextureType::RGBA, false, "albedo_spec");
+    m_gbuffer.add_color_attachment(FrameTextureType::RGBA, false, "emissive_shine");
 }
 
-void DeferredFilter::setUpCanvas() {
+void DeferredFilter::set_up_canvas() {
     m_gbuffer.bind();
-    clearBuffers();
+    clear_buffers();
     m_geometry_shader->use();
     //m_geometry_shader->prepare_for_use();
     engine::core::Controller::get<GraphicsController>()->prepare_for_draw(m_geometry_shader);
@@ -49,21 +48,21 @@ void DeferredFilter::render(resources::Shader* shader) {
     shader->set_int("gAlbedoSpec", 2);
     shader->set_int("gEmissiveShine", 3);
 
-    m_gbuffer.bindTexture("position", 0);
-    m_gbuffer.bindTexture("normal", 1);
-    m_gbuffer.bindTexture("albedo_spec", 2);
-    m_gbuffer.bindTexture("emissive_shine", 3);
+    m_gbuffer.bind_texture("position", 0);
+    m_gbuffer.bind_texture("normal", 1);
+    m_gbuffer.bind_texture("albedo_spec", 2);
+    m_gbuffer.bind_texture("emissive_shine", 3);
 
     engine::core::Controller::get<GraphicsController>()->draw_quad();
 }
 
-void DeferredFilter::blitDepth(unsigned int width, unsigned int height ,unsigned int toFbo) const {
-    graphics::OpenGL::BlitFrameBuffer(m_gbuffer.getFrameBuff(), toFbo, width, height, GL_DEPTH_BUFFER_BIT);
+void DeferredFilter::blit_depth(unsigned int width, unsigned int height ,unsigned int to_fbo) const {
+    graphics::OpenGL::blit_framebuffer(m_gbuffer.framebuffer_id(), to_fbo, width, height, GL_DEPTH_BUFFER_BIT);
 }
-void DeferredFilter::clearBuffers() {
+void DeferredFilter::clear_buffers() {
     m_gbuffer.clear();
 }
 
-void DeferredFilter::destroyBuffers() {
+void DeferredFilter::destroy_buffers() {
     m_gbuffer.free();
 }

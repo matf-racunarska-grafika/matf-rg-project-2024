@@ -4,7 +4,6 @@
 
 #ifndef MATF_RG_PROJECT_MYSCENECONTROLLER_HPP
 #define MATF_RG_PROJECT_MYSCENECONTROLLER_HPP
-#include <../../engine/include/engine/resources/Light.hpp>
 #include <LightSwarm.hpp>
 #include <Scene.hpp>
 #include <Timer.hpp>
@@ -60,7 +59,7 @@ private:
     Timer m_delay_timer;
     Timer m_duration_timer;
 
-    float m_duration_amount=15.0f;
+    float m_duration_amount=30.0f;
     float m_delay_amount=3.0f;
 };
 } // app

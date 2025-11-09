@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 #include <filesystem>
 #include <array>
-#include <iostream>
 #include <stb_image.h>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/Shader.hpp>
@@ -13,44 +12,44 @@
 
 namespace engine::graphics {
 
-bool OpenGL::isFramebufferComplete() {
+bool OpenGL::is_framebuffer_complete() {
     return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 }
 
 bool OpenGL::uniform_exists(ShaderProgramId program_id, const std::string &name) {
     return glGetUniformLocation( program_id, name.c_str())!=-1;
 }
-void OpenGL::bindVao(unsigned int vao) {
+void OpenGL::bind_vao(unsigned int vao) {
     glBindVertexArray(vao);
 }
 
-void OpenGL::drawArrays(unsigned int mode, unsigned int count) {
+void OpenGL::draw_arrays(unsigned int mode, unsigned int count) {
     glDrawArrays(mode, 0, count);
 }
 
-void OpenGL::bindFrameBuffer(unsigned int buffer_id) {
+void OpenGL::bind_frame_buffer(unsigned int buffer_id) {
     glBindFramebuffer(GL_FRAMEBUFFER, buffer_id);
 }
 
-void OpenGL::deleteFrameBuffer(unsigned int fb) {
+void OpenGL::delete_frame_buffer(unsigned int fb) {
     if (fb != 0) {
         glDeleteFramebuffers(1, &fb);
     }
 }
 
-void OpenGL::deleteTexture(unsigned int texture_id) {
+void OpenGL::delete_texture(unsigned int texture_id) {
     if (texture_id != 0) {
         glDeleteTextures(1, &texture_id);
     }
 }
 
-void OpenGL::deleteRenderBuffer(unsigned int rbo) {
+void OpenGL::delete_render_buffer(unsigned int rbo) {
     if (rbo != 0) {
         glDeleteRenderbuffers(1, &rbo);
     }
 }
 
-void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask) {
+void OpenGL::blit_framebuffer(unsigned int fromFbo, unsigned int toFbo, unsigned int width, unsigned int height, unsigned int mask) {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fromFbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, toFbo);
     glBlitFramebuffer(0, 0, width, height,
@@ -61,7 +60,7 @@ void OpenGL::BlitFrameBuffer(unsigned int fromFbo, unsigned int toFbo, unsigned 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-unsigned int OpenGL::CreateBlackTexture() {
+unsigned int OpenGL::create_black_texture() {
         unsigned int texID;
         glGenTextures(1, &texID);
         glBindTexture(GL_TEXTURE_2D, texID);
@@ -92,30 +91,30 @@ unsigned int OpenGL::CreateBlackTexture() {
         return texID;
 }
 
-unsigned int OpenGL::getDefaultTexture() {
-    static unsigned int tex_id=CreateBlackTexture();
+unsigned int OpenGL::get_default_texture() {
+    static unsigned int tex_id=create_black_texture();
     return tex_id;
 }
 
-unsigned int OpenGL::genFrameBuffer() {
+unsigned int OpenGL::gen_framebuffer() {
     unsigned int fbo;
     glGenFramebuffers(1,&fbo);
     return fbo;
 }
 
-void OpenGL::setAttachmentCount(unsigned int fb, unsigned int count) {
-    bindFrameBuffer(fb);
+void OpenGL::set_attachment_count(unsigned int fb, unsigned int count) {
+    bind_frame_buffer(fb);
     std::vector<GLenum> attachments;
     for (size_t i = 0; i < count; ++i)
         attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
 
     glDrawBuffers((GLsizei)attachments.size(), attachments.data());
-    bindFrameBuffer(0);
+    bind_frame_buffer(0);
 
 }
 
-unsigned int OpenGL::addFrameTexture(unsigned int fb,unsigned int slot ,FrameTextureType type,unsigned int width, unsigned int height, bool linear) {
-    bindFrameBuffer(fb);
+unsigned int OpenGL::add_frame_texture(unsigned int fb,unsigned int slot ,FrameTextureType type,unsigned int width, unsigned int height, bool linear) {
+    bind_frame_buffer(fb);
     unsigned int texture_id = 0;
     glGenTextures(1, &texture_id);
     glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -132,32 +131,32 @@ unsigned int OpenGL::addFrameTexture(unsigned int fb,unsigned int slot ,FrameTex
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+slot, GL_TEXTURE_2D, texture_id, 0);
-    bindFrameBuffer(0);
+    bind_frame_buffer(0);
     return texture_id;
 }
 
 
-unsigned int OpenGL::addRenderBuffer(unsigned int fb,unsigned int width, unsigned int height) {
-    bindFrameBuffer(fb);
+unsigned int OpenGL::add_render_buffer(unsigned int fb,unsigned int width, unsigned int height) {
+    bind_frame_buffer(fb);
     unsigned int depthBuff;
     glGenRenderbuffers(1, &depthBuff);
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuff);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuff);
-    engine::graphics::OpenGL::bindFrameBuffer(0);
+    engine::graphics::OpenGL::bind_frame_buffer(0);
     return depthBuff;
 }
 
-void OpenGL::BindTexture(unsigned int id) {
+void OpenGL::bind_texture(unsigned int id) {
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void OpenGL::BindTexture(unsigned int id, unsigned int slot) {
+void OpenGL::bind_texture(unsigned int id, unsigned int slot) {
     glActiveTexture(GL_TEXTURE0+slot);
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-void OpenGL::SetTextureSlot(unsigned int num) {
+void OpenGL::set_texture_slot(unsigned int num) {
     glActiveTexture(GL_TEXTURE0+num);
 }
 
