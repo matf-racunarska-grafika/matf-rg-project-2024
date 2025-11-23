@@ -401,16 +401,19 @@ class Verifier:
         result.extend(self._check_line_level_rules(lines, file_path))
         return result
 
-
 if __name__ == "__main__":
-    path = Path(sys.argv[1])
-    print(f'-- [PYTHON] Running check on {path}')
-    assert path.exists()
-    verifier = Verifier(path)
-    violations = verifier.check_for_violations()
+    paths = ["app", "engine", "engine/test"]
+    violations = []
+    for path in paths:
+        path = Path(path)
+        print(f'-- [PYTHON] Running check on {path}')
+        assert path.exists()
+        verifier = Verifier(path)
+        violations.extend(verifier.check_for_violations())
+    
     if len(violations) > 0:
         print(
-            BColors.FAIL + f'\n\nPrebuild check failed for: {path}.'
+            BColors.FAIL + f'\n\nPrebuild check failed'
                            f'\nPlease fix the following warnings as they will become errors in future matf-rg-project updates:'
             + BColors.ENDC
         )
