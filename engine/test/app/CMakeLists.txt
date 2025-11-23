@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.21)
 
 set(TEST_APP test-app)
 file(GLOB sources src/*.cpp)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21)
 cmake_policy(VERSION 3.15)
 
 file(READ "glm/detail/setup.hpp" GLM_SETUP_FILE)
