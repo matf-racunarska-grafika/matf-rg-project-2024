@@ -25,7 +25,7 @@ class Skybox;
 * CHECKED_GL_CALL(glGenTextures, 1, &texture_id);
 * @endcode
 */
-#define CHECKED_GL_CALL(func, ...) engine::graphics::OpenGL::call(std::source_location::current(), func, __VA_ARGS__)
+#define CHECKED_GL_CALL(func, ...) engine::graphics::OpenGL::call(std::source_location::current(), func __VA_OPT__(,) __VA_ARGS__)
 
 namespace engine::graphics {
 /**
@@ -48,7 +48,7 @@ public:
     * @returns Return value if the `glfun` has it, otherwise void.
     */
     template<typename TResult, typename... TOpenGLArgs, typename... Args>
-    static TResult call(std::source_location location, TResult (*glfun)(TOpenGLArgs...), Args... args) {
+    static TResult call(std::source_location location, TResult (*glfun)(TOpenGLArgs...), Args&&... args) {
         // @formatter:off
         if constexpr (!std::is_same_v<TResult, void>) {
             auto result = glfun(std::forward<Args>(args)...);

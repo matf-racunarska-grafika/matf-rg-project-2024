@@ -7,11 +7,11 @@
 namespace engine::resources {
 
 void Shader::use() const {
-    glUseProgram(m_shader_id);
+    CHECKED_GL_CALL(glUseProgram, m_shader_id);
 }
 
 void Shader::destroy() const {
-    glDeleteProgram(m_shader_id);
+    CHECKED_GL_CALL(glDeleteProgram, m_shader_id);
 }
 
 unsigned Shader::id() const {
