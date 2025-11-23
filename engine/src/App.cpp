@@ -46,7 +46,6 @@ void App::engine_setup(int argc, char **argv) {
 
 void App::initialize() {
     // Topologically sort controllers based on their dependency graph formed by before/after methods.
-
     auto adjacent_controllers = [](Controller *curr) {
         return curr->next();
     };
@@ -96,7 +95,8 @@ void App::draw() {
             controller->draw();
         }
     }
-    for (auto controller: m_controllers) {
+    for (auto it = m_controllers.rbegin(); it != m_controllers.rend(); ++it) {
+        auto controller = *it;
         if (controller->is_enabled()) {
             controller->end_draw();
         }
