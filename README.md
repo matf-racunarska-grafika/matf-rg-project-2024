@@ -465,6 +465,40 @@ auto fps = parser->arg<int>("--fps", 60);
 Here you can find a walkthrough [tutorial](engine/test/app/TUTORIAL.md) for recreating the `engine/test/app` that
 demonstrates how to use different engine systems.
 
+# Development Tools
+
+To help maintain code quality and consistency, the project includes several utility scripts.
+
+## Code Formatting
+
+The project uses `clang-format` to ensure consistent code style. A helper script `format.py` is provided to format the codebase.
+
+**Usage:**
+```bash
+python3 format.py
+```
+
+This script will:
+*   Scan `app`, `engine`, and `engine/test` directories.
+*   Apply formatting to C++ source and header files (`.cpp`, `.hpp`, etc.) using the `.clang-format` configuration.
+*   Exclude third-party libraries in `engine/libs`.
+
+## Static Analysis
+
+A static analysis script `check.py` is provided to verify coding standards and detect common issues before building.
+
+**Usage:**
+```bash
+python3 check.py
+```
+
+This script checks for:
+*   **Naming Conventions**: Verifies that classes, functions, variables, etc., follow the project's naming guidelines (e.g., `snake_case` for functions, `PascalCase` for classes).
+*   **Forbidden Includes**: Detects usage of forbidden libraries or headers (e.g., `iostream` for logging, direct `glad`/`glfw` includes in `app`).
+*   **Relative Includes**: Ensures that `#include` directives use full paths instead of relative paths (e.g., `../`).
+
+If violations are found, the script will report them and exit with a non-zero status code.
+
 # Style guide
 
 Naming Conventions:
