@@ -23,27 +23,27 @@ Shader ShaderCompiler::compile_from_source(std::string shader_name, std::string 
 }
 
 OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shader_sources) {
-    uint32_t shader_program_id = glCreateProgram();
+    uint32_t shader_program_id = CHECKED_GL_CALL(glCreateProgram);
     uint32_t vertex_shader_id = 0;
     uint32_t fragment_shader_id = 0;
     uint32_t geometry_shader_id = 0;
     defer {
-        glDeleteShader(vertex_shader_id);
-        glDeleteShader(fragment_shader_id);
-        glDeleteShader(geometry_shader_id);
+        CHECKED_GL_CALL(glDeleteShader, vertex_shader_id);
+        CHECKED_GL_CALL(glDeleteShader, fragment_shader_id);
+        CHECKED_GL_CALL(glDeleteShader, geometry_shader_id);
     };
 
     vertex_shader_id = compile(shader_sources.vertex_shader, ShaderType::Vertex);
-    glAttachShader(shader_program_id, vertex_shader_id);
+    CHECKED_GL_CALL(glAttachShader, shader_program_id, vertex_shader_id);
     fragment_shader_id = compile(shader_sources.fragment_shader, ShaderType::Fragment);
-    glAttachShader(shader_program_id, fragment_shader_id);
+    CHECKED_GL_CALL(glAttachShader, shader_program_id, fragment_shader_id);
 
     if (!shader_sources.geometry_shader
                  .empty()) {
         geometry_shader_id = compile(shader_sources.geometry_shader, ShaderType::Geometry);
-        glAttachShader(shader_program_id, geometry_shader_id);
+        CHECKED_GL_CALL(glAttachShader, shader_program_id, geometry_shader_id);
     }
-    glLinkProgram(shader_program_id);
+    CHECKED_GL_CALL(glLinkProgram, shader_program_id);
     return shader_program_id;
 }
 

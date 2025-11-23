@@ -5,6 +5,7 @@
 #include <imgui_impl_glfw.h>
 
 #include <engine/platform/PlatformController.hpp>
+#include <engine/graphics/OpenGL.hpp>
 #include <engine/util/Utils.hpp>
 
 #include <engine/util/Configuration.hpp>
@@ -271,7 +272,7 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int act
 }
 
 static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
+    CHECKED_GL_CALL(glViewport, 0, 0, width, height);
     core::Controller::get<PlatformController>()->_platform_on_framebuffer_resize(width, height);
 }
 
