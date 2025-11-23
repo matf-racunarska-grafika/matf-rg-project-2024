@@ -76,6 +76,11 @@ private:
     void initialize() override;
 
     /**
+     * @brief Release all the resources loaded during @ref initialize
+     */
+    void terminate() override;
+
+    /**
     * @brief Loads all the models from the "resources/models" directory based on the provided configuration. Called during @ref ResourcesController::initialize.
     */
     void load_models();

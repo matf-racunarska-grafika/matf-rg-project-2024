@@ -2,8 +2,8 @@
 // clang-format off
 #include <glad/glad.h>
 // clang-format on
-#include <engine/resources/Mesh.hpp>
 #include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/Mesh.hpp>
 #include <engine/resources/Shader.hpp>
 #include <engine/util/Utils.hpp>
 #include <unordered_map>
@@ -63,7 +63,7 @@ void Mesh::draw(const Shader *shader) {
         uniform_name.clear();
     }
     CHECKED_GL_CALL(glBindVertexArray, m_vao);
-    CHECKED_GL_CALL(glDrawElements, GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, (void*)0);
+    CHECKED_GL_CALL(glDrawElements, GL_TRIANGLES, m_num_indices, GL_UNSIGNED_INT, (void *) 0);
     CHECKED_GL_CALL(glBindVertexArray, 0);
 }
 
