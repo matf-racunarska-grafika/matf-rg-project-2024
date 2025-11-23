@@ -17,25 +17,22 @@ void GraphicsController::initialize() {
     RG_GUARANTEE(opengl_initialized, "OpenGL failed to init!");
 
     auto platform = engine::core::Controller::get<platform::PlatformController>();
-    auto handle = platform->window()
-                          ->handle_();
+    auto handle = platform->window()->handle_();
     m_perspective_params.FOV = glm::radians(m_camera.Zoom);
-    m_perspective_params.Width = static_cast<float>(platform->window()
-                                                            ->width());
-    m_perspective_params.Height = static_cast<float>(platform->window()
-                                                             ->height());
+    m_perspective_params.Width = static_cast<float>(platform->window()->width());
+    m_perspective_params.Height = static_cast<float>(platform->window()->height());
     m_perspective_params.Near = 0.1f;
     m_perspective_params.Far = 100.f;
-
     m_ortho_params.Bottom = 0.0f;
-    m_ortho_params.Top = static_cast<float>(platform->window()
-                                                    ->height());
+    m_ortho_params.Top = static_cast<float>(platform->window()->height());
     m_ortho_params.Left = 0.0f;
-    m_ortho_params.Right = static_cast<float>(platform->window()
-                                                      ->width());
+    m_ortho_params.Right = static_cast<float>(platform->window()->width());
     m_ortho_params.Near = 0.1f;
     m_ortho_params.Far = 100.0f;
+
     platform->register_platform_event_observer(std::make_unique<GraphicsPlatformEventObserver>(this));
+    CHECKED_GL_CALL(glViewport, 0, 0, platform->window()->width(), platform->window()->height());
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -57,6 +54,7 @@ void GraphicsPlatformEventObserver::on_window_resize(int width, int height) {
     m_graphics->perspective_params().Height = static_cast<float>(height);
     m_graphics->orthographic_params().Right = static_cast<float>(width);
     m_graphics->orthographic_params().Top = static_cast<float>(height);
+    CHECKED_GL_CALL(glViewport, 0, 0, width, height);
 }
 
 std::string_view GraphicsController::name() const {
