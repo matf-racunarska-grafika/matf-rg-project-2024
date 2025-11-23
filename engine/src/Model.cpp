@@ -16,4 +16,4 @@ void Model::destroy() {
         mesh.destroy();
     }
 }
-}
+}// namespace engine::resources

@@ -169,7 +169,6 @@ public:
 private:
     std::vector<Controller *> m_controllers;
 };
-} // namespace engine
+}// namespace engine::core
 
 #endif//APP_H
-

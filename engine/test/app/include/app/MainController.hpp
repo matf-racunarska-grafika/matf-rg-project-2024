@@ -41,5 +41,5 @@ private:
     bool m_draw_gui{false};
     bool m_cursor_enabled{true};
 };
-}
-#endif //MAINCONTROLLER_HPP
+}// namespace engine::test::app
+#endif//MAINCONTROLLER_HPP

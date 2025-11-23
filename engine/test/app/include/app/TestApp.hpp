@@ -8,5 +8,5 @@ namespace engine::test::app {
 class TestApp final : public engine::core::App {
     void app_setup() override;
 };
-}
-#endif //MAINAPP_HPP
+}// namespace engine::test::app
+#endif//MAINAPP_HPP

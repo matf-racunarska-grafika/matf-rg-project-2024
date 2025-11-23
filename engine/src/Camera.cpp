@@ -3,8 +3,11 @@
 
 namespace engine::graphics {
 // constructor with vectors
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
-        Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+    : Front(glm::vec3(0.0f, 0.0f, -1.0f))
+    , MovementSpeed(SPEED)
+    , MouseSensitivity(SENSITIVITY)
+    , Zoom(ZOOM) {
     Position = position;
     WorldUp = up;
     Yaw = yaw;
@@ -56,7 +59,6 @@ void Camera::rotate_camera(float x_offset, float y_offset, bool constrain_pitch)
         if (Pitch < -89.0f) {
             Pitch = -89.0f;
         }
-
     }
 
     // update Front, Right and Up Vectors using the updated Euler angles
@@ -87,4 +89,4 @@ void Camera::update_camera_vectors() {
     // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     Up = glm::normalize(glm::cross(Right, Front));
 }
-}
+}// namespace engine::graphics

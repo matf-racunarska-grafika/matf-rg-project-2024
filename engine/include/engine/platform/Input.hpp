@@ -258,5 +258,5 @@ struct MousePosition {
     */
     float scroll;
 };
-}
-#endif //INPUT_HPP
+}// namespace engine::platform
+#endif//INPUT_HPP

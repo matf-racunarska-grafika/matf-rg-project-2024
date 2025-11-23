@@ -114,10 +114,5 @@ private:
      */
     void update_camera_vectors();
 };
-}
+}// namespace engine::graphics
 #endif
-
-
-
-
-

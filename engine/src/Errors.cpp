@@ -27,4 +27,4 @@ std::string EngineError::report() const {
                        location().line(), message());
 }
 
-} // namespace engine
+}// namespace engine::util

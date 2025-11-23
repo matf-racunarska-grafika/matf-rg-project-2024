@@ -7,8 +7,8 @@
 #define MATF_RG_PROJECT_SHADER_HPP
 
 #include <engine/util/Utils.hpp>
-#include <string>
 #include <glm/glm.hpp>
+#include <string>
 
 namespace engine::resources {
 using ShaderName = std::string;
@@ -18,7 +18,9 @@ using ShaderName = std::string;
 * @brief The type of the shader.
 */
 enum class ShaderType {
-    Vertex, Fragment, Geometry
+    Vertex,
+    Fragment,
+    Geometry
 };
 
 /**
@@ -156,6 +158,6 @@ private:
     std::string m_source;
     std::filesystem::path m_source_path;
 };
-} // namespace engine
+}// namespace engine::resources
 
 #endif//MATF_RG_PROJECT_SHADER_HPP

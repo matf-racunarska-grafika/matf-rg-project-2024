@@ -1,4 +1,6 @@
+// clang-format off
 #include <glad/glad.h>
+// clang-format on
 #include <engine/resources/Texture.hpp>
 #include <engine/util/Errors.hpp>
 
@@ -32,4 +34,4 @@ std::string_view Texture::uniform_name_convention(TextureType type) {
         default: RG_SHOULD_NOT_REACH_HERE("Unhandled TextureType");
     }
 }
-}
+}// namespace engine::resources

@@ -8,9 +8,9 @@
 
 #include <engine/core/Controller.hpp>
 #include <engine/resources/Model.hpp>
-#include <engine/resources/Texture.hpp>
 #include <engine/resources/Shader.hpp>
 #include <engine/resources/Skybox.hpp>
+#include <engine/resources/Texture.hpp>
 #include <unordered_map>
 
 namespace engine::resources {
@@ -98,25 +98,25 @@ private:
     /**
     * @brief A hashmap of all the loaded @ref Model.
     */
-    std::unordered_map<std::string, std::unique_ptr<Model> > m_models;
+    std::unordered_map<std::string, std::unique_ptr<Model>> m_models;
     /**
     * @brief A hashmap of all the loaded @ref Texture.
     */
-    std::unordered_map<std::string, std::unique_ptr<Texture> > m_textures;
+    std::unordered_map<std::string, std::unique_ptr<Texture>> m_textures;
     /**
     * @brief A hashmap of all the loaded @ref Skybox.
     */
-    std::unordered_map<std::string, std::unique_ptr<Skybox> > m_sky_boxes;
+    std::unordered_map<std::string, std::unique_ptr<Skybox>> m_sky_boxes;
     /**
     * @brief A hashmap of all the loaded @ref Shader.
     */
-    std::unordered_map<std::string, std::unique_ptr<Shader> > m_shaders;
+    std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaders;
 
     const std::filesystem::path m_models_path = "resources/models";
     const std::filesystem::path m_textures_path = "resources/textures";
     const std::filesystem::path m_shaders_path = "resources/shaders";
     const std::filesystem::path m_skyboxes_path = "resources/skyboxes";
 };
-} // namespace engine
+}// namespace engine::resources
 
 #endif//MATF_RG_PROJECT_RESOURCES_CONTROLLER_HPP

@@ -18,5 +18,5 @@ private:
 
     void draw() override;
 };
-}
-#endif //GUICONTROLLER_HPP
+}// namespace engine::test::app
+#endif//GUICONTROLLER_HPP

@@ -7,8 +7,8 @@
 #define OPENGL_HPP
 
 #include <cstdint>
-#include <filesystem>
 #include <engine/resources/Shader.hpp>
+#include <filesystem>
 
 namespace engine::resources {
 class Skybox;
@@ -52,15 +52,15 @@ public:
         // @formatter:off
         if constexpr (!std::is_same_v<TResult, void>) {
             auto result = glfun(std::forward<Args>(args)...);
-            #ifndef NDEBUG
-                assert_no_error(location);
-            #endif
+#ifndef NDEBUG
+            assert_no_error(location);
+#endif
             return result;
         } else {
             glfun(std::forward<Args>(args)...);
-            #ifndef NDEBUG
-                assert_no_error(location);
-            #endif
+#ifndef NDEBUG
+            assert_no_error(location);
+#endif
         }
         // @formatter:on
     }
@@ -148,5 +148,5 @@ private:
     */
     static void assert_no_error(std::source_location location);
 };
-}
-#endif //OPENGL_HPP
+}// namespace engine::graphics
+#endif//OPENGL_HPP

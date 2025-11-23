@@ -1,13 +1,16 @@
+
+// clang-format off
 #include <glad/glad.h>
-#include <filesystem>
+// clang-format on
 #include <array>
-#include <stb_image.h>
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/Shader.hpp>
 #include <engine/resources/ShaderCompiler.hpp>
 #include <engine/resources/Skybox.hpp>
 #include <engine/util/Errors.hpp>
 #include <engine/util/Utils.hpp>
+#include <filesystem>
+#include <stb_image.h>
 
 namespace engine::graphics {
 int32_t OpenGL::shader_type_to_opengl_type(resources::ShaderType type) {
@@ -62,9 +65,9 @@ uint32_t OpenGL::init_skybox_cube() {
         return skybox_vao;
     }
     float vertices[] = {
-            // @formatter:off
+    // clang-format off
         #include <skybox_vertices.include>
-        // @formatter:on
+            // clang-format on
     };
     uint32_t skybox_vbo = 0;
     CHECKED_GL_CALL(glGenVertexArrays, 1, &skybox_vao);
@@ -73,7 +76,7 @@ uint32_t OpenGL::init_skybox_cube() {
     CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, skybox_vbo);
     CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
     CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
-    CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0); // NOLINT
+    CHECKED_GL_CALL(glVertexAttribPointer, 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);// NOLINT
     return skybox_vao;
 }
 
@@ -101,24 +104,18 @@ std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
 std::string_view gl_call_error_description(GLenum error) {
     switch (error) {
         case GL_NO_ERROR:
-            return
-                    "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0. ";
+            return "GL_NO_ERROR: No error has been recorded. The value of this symbolic constant is guaranteed to be 0. ";
         case GL_INVALID_ENUM:
-            return
-                    "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            return "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument. The offending command is ignored and has no other side effect than to set the error flag.  ";
         case GL_INVALID_VALUE:
-            return
-                    "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            return "GL_INVALID_VALUE: A numeric argument is out of range. The offending command is ignored and has no other side effect than to set the error flag.  ";
         case GL_INVALID_OPERATION:
-            return
-                    "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.  ";
+            return "GL_INVALID_OPERATION: The specified operation is not allowed in the current state. The offending command is ignored and has no other side effect than to set the error flag.  ";
         case GL_INVALID_FRAMEBUFFER_OPERATION:
-            return
-                    "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete."
-                    "The offending command is ignored and has no other side effect than to set the error flag.";
+            return "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete."
+                   "The offending command is ignored and has no other side effect than to set the error flag.";
         case GL_OUT_OF_MEMORY:
-            return
-                    "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded. . ";
+            return "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded. . ";
         default: return "No Description";
     }
 }
@@ -149,9 +146,7 @@ uint32_t OpenGL::load_skybox_textures(const std::filesystem::path &path, bool fl
             stbi_image_free(data);
         };
         if (data) {
-            uint32_t i = face_index(file.path()
-                                        .stem()
-                                        .c_str());
+            uint32_t i = face_index(file.path().stem().c_str());
             int32_t format = texture_format(nr_channels);
             CHECKED_GL_CALL(glTexImage2D, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format,
                             GL_UNSIGNED_BYTE,
@@ -211,4 +206,4 @@ int32_t stbi_number_of_channels_to_gl_format(int32_t number_of_channels) {
     }
 }
 
-};
+};// namespace engine::graphics

@@ -9,8 +9,8 @@
 #include <engine/util/Errors.hpp>
 #include <memory>
 #include <string_view>
-#include <vector>
 #include <typeinfo>
+#include <vector>
 
 namespace engine::core {
 /**
@@ -75,7 +75,7 @@ public:
     */
     void before(Controller *next) {
         this->m_next
-            .push_back(next);
+                .push_back(next);
     }
 
     /**
@@ -241,6 +241,6 @@ public:
         return "EngineControllersEnd";
     }
 };
-} // namespace engine
+}// namespace engine::core
 
 #endif//MATF_RG_PROJECT_CONTROLLER_HPP

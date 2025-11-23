@@ -6,19 +6,20 @@
 #ifndef MATF_RG_PROJECT_UTILS_HPP
 #define MATF_RG_PROJECT_UTILS_HPP
 
-#include <format>
-#include <source_location>
-#include <vector>
-#include <mutex>
 #include <filesystem>
+#include <format>
 #include <functional>
-#include <unordered_set>
+#include <mutex>
+#include <source_location>
 #include <type_traits>
+#include <unordered_set>
+#include <vector>
 
 /// @cond
 template<typename Func>
 struct DeferImpl {
-    DeferImpl(Func f) : f(f) {
+    DeferImpl(Func f)
+        : f(f) {
     }
 
     ~DeferImpl() {
@@ -203,10 +204,10 @@ bool has_cycle(It first, It last, Adjacent adjacent, OutputIt cycle_output = nul
     }
     return false;
 }
-} // namespace alg
+}// namespace alg
 
 namespace ds {
 }
-} // namespace engine
+}// namespace engine::util
 
 #endif//MATF_RG_PROJECT_UTILS_HPP

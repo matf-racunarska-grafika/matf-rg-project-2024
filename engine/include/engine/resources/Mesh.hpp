@@ -6,9 +6,9 @@
 #ifndef MATF_RG_PROJECT_MESH_HPP
 #define MATF_RG_PROJECT_MESH_HPP
 
+#include <engine/resources/Texture.hpp>
 #include <glm/glm.hpp>
 #include <vector>
-#include <engine/resources/Texture.hpp>
 
 namespace engine::resources {
 /**
@@ -32,7 +32,6 @@ class Mesh {
     friend class AssimpSceneProcessor;
 
 public:
-
     /**
     * @brief Draws the mesh using a given shader. Called by the @ref Model::draw function to draw all the meshes in the model.
     * @param shader The shader to use for drawing.
@@ -58,6 +57,6 @@ private:
     uint32_t m_num_indices{0};
     std::vector<Texture *> m_textures;
 };
-} // namespace engine
+}// namespace engine::resources
 
 #endif//MATF_RG_PROJECT_MESH_HPP

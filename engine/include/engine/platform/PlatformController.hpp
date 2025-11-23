@@ -7,11 +7,11 @@
 #define MATF_RG_PROJECT_PLATFORM_H
 
 #include <engine/core/Controller.hpp>
+#include <engine/platform/Input.hpp>
+#include <engine/platform/PlatformEventObserver.hpp>
+#include <engine/platform/Window.hpp>
 #include <memory>
 #include <vector>
-#include <engine/platform/Input.hpp>
-#include <engine/platform/Window.hpp>
-#include <engine/platform/PlatformEventObserver.hpp>
 
 struct GLFWwindow;
 
@@ -154,8 +154,8 @@ private:
     FrameTime m_frame_time;
     Window m_window;
     std::vector<Key> m_keys;
-    std::vector<std::unique_ptr<PlatformEventObserver> > m_platform_event_observers;
+    std::vector<std::unique_ptr<PlatformEventObserver>> m_platform_event_observers;
 };
-} // namespace engine
+}// namespace engine::platform
 
 #endif//MATF_RG_PROJECT_PLATFORM_H

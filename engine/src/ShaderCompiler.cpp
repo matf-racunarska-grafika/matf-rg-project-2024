@@ -1,9 +1,12 @@
+// clang-format off
 #include <glad/glad.h>
+// clang-format on
+
+#include <engine/graphics/OpenGL.hpp>
 #include <engine/resources/ShaderCompiler.hpp>
 #include <engine/util/Errors.hpp>
 #include <format>
 #include <spdlog/spdlog.h>
-#include <engine/graphics/OpenGL.hpp>
 
 namespace engine::resources {
 using namespace graphics;
@@ -36,7 +39,7 @@ OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shade
     glAttachShader(shader_program_id, fragment_shader_id);
 
     if (!shader_sources.geometry_shader
-                       .empty()) {
+                 .empty()) {
         geometry_shader_id = compile(shader_sources.geometry_shader, ShaderType::Geometry);
         glAttachShader(shader_program_id, geometry_shader_id);
     }
@@ -47,10 +50,10 @@ OpenGL::ShaderProgramId ShaderCompiler::compile(const ShaderParsingResult &shade
 uint32_t ShaderCompiler::compile(const std::string &shader_source, ShaderType type) {
     uint32_t shader_id = OpenGL::compile_shader(shader_source, type);
     if (!OpenGL::shader_compiled_successfully(shader_id)) {
-        throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                "{} shader compilation {} failed:\n{}", to_string(type),
-                m_shader_name,
-                OpenGL::get_compilation_error_message(shader_id)));
+        std::string msg = std::format("{} shader compilation {} failed:\n{}", to_string(type),
+                                      m_shader_name,
+                                      OpenGL::get_compilation_error_message(shader_id));
+        throw util::EngineError(util::EngineError::Type::ShaderCompilationError, msg);
     }
     return shader_id;
 }
@@ -68,23 +71,18 @@ ShaderParsingResult ShaderCompiler::parse_source() {
             current_shader->push_back('\n');
         }
     }
-    if (parsing_result.vertex_shader
-                      .empty() || parsing_result.fragment_shader
-                                                .empty()) {
-        throw util::EngineError(util::EngineError::Type::ShaderCompilationError, std::format(
-                "Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
-                m_shader_name));
+    if (parsing_result.vertex_shader.empty() || parsing_result.fragment_shader.empty()) {
+        std::string msg = std::format("Error compiling: {}. Source for vertex and fragment shader must be defined. Vertex shader source must begin with: '//#shader vertex'; and fragment shader source must begin with: '//#shader fragment'",
+                                      m_shader_name);
+        throw util::EngineError(util::EngineError::Type::ShaderCompilationError, msg);
     }
     return parsing_result;
 }
 
-Shader ShaderCompiler::compile_from_file(std::string shader_name,
-                                         const std::filesystem::path &shader_path) {
+Shader ShaderCompiler::compile_from_file(std::string shader_name, const std::filesystem::path &shader_path) {
     if (!exists(shader_path)) {
-        throw util::EngineError(util::EngineError::Type::FileNotFound,
-                                std::format("Shader source file {} for shader {} not found.",
-                                            shader_path.string(),
-                                            shader_name));
+        std::string msg = std::format("Shader source file {} for shader {} not found.", shader_path.string(), shader_name);
+        throw util::EngineError(util::EngineError::Type::FileNotFound, msg);
     }
     std::string shader_source = util::read_text_file(shader_path);
     ShaderCompiler compiler(std::move(shader_name), std::move(shader_source));
@@ -118,4 +116,4 @@ std::string_view to_string(ShaderType type) {
     }
 }
 
-}
+}// namespace engine::resources

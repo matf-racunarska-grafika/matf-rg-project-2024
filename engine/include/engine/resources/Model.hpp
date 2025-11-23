@@ -6,8 +6,8 @@
 #ifndef MATF_RG_PROJECT_MODEL_HPP
 #define MATF_RG_PROJECT_MODEL_HPP
 
-#include <engine/resources/Mesh.hpp>
 #include <algorithm>
+#include <engine/resources/Mesh.hpp>
 #include <utility>
 
 namespace engine::resources {
@@ -77,11 +77,12 @@ private:
     * @param name The name of the model by which it can be referenced using the @ref engine::resources::ResourcesController::model function.
     */
     Model(std::vector<Mesh> meshes, std::filesystem::path path,
-          std::string name) : m_meshes(std::move(meshes))
-                              , m_path(std::move(path))
-                              , m_name(std::move(name)) {
+          std::string name)
+        : m_meshes(std::move(meshes))
+        , m_path(std::move(path))
+        , m_name(std::move(name)) {
     }
 };
-} // namespace engine
+}// namespace engine::resources
 
 #endif//MATF_RG_PROJECT_MODEL_HPP
