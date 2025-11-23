@@ -1,7 +1,10 @@
-#include<glad/glad.h>
-#include <engine/util/Utils.hpp>
+
+// clang-format off
+#include <glad/glad.h>
+// clang-format on
 #include <engine/resources/Mesh.hpp>
 #include <engine/resources/Shader.hpp>
+#include <engine/util/Utils.hpp>
 #include <unordered_map>
 
 namespace engine::resources {
@@ -67,4 +70,4 @@ void Mesh::destroy() {
     glDeleteVertexArrays(1, &m_vao);
 }
 
-}
+}// namespace engine::resources

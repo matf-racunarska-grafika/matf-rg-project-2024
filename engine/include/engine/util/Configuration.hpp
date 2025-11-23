@@ -62,5 +62,5 @@ private:
     */
     json m_config;
 };
-}
-#endif //CONFIGURATION_HPP
+}// namespace engine::util
+#endif//CONFIGURATION_HPP

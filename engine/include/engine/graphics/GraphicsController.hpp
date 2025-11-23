@@ -6,8 +6,8 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 
-#include <engine/graphics/Camera.hpp>
 #include <engine/core/Controller.hpp>
+#include <engine/graphics/Camera.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
 
 struct ImGuiContext;
@@ -16,7 +16,7 @@ namespace engine::resources {
 class Skybox;
 
 class Shader;
-}
+}// namespace engine::resources
 
 namespace engine::graphics {
 /**
@@ -175,7 +175,8 @@ private:
 */
 class GraphicsPlatformEventObserver final : public platform::PlatformEventObserver {
 public:
-    explicit GraphicsPlatformEventObserver(GraphicsController *graphics) : m_graphics(graphics) {
+    explicit GraphicsPlatformEventObserver(GraphicsController *graphics)
+        : m_graphics(graphics) {
     }
 
     void on_window_resize(int width, int height) override;
@@ -183,5 +184,5 @@ public:
 private:
     GraphicsController *m_graphics;
 };
-}
-#endif //GRAPHICSCONTROLLER_HPP
+}// namespace engine::graphics
+#endif//GRAPHICSCONTROLLER_HPP

@@ -6,10 +6,10 @@
 #ifndef MATF_RG_PROJECT_ERRORS_HPP
 #define MATF_RG_PROJECT_ERRORS_HPP
 
+#include <format>
 #include <source_location>
 #include <string>
 #include <utility>
-#include <format>
 
 namespace engine::util {
 /**
@@ -27,8 +27,8 @@ public:
     * @param location The location of the error. This is used to get the file, line and function name where the error occurred.
     */
     explicit Error(std::string message, std::source_location location = std::source_location::current())
-            : m_message(std::move(message))
-              , m_location(location) {
+        : m_message(std::move(message))
+        , m_location(location) {
     }
 
     /**
@@ -123,8 +123,8 @@ public:
     */
     EngineError(Type error_type, std::string message,
                 std::source_location location = std::source_location::current())
-            : Error(std::move(message), std::move(location))
-              , m_error(error_type) {
+        : Error(std::move(message), std::move(location))
+        , m_error(error_type) {
     }
 
     /**
@@ -153,7 +153,7 @@ class UserError : public Error {
 public:
     using Error::Error;
 };
-} // namespace engine
+}// namespace engine::util
 
 /**
 * @brief Guarantees that an expression is true. If it is not, an @ref engine::util::EngineError is thrown.  
@@ -161,11 +161,11 @@ public:
 * @param msg The error message.
 * @param ... The arguments to the error message.
 */
-#define RG_GUARANTEE(expr, msg, ...)                                                                                   \
-    do {                                                                                                               \
-        if (!(expr)) {                                                                                                 \
-            throw engine::util::EngineError(engine::util::EngineError::Type::GuaranteeViolation, std::format(msg, ##__VA_ARGS__), std::source_location::current());            \
-        }                                                                                                              \
+#define RG_GUARANTEE(expr, msg, ...)                                                                                                                                \
+    do {                                                                                                                                                            \
+        if (!(expr)) {                                                                                                                                              \
+            throw engine::util::EngineError(engine::util::EngineError::Type::GuaranteeViolation, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
+        }                                                                                                                                                           \
     } while (0)
 
 /**
@@ -173,9 +173,9 @@ public:
 * @param msg The error message.
 * @param ... The arguments to the error message.
 */
-#define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                             \
-    do {                                                                                                               \
-        throw engine::util::EngineError(engine::util::EngineError::Type::ShouldNotReachHere, std::format(msg, ##__VA_ARGS__), std::source_location::current());                \
+#define RG_SHOULD_NOT_REACH_HERE(msg, ...)                                                                                                                      \
+    do {                                                                                                                                                        \
+        throw engine::util::EngineError(engine::util::EngineError::Type::ShouldNotReachHere, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
     } while (0)
 
 /**
@@ -183,9 +183,9 @@ public:
 * @param msg The error message.
 * @param ... The arguments to the error message.
 */
-#define RG_UNIMPLEMENTED(msg, ...)                                                                                     \
-    do {                                                                                                               \
-        throw engine::util::EngineError(engine::util::EngineError::Type::Unimplemented, std::format(msg, ##__VA_ARGS__), std::source_location::current());                     \
+#define RG_UNIMPLEMENTED(msg, ...)                                                                                                                         \
+    do {                                                                                                                                                   \
+        throw engine::util::EngineError(engine::util::EngineError::Type::Unimplemented, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
     } while (0)
 
 /**
@@ -194,9 +194,9 @@ public:
 * @param msg The error message.
 * @param ... The arguments to the error message.
 */
-#define RG_ENGINE_ERROR(type, msg, ...)                                                                               \
-    do {                                                                                                               \
+#define RG_ENGINE_ERROR(type, msg, ...)                                                                          \
+    do {                                                                                                         \
         throw engine::util::EngineError(type, std::format(msg, ##__VA_ARGS__), std::source_location::current()); \
-    } while(0)
+    } while (0)
 
 #endif//MATF_RG_PROJECT_ERRORS_HPP

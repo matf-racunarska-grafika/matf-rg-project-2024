@@ -1,9 +1,9 @@
-#include <memory>
-#include <spdlog/spdlog.h>
+#include <app/GUIController.hpp>
+#include <app/MainController.hpp>
 #include <engine/core/Engine.hpp>
 #include <engine/graphics/GraphicsController.hpp>
-#include <app/MainController.hpp>
-#include <app/GUIController.hpp>
+#include <memory>
+#include <spdlog/spdlog.h>
 
 namespace engine::test::app {
 void MainPlatformEventObserver::on_key(engine::platform::Key key) {
@@ -25,8 +25,7 @@ void MainController::initialize() {
 
 bool MainController::loop() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KeyId::KEY_ESCAPE)
-                .state() == engine::platform::Key::State::JustPressed) {
+    if (platform->key(engine::platform::KeyId::KEY_ESCAPE).state() == engine::platform::Key::State::JustPressed) {
         return false;
     }
     return true;
@@ -34,8 +33,7 @@ bool MainController::loop() {
 
 void MainController::poll_events() {
     const auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
-    if (platform->key(engine::platform::KEY_F1)
-                .state() == engine::platform::Key::State::JustPressed) {
+    if (platform->key(engine::platform::KEY_F1).state() == engine::platform::Key::State::JustPressed) {
         m_cursor_enabled = !m_cursor_enabled;
         platform->set_enable_cursor(m_cursor_enabled);
     }
@@ -64,8 +62,7 @@ void MainController::draw_backpack() {
     auto backpack = engine::core::Controller::get<engine::resources::ResourcesController>()->model("backpack");
     shader->use();
     shader->set_mat4("projection", graphics->projection_matrix());
-    shader->set_mat4("view", graphics->camera()
-                                     ->view_matrix());
+    shader->set_mat4("view", graphics->camera()->view_matrix());
     shader->set_mat4("model", scale(glm::mat4(1.0f), glm::vec3(m_backpack_scale)));
     backpack->draw(shader);
 }
@@ -84,27 +81,20 @@ void MainController::update_camera() {
     auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
     auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
     float dt = platform->dt();
-    if (platform->key(engine::platform::KEY_W)
-                .state() == engine::platform::Key::State::Pressed) {
+    if (platform->key(engine::platform::KEY_W).state() == engine::platform::Key::State::Pressed) {
         camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
     }
-    if (platform->key(engine::platform::KEY_S)
-                .state() == engine::platform::Key::State::Pressed) {
+    if (platform->key(engine::platform::KEY_S).state() == engine::platform::Key::State::Pressed) {
         camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
     }
-    if (platform->key(engine::platform::KEY_A)
-                .state() == engine::platform::Key::State::Pressed) {
+    if (platform->key(engine::platform::KEY_A).state() == engine::platform::Key::State::Pressed) {
         camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
     }
-    if (platform->key(engine::platform::KEY_D)
-                .state() == engine::platform::Key::State::Pressed) {
+    if (platform->key(engine::platform::KEY_D).state() == engine::platform::Key::State::Pressed) {
         camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
     }
     auto mouse = platform->mouse();
     camera->rotate_camera(mouse.dx, mouse.dy);
     camera->zoom(mouse.scroll);
 }
-}
-
-
-
+}// namespace engine::test::app

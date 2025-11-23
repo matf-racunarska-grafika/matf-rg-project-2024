@@ -1,14 +1,15 @@
-
-#include <imgui_impl_glfw.h>
+// clang-format off
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+// clang-format on
+#include <imgui_impl_glfw.h>
 
 #include <engine/platform/PlatformController.hpp>
 #include <engine/util/Utils.hpp>
 
+#include <engine/util/Configuration.hpp>
 #include <spdlog/spdlog.h>
 #include <utility>
-#include <engine/util/Configuration.hpp>
 
 namespace engine::platform {
 static std::array<std::string_view, KEY_COUNT> g_engine_key_to_string;
@@ -194,7 +195,7 @@ void PlatformController::_platform_on_mouse(double x, double y) {
     double last_x = g_mouse_position.x;
     double last_y = g_mouse_position.y;
     g_mouse_position.dx = x - last_x;
-    g_mouse_position.dy = last_y - y; // because in glfw the top left corner is the (0,0)
+    g_mouse_position.dy = last_y - y;// because in glfw the top left corner is the (0,0)
     g_mouse_position.x = x;
     g_mouse_position.y = y;
     for (auto &observer: m_platform_event_observers) {
@@ -246,10 +247,10 @@ void PlatformController::set_enable_cursor(bool enabled) {
 }
 
 void initialize_key_maps() {
-    // @formatter:off
-    #include "glfw_key_mapping.include"
+    // clang-format off
     #include "engine_key_to_string.include"
-    // @formatter:on
+    #include "glfw_key_mapping.include"
+    // clang-format on
 }
 
 static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
@@ -278,4 +279,4 @@ void glfw_window_close_callback(GLFWwindow *window) {
     core::Controller::get<PlatformController>()->_platform_on_window_close(window);
 }
 
-} // namespace engine
+}// namespace engine::platform

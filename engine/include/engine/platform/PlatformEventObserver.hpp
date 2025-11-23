@@ -39,5 +39,5 @@ public:
 
     virtual ~PlatformEventObserver() = default;
 };
-}
-#endif //PLATFORMEVENTOBSERVER_HPP
+}// namespace engine::platform
+#endif//PLATFORMEVENTOBSERVER_HPP

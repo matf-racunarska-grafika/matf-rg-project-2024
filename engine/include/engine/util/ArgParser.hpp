@@ -6,9 +6,9 @@
 #ifndef ARGPARSER_HPP
 #define ARGPARSER_HPP
 
-#include <string_view>
 #include <optional>
 #include <string>
+#include <string_view>
 
 namespace engine::util {
 /**
@@ -71,5 +71,5 @@ private:
     int m_argc = 0;
     char **m_argv = nullptr;
 };
-}
-#endif //ARGPARSER_HPP
+}// namespace engine::util
+#endif//ARGPARSER_HPP

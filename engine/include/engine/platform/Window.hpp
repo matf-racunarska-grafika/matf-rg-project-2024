@@ -56,11 +56,12 @@ private:
 
     Window() = default;
 
-    Window(GLFWwindow *handle, int width, int height, std::string title) : m_handle(handle)
-                                                                           , m_width(width)
-                                                                           , m_height(height)
-                                                                           , m_title(std::move(title)) {
+    Window(GLFWwindow *handle, int width, int height, std::string title)
+        : m_handle(handle)
+        , m_width(width)
+        , m_height(height)
+        , m_title(std::move(title)) {
     }
 };
-}
-#endif //WINDOW_HPP
+}// namespace engine::platform
+#endif//WINDOW_HPP

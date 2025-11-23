@@ -77,9 +77,10 @@ private:
     */
     graphics::OpenGL::ShaderProgramId compile(const ShaderParsingResult &shader_sources);
 
-    ShaderCompiler(std::string shader_name, std::string shader_source) : m_shader_name(
-            std::move(shader_name))
-                                                                         , m_sources(std::move(shader_source)) {
+    ShaderCompiler(std::string shader_name, std::string shader_source)
+        : m_shader_name(
+                  std::move(shader_name))
+        , m_sources(std::move(shader_source)) {
     }
 
     /**
@@ -100,5 +101,5 @@ private:
     std::string m_shader_name;
     std::string m_sources;
 };
-}
-#endif //SHADER_COMPILER_HPP
+}// namespace engine::resources
+#endif//SHADER_COMPILER_HPP

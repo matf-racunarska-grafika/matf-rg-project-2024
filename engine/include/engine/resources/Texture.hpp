@@ -6,8 +6,8 @@
 #ifndef MATF_RG_PROJECT_TEXTURE_HPP
 #define MATF_RG_PROJECT_TEXTURE_HPP
 
-#include <string_view>
 #include <filesystem>
+#include <string_view>
 #include <utility>
 
 namespace engine::resources {
@@ -101,10 +101,10 @@ private:
     * @param name The name of the texture.
     */
     Texture(uint32_t id, TextureType type, std::filesystem::path path, std::string name)
-            : m_id(id)
-              , m_type(type)
-              , m_path(std::move(path))
-              , m_name(std::move(name)) {
+        : m_id(id)
+        , m_type(type)
+        , m_path(std::move(path))
+        , m_name(std::move(name)) {
     }
 
     uint32_t m_id{};
@@ -112,5 +112,5 @@ private:
     std::filesystem::path m_path{};
     std::string m_name{};
 };
-} // namespace engine
+}// namespace engine::resources
 #endif//MATF_RG_PROJECT_TEXTURE_HPP

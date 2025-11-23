@@ -1,12 +1,12 @@
-#include <spdlog/spdlog.h>
 #include <engine/core/App.hpp>
 #include <engine/platform/PlatformController.hpp>
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/util/Errors.hpp>
+#include <spdlog/spdlog.h>
 
+#include <engine/graphics/GraphicsController.hpp>
 #include <engine/util/ArgParser.hpp>
 #include <engine/util/Configuration.hpp>
-#include <engine/graphics/GraphicsController.hpp>
 #include <engine/util/Utils.hpp>
 
 namespace engine::core {
@@ -46,14 +46,14 @@ void App::engine_setup(int argc, char **argv) {
 
 void App::initialize() {
     // Topologically sort controllers based on their dependency graph formed by before/after methods.
-    {
-        auto adjacent_controllers = [](Controller *curr) {
-            return curr->next();
-        };
-        RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), adjacent_controllers),
-                     "Please make sure that there are no cycles in the controller dependency graph.");
-        util::alg::topological_sort(range(m_controllers), adjacent_controllers);
-    }
+
+    auto adjacent_controllers = [](Controller *curr) {
+        return curr->next();
+    };
+    RG_GUARANTEE(!util::alg::has_cycle(range(m_controllers), adjacent_controllers),
+                 "Please make sure that there are no cycles in the controller dependency graph.");
+    util::alg::topological_sort(range(m_controllers), adjacent_controllers);
+
     for (auto controller: m_controllers) {
         spdlog::info("{}::initialize", controller->name());
         controller->initialize();
@@ -119,5 +119,4 @@ void App::app_setup() {
 void App::handle_error(const util::Error &e) {
     spdlog::error(e.report());
 }
-} // namespace engine
-
+}// namespace engine::core
