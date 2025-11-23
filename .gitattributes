@@ -1,5 +1,6 @@
-libs/** linguist-vendored=true
+engine/libs/** linguist-vendored=true
 resources/** linguist-vendored=true
+.venv/** linguist-vendored=true
 
 include/**/*.h linguist-language=c++
 include/**/*.hpp linguist-language=c++
