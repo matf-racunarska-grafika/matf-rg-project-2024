@@ -1,8 +1,8 @@
 // clang-format off
 #include <glad/glad.h>
 // clang-format on
-#include <engine/resources/Texture.hpp>
 #include <engine/graphics/OpenGL.hpp>
+#include <engine/resources/Texture.hpp>
 #include <engine/util/Errors.hpp>
 
 namespace engine::resources {

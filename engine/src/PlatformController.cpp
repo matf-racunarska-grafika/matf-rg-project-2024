@@ -5,7 +5,6 @@
 
 #include <engine/graphics/OpenGL.hpp>
 #include <engine/platform/PlatformController.hpp>
-#include <engine/graphics/OpenGL.hpp>
 #include <engine/util/Utils.hpp>
 
 #include <engine/util/Configuration.hpp>

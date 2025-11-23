@@ -19,6 +19,22 @@ void ResourcesController::initialize() {
     load_skyboxes();
 }
 
+void ResourcesController::terminate() {
+    for (auto &[name, resource]: m_models) {
+        resource->destroy();
+    }
+    for (auto &[name, resource]: m_shaders) {
+        resource->destroy();
+    }
+    for (auto &[name, resource]: m_textures) {
+        resource->destroy();
+    }
+    for (auto &[name, resource]: m_sky_boxes) {
+        resource->destroy();
+    }
+}
+
+
 void ResourcesController::load_shaders() {
     if (!exists(m_shaders_path)) {
         spdlog::info("[ResourcesController]: no {} found to load the shaders from", m_shaders_path.string());

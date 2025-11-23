@@ -130,6 +130,11 @@ public:
     */
     const std::filesystem::path &source_path() const;
 
+    /**
+    * @brief Destroys the shader program in the OpenGL context.
+    */
+    void destroy() const;
+
 private:
     /**
     * @brief Constructs a Shader object.
@@ -138,13 +143,7 @@ private:
     * @param source The source code of the shader program.
     * @param source_path The path to the source file from which the shader program was compiled.
     */
-    Shader(unsigned shader_id, std::string name, std::string source,
-           std::filesystem::path source_path = "");
-
-    /**
-    * @brief Destroys the shader program in the OpenGL context.
-    */
-    void destroy() const;
+    Shader(unsigned shader_id, std::string name, std::string source, std::filesystem::path source_path = "");
 
     /**
     * @brief The OpenGL ID of the shader program.

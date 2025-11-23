@@ -6,7 +6,6 @@
 #ifndef SKYBOX_HPP
 #define SKYBOX_HPP
 
-#include <cstdint>
 #include <filesystem>
 #include <utility>
 
@@ -62,6 +61,7 @@ private:
         , m_name(std::move(name)) {
     }
 };
+
 }// namespace engine::resources
 
 #endif//SKYBOX_HPP
