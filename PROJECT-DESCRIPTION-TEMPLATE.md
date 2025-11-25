@@ -21,12 +21,11 @@
 ### Group A:
 
 [ ] Frame-buffers with post-processing   
-[ ] Instancing  
 [ ] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
+[ ] Bloom with the use of HDR
 
 ### Group B:
-[ ] Bloom with the use of HDR  
 [ ] Deferred Shading  
 [ ] Point Shadows  
 [ ] SSAO
