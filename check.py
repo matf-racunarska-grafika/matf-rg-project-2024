@@ -15,9 +15,9 @@ Exit Codes:
 - 1: Violations detected.
 """
 
-import sys
 import os
 import re
+import sys
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional
@@ -29,25 +29,26 @@ class StatusCodes(Enum):
 
 
 try:
-    from clang.cindex import Index, CursorKind, TypeKind, TranslationUnit
+    from clang.cindex import CursorKind, Index, TranslationUnit, TypeKind
 except ImportError:
     print(
         "Package 'clang' is not installed. Please run: `pip install libclang` to install it. If your system doesn't allow "
-        "system wide libclang installation, please run ./setup.sh to setup python-venv and libclang inside your project and then rerun CMake.")
+        "system wide libclang installation, please run ./setup.sh to setup python-venv and libclang inside your project and then rerun CMake."
+    )
     # Optionally handle the missing package (e.g., install it, exit, etc.)
     sys.exit(StatusCodes.FAILED.value)
 
 
 class BColors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKCYAN = "\033[96m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
 
 
 class RuleViolation:
@@ -60,7 +61,11 @@ class RuleViolation:
 
     def __str__(self):
         result = BColors.FAIL
-        result += "Warning: " + BColors.ENDC + f"{self.file_path}:{self.line_no} contains {BColors.BOLD}{BColors.FAIL}`{self.line}`"
+        result += (
+            "Warning: "
+            + BColors.ENDC
+            + f"{self.file_path}:{self.line_no} contains {BColors.BOLD}{BColors.FAIL}`{self.line}`"
+        )
         result += f"{BColors.FAIL}{self.rule}{BColors.ENDC}"
         return result
 
@@ -79,8 +84,16 @@ class Rule:
 
     def __str__(self):
         result = f"\n\t\t{BColors.ENDC}❌{BColors.BOLD} Message: {self.message}"
-        result += f"\n\t\t{BColors.ENDC}➡️{BColors.OKGREEN} Fix: {self.fix}" if self.fix else ""
-        result += f"\n\t\t{BColors.ENDC}🔍{BColors.OKBLUE} Hint: {self.hint}" if self.hint else ""
+        result += (
+            f"\n\t\t{BColors.ENDC}➡️{BColors.OKGREEN} Fix: {self.fix}"
+            if self.fix
+            else ""
+        )
+        result += (
+            f"\n\t\t{BColors.ENDC}🔍{BColors.OKBLUE} Hint: {self.hint}"
+            if self.hint
+            else ""
+        )
         return result
 
 
@@ -98,33 +111,42 @@ class SingleLineRule(Rule):
 
 class NoIostream(SingleLineRule):
     def __init__(self):
-        super().__init__("iostream must not be used for logging.",
-                         "Replace it with spdlog for better performance, thread safety, and advanced logging features.",
-                         hint=None, pattern=r"^[ ]*#[ ]*include[ ]*[<\"]iostream[>\"]")
+        super().__init__(
+            "iostream must not be used for logging.",
+            "Replace it with spdlog for better performance, thread safety, and advanced logging features.",
+            hint=None,
+            pattern=r"^[ ]*#[ ]*include[ ]*[<\"]iostream[>\"]",
+        )
 
 
 class DirectUseOfGLADLibrary(SingleLineRule):
     def __init__(self):
-        super().__init__("Direct use of gl functions is not allowed in the app module.",
-                         "Please encapsulate the usage of gl functions inside the engine/graphics module.",
-                         "See engine/graphics/GraphicsController.cpp for an example of how to call OpenGL functions from the app module.\n\t\tCalls to the opengl library should be contained within the OpenGL.cpp file or at least the engine/graphics module.",
-                         r"[ ]*#[ ]*include[ ]*[<\"].*\/glad.h*[\">]")
+        super().__init__(
+            "Direct use of gl functions is not allowed in the app module.",
+            "Please encapsulate the usage of gl functions inside the engine/graphics module.",
+            "See engine/graphics/GraphicsController.cpp for an example of how to call OpenGL functions from the app module.\n\t\tCalls to the opengl library should be contained within the OpenGL.cpp file or at least the engine/graphics module.",
+            r"[ ]*#[ ]*include[ ]*[<\"].*\/glad.h*[\">]",
+        )
 
 
 class DirectUseOfGLFWLibrary(SingleLineRule):
     def __init__(self):
-        super().__init__("Direct use of `glfw` library is not allowed in the app module.",
-                         "Please encapsulate the usage of glfw inside the engine/platform module.",
-                         "Please see engine/platform/PlatformController.cpp for an example of how to use the glfw library.",
-                         r"[ ]*#[ ]*include[ ]*[<\"].*\/glfw3.h*[\">]")
+        super().__init__(
+            "Direct use of `glfw` library is not allowed in the app module.",
+            "Please encapsulate the usage of glfw inside the engine/platform module.",
+            "Please see engine/platform/PlatformController.cpp for an example of how to use the glfw library.",
+            r"[ ]*#[ ]*include[ ]*[<\"].*\/glfw3.h*[\">]",
+        )
 
 
 class DirectUseOfASSIMPLibrary(SingleLineRule):
     def __init__(self):
-        super().__init__("Direct use of `assimp` library is not allowed in the app module.",
-                         "Please encapsulate the usage of assimp inside the engine/resources module",
-                         "See engine/resources/ResourcesController.cpp for an example of how the assimp library is used in the project.",
-                         r"[ ]*#[ ]*include[ ]*[<\"]assimp\/.*[\">]")
+        super().__init__(
+            "Direct use of `assimp` library is not allowed in the app module.",
+            "Please encapsulate the usage of assimp inside the engine/resources module",
+            "See engine/resources/ResourcesController.cpp for an example of how the assimp library is used in the project.",
+            r"[ ]*#[ ]*include[ ]*[<\"]assimp\/.*[\">]",
+        )
 
 
 class UseOfRelativePathInIncludeDirective(SingleLineRule):
@@ -133,7 +155,8 @@ class UseOfRelativePathInIncludeDirective(SingleLineRule):
             "Relative paths (../) in #include directives are not allowed as they bypass the build system's project management.",
             "Use direct include directives: #include <subproject/lib/module/MyFile.hpp>.",
             "If after the applied fix the compiler reports a 'file not found', you may be trying to access a part of the project that is restricted from the current file.",
-            r"[ ]*#[ ]*include[ ]*[<\"]([.][.][/])+.*[\">]")
+            r"[ ]*#[ ]*include[ ]*[<\"]([.][.][/])+.*[\">]",
+        )
 
 
 class NamingConvention(Rule):
@@ -141,7 +164,9 @@ class NamingConvention(Rule):
         super().__init__(message)
         self.style_guide_url = "README.md"
 
-    def detect(self, source_lines: List[str], file_name: Path) -> List[RuleViolation | str]:
+    def detect(
+        self, source_lines: List[str], file_name: Path
+    ) -> List[RuleViolation | str]:
         """
         Check naming conventions in C++ source code string using libclang.
         Args:
@@ -154,21 +179,28 @@ class NamingConvention(Rule):
 
         """
 
-        snake_case_pattern = re.compile(r'^[a-z][a-z0-9_]*$')
-        pascal_case_pattern = re.compile(r'^[A-Z][a-zA-Z0-9]*$')
-        g_prefix_pattern = re.compile(r'^g_[a-z][a-z0-9_]*$')
-        m_prefix_pattern = re.compile(r'^m_[a-z][a-z0-9_]*$')
-        upper_case_pattern = re.compile(r'^[A-Z][A-Z0-9_]*$')
+        snake_case_pattern = re.compile(r"^[a-z][a-z0-9_]*$")
+        pascal_case_pattern = re.compile(r"^[A-Z][a-zA-Z0-9]*$")
+        g_prefix_pattern = re.compile(r"^g_[a-z][a-z0-9_]*$")
+        m_prefix_pattern = re.compile(r"^m_[a-z][a-z0-9_]*$")
+        upper_case_pattern = re.compile(r"^[A-Z][A-Z0-9_]*$")
+        project_include_pattern = re.compile(r'^#\s*include\s*["<](engine|app)/')
+        local_include_pattern = re.compile(r'^#\s*include\s*"[^/]+\.h(pp)?"\s*$')
 
         index = Index.create()
 
         def replace_includes_with_space(text):
             def replacer(match):
-                return '/**//'
+                line = match.group(0)
+                if project_include_pattern.match(line) or local_include_pattern.match(
+                    line
+                ):
+                    return line  # keep it — let clang resolve it via -I
+                return "/**//"  # strip third-party / system includes
 
-            return re.sub(r'^#include.*$', replacer, text, flags=re.MULTILINE)
+            return re.sub(r"^#include.*$", replacer, text, flags=re.MULTILINE)
 
-        replaced_includes = replace_includes_with_space(''.join(source_lines))
+        replaced_includes = replace_includes_with_space("".join(source_lines))
         unsaved_files = [(file_name, replaced_includes)]
         all_violations: List[RuleViolation | str] = []
         # We parse the source code directly from a string using an unsaved file
@@ -176,35 +208,45 @@ class NamingConvention(Rule):
         # Parse the string
         try:
             # These options prevent processing of include directives
-            parsing_options = TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD | TranslationUnit.PARSE_SKIP_FUNCTION_BODIES
+            parsing_options = TranslationUnit.PARSE_DETAILED_PROCESSING_RECORD
 
             # Adding compiler args to ignore includes
             compiler_args = [
-                '-fsyntax-only',  # Don't do code generation, just syntax checking
-                '-x', 'c++',  # Force C++ mode
-                '-fno-include-stack',  # Don't include stack deets
-                '-nostdinc',  # Don't include standard headers
-                '-nostdinc++',  # Don't include standard C++ headers
-                '--no-standard-includes'  # Don't include standard system headers
+                "-fsyntax-only",  # Don't do code generation, just syntax checking
+                "-x",
+                "c++",  # Force C++ mode
+                "-fno-include-stack",  # Don't include stack deets
+                "-nostdinc",  # Don't include standard headers
+                "-nostdinc++",  # Don't include standard C++ headers
+                "-I",
+                "engine/include",
+                "-I",
+                "app/include",
+                "-I",
+                str(Path(file_name).parent),
             ]
 
             translation_unit = index.parse(
                 file_name,
                 args=compiler_args,
                 unsaved_files=unsaved_files,
-                options=parsing_options
+                options=parsing_options,
             )
 
             if not translation_unit:
                 return [f"Warning: {file_name}:0\nMessage: `Failed to parse the code\n"]
         except Exception as e:
             print(
-                BColors.FAIL + "This is an unexpected error that shouldn't happen. Please report it by filling an issue at https://github.com/matf-racunarska-grafika/matf-rg-project-2024/issues")
-            print('Please copy-paste the following error details in the issue description:\n DETAILS_BEGIN:')
+                BColors.FAIL
+                + "This is an unexpected error that shouldn't happen. Please report it by filling an issue at https://github.com/matf-racunarska-grafika/matf-rg-project-2024/issues"
+            )
+            print(
+                "Please copy-paste the following error details in the issue description:\n DETAILS_BEGIN:"
+            )
             print(e)
             print(file_name)
             print(source_lines)
-            print('DETAILS_END\n\n')
+            print("DETAILS_END\n\n")
             return []
 
         def get_line_text(line_no):
@@ -222,13 +264,15 @@ class NamingConvention(Rule):
             line_no = cursor.location.line
             line_text = get_line_text(line_no).strip()
 
-            all_violations.append(RuleViolation(
-                rule=f": {rule_message}",
-                file_path=file_path,
-                source_str=source_lines,
-                line=line_text,
-                line_no=line_no
-            ))
+            all_violations.append(
+                RuleViolation(
+                    rule=f": {rule_message}",
+                    file_path=file_path,
+                    source_str=source_lines,
+                    line=line_text,
+                    line_no=line_no,
+                )
+            )
 
         def is_snake_case(name):
             return bool(snake_case_pattern.match(name))
@@ -253,50 +297,81 @@ class NamingConvention(Rule):
                     add_violation(cursor, f"Namespace '{name}' should be in snake_case")
 
             # Check class names (PascalCase)
-            elif cursor.kind in [CursorKind.CLASS_DECL, CursorKind.CLASS_TEMPLATE, CursorKind.STRUCT_DECL,
-                                 CursorKind.ENUM_DECL]:
+            elif cursor.kind in [
+                CursorKind.CLASS_DECL,
+                CursorKind.CLASS_TEMPLATE,
+                CursorKind.STRUCT_DECL,
+                CursorKind.ENUM_DECL,
+            ]:
                 name = cursor.spelling
                 if name and not is_pascal_case(name):
-                    add_violation(cursor, f"{cursor.kind} name '{name}' should be in PascalCase")
+                    add_violation(
+                        cursor, f"{cursor.kind} name '{name}' should be in PascalCase"
+                    )
 
             # Check function names (snake_case for all function types)
-            elif cursor.kind in [CursorKind.FUNCTION_DECL, CursorKind.CXX_METHOD,
-                                 CursorKind.CONVERSION_FUNCTION, CursorKind.FUNCTION_TEMPLATE]:
+            elif cursor.kind in [
+                CursorKind.FUNCTION_DECL,
+                CursorKind.CXX_METHOD,
+                CursorKind.CONVERSION_FUNCTION,
+                CursorKind.FUNCTION_TEMPLATE,
+            ]:
                 name = cursor.spelling
                 # Skip checking operators and special methods
-                if (name and not name.startswith('operator') and not (name.startswith('__') and name.endswith('__'))
-                        and not (name.startswith('_'))):
+                if (
+                    name
+                    and not name.startswith("operator")
+                    and not (name.startswith("__") and name.endswith("__"))
+                    and not (name.startswith("_"))
+                ):
                     if not is_snake_case(name):
-                        add_violation(cursor, f"Function name '{name}' should be in snake_case {cursor.type}")
+                        add_violation(
+                            cursor,
+                            f"Function name '{name}' should be in snake_case {cursor.type}",
+                        )
             # Check parameter names (snake_case)
             elif cursor.kind == CursorKind.PARM_DECL:
                 name = cursor.spelling
                 if name and not is_snake_case(name):
-                    add_violation(cursor, f"Parameter name '{name}' should be in snake_case")
+                    add_violation(
+                        cursor, f"Parameter name '{name}' should be in snake_case"
+                    )
 
             # Check variable declarations
             elif cursor.kind == CursorKind.VAR_DECL:
                 name = cursor.spelling
                 if name:
                     is_static_const = False
-                    is_static = any(token.spelling == 'static' for token in cursor.get_tokens())
-                    is_const = any(token.spelling in ('const', 'constexpr') for token in cursor.get_tokens())
+                    is_static = any(
+                        token.spelling == "static" for token in cursor.get_tokens()
+                    )
+                    is_const = any(
+                        token.spelling in ("const", "constexpr")
+                        for token in cursor.get_tokens()
+                    )
                     if is_static and is_const:
                         is_static_const = True
 
                     # Check global variables (should have g_ prefix)
                     if cursor.semantic_parent.kind == CursorKind.TRANSLATION_UNIT:
                         if not is_g_prefixed(name):
-                            add_violation(cursor,
-                                          f"Global variable '{name}' should have g_ prefix and be in snake_case")
+                            add_violation(
+                                cursor,
+                                f"Global variable '{name}' should have g_ prefix and be in snake_case",
+                            )
                     elif is_static_const:
                         if not is_upper_case(name):
-                            add_violation(cursor,
-                                          f"static const/constexpr variables '{name}' should be in UPPER_CASE")
+                            add_violation(
+                                cursor,
+                                f"static const/constexpr variables '{name}' should be in UPPER_CASE",
+                            )
                     # Check local variables (snake_case)
                     else:
                         if not is_snake_case(name):
-                            add_violation(cursor, f"Variable name '{name}' should be in snake_case")
+                            add_violation(
+                                cursor,
+                                f"Variable name '{name}' should be in snake_case",
+                            )
 
             # Check field declarations (member variables)
             elif cursor.kind == CursorKind.FIELD_DECL:
@@ -309,17 +384,22 @@ class NamingConvention(Rule):
                         is_class = parent.kind == CursorKind.CLASS_DECL
 
                     # Check access specifier for private members in classes
-                    is_private = cursor.access_specifier.name == 'PRIVATE'
+                    is_private = cursor.access_specifier.name == "PRIVATE"
 
                     # Private member variables in classes should have m_ prefix
                     if is_class and is_private:
                         if not is_m_prefixed(name):
-                            add_violation(cursor,
-                                          f"Private member variable '{name}' should have m_ prefix and be in snake_case")
+                            add_violation(
+                                cursor,
+                                f"Private member variable '{name}' should have m_ prefix and be in snake_case",
+                            )
                     # Public members and struct members should be snake_case
                     else:
                         if not is_pascal_case(name) and not is_snake_case(name):
-                            add_violation(cursor, f"Member variable '{name}' should be in snake_case")
+                            add_violation(
+                                cursor,
+                                f"Member variable '{name}' should be in snake_case",
+                            )
 
             for child in cursor.get_children():
                 check_cursor(child)
@@ -329,7 +409,8 @@ class NamingConvention(Rule):
 
         if len(all_violations) > 0:
             all_violations.append(
-                f"Naming convention violation found. Please fix the reported violations according to the provided error messages or refer to the project style guide in the {self.style_guide_url}")
+                f"Naming convention violation found. Please fix the reported violations according to the provided error messages or refer to the project style guide in the {self.style_guide_url}"
+            )
         return all_violations
 
 
@@ -337,18 +418,20 @@ class Verifier:
     def __init__(self, project_dir):
         self.project_dir: Path = project_dir
 
-        self.source_file_rules = [
-            NamingConvention("Naming convention violation found")
+        self.source_file_rules = [NamingConvention("Naming convention violation found")]
+
+        self.base_app_rules: List[SingleLineRule] = [
+            NoIostream(),
+            DirectUseOfGLADLibrary(),
+            UseOfRelativePathInIncludeDirective(),
+            DirectUseOfGLFWLibrary(),
+            DirectUseOfASSIMPLibrary(),
         ]
 
-        self.base_app_rules: List[SingleLineRule] = [NoIostream(),
-                                                     DirectUseOfGLADLibrary(),
-                                                     UseOfRelativePathInIncludeDirective(),
-                                                     DirectUseOfGLFWLibrary(),
-                                                     DirectUseOfASSIMPLibrary()]
-
-        self.base_engine_rules: List[SingleLineRule] = [NoIostream(),
-                                                        UseOfRelativePathInIncludeDirective()]
+        self.base_engine_rules: List[SingleLineRule] = [
+            NoIostream(),
+            UseOfRelativePathInIncludeDirective(),
+        ]
 
     def check_for_violations(self):
         file_paths = self._collect_file_paths()
@@ -395,26 +478,27 @@ class Verifier:
 
     def _apply_rule_checks(self, file_path: Path) -> List[RuleViolation]:
         result = []
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             lines = f.readlines()
         result.extend(self._check_source_level_rules(lines, file_path))
         result.extend(self._check_line_level_rules(lines, file_path))
         return result
+
 
 if __name__ == "__main__":
     paths = ["app", "engine", "engine/test"]
     violations = []
     for path in paths:
         path = Path(path)
-        print(f'-- [PYTHON] Running check on {path}')
+        print(f"-- [PYTHON] Running check on {path}")
         assert path.exists()
         verifier = Verifier(path)
         violations.extend(verifier.check_for_violations())
-    
+
     if len(violations) > 0:
         print(
-            BColors.FAIL + f'\n\nPrebuild check failed'
-                           f'\nPlease fix the following warnings as they will become errors in future matf-rg-project updates:'
+            BColors.FAIL + "\n\nPrebuild check failed"
+            "\nPlease fix the following warnings as they will become errors in future matf-rg-project updates:"
             + BColors.ENDC
         )
         for v in violations:
