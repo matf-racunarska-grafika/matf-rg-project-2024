@@ -96,9 +96,9 @@ uint32_t OpenGL::compile_shader(const std::string &shader_source,
 }
 
 std::string OpenGL::get_compilation_error_message(uint32_t shader_id) {
-    char infoLog[512];
-    CHECKED_GL_CALL(glGetShaderInfoLog, shader_id, 512, nullptr, infoLog);
-    return infoLog;
+    char info_log[512];
+    CHECKED_GL_CALL(glGetShaderInfoLog, shader_id, 512, nullptr, info_log);
+    return info_log;
 }
 
 std::string_view gl_call_error_description(GLenum error) {

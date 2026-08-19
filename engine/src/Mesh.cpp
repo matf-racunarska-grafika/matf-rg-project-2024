@@ -14,16 +14,16 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
            std::vector<Texture *> textures) {
     // NOLINTBEGIN
     static_assert(std::is_trivial_v<Vertex>);
-    uint32_t VAO, VBO, EBO;
-    CHECKED_GL_CALL(glGenVertexArrays, 1, &VAO);
-    CHECKED_GL_CALL(glGenBuffers, 1, &VBO);
-    CHECKED_GL_CALL(glGenBuffers, 1, &EBO);
+    uint32_t vao, vbo, ebo;
+    CHECKED_GL_CALL(glGenVertexArrays, 1, &vao);
+    CHECKED_GL_CALL(glGenBuffers, 1, &vbo);
+    CHECKED_GL_CALL(glGenBuffers, 1, &ebo);
 
-    CHECKED_GL_CALL(glBindVertexArray, VAO);
-    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, VBO);
+    CHECKED_GL_CALL(glBindVertexArray, vao);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, vbo);
     CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
 
-    CHECKED_GL_CALL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, EBO);
+    CHECKED_GL_CALL(glBindBuffer, GL_ELEMENT_ARRAY_BUFFER, ebo);
     CHECKED_GL_CALL(glBufferData, GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
     CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
@@ -43,7 +43,7 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint32_t> &ind
 
     CHECKED_GL_CALL(glBindVertexArray, 0);
     // NOLINTEND
-    m_vao = VAO;
+    m_vao = vao;
     m_num_indices = indices.size();
     m_textures = std::move(textures);
 }
