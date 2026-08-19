@@ -7,7 +7,8 @@
 
 namespace engine::test::app {
 void MainPlatformEventObserver::on_key(engine::platform::Key key) {
-    spdlog::info("Keyboard event: key={}, state={}", key.name(), key.state_str());
+    auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+    spdlog::info("Key event: frame={} key={}, state={}", platform->frame_time().frame_count, key.name(), key.state_str());
 }
 
 void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
