@@ -17,17 +17,13 @@ static std::array<int, KEY_COUNT> g_engine_to_glfw_key;
 static std::array<KeyId, GLFW_KEY_LAST + 1> g_glfw_key_to_engine;
 static MousePosition g_mouse_position;
 
-static void glfw_mouse_callback(GLFWwindow *window, double x, double y);
+static void glfw_mouse_move_callback(GLFWwindow *window, double x, double y);
 
 static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset);
-
-static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
 static void glfw_window_close_callback(GLFWwindow *window);
-
-static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
 static int glfw_platform_action(GLFWwindow *window, int glfw_key_code);
 
@@ -56,11 +52,9 @@ void PlatformController::initialize() {
     m_window = Window(handle, window_width, window_height, window_title);
 
     glfwMakeContextCurrent(m_window.handle_());
-    glfwSetCursorPosCallback(m_window.handle_(), glfw_mouse_callback);
+    glfwSetCursorPosCallback(m_window.handle_(), glfw_mouse_move_callback);
     glfwSetScrollCallback(m_window.handle_(), glfw_scroll_callback);
-    glfwSetKeyCallback(m_window.handle_(), glfw_key_callback);
     glfwSetFramebufferSizeCallback(m_window.handle_(), glfw_framebuffer_size_callback);
-    glfwSetMouseButtonCallback(m_window.handle_(), glfw_mouse_button_callback);
     glfwSetWindowCloseCallback(m_window.handle_(), glfw_window_close_callback);
 
     int major, minor, revision;
@@ -82,6 +76,7 @@ void PlatformController::terminate() {
 }
 
 bool PlatformController::loop() {
+    m_frame_time.frame_count = m_frame_time.dt == 0.0f ? 0 : m_frame_time.frame_count + 1;
     m_frame_time.previous = m_frame_time.current;
     m_frame_time.current = glfwGetTime();
     m_frame_time.dt = m_frame_time.current - m_frame_time.previous;
@@ -92,9 +87,15 @@ bool PlatformController::loop() {
 void PlatformController::poll_events() {
     g_mouse_position.dx = g_mouse_position.dy = 0.0f;
     g_mouse_position.scroll = 0.0f;
+
     glfwPollEvents();
-    for (int i = 0; i < KEY_COUNT; ++i) {
-        update_key(key_ref(static_cast<KeyId>(i)));
+
+    for (Key &key: m_keys) {
+        if (update_key(key)) {
+            for (auto &observer: m_platform_event_observers) {
+                observer->on_key(key);
+            }
+        }
     }
 }
 
@@ -117,42 +118,44 @@ int glfw_platform_action(GLFWwindow *window, int glfw_key_code) {
  * - JustPressed -> Pressed if the key is still pressed.
  * - Pressed -> JustReleased if the key is released.
  * - JustReleased -> Released if the key is released.
- * @param key_data The key to update.
+ * @param key The key to update.
  */
-void PlatformController::update_key(Key &key_data) const {
-    int engine_key_code = key_data.id();
+bool PlatformController::update_key(Key &key) const {
+    int engine_key_code = key.id();
     int glfw_key_code = g_engine_to_glfw_key.at(engine_key_code);
     int action = glfw_platform_action(m_window.handle_(), glfw_key_code);
-    switch (key_data.state()) {
+    Key::State previous_state = key.state();
+    switch (key.state()) {
         case Key::State::Released: {
             if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::JustPressed;
+                key.m_state = Key::State::JustPressed;
             }
             break;
         }
         case Key::State::JustReleased: {
             if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::JustPressed;
+                key.m_state = Key::State::JustPressed;
             } else if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::Released;
+                key.m_state = Key::State::Released;
             }
             break;
         }
         case Key::State::JustPressed: {
             if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::JustReleased;
+                key.m_state = Key::State::JustReleased;
             } else if (action == GLFW_PRESS) {
-                key_data.m_state = Key::State::Pressed;
+                key.m_state = Key::State::Pressed;
             }
             break;
         }
         case Key::State::Pressed: {
             if (action == GLFW_RELEASE) {
-                key_data.m_state = Key::State::JustReleased;
+                key.m_state = Key::State::JustReleased;
             }
             break;
         }
     }
+    return previous_state != key.state();
 }
 
 std::string_view Key::name() {
@@ -191,7 +194,7 @@ void PlatformController::register_platform_event_observer(std::unique_ptr<Platfo
     m_platform_event_observers.emplace_back(std::move(observer));
 }
 
-void PlatformController::_platform_on_mouse(double x, double y) {
+void PlatformController::_platform_on_mouse_move(double x, double y) {
     double last_x = g_mouse_position.x;
     double last_y = g_mouse_position.y;
     g_mouse_position.dx = x - last_x;
@@ -200,13 +203,6 @@ void PlatformController::_platform_on_mouse(double x, double y) {
     g_mouse_position.y = y;
     for (auto &observer: m_platform_event_observers) {
         observer->on_mouse_move(g_mouse_position);
-    }
-}
-
-void PlatformController::_platform_on_keyboard(int key_code, int action) {
-    const Key result = key(g_glfw_key_to_engine[key_code]);
-    for (auto &observer: m_platform_event_observers) {
-        observer->on_key(result);
     }
 }
 
@@ -231,13 +227,6 @@ void PlatformController::_platform_on_window_close(GLFWwindow *window) {
     }
 }
 
-void PlatformController::_platform_on_mouse_button(int button, int action) {
-    for (auto &observer: m_platform_event_observers) {
-        auto result = key(g_glfw_key_to_engine[button]);
-        observer->on_key(result);
-    }
-}
-
 void PlatformController::set_enable_cursor(bool enabled) {
     if (enabled) {
         glfwSetInputMode(m_window.handle_(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -253,21 +242,13 @@ void initialize_key_maps() {
     // clang-format on
 }
 
-static void glfw_mouse_callback(GLFWwindow *window, double x, double y) {
-    core::Controller::get<PlatformController>()->_platform_on_mouse(x, y);
-}
-
-void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-    core::Controller::get<PlatformController>()->_platform_on_mouse_button(button, action);
+static void glfw_mouse_move_callback(GLFWwindow *window, double x, double y) {
+    core::Controller::get<PlatformController>()->_platform_on_mouse_move(x, y);
 }
 
 static void glfw_scroll_callback(GLFWwindow *window, double x_offset, double y_offset) {
     g_mouse_position.scroll = y_offset;
     core::Controller::get<PlatformController>()->_platform_on_scroll(x_offset, y_offset);
-}
-
-static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    core::Controller::get<PlatformController>()->_platform_on_keyboard(key, action);
 }
 
 static void glfw_framebuffer_size_callback(GLFWwindow *window, int width, int height) {

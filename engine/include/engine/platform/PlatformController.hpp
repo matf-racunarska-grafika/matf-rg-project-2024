@@ -35,6 +35,11 @@ struct FrameTime {
     * @brief Time from the initialization of the Platform to the moment when the current frame began.
     */
     float current;
+
+    /**
+     * @brief Number of elapsed frames since the begining of the application.
+     */
+    uint64_t frame_count;
 };
 
 /**
@@ -106,7 +111,7 @@ public:
     /**
     * @brief Called from the platform-specific callback. You shouldn't call this function directly.
     */
-    void _platform_on_mouse(double x, double y);
+    void _platform_on_mouse_move(double x, double y);
 
     /**
     * @brief Called from the platform-specific callback. You shouldn't call this function directly.
@@ -128,8 +133,6 @@ public:
     */
     void _platform_on_window_close(GLFWwindow *window);
 
-    void _platform_on_mouse_button(int button, int action);
-
 private:
     Key &key_ref(KeyId key);
 
@@ -149,7 +152,7 @@ private:
 
     void update_mouse();
 
-    void update_key(Key &key_data) const;
+    bool update_key(Key &key) const;
 
     FrameTime m_frame_time;
     Window m_window;
